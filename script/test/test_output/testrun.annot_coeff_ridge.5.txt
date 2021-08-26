@@ -1,0 +1,8 @@
+ANNOTATION	ANNOTATION_COEFFICIENT
+Coding_UCSC_common	8.7983943e-07
+Coding_UCSC_lowfreq	-2.5967453e-09
+Conserved_LindbladToh_common	4.809147e-07
+Conserved_LindbladToh_lowfreq	3.2263262e-08
+Repressed_Hoffman_common	-3.8857557e-08
+Repressed_Hoffman_lowfreq	-4.905161e-08
+base	2.611631e-08
