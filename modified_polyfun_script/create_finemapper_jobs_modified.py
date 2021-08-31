@@ -1,3 +1,7 @@
+## add a line in original line 31,add a ' &' after all lines. 
+## just to make it run in parallel.  
+
+
 import numpy as np; np.set_printoptions(precision=4, linewidth=200)
 import pandas as pd; pd.set_option('display.width', 200)
 import os
