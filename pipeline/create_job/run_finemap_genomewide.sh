@@ -1,15 +1,13 @@
-#for chr in {1..20}
-#do
-#	bash finemap_all_jobs.${chr}.txt 
-#done
+#!/bin/bash
+#SBATCH --job-name=run_finemap
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=tlin@nygenome.org
+#SBATCH --mem=120G
+#SBATCH --time=05:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/polyfun_script/pipeline/create_job/%x%j.log
 
-bash finemap_all_jobs.1.txt
-bash finemap_all_jobs.2.txt
-bash finemap_all_jobs.3.txt
-bash finemap_all_jobs.4.txt
-bash finemap_all_jobs.5.txt
-bash finemap_all_jobs.6.txt
-bash finemap_all_jobs.7.txt
-bash finemap_all_jobs.8.txt
-bash finemap_all_jobs.9.txt
-bash finemap_all_jobs.10.txt
+
+for chr in {1..22}
+do
+	bash finemap_all_jobs.${chr}.txt 
+done
