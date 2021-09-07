@@ -70,7 +70,6 @@ def main(args):
             #create and write the fine-mapping command for this region
             cmd = create_finemapper_cmd(args, chr_num, start, end, url_prefix)
             f.write(cmd + '\n')
-    
     logging.info('Wrote fine-mapping commands to %s'%(args.jobs_file))
         
 
