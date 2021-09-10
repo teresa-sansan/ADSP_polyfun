@@ -23,13 +23,14 @@ do
 	end=$(echo $filename| cut -d'_' -f 3)
 	
 	python finemapper.py \
+		--ld $i\
 		--sumstats $summary_stat \
 		--n 63926 \
-	  	--chr ${chr} --start $start --end $end \
+	  	--chr $chr --start $start --end $end \
 	  	--method susie \
-		--max-num-causal 1 \
+		--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out /gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_1/all_anno.${chr}.$start.$end.gz 
+		--out /gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_${max_num_snp}/all_anno.${chr}.$start.$end.gz 
 	
 
 done
