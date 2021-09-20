@@ -4,16 +4,17 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=08:00:00
-#SBATCH --output=output/bl_deepsea_microglia/%x_%j.log
+#SBATCH --output=output/bellenguez/bellenguez_all_2/%x_%j.log
 
-cd ~/polyfun
+cd ~/polyfun_omer_repo
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
 bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
-sumstat='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/kunkle_2019/AD_Kunkle_etal_Stage1.parquet'
-output='/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_deepsea_brain_atac/bl_roadmap_deepsea_brain_atac'
+output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all'
+sumstat='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/Bellenguez_2021_stage1.parquet'
+
 python polyfun.py \
  	--compute-h2-bins \
     	--output-prefix $output \
@@ -21,6 +22,7 @@ python polyfun.py \
     	--w-ld-chr $bl/weights.UKB. \
     	--allow-missing
 
+#output='/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_deepsea_brain_atac/bl_roadmap_deepsea_brain_atac'
 #output='/gpfs/commons/home/tlin/polyfun/output/bl_microglia/kunkle_bl_microglia'
 #output='/gpfs/commons/home/tlin/polyfun/output/bl_deepsea_microglia/bl_deepsea_microglia' 
 #output='/gpfs/commons/home/tlin/polyfun/output/bl_deepsea_microglia/bl_deepsea_microglia'
@@ -30,7 +32,7 @@ python polyfun.py \
 #sumstat='/gfps/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/jansenetal_2019/AD_sumstats_Jansenetal_2019sept.parquet'
 #output=output/jansenetal/bl_jansen
 #output='output/bl_roadmap/all_col/bl_roadmap'
-#sumstat='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/Bellenguez_2021_stage1.parquet'
+#sumstat='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/kunkle_2019/AD_Kunkle_etal_Stage1.parquet'
 #output='/gpfs/commons/home/tlin/polyfun/output/bl_deepsea/specific_col/bl_deepsea'
 
 #for i in H3K27ac H3K27me3 H3K4me1 H3K4me3 H3K9ac
