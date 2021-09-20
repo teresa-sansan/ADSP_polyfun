@@ -1,5 +1,7 @@
 #!/bin/bash
-outputformat=/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_deepsea_brain_atac/bl_roadmap_deepsea_brain_atac
+outputformat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all'
+#outputformat='/gpfs/commons/home/tlin/output/kunkle_all_2/all_anno'
+#outputformat=/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_deepsea_brain_atac/bl_roadmap_deepsea_brain_atac
 #outputformat=/gpfs/commons/home/tlin/polyfun/output/bellenguez/bellenguez_roadmap_deepsea_brain_atac/bellenguez_roadmap_deepsea_brain_atac
 #outputformat=output/bl_roadmap_deepsea/bl_roadmap_deepsea
 #outputformat=output/jansenetal/bl_jansen
@@ -10,11 +12,13 @@ outputformat=/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_deepsea_brain_ata
 #outputformat=output/bl_deepsea/specific_col/bl_deepsea
 
 
-for i in {1..22}
+for i in {12..22}
 do
+
 sbatch --export=chr=$i,output=$outputformat polyfun_1_3.sh
 
 done
+
 
 #sbatch --export=chr=$i,output=$outputformat/H3K27me3/bl_deepsea_H3K27me3_ polyfun_1_3.sh
 #sbatch --export=chr=$i,output=$outputformat/H3K4me3/bl_deepsea_H3K4me3_ polyfun_1_3.sh

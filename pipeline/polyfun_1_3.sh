@@ -2,16 +2,16 @@
 #SBATCH --job-name=polyfun_1-3
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=100G
+#SBATCH --mem=200G
 #SBATCH --time=08:00:00
-#SBATCH --output=output/bl_roadmap_deepsea/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/%x_%j.log
 
 
-cd ~/polyfun
+cd ~/polyfun_omer_repo
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
-
+echo $output
 python polyfun.py \
     --compute-ldscores \
     --output-prefix ${output} \

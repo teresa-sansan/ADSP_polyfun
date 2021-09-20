@@ -1,0 +1,7 @@
+python ~/polyfun_omer_repo/polyfun.py --compute-ldscores --output-prefix /gpfs/commons/home/tlin/output/kunkle_all_2/all_anno --ld-ukb --ld-dir /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/ --chr 21
+python ~/polyfun_omer_repo/polyfun.py --compute-ldscores --output-prefix /gpfs/commons/home/tlin/output/kunkle_all_2/all_anno --ld-ukb --ld-dir /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/ --chr 20
+python ~/polyfun_omer_repo/polyfun.py --compute-ldscores --output-prefix /gpfs/commons/home/tlin/output/kunkle_all_2/all_anno --ld-ukb --ld-dir /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/ --chr 19
+python ~/polyfun_omer_repo/polyfun.py --compute-ldscores --output-prefix /gpfs/commons/home/tlin/output/kunkle_all_2/all_anno --ld-ukb --ld-dir /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/ --chr 18
+python ~/polyfun_omer_repo/polyfun.py --compute-ldscores --output-prefix /gpfs/commons/home/tlin/output/kunkle_all_2/all_anno --ld-ukb --ld-dir /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/ --chr 17
+python ~/polyfun_omer_repo/polyfun.py --compute-ldscores --output-prefix /gpfs/commons/home/tlin/output/kunkle_all_2/all_anno --ld-ukb --ld-dir /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/ --chr 16
+python ~/polyfun_omer_repo/polyfun.py --compute-ldscores --output-prefix /gpfs/commons/home/tlin/output/kunkle_all_2/all_anno --ld-ukb --ld-dir /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/ --chr 15

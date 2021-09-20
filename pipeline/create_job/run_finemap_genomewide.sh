@@ -7,7 +7,8 @@
 #SBATCH --output=/gpfs/commons/home/tlin/polyfun_script/pipeline/create_job/%x%j.log
 
 
-for chr in {1..22}
+for chr in {1..21}
 do
-	bash finemap_all_jobs.${chr}.txt 
+	bash finemap_all_jobs_secondary.${chr}.txt 
+	echo submit chr $chr
 done
