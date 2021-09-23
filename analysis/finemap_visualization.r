@@ -13,7 +13,8 @@ library("ggplot2")
 col_name = c("CHR","SNP","BP","A1","A2","SNPVAR","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 par(mfrow=c(1,2)) 
 
-## load data
+# load data ---------------------------------------------------------------
+
 
 #bl_max1 = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl/output/finemap/max_causal_1/finemap_UKBBbaseline.extract_e-01.gz"), 
 #                col.names=col_name)
@@ -65,7 +66,30 @@ par(mfrow=c(1,2))
 #jansen = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/jansenetal/finemap/finemap_jansen.extract_e-01.gz"), 
 #                     col.names=col_name)
 
-bellenguez = read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bellenguez/bellenguez/finemap/finemap_bellenguez.extract_e-01.csv.gz'))
+# kunkle_all=read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap/all_anno_extract_e-01.csv.gz'),
+                      # col.names=col_name)
+
+# bl_all_max1 = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_1/all_anno_extract_e-01.csv.gz'), col.names=col_name)
+# bl_all_max3 = read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_3/anno_all.extract_e-01.csv', col.names=col_name)
+# bl_all_max5 = read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_5/anno_all.extract_e-01.csv', col.names=col_name)
+# bl_all_max7 = read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_7/anno_all.extract_e-01.csv', col.names=col_name)
+# bl_all_max10 = read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_10/anno_all.extract_e-01.csv', col.names=col_name)
+# 
+# 
+# bl_all_max1_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_1/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
+# bl_all_max3_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_3/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
+# bl_all_max5_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_5/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
+# bl_all_max7_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_7/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
+# bl_all_max10_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_10/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
+
+col_name_bellenguez =  c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
+bellenguez_all2_max1_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_1/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name_bellenguez)
+bellenguez_all2_max3_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_3/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name_bellenguez)
+bellenguez_all2_max5_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_5/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name_bellenguez)
+bellenguez_all2_max7_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_7/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name_bellenguez)
+bellenguez_all2_max10_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/_max_snp_10/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
+
+# bellenguez = read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bellenguez/bellenguez/finemap/finemap_bellenguez.extract_e-01.csv.gz'))
 colnames(bellenguez)<- c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 bellenguez = bellenguez[,-7]
 bl_deepsea = read.table('/gpfs/commons/home/tlin/polyfun/output/bl_deepsea/specific_col/finemap/finemap_bl_deepsea.extract_e-01.csv.gz',  
@@ -76,11 +100,15 @@ bl_deepsea = read.table('/gpfs/commons/home/tlin/polyfun/output/bl_deepsea/speci
 #bl_pip_anno = read.table('/gpfs/commons/home/tlin/polyfun/output/bl/extract_anno/extract_pip_0.5.csv', header = TRUE,stringsAsFactors=FALSE)
 #bl_microglia_pip_anno = read.table('/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_microglia/extract_anno/extract_pip_0.5.csv', header = TRUE,stringsAsFactors=FALSE)
 
+
 tau = read.csv('/gpfs/commons/home/tlin/polyfun/data/bl_annotation_tau.tsv', header=T, sep='\t')
 
 
 
-# draw manhatten plot
+
+# visualization -----------------------------------------------------------
+
+# *draw manhatten plot ---------
 gwas_man <- function(data, title, color=c("blue4", "firebrick1"), ylim = c(0,10),  highlight = FALSE){
     qq(data$P, main =title)
     if(highlight == FALSE){
@@ -105,7 +133,7 @@ tail(kunkle_gwas[order(kunkle_gwas["P"]),], decreasing = FALSE)
 kunkle_gwas_omit <- kunkle_gwas[!duplicated("SNP",)]
 
 
-## GWAS significant
+# *GWAS significant ---------
 
 gwas_data <- function(data, pvalue=FALSE, p=TRUE){
   if(pvalue == FALSE){
@@ -175,7 +203,7 @@ manhattan(subset(bl_max5, PIP>0.05), p="PIP", logp = FALSE,ylim = c(0,1.1), ylab
 
 
 
-##create bar plot
+# *bar plot (SNPs count in different categories) ------
 
 count_SNP <-function(df){
   return(c(dim(subset(df,P<1e-8))[1],dim(subset(df,PIP >=0.8))[1],dim(subset(df, PIP>=0.5))[1],
@@ -193,6 +221,31 @@ create_bar_plot <- function(df,line=F){
 
 
 
+create_bar_plot_legend <- function(df,remove=T,main=F){
+  plot.new()
+  opar = par(oma = c(1,1,1,1), mar = c(2,2,2,12), new = TRUE)
+  colnames(df) <- c("P<1e-08","PIP >= 0.8","PIP >= 0.5","PIP >= 0.3")
+  only_pip <- df[,-1] #renmove P<1e-08
+  if(main != F)
+    barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1), main=main)
+  else
+  barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1))
+  #barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1))
+  
+  legend(x="right",inset=c(-0.5,0),legend = rownames(df), fill=terrain.colors(dim(only_pip)[1]), 
+         bty='n',xpd=TRUE)
+  par(opar)
+  print(only_pip)
+    
+}
+  
+
+
+
+
+
+
+# ** different annotations ----
 
 SNP_num <- setNames(data.frame(
   t(data.frame(count_SNP(bl_max1),count_SNP(bl_max3),count_SNP(bl_max5),
@@ -210,24 +263,27 @@ SNP_num <- setNames(data.frame(
 SNP_main <- data.matrix(t(data.frame(count_SNP(bl_max1),count_SNP(bl_brainatac_max1),
                   count_SNP(bl_microglia),count_SNP(bl_roadmap_specific_col),
                   count_SNP(bl_roadmap_brainatac),count_SNP(bl_roadmap_microglia),
-                  count_SNP(bl_deepsea), count_SNP(bl_deepsea_microglia))))
+                  count_SNP(bl_deepsea), count_SNP(bl_deepsea_microglia),count_SNP(kunkle_all))))
 
 
-rownames(SNP_main) <- c('baseline','baseline_brain_atac','baseline_microglia', 'baseline_roadmap',
-                        'baseline_roadmap_brain_atac','baseline_roadmap_microglia','baseline_deepsea',
-                        'baseline_deepsea_microglia')
+rownames(SNP_main) <- c('bl','bl_brain_atac','bl_microglia', 'bl_roadmap',
+                        'bl_roadmap_brain_atac','bl_roadmap_microglia','bl_deepsea',
+                        'bl_deepsea_microglia','bl_all')
 create_bar_plot(SNP_main)
 create_bar_plot(SNP_main, line = T)
+create_bar_plot_legend(SNP_main)
+
 
 SNP_main_new <- data.matrix(t(data.frame(count_SNP(bl_max1),count_SNP(bl_brainatac_max1),
                                      count_SNP(bl_microglia),count_SNP(bl_roadmap_specific_col),
-                                     count_SNP(bl_deepsea),count_SNP(bl_roadmap_deepsea))))
-
+                                     count_SNP(bl_deepsea),count_SNP(bl_roadmap_deepsea),count_SNP(kunkle_all))))
+create_bar_plot_legend(SNP_main_new)
 rownames(SNP_main_new) <- c('baseline','baseline_brain_atac','baseline_microglia', 'baseline_roadmap',
-                        'baseline_deepsea','baseline_roadmap_deepsea')
+                        'baseline_deepsea','baseline_roadmap_deepsea',"baseline_all")
 create_bar_plot(SNP_main_new)
+create_bar_plot_legend(SNP_main_new)
 
-##summary_stats
+# **summary_stats ----
 SNP_summarystats <- data.matrix(t(data.frame(count_SNP(bl_max1),count_SNP(jansen),count_SNP(bellenguez)
 )))
 rownames(SNP_summarystats) <- c("Kunkle", "Jansen", "Bellenguez")
@@ -248,7 +304,42 @@ create_bar_plot(SNP_selected)
 create_bar_plot(SNP_selected,line=T)
 barplot(SNP_main[,-1], beside=T, width=.2, col=terrain.colors(dim(SNP_main)[1]), ylim = c(0,max(SNP_main[,-1])))
 
-##susie vs polyfun
+
+# ** different num of max SNP per locus ----
+
+MAX_snp <- data.matrix(t(data.frame(count_SNP(bl_all_max1),count_SNP(bl_all_max1_overlap),
+                                    count_SNP(bl_all_max3),count_SNP(bl_all_max3_overlap),
+                                    count_SNP(bl_all_max5),count_SNP(bl_all_max5_overlap),
+                                    count_SNP(bl_all_max7), count_SNP(bl_all_max7_overlap),
+                                    count_SNP(bl_all_max10),count_SNP(bl_all_max10_overlap))))
+
+rownames(MAX_snp) <- c('max1','max1_overlap','max3','max3_overlap','max5','max5_overlap','max7','max7_overlap','max10','max10_overlap')
+create_bar_plot_legend(MAX_snp,main="different max SNP per locus")  
+
+## load files without filtering as test
+bl_max1_overlap_notuniq=read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_1/anno_all.extract_e-01.csv',col.names=col_name)
+
+subset(bl_all_max1,PIP >=0.8)
+subset(bl_all_max1_overlap,PIP >=0.8)[,1:13]
+subset(bl_max1_overlap_notuniq, PIP>= 0.8)[,1:13]
+subset(bl_all_max3_overlap,PIP >=0.8)
+
+## two SNPs that didnt appear in the filtered overlap file
+subset(bl_max1_overlap_notuniq,SNP =='rs34971488')  ##chr 16, 
+subset(bl_max1_overlap_notuniq,SNP =='rs4538760')   ##chr 6
+
+bl_all_max1[!bl_all_max1[,2] %in% bl_max1_overlap_notuniq]
+
+
+# bellenguez
+
+bellenguez_all2 <- data.matrix(t(data.frame(count_SNP(bellenguez_all2_max1_overlap),count_SNP(bellenguez_all2_max3_overlap),
+                                       count_SNP(bellenguez_all2_max5_overlap),count_SNP(bellenguez_all2_max7_overlap))))
+
+rownames(bellenguez_all2) <- c('max1','max1_overlap','max3','max3_overlap','max5','max5_overlap','max7','max7_overlap','max10','max10_overlap')
+create_bar_plot_legend(bellenguez_all2,main="bellenguez")  
+
+# *susie vs polyfun ------
 
 SNP_susie_polyfun <- data.matrix(t(
   data.frame(coun)
@@ -271,8 +362,7 @@ abline(h = c(max(test[,1]),max(test[,2]),max(test[,3])), lty=3, col = "red")
 
 
 
-## draw heat map
-# 
+# *heat map ------
 # bl_anno_extracted <- bl_pip_extract_anno[,colSums(bl_pip_extract_anno == 0) <  round(dim(bl_pip_extract_anno)[1]*0.8)]
 # bl_anno_extracted = bl_anno_extracted %>% arrange(PIP)
 # row.names(bl_anno_extracted) <-  paste('Chr',bl_anno_extracted$CHR,': ',bl_anno_extracted$BP, sep = '')
@@ -334,8 +424,8 @@ draw_heatmap_tau <- function(df,title){
 draw_heatmap_tau(bl_pip_anno,"Baseline PIP > 0.5")
 
 
-
-# snp density between kunkle and bellenguez
+# check properties ----------
+# *snp density between kunkle and bellenguez ----------
 common=read.csv("/gpfs/commons/home/tlin/data/common_rigorous.tsv",sep='\t',header=T)
 plot(common$Z.kunkle.,common$Z.bellenguez.,xlim=c(-10,13),ylim=c(-15,22),
      xlab="kunkle",ylab="bellenguez", main="Effect Size",sub="(P < 1e-7, PIP>0.1)")
