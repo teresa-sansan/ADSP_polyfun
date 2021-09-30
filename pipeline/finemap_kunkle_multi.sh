@@ -3,9 +3,8 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
-#SBATCH --time=05:00:00
+#SBATCH --time=22:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/kunkle_all_2/finemap/%x%j.log
-
 cd ~/polyfun_omer_repo
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
@@ -30,7 +29,7 @@ do
 	  	--method susie \
 		--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out /gpfs/commons/home/tlin/output/kunkle_all_2/finemap/max_snp_${max_num_snp}/all_anno_2.${chr}.$start.$end.gz 
+		--out /gpfs/commons/home/tlin/output/kunkle_all_2/max_snp_${max_num_snp}/all_anno_2.${chr}.$start.$end.gz 
 	
 
 done

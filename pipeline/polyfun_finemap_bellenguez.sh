@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=08:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_1/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_1/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -13,7 +13,8 @@ conda activate polyfun
 
 echo chr $chr
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${chr}*"
-sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all.${chr}.snpvar_ridge_constrained.gz"
+sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all.${chr}.snpvar_constrained.gz"
+#sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all.${chr}.snpvar_ridge_constrained.gz"
 #sumstat="output/bellenguez/bellenguez_roadmap_deepsea_brain_atac/bellenguez_roadmap_deepsea_brain_atac.${chr}.snpvar_ridge_constrained.gz"
 
 for i in $FILES
@@ -30,7 +31,7 @@ do
 	  	--method susie \
      	  	--max-num-causal 1 \
 	  	--allow-missing \
-		--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_1/finemap_bellenguez_all_2.${chr}.$start.$end.gz"
+		--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_1/finemap_bellenguez_all_2.${chr}.$start.$end.gz"
 
 	
 
