@@ -4,14 +4,16 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/polypred/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/polypred/%x_%j.log
 
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
+source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate 
+conda activate polyfun
 python polypred.py \
 	--predict \
-	--betas /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/aggregrate.all.txt.gz \
-	--output-prefix /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/polypred/polypred_bellenguez_max10 \
+	--betas /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_${max_snp}/aggregrate.all.txt.gz \
+	--output-prefix /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/polypred/polypred_bellenguez_max${max_snp} \
 	--plink-exe ~/plink \
 	/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/ADSP_chr*.bed
 
