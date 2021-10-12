@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=22:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -13,8 +13,11 @@ conda activate polyfun
 
 
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
-sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all"
-missing="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_${max_snp}/missing_window.txt"
+sumstat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl'
+missing='${sumstat}/finemap_susie/${max_snp}'
+
+
+##susie!
 
 for line in $(cat $missing)
 do	 
@@ -29,12 +32,17 @@ do
 			--ld $FILES/${ldfile} \
 			--sumstats $sumstat.${chr}.snpvar_constrained.gz \
 			--n 487511 \
+			--non-func \
 	  		--chr ${chr} --start $start --end $end \
 	  		--method susie \
      	  		--max-num-causal ${max_snp} \
 	  		--allow-missing \
-			--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_${max_snp}/finemap_bellenguez_all_2.${chr}.$start.$end.gz"
+			--out $sumstat/finemap_susie/max_snp_${max_snp}/finemap_bellenguez_susie.${chr}.$start.$end.gz
 	fi
 	
 
 done
+
+#sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all"
+#missing="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_${max_snp}/missing_window.txt"
+
