@@ -14,7 +14,7 @@ conda activate polyfun
 
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
 sumstat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl'
-missing='${sumstat}/finemap_susie/${max_snp}'
+missing=$sumstat/finemap_susie/max_snp_$max_snp/missing_window_ld.txt
 
 
 ##susie!
@@ -29,8 +29,7 @@ do
 
    		echo finemapping on chr${chr} BP ${start} to ${end}
 		python finemapper.py \
-			--ld $FILES/${ldfile} \
-			--sumstats $sumstat.${chr}.snpvar_constrained.gz \
+			--sumstats $sumstat/bellenguez_bl.${chr}.snpvar_constrained.gz \
 			--n 487511 \
 			--non-func \
 	  		--chr ${chr} --start $start --end $end \
@@ -45,4 +44,7 @@ done
 
 #sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all"
 #missing="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_${max_snp}/missing_window.txt"
+
+
+#			--ld $FILES/${ldfile} \
 
