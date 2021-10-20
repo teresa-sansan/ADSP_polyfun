@@ -1,11 +1,15 @@
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie'
-prefix=finemap_bellenguez_susie
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie'
+#prefix=finemap_bellenguez_susie
+
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained'
+prefix=finemap_bellenguez_all_2
 ld='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld'
 
-for snp in 1 3 5 7 10
+for snp in 1
 do
   cd $path/max_snp_${snp}
-  touch missing_window_ld.txt
+  if [ -f missing_window.txt ]; then rm missing_window.txt; fi
+  touch missing_window.txt
   for chr in {1..22}
     do
     missing=0
@@ -17,12 +21,11 @@ do
             missing=$((++missing))
            if [ $missing -eq 1 ]; then
               echo | tee -a missing_window.txt 
-             echo  chr $chr | tee -a missing_window_ld.txt 
+              echo  chr $chr | tee -a missing_window.txt 
            fi
-          echo $file_name  | tee -a missing_window_ld.txt
-        fi
+          echo $file_name  | tee -a missing_window.txt
+         fi
        done
-  
     done
 done
 
