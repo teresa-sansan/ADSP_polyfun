@@ -31,13 +31,13 @@ do
 		python finemapper.py \
 			--sumstats $sumstat/bellenguez_bl.${chr}.snpvar_constrained.gz \
 			--n 487511 \
-			--ld $FILES/${ldfile} \
+			#--ld $FILES/${ldfile} \
 			--non-func \
 	  		--chr ${chr} --start $start --end $end \
 	  		--method susie \
-     	  		--max-num-causal ${max_snp} \
+     	  		--max-num-causal 1 \
 	  		--allow-missing \
-			--out $sumstat/finemap_susie/max_snp_${max_snp}/finemap_bellenguez_susie.${chr}.$start.$end.gz
+			--out $sumstat/finemap_susie/max_snp_1/finemap_bellenguez_susie.${chr}.$start.$end.gz
 	fi
 	
 
