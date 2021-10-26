@@ -220,25 +220,29 @@ create_bar_plot <- function(df,line=F){
 }
 
 
+create_bar_plot_legend(SNP_main_new)
 
 create_bar_plot_legend <- function(df,remove=T,main=F){
   plot.new()
-  opar = par(oma = c(1,1,1,1), mar = c(2,2,2,12), new = TRUE)
+  #opar = par(oma = c(1,1,1,1), mar = c(2,2,2,12), new = TRUE)
   colnames(df) <- c("P<1e-08","PIP >= 0.8","PIP >= 0.5","PIP >= 0.3")
   only_pip <- df[,-1] #renmove P<1e-08
   if(main != F)
-    barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1), main=main)
+    barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1), main=main, ylab = "SNP count")
   else
-  barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1))
+  barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1), ylab = "SNP count")
   #barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1))
   
-  legend(x="right",inset=c(-0.5,0),legend = rownames(df), fill=terrain.colors(dim(only_pip)[1]), 
+  legend(0.3,35,legend = rownames(df), fill=terrain.colors(dim(only_pip)[1]),cex =1.3,
          bty='n',xpd=TRUE)
+  
   par(opar)
   print(only_pip)
     
 }
   
+
+
 
 
 
@@ -278,14 +282,25 @@ SNP_main_new <- data.matrix(t(data.frame(count_SNP(bl_max1),count_SNP(bl_brainat
                                      count_SNP(bl_microglia),count_SNP(bl_roadmap_specific_col),
                                      count_SNP(bl_deepsea),count_SNP(bl_roadmap_deepsea),count_SNP(kunkle_all))))
 create_bar_plot_legend(SNP_main_new)
-rownames(SNP_main_new) <- c('baseline','baseline_brain_atac','baseline_microglia', 'baseline_roadmap',
-                        'baseline_deepsea','baseline_roadmap_deepsea',"baseline_all")
+rownames(SNP_main_new) <- c('baseline','baseline+brain_atac','baseline+microglia', 'baseline+roadmap',
+                        'baseline+deepsea','baseline+roadmap+deepsea',"baseline+all annotations")
 create_bar_plot(SNP_main_new)
 create_bar_plot_legend(SNP_main_new)
 
+# *** Replot (only PIP>0.3) ----------------
+create_bar_plot_legend(SNP_main_new,main="SNP count for different annotations")
+
+plot.new()
+
+#opar = par(oma = c(1,1,1,1), mar = c(1,2,2,14), new = TRUE)
+plt <-  barplot(SNP_main_new[,4], col=terrain.colors(dim(SNP_main_new)[1]), ylim = c(0,40), ylab = "SNP count",xaxt = "n",main ="SNP count for different annotations \n PIP ≥ 0.3")
+legend(8.3,22,legend = rownames(SNP_main_new), fill=terrain.colors(dim(SNP_main_new)[1]),cex =1.1, bty='n',xpd=TRUE) 
+
+text(plt, par("usr")[3], labels = rownames(SNP_main_new), srt = 20, adj = c(1,2), xpd = TRUE, cex=1) 
+
+
 # **summary_stats ----
-SNP_summarystats <- data.matrix(t(data.frame(count_SNP(bl_max1),count_SNP(jansen),count_SNP(bellenguez)
-)))
+SNP_summarystats <- data.matrix(t(data.frame(count_SNP(bl_max1),count_SNP(jansen),count_SNP(bellenguez))))
 rownames(SNP_summarystats) <- c("Kunkle", "Jansen", "Bellenguez")
 create_bar_plot(SNP_summarystats)
 
@@ -316,6 +331,7 @@ MAX_snp <- data.matrix(t(data.frame(count_SNP(bl_all_max1),count_SNP(bl_all_max1
 rownames(MAX_snp) <- c('max1','max1_overlap','max3','max3_overlap','max5','max5_overlap','max7','max7_overlap','max10','max10_overlap')
 create_bar_plot_legend(MAX_snp,main="different max SNP per locus")  
 
+# ** double check ---------
 ## load files without filtering as test
 bl_max1_overlap_notuniq=read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_1/anno_all.extract_e-01.csv',col.names=col_name)
 
@@ -331,6 +347,11 @@ subset(bl_max1_overlap_notuniq,SNP =='rs4538760')   ##chr 6
 bl_all_max1[!bl_all_max1[,2] %in% bl_max1_overlap_notuniq]
 
 
+## load data with aggregration by polypred
+aggregrate <- read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all_2/finemap/max_snp_1/aggregrate.all.txt.gz'))
+
+
+
 # bellenguez
 
 bellenguez_all2 <- data.matrix(t(data.frame(count_SNP(bellenguez_all2_max1_overlap),count_SNP(bellenguez_all2_max3_overlap),
@@ -339,15 +360,7 @@ bellenguez_all2 <- data.matrix(t(data.frame(count_SNP(bellenguez_all2_max1_overl
 rownames(bellenguez_all2) <- c('max1','max1_overlap','max3','max3_overlap','max5','max5_overlap','max7','max7_overlap','max10','max10_overlap')
 create_bar_plot_legend(bellenguez_all2,main="bellenguez")  
 
-# *susie vs polyfun ------
-
-SNP_susie_polyfun <- data.matrix(t(
-  data.frame(coun)
-))
-
-
-
-
+# *susie vs polyfun -----
 
 test <- SNP_num[-1]
 test <- data.matrix(test[c(-2,-3,-5,-6),])

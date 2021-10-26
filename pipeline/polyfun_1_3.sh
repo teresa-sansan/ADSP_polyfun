@@ -4,13 +4,14 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=200G
 #SBATCH --time=08:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/%x_%j.log
 
 
 cd ~/polyfun_omer_repo
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
+
 echo $output
 python polyfun.py \
     --compute-ldscores \

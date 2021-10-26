@@ -1,8 +1,8 @@
-path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained"
-prefix=finemap_bellenguez_all_2
+path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_susie"
+prefix=finemap_bellenguez_all2_susie
 #path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie"
 #prefix=finemap_bellenguez_susie
-#if [ -f $path/check_finemap.txt ]; then rm $path/check_finemap.txt; fi #remove pre-exist file
+if [ -f $path/check_finemap.txt ]; then rm $path/check_finemap.txt; fi #remove pre-exist file
 touch $path/check_finemap.txt   ##create file
 
 function check
@@ -33,4 +33,7 @@ done
 #path='/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_'
 #path='/gpfs/commons/home/tlin/output/kunkle_all/finemap'
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained'
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained'
+
+
+
+  

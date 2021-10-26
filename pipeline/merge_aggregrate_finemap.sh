@@ -1,6 +1,8 @@
-for max_snp in 1 3 5 7 
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/'
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/'
+for max_snp in 1 3 5 7 10
 do 
-  cd /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_${max_snp}
+  cd ${path}/max_snp_${max_snp}
   zcat chr1.aggregrate.all.txt.gz| head -n 1 > aggregrate.all.txt
   for i in {1..22}
   do
