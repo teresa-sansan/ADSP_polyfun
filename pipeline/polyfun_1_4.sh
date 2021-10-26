@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=08:00:00
-#SBATCH --output=output/bellenguez/bellenguez_all_2/%x_%j.log
+#SBATCH --output=output/bellenguez/bellenguez_bl/%x_%j.log
 
 cd ~/polyfun_omer_repo
 
@@ -12,7 +12,7 @@ source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
 bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
-output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all'
+output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/bellenguez_bl'
 sumstat='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/Bellenguez_2021_stage1.parquet'
 
 python polyfun.py \
