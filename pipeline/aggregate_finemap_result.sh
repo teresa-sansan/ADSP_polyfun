@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=3:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/%x_%j.log
 
 
 
@@ -15,8 +15,8 @@ conda activate polyfun
 
 kunkle='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/kunkle_2019/AD_Kunkle_etal_Stage1.parquet'
 bellenguez='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/Bellenguez_2021_stage1.parquet'
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/max_snp_'
-prefix='finemap_bellenguez_susie'
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_'
+prefix='finemap_bellenguez_all_2'
 
 for chr in {1..22}
 do
@@ -25,7 +25,7 @@ do
 		--sumstats $bellenguez \
 		--out $path${max_snp}/chr${chr}.aggregrate.all.txt.gz \
 		--allow-missing \
-       		--chr $chr
+       		--chr $chr 
 done
 
 
@@ -36,3 +36,4 @@ done
 #prefix='all_anno_2'
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_'
 #prefix='finemap_bellenguez_all_2'
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/max_snp_'

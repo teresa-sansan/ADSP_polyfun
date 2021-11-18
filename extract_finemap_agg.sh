@@ -1,8 +1,8 @@
-prefix='finemap_bellenguez_susie'
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie'
+#prefix='finemap_bellenguez_susie'
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie'
 
-#prefix='finemap_bellenguez_all_2'
-#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained'
+prefix='finemap_bellenguez_all_2'
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained'
 agg='aggregrate.all.txt.gz'
 
 echo $path
