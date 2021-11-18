@@ -9,7 +9,7 @@ library("prob")
 library("heatmaply")
 library("pheatmap")
 library("ggplot2")
-
+library("RColorBrewer")
 col_name = c("CHR","SNP","BP","A1","A2","SNPVAR","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 par(mfrow=c(1,2)) 
 
@@ -83,11 +83,6 @@ par(mfrow=c(1,2))
 # bl_all_max10_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_10/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
 
 col_name_bellenguez =  c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
-bellenguez_all2_max1_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_1/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name_bellenguez)
-bellenguez_all2_max3_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_3/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name_bellenguez)
-bellenguez_all2_max5_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_5/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name_bellenguez)
-bellenguez_all2_max7_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/max_snp_7/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name_bellenguez)
-bellenguez_all2_max10_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap/_max_snp_10/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
 
 # bellenguez = read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bellenguez/bellenguez/finemap/finemap_bellenguez.extract_e-01.csv.gz'))
 colnames(bellenguez)<- c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
@@ -99,6 +94,16 @@ bl_deepsea = read.table('/gpfs/commons/home/tlin/polyfun/output/bl_deepsea/speci
 
 #bl_pip_anno = read.table('/gpfs/commons/home/tlin/polyfun/output/bl/extract_anno/extract_pip_0.5.csv', header = TRUE,stringsAsFactors=FALSE)
 #bl_microglia_pip_anno = read.table('/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_microglia/extract_anno/extract_pip_0.5.csv', header = TRUE,stringsAsFactors=FALSE)
+
+
+bellenguez_susie1 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/max_snp_1/finemap_bellenguez_susie.extract_1e-3.csv.gz",header = TRUE)
+bellenguez_susie3 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/max_snp_3/finemap_bellenguez_susie.extract_1e-3.csv.gz", header = TRUE)
+
+bellenguez_all2_1 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_1/finemap_bellenguez_all_2.extract_1e-3.csv.gz",header = TRUE )
+bellenguez_all2_3 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_3/finemap_bellenguez_all_2.extract_1e-3.csv.gz", header =TRUE)
+bellenguez_all2_5 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_5/finemap_bellenguez_all_2.extract_1e-3.csv.gz",header = TRUE )
+bellenguez_all2_7 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_7/finemap_bellenguez_all_2.extract_1e-3.csv.gz", header =TRUE)
+bellenguez_all2_10 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz",header = TRUE )
 
 
 tau = read.csv('/gpfs/commons/home/tlin/polyfun/data/bl_annotation_tau.tsv', header=T, sep='\t')
@@ -440,5 +445,82 @@ draw_heatmap_tau(bl_pip_anno,"Baseline PIP > 0.5")
 # check properties ----------
 # *snp density between kunkle and bellenguez ----------
 common=read.csv("/gpfs/commons/home/tlin/data/common_rigorous.tsv",sep='\t',header=T)
+par(mfrow=c(1,1))
 plot(common$Z.kunkle.,common$Z.bellenguez.,xlim=c(-10,13),ylim=c(-15,22),
      xlab="kunkle",ylab="bellenguez", main="Effect Size",sub="(P < 1e-7, PIP>0.1)")
+
+abline(1,1, lty=2, col="dodgerblue")
+
+
+## check credible set -------
+credible_1 <- subset(bellenguez_all2_1, CREDIBLE_SET > 0)
+credible_3 <- subset(bellenguez_all2_3, CREDIBLE_SET > 0)
+credible_5 <- subset(bellenguez_all2_5, CREDIBLE_SET > 0)
+credible_7 <- subset(bellenguez_all2_7, CREDIBLE_SET > 0)
+credible_10 <- subset(bellenguez_all2_10, CREDIBLE_SET > 0)
+
+credible_1$MAX_SNP = 1
+credible_3$MAX_SNP = 3
+credible_5$MAX_SNP = 5
+credible_7$MAX_SNP = 7
+credible_10$MAX_SNP = 10
+
+
+ 
+count_credibleset <- function(df){
+  credible_vec <- vector()
+  for (i in (1:10)){
+    credible = dim(df[df$CREDIBLE_SET == i,])[1]
+    credible_vec <- c(credible_vec, credible) 
+  }
+  return(credible_vec)
+}
+
+### without maxsnp = 1 -----
+
+credible_matrix <- cbind(count_credibleset(credible_3),count_credibleset(credible_5),
+                         count_credibleset(credible_7),count_credibleset(credible_10))
+
+
+colnames(credible_matrix) <- c(3,5,7,10)
+
+
+
+barplot(credible_matrix, xlab = "SNP counts", ylab = "max SNP per locus",
+        col=brewer.pal(n = 10, name = "Paired"),main="num of SNP with credible set > 0", horiz=TRUE,xlim=c(0,3400))
+
+#par(mar = c(0.1,0.1,0.3,0.8))
+legend(3020, 4, inset=c(0,-0.0001), title="credible set",
+       legend=c(1:10), fill= brewer.pal(n = 10, name = "Paired"), bty = "n", xpd=TRUE,  cex = 1.2 )
+
+text(x = 450, y = 4.35, sprintf("total num = %s",dim(credible_10)[1]),col = "red",cex = 1.3)
+text(x = 450, y = 3.1,  sprintf("total num = %s",dim(credible_7)[1]),col = "red",cex = 1.3)
+text(x = 450, y = 1.9,  sprintf("total num = %s",dim(credible_5)[1]),col = "red",cex = 1.3)
+text(x = 450, y = 0.76,  sprintf("total num = %s",dim(credible_3)[1]),col = "red",cex = 1.3)
+
+
+
+### with MAX SNP = 1-----
+credible_matrix <- cbind(count_credibleset(credible_1),count_credibleset(credible_3),count_credibleset(credible_5),
+                         count_credibleset(credible_7),count_credibleset(credible_10))
+
+colnames(credible_matrix) <- c(1,3,5,7,10)
+
+barplot(credible_matrix, xlab = "SNP counts", ylab = "max SNP per locus",
+        col=brewer.pal(n = 10, name = "Paired"),main="num of SNP with credible set > 0", horiz=TRUE,xlim=c(0,3400))
+
+#par(mar = c(0.1,0.1,0.3,0.8))
+
+legend(3020, 5.4, inset=c(0,-0.0001), title="credible set",
+       legend=c(1:10), fill= brewer.pal(n = 10, name = "Paired"), bty = "n", xpd=TRUE,  cex = 1.2 )
+
+
+text(x = 450, y = 5.5,  sprintf("total num = %s",dim(credible_10)[1]),col = "red",cex = 1.3)
+text(x = 450, y = 4.35, sprintf("total num = %s",dim(credible_7)[1]),col = "red",cex = 1.3)
+text(x = 450, y = 3.1,  sprintf("total num = %s",dim(credible_5)[1]),col = "red",cex = 1.3)
+text(x = 450, y = 1.9,  sprintf("total num = %s",dim(credible_3)[1]),col = "red",cex = 1.3)
+text(x = 398, y = 0.76,  sprintf("total num = %s",dim(credible_1)[1]),col = "red",cex = 1.3)
+
+
+
+
