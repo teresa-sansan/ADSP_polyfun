@@ -2,6 +2,9 @@ library(ggplot2)
 library(lattice)
 library(dplyr)
 library(stringr)
+library(tidyr)
+library(ggstance)
+
 
 # LOAD DATA ---------------
 polypred1 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_1.tsv",header=T,fill = T)
@@ -440,23 +443,172 @@ barplot()
 
 credibleset_10$CREDIBLE_SET <- factor(credibleset_10$CREDIBLE_SET, levels = c("1","2","3",
                                                                               "4","5","6","7","8","9","10"))
-credibleset_only1 = subset(credibleset_10, CREDIBLE_SET = 1)
-credibleset_morethan1= subset(credibleset_10, CREDIBLE_SET != 1)
+
 
 
 ggplot(credibleset_morethan1, aes(x=reorder(POS, POS, function(x)-length(x)), fill = CREDIBLE_SET)) + 
   geom_bar(position = "stack")+theme_bw()+coord_flip()+
   xlab("block")
 
-count_credible1 = count(credibleset_only1, POS)
-order = count_credible1[order(-count_credible1$n),]
-order_subset = subset(order, n>1)
 
 
-barplot(count_credible1[order(-count_credible1$n),]$n, horiz = T
-        )
+credibleset_10[credibleset_10$PIP > 0.5,]
 
 
-ggplot(order_subset, aes(x=POS, y = n)) +geom_bar(fill="steelblue", stat = "identity")+
-  coord_flip()+
-  theme(axis.text.y  = element_text(color = "grey20", size = 6, hjust = .5, vjust = .5))
+
+ggplot(credibleset_10[credibleset_10$PIP > 0.5,], aes(x=reorder(POS, POS, function(x)-length(x)), fill = CREDIBLE_SET)) + 
+  geom_bar(position = "stack")+theme_bw()+coord_flip()+
+  xlab("block")+ ggtitle("PIP > 0.5")
+
+
+
+
+ggplot(credibleset_10[credibleset_10$PIP > 0.5,], aes(x=reorder(POS, POS, function(x)-length(x)))) + 
+  geom_bar()+
+  theme_bw()+coord_flip()+
+  xlab("block")+ ggtitle("PIP > 0.5")
+
+
+count_Df = credibleset_10[credibleset_10$PIP > 0.5,] %>% count(POS)
+count_Df$n = as.numeric(as.character(count_Df$n))
+
+
+ggplot(count_Df, aes(x=reorder(POS, -CHR), y  = n)) +
+  geom_segment(aes(x = POS, xend=POS, y=0, yend=n))+
+  geom_point(color="blue", size=2, alpha=0.6)+theme_light() + theme_bw()+coord_flip()+
+  scale_y_continuous(breaks = round(seq(min(1), max(10), by = 1),1))+
+  xlab("LD block")+ ylab("Credible set")+ggtitle("PIP > 0.5")
+
+
+
+ggplot(count_Df, aes(x=POS, y  = n)) +
+  geom_segment(aes(x = reorder(POS, -n), xend=POS, y=0, yend=n), color="skyblue") +
+  geom_point(color="blue", size=2, alpha=0.6) +theme_light() + theme_bw()+coord_flip()+
+  scale_y_continuous(breaks = round(seq(min(1), max(10), by = 1),1))+
+  xlab("LD block")+ ylab("Credible set")+ggtitle("PIP > 0.5")
+
+
+split = str_split_fixed(count_Df$POS, "_", 3)
+count_Df$CHR = as.numeric(str_remove_all(str_c(split[,1],".",split[,2]),"Chr"))
+
+
+attach(count_Df)
+
+
+count_Df = count_Df[order(-CHR),]
+
+
+count_Df$POS <- factor(count_Df$POS, levels=count_Df$POS)
+
+
+ggplot(count_Df, aes(x=POS, y = n)) +
+  geom_segment(aes(x = POS, xend=POS, y=0, yend=n))+
+  geom_point(color="brown", size=2, alpha=0.6)+theme_light() + theme_bw()+coord_flip()+
+  scale_y_continuous(breaks = round(seq(min(1), max(10), by = 1),1))+
+  xlab("LD block")+ ylab("Credible set")+ggtitle("PIP > 0.5")
+
+
+create_PIP_subset <- function(df, thres, upperthres=TRUE){
+  df <- subset(df, df$CREDIBLE_SET > 0) ## first extract those have credibleset != 0
+  
+  
+  df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end)
+  df_count <- df[df$PIP > thres,] %>% count(POS)
+  
+  if(upperthres == TRUE){
+    df_count <- df[df$PIP > thres,] %>% count(POS)
+  }else{
+    df_count <- df[df$PIP < thres,] %>% count(POS)
+  }
+  
+  df_count$n = as.numeric(as.character(df_count$n))  
+  split = str_split_fixed(df_count$POS, "_", 3)
+  df_count$CHR.BP = as.numeric(str_remove_all(str_c(split[,1],".",split[,2]),"Chr"))
+
+  attach(df_count)
+  df_count = df_count[order(-CHR.BP),]
+  df_count$POS <- factor(df_count$POS, levels=df_count$POS)
+  
+  return(df_count)
+  
+} 
+
+
+
+lower <- create_PIP_subset(aggregrate10, 0.5, FALSE) ##(58,3)
+upper <- create_PIP_subset(aggregrate10, 0.5)   ## (34,3)
+
+
+lower$group <- "PIP < 0.5"
+upper$group <- "PIP > 0.5"
+
+
+lower_overlap <- subset(lower, lower$POS %in% upper$POS) ##(19,4)
+overlap <- rbind(upper, lower_overlap)
+
+
+
+#position_dodge(width = 1)
+
+ggplot(overlap, aes(x=POS, y = n), group(group)) +
+  geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), 
+                 position = "stack")+
+  geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
+  theme_light() + theme_bw()+coord_flip()+
+  scale_y_continuous(breaks = round(seq(min(1), max(100), by = 1),1))+
+  xlab("LD block")+ ylab("Credible set")+ggtitle("PIP > 0.5")+
+  scale_color_manual(breaks = c("PIP > 0.5","PIP < 0.5"),
+                     values=c("firebrick2", "darkblue"))
+
+
+
+
+create_lollipop <- function(df, upperthres, lowerthres){
+  lower <- create_PIP_subset(df, lowerthres, FALSE)
+  upper <- create_PIP_subset(df, upperthres)  
+  lower$group <- paste("PIP <", lowerthres)
+  upper$group <- paste("PIP >", upperthres)
+  overlap <- rbind(upper,  subset(lower, lower$POS %in% upper$POS))
+  
+  ##drawplot
+  ggplot(overlap, aes(x=POS, y = n), group(group)) +
+    geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), 
+                   position = "stack")+
+    geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
+    theme_light() + theme_bw()+coord_flip()+
+    scale_y_continuous(breaks = round(seq(min(1), max(100), by = 1),1))+
+    xlab("LD block")+ ylab("Credible set")+
+    scale_color_manual(breaks = c(paste("PIP >",upperthres),paste("PIP <", lowerthres)),
+                       values=c("firebrick2", "darkblue"))
+  
+  
+}
+
+detach(df_count)
+
+
+
+create_lollipop <- function(df, upperthres, lowerthres, title){
+  lower <- create_PIP_subset(df, lowerthres, FALSE)
+  upper <- create_PIP_subset(df, upperthres)  
+  lower$group <- paste("PIP <", lowerthres)
+  upper$group <- paste("PIP >", upperthres)
+  overlap <- rbind(upper,  subset(lower, lower$POS %in% upper$POS))
+
+
+  
+  ##drawplot
+  ggplot(overlap, aes(x=POS, y = n), group(group)) +
+    geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), 
+                   position = "stack")+
+    geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
+    theme_light() + theme_bw()+coord_flip()+
+    scale_y_continuous(breaks = round(seq(min(1), max(100), by = 1),1))+
+    xlab("LD block")+ ylab("Credible set")+ggtitle(title)+
+    scale_color_manual(breaks = c(paste("PIP >",upperthres),paste("PIP <", lowerthres)),
+                       values=c("firebrick2", "darkblue"))+
+    guides(colour = guide_legend(override.aes = list(size = 4)))
+}
+
+
+create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
