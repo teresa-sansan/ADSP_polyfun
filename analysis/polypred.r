@@ -4,7 +4,18 @@ library(dplyr)
 library(stringr)
 library(tidyr)
 library(ggstance)
+library(jtools)
 
+pre_process <- function(df, FILE=FALSE){
+  if(FILE==FALSE){
+    df<- read.table(df,header=T,fill = T)
+  }
+  print(paste("original=",  dim(df)[1], "rows"))
+  df <- df %>%
+    filter(Diagnosis != -1 & Age >= 65)
+  print(paste("filtered=",  dim(df)[1], "rows"))
+  return(df)
+}
 
 # LOAD DATA ---------------
 polypred1 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_1.tsv",header=T,fill = T)
@@ -27,24 +38,47 @@ beta_polypred5 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2
 beta_polypred7 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/adjbeta_prs_diagnosis_0219.2021_max_snp_7.tsv",header=T,fill = T)
 beta_polypred10 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/adjbeta_prs_diagnosis_0219.2021_max_snp_10.tsv",header=T,fill = T)
 
+updatePRS1 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_1_subset.tsv")
+updatePRS3 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_3_subset.tsv")
+updatePRS5 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_5_subset.tsv")
+updatePRS7 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_7_subset.tsv")
+updatePRS10 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_10_subset.tsv")
+
 
 aggregrate10 = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
 
-polypred = rbind(polypred1, polypred3, polypred5, polypred7, polypred10)
+
+## bind df and filter
+bind_filt <- function(df1, df2, df3, df4, df5, preprocess = FALSE){
+  df <- rbind(df1, df2, df3, df4, df5)
+  snp = c(1,3,5,7,10)
+  if(dim(df1)[1] == dim(df2)[1])
+    df$SNP = rep(snp,each=dim(df1)[1])
+  if(preprocess ==TRUE){
+    df = pre_process(df, FILE = TRUE)
+  return(df)
+  }
+  
+}
+polypred_filt = bind_filt(polypred1, polypred3, polypred5, polypred7, polypred10, preprocess = TRUE)
 susie_polypred = rbind(susie_polypred1, susie_polypred3, susie_polypred5, susie_polypred7, susie_polypred10)
 beta_polypred = rbind(beta_polypred1, beta_polypred3, beta_polypred5,beta_polypred7, beta_polypred10)
 
-snp = c(1,3,5,7,10)
-polypred$SNP = rep(snp,each=dim(polypred1)[1])
-susie_polypred$SNP = rep(snp,each=dim(susie_polypred1)[1])
-beta_polypred$SNP = rep(snp,each=dim(beta_polypred1)[1])
-
-polypred <- subset(polypred, polypred$Diagnosis!= -1) 
-susie_polypred <- subset(susie_polypred, susie_polypred$Diagnosis!= -1) 
-beta_polypred <- subset(beta_polypred, beta_polypred$Diagnosis!= -1)
-
-#attach(polypred)
 # --------
+# polypred = rbind(polypred1, polypred3, polypred5, polypred7, polypred10)
+# susie_polypred = rbind(susie_polypred1, susie_polypred3, susie_polypred5, susie_polypred7, susie_polypred10)
+# beta_polypred = rbind(beta_polypred1, beta_polypred3, beta_polypred5,beta_polypred7, beta_polypred10)
+# 
+# snp = c(1,3,5,7,10)
+# polypred$SNP = rep(snp,each=dim(polypred1)[1])
+# susie_polypred$SNP = rep(snp,each=dim(susie_polypred1)[1])
+# beta_polypred$SNP = rep(snp,each=dim(beta_polypred1)[1])
+# 
+# polypred <- subset(polypred, polypred$Diagnosis!= -1) 
+# susie_polypred <- subset(susie_polypred, susie_polypred$Diagnosis!= -1) 
+# beta_polypred <- subset(beta_polypred, beta_polypred$Diagnosis!= -1)
+
+
 polypred$Diagnosis_case = "Control"
 polypred[polypred$Diagnosis == 1,]$diagnosis_case = "Case"
 
@@ -113,17 +147,25 @@ legend('topright', levels(diagnosis.f),fill=colfill)
 density_plot <- function(polypred, name){
   sort = polypred[order(polypred$PRS),]$PRS
   plot(density(polypred[polypred$Diagnosis == 1,]$PRS),col = "red", main=name, xlab="PRS", xlim = c(head(sort)[6], tail(sort)[1])) 
-  lines(density(polypred[polypred1$Diagnosis == 0,]$PRS), col = "blue")
+  lines(density(polypred[polypred$Diagnosis == 0,]$PRS), col = "blue")
 }
 
 density_plot(polypred1, "snp per locus = 1")
 legend("topleft", legend=c("Case", "Control"),
        col=c("red", "blue"), lty=1:1, cex=0.8,
        box.lty=0)
-density_plot(polypred10, "snp per locus = 10")
+
+par(mfrow=c(2,1))
+density_plot(polypred10, "snp per locus = 10 (OLD)")
 legend("topleft", legend=c("Case", "Control"),
        col=c("red", "blue"), lty=1:1, cex=0.8,
        box.lty=0)
+
+density_plot(updatePRS10, "snp per locus = 10 (UPDATE)")
+legend("topleft", legend=c("Case", "Control"),
+       col=c("red", "blue"), lty=1:1, cex=0.8,
+       box.lty=0)
+
 
 #TEST OUT ----
 
@@ -265,7 +307,7 @@ legend("topleft", legend=c("Line 1", "Line 2"),
        col=c("red", "blue"), lty=1:2, cex=0.8, inset=.05,fill=c("red",'black'))
 
 # boxplot ------
-
+par(oma = c(0,0,0,0))
 par(mfrow=c(2,1))
 boxplot(polypred$PRS ~ polypred$SNP, horizontal=TRUE, xlab="PRS", ylab = "num of SNP per locus", col="dodgerblue", main = "Bellenguez with PolyFun") 
 #boxplot(susie_polypred$PRS ~ susie_polypred$SNP, horizontal=TRUE, xlab="PRS", ylab = "num of SNP per locus", col="dodgerblue", main = "Bellenguez with SuSiE") 
@@ -429,85 +471,8 @@ stripchart(PRS~SNP,data =polypred_sd,
 
 
 ### credible set plot -------
-credibleset_10 <- subset(aggregrate10, CREDIBLE_SET > 0)
 
-
-credibleset_10$POS = str_c("Chr",credibleset_10$CHR,'_' ,credibleset_10$start, "_", credibleset_10$end)
-
-
-ggplot(polypred[polypred$diagnosis == 0,]) +
-  geom_histogram(aes(x = PRS,y=..density..),
-                 fill = "grey", color="black", bins=30)
-barplot()
-
-
-credibleset_10$CREDIBLE_SET <- factor(credibleset_10$CREDIBLE_SET, levels = c("1","2","3",
-                                                                              "4","5","6","7","8","9","10"))
-
-
-
-ggplot(credibleset_morethan1, aes(x=reorder(POS, POS, function(x)-length(x)), fill = CREDIBLE_SET)) + 
-  geom_bar(position = "stack")+theme_bw()+coord_flip()+
-  xlab("block")
-
-
-
-credibleset_10[credibleset_10$PIP > 0.5,]
-
-
-
-ggplot(credibleset_10[credibleset_10$PIP > 0.5,], aes(x=reorder(POS, POS, function(x)-length(x)), fill = CREDIBLE_SET)) + 
-  geom_bar(position = "stack")+theme_bw()+coord_flip()+
-  xlab("block")+ ggtitle("PIP > 0.5")
-
-
-
-
-ggplot(credibleset_10[credibleset_10$PIP > 0.5,], aes(x=reorder(POS, POS, function(x)-length(x)))) + 
-  geom_bar()+
-  theme_bw()+coord_flip()+
-  xlab("block")+ ggtitle("PIP > 0.5")
-
-
-count_Df = credibleset_10[credibleset_10$PIP > 0.5,] %>% count(POS)
-count_Df$n = as.numeric(as.character(count_Df$n))
-
-
-ggplot(count_Df, aes(x=reorder(POS, -CHR), y  = n)) +
-  geom_segment(aes(x = POS, xend=POS, y=0, yend=n))+
-  geom_point(color="blue", size=2, alpha=0.6)+theme_light() + theme_bw()+coord_flip()+
-  scale_y_continuous(breaks = round(seq(min(1), max(10), by = 1),1))+
-  xlab("LD block")+ ylab("Credible set")+ggtitle("PIP > 0.5")
-
-
-
-ggplot(count_Df, aes(x=POS, y  = n)) +
-  geom_segment(aes(x = reorder(POS, -n), xend=POS, y=0, yend=n), color="skyblue") +
-  geom_point(color="blue", size=2, alpha=0.6) +theme_light() + theme_bw()+coord_flip()+
-  scale_y_continuous(breaks = round(seq(min(1), max(10), by = 1),1))+
-  xlab("LD block")+ ylab("Credible set")+ggtitle("PIP > 0.5")
-
-
-split = str_split_fixed(count_Df$POS, "_", 3)
-count_Df$CHR = as.numeric(str_remove_all(str_c(split[,1],".",split[,2]),"Chr"))
-
-
-attach(count_Df)
-
-
-count_Df = count_Df[order(-CHR),]
-
-
-count_Df$POS <- factor(count_Df$POS, levels=count_Df$POS)
-
-
-ggplot(count_Df, aes(x=POS, y = n)) +
-  geom_segment(aes(x = POS, xend=POS, y=0, yend=n))+
-  geom_point(color="brown", size=2, alpha=0.6)+theme_light() + theme_bw()+coord_flip()+
-  scale_y_continuous(breaks = round(seq(min(1), max(10), by = 1),1))+
-  xlab("LD block")+ ylab("Credible set")+ggtitle("PIP > 0.5")
-
-
+# functions
 create_PIP_subset <- function(df, thres, upperthres=TRUE){
   df <- subset(df, df$CREDIBLE_SET > 0) ## first extract those have credibleset != 0
   
@@ -532,69 +497,13 @@ create_PIP_subset <- function(df, thres, upperthres=TRUE){
   return(df_count)
   
 } 
-
-
-
-lower <- create_PIP_subset(aggregrate10, 0.5, FALSE) ##(58,3)
-upper <- create_PIP_subset(aggregrate10, 0.5)   ## (34,3)
-
-
-lower$group <- "PIP < 0.5"
-upper$group <- "PIP > 0.5"
-
-
-lower_overlap <- subset(lower, lower$POS %in% upper$POS) ##(19,4)
-overlap <- rbind(upper, lower_overlap)
-
-
-
-#position_dodge(width = 1)
-
-ggplot(overlap, aes(x=POS, y = n), group(group)) +
-  geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), 
-                 position = "stack")+
-  geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
-  theme_light() + theme_bw()+coord_flip()+
-  scale_y_continuous(breaks = round(seq(min(1), max(100), by = 1),1))+
-  xlab("LD block")+ ylab("Credible set")+ggtitle("PIP > 0.5")+
-  scale_color_manual(breaks = c("PIP > 0.5","PIP < 0.5"),
-                     values=c("firebrick2", "darkblue"))
-
-
-
-
-create_lollipop <- function(df, upperthres, lowerthres){
-  lower <- create_PIP_subset(df, lowerthres, FALSE)
-  upper <- create_PIP_subset(df, upperthres)  
-  lower$group <- paste("PIP <", lowerthres)
-  upper$group <- paste("PIP >", upperthres)
-  overlap <- rbind(upper,  subset(lower, lower$POS %in% upper$POS))
-  
-  ##drawplot
-  ggplot(overlap, aes(x=POS, y = n), group(group)) +
-    geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), 
-                   position = "stack")+
-    geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
-    theme_light() + theme_bw()+coord_flip()+
-    scale_y_continuous(breaks = round(seq(min(1), max(100), by = 1),1))+
-    xlab("LD block")+ ylab("Credible set")+
-    scale_color_manual(breaks = c(paste("PIP >",upperthres),paste("PIP <", lowerthres)),
-                       values=c("firebrick2", "darkblue"))
-  
-  
-}
-
-detach(df_count)
-
-
-
 create_lollipop <- function(df, upperthres, lowerthres, title){
   lower <- create_PIP_subset(df, lowerthres, FALSE)
   upper <- create_PIP_subset(df, upperthres)  
   lower$group <- paste("PIP <", lowerthres)
   upper$group <- paste("PIP >", upperthres)
   overlap <- rbind(upper,  subset(lower, lower$POS %in% upper$POS))
-
+  
 
   
   ##drawplot
@@ -603,12 +512,67 @@ create_lollipop <- function(df, upperthres, lowerthres, title){
                    position = "stack")+
     geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
     theme_light() + theme_bw()+coord_flip()+
-    scale_y_continuous(breaks = round(seq(min(1), max(100), by = 1),1))+
+    scale_y_continuous(breaks = round(seq(min(1), max(50), by = 1),1))+
     xlab("LD block")+ ylab("Credible set")+ggtitle(title)+
     scale_color_manual(breaks = c(paste("PIP >",upperthres),paste("PIP <", lowerthres)),
                        values=c("firebrick2", "darkblue"))+
     guides(colour = guide_legend(override.aes = list(size = 4)))
+  
+  return(overlap)
 }
 
 
-create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
+PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
+PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
+
+subset(PIP_0.5,PIP_0.5$POS %in%  PIP_0.95$POS)
+
+
+aggregrate10[aggregrate10$PIP>0.95,c("SNP","BP","PIP","POS","CREDIBLE_SET")]
+
+
+
+
+
+
+# comparison between plink update----
+par(oma = c(0,0,4,0))
+par(mfrow=c(1,3))
+
+#max snp = 10
+boxplot(PRS~Diagnosis, data = polypred10[polypred10$Diagnosis >-1,],main="previous", names=c("Control", "Case"),col = c("skyblue","lightpink"))
+boxplot(PRS~Diagnosis, data = updatePRS10[updatePRS10$Diagnosis >-1,],main="updated",names =c("Control", "Case"), col= c("skyblue","lightpink"))
+mtext("max snp per locus = 10", outer = TRUE, cex = 2, side = 1, line=-35)
+
+#boxplot(PRS, data = polypred10[polypred$Diagnosis == 1,],main="previous")
+#boxplot(updatePRS10$PRS,main ="updated")
+
+
+#max snp= 1
+boxplot(PRS~Diagnosis, data = polypred1[polypred1$Diagnosis >-1,],main="previous", names=c("Control", "Case"),col = c("skyblue","lightpink"))
+boxplot(PRS~Diagnosis, data = updatePRS1[updatePRS1$Diagnosis >-1,],main="updated",names =c("Control", "Case"), col= c("skyblue","lightpink"))
+
+mtext("max snp per locus = 1", outer = TRUE, cex = 2, side = 1, line=-35)
+
+boxplot(PRS~Diagnosis, data = polypred1[polypred1$Diagnosis >-1,],main="previous", names=c("Control", "Case"),col = c("skyblue","lightpink"),ylim = c(-0.003,0.002))
+boxplot(PRS~Diagnosis, data = updatePRS10,main="PLINK updated", names=c("Control", "Case"),col = c("skyblue","lightpink"),ylim = c(-0.002,0.002))
+boxplot(PRS~Diagnosis, data = updatePRS10filter,main="remove age < 65",names =c("Control", "Case"), col= c("skyblue","lightpink"),ylim = c(-0.002,0.002))
+
+mtext("max snp per locus = 10", outer = TRUE, cex = 1.5, side = 1, line=-55)
+
+
+
+##process data, remove those with diagnosis missing and with age <50
+
+pre_process <- function(df){
+  print(paste("original=",  dim(df)[1], "rows"))
+  df <- df %>%
+    filter(Diagnosis != -1 & Age >= 65)
+  print(paste("filtered=",  dim(df)[1], "rows"))
+  return(df)
+}
+
+test <-
+  updatePRS10 %>%
+  filter(Diagnosis != -1 & Age >= 60)
+

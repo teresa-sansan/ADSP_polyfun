@@ -1,15 +1,18 @@
 library(ggplot2)
-library(package = "lattice")
+library(lattice)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggstance)
 
-#install.packages("sm")
-library(sm)
 
 # LOAD DATA ---------------
-polypred1 = read.table("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data/diagnosis/prs_diagnosis_0219.2021_max_snp_1.tsv",header=T,fill = T)
-polypred3 = read.table("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data/diagnosis/prs_diagnosis_0219.2021_max_snp_3.tsv",header=T,fill = T)
-polypred5 = read.table("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data/diagnosis/prs_diagnosis_0219.2021_max_snp_5.tsv",header=T,fill = T)
-polypred7 = read.table("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data/diagnosis/prs_diagnosis_0219.2021_max_snp_7.tsv",header=T,fill = T)
-polypred10 = read.table("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data/diagnosis/prs_diagnosis_0219.2021_max_snp_10.tsv",header=T,fill = T)
+polypred1 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_1.tsv",header=T,fill = T)
+polypred3 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_3.tsv",header=T,fill = T)
+polypred5 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_5.tsv",header=T,fill = T)
+polypred7 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_7.tsv",header=T,fill = T)
+polypred10 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_10.tsv",header=T,fill = T)
+
 
 susie_polypred1 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/susie_prs_diagnosis_0219.2021_max_snp_1.tsv",header=T,fill = T)
 susie_polypred3 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/susie_prs_diagnosis_0219.2021_max_snp_3.tsv",header=T,fill = T)
@@ -17,22 +20,46 @@ susie_polypred5 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_susi
 susie_polypred7 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/susie_prs_diagnosis_0219.2021_max_snp_7.tsv",header=T,fill = T)
 susie_polypred10 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/susie_prs_diagnosis_0219.2021_max_snp_10.tsv",header=T,fill = T)
 
- 
+
+beta_polypred1 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/adjbeta_prs_diagnosis_0219.2021_max_snp_1.tsv",header=T,fill = T)
+beta_polypred3 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/adjbeta_prs_diagnosis_0219.2021_max_snp_3.tsv",header=T,fill = T)
+beta_polypred5 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/adjbeta_prs_diagnosis_0219.2021_max_snp_5.tsv",header=T,fill = T)
+beta_polypred7 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/adjbeta_prs_diagnosis_0219.2021_max_snp_7.tsv",header=T,fill = T)
+beta_polypred10 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/adjbeta_prs_diagnosis_0219.2021_max_snp_10.tsv",header=T,fill = T)
+
+updatePRS1 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/prs_diagnosis_0219.2021_max_snp_1_subset.tsv",header=T,fill = T)
+updatePRS3 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/prs_diagnosis_0219.2021_max_snp_3_subset.tsv",header=T,fill = T)
+updatePRS5 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/prs_diagnosis_0219.2021_max_snp_5_subset.tsv",header=T,fill = T)
+updatePRS7 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/prs_diagnosis_0219.2021_max_snp_7_subset.tsv",header=T,fill = T)
+updatePRS10 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/prs_diagnosis_0219.2021_max_snp_10_subset.tsv",header=T,fill = T)
+
+
+aggregrate10 = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
 
 polypred = rbind(polypred1, polypred3, polypred5, polypred7, polypred10)
-polypred_susie = rbind(polypred1, polypred3, polypred5, polypred7, polypred10)
+susie_polypred = rbind(susie_polypred1, susie_polypred3, susie_polypred5, susie_polypred7, susie_polypred10)
+beta_polypred = rbind(beta_polypred1, beta_polypred3, beta_polypred5,beta_polypred7, beta_polypred10)
 
 snp = c(1,3,5,7,10)
 polypred$SNP = rep(snp,each=dim(polypred1)[1])
-polypred_susie$SNP = rep(snp,each=dim(susie_polypred1)[1])
+susie_polypred$SNP = rep(snp,each=dim(susie_polypred1)[1])
+beta_polypred$SNP = rep(snp,each=dim(beta_polypred1)[1])
+
+polypred <- subset(polypred, polypred$Diagnosis!= -1) 
+susie_polypred <- subset(susie_polypred, susie_polypred$Diagnosis!= -1) 
+beta_polypred <- subset(beta_polypred, beta_polypred$Diagnosis!= -1)
 
 #attach(polypred)
 # --------
-polypred$diagnosis_case = "Control"
-polypred[polypred$diagnosis == 1,]$diagnosis_case = "Case"
+polypred$Diagnosis_case = "Control"
+polypred[polypred$Diagnosis == 1,]$diagnosis_case = "Case"
 
-polypred_susie$diagnosis_case = "Control"
-polypred_susie[polypred$diagnosis == 1,]$diagnosis_case = "Case"
+susie_polypred$Diagnosis_case = "Control"
+susie_polypred[susie_polypred$Diagnosis == 1,]$Diagnosis_case = "Case"
+
+
+beta_polypred$Diagnosis_case = "Control"
+beta_polypred[beta_polypred$Diagnosis == 1,]$Diagnosis_case = "Case"
 
 sort_prs <-polypred[order(PRS),]
 head(sort_prs)
@@ -136,14 +163,83 @@ legend("topleft", legend=c("Case", "Control"),
 
 # Subseting >2SD
 polypred_sd = polypred[abs(scale(polypred$PRS))>2,]
-polypred_susie_sd = polypred_susie[abs(scale(polypred_susie$PRS))>2,]
+susie_polypred_sd = susie_polypred[abs(scale(susie_polypred$PRS))>2,]
+
+
+#top and tail %
+percentage_subset<- function (df, percent){
+  num = round(dim(df)[1]*percent*0.01)
+  df = df[order(df$PRS),]
+  data1 = head(df, num)
+  data2 = tail(df, num)
+  return(rbind(data1, data2))
+}
+
+
 
 # check out how simlar is SuSiE vs. bellenguez w. all annotations ----
+
+plot_corr <- function (df1, df2, col, title) {
+  for (i in c(1,3,5,7)){
+    plot(df1[df1$SNP==i,]$PRS, df2[df2$SNP == i,]$PRS, cex = 0.1, xlab = "functional finemapping", ylab = "SuSiE", 
+         main = c("max SNP:",i), cex.main=1)
+    abline(a=0, b=1,col = "red")
+  }
+        
+  mtext(title,                   # Add main title
+        side = 3,
+        line = -1.5,
+        outer = TRUE)
+
+}
+
+
 par(mfrow=c(2,2))
-plot(polypred[polypred$SNP == 1,]$PRS, polypred_susie[polypred_susie$SNP == 1,]$PRS,cex = 0.1, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 1")
-plot(polypred[polypred$SNP == 3,]$PRS, polypred_susie[polypred_susie$SNP == 3,]$PRS,cex = 0.1, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 3")
-plot(polypred[polypred$SNP == 5,]$PRS, polypred_susie[polypred_susie$SNP == 5,]$PRS,cex = 0.1, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 5")
-plot(polypred[polypred$SNP == 7,]$PRS, polypred_susie[polypred_susie$SNP == 7,]$PRS,cex = 0.1, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 7")
+
+plot_corr(polypred,susie_polypred, SNP, "PRS")
+
+
+
+
+sort_polypred1 = subset(percentage_subset(polypred1,10), percentage_subset(polypred1,10)$Diagnosis != -1)
+sort_polypred3 = subset(percentage_subset(polypred3,10), percentage_subset(polypred3,10)$Diagnosis != -1)
+sort_polypred5 = subset(percentage_subset(polypred5,10), percentage_subset(polypred5,10)$Diagnosis != -1)
+sort_polypred7 = subset(percentage_subset(polypred7,10), percentage_subset(polypred7,10)$Diagnosis != -1)
+
+sort_susie_polypred1 = subset(percentage_subset(susie_polypred1,10), percentage_subset(susie_polypred1,10)$Diagnosis != -1)
+sort_susie_polypred3 = subset(percentage_subset(susie_polypred3,10), percentage_subset(susie_polypred3,10)$Diagnosis != -1)
+sort_susie_polypred5 = subset(percentage_subset(susie_polypred5,10), percentage_subset(susie_polypred5,10)$Diagnosis != -1)
+sort_susie_polypred7 = subset(percentage_subset(susie_polypred7,10), percentage_subset(susie_polypred7,10)$Diagnosis != -1)
+
+
+par(mfrow=c(2,2))
+plot(sort_polypred1$PRS, sort_susie_polypred1$PRS,cex = 0.1, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 1")
+plot(sort_polypred3$PRS, sort_susie_polypred3$PRS,cex = 0.1, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 3")
+plot(sort_polypred5$PRS, sort_susie_polypred5$PRS,cex = 0.1, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 5")
+plot(sort_polypred7$PRS, sort_susie_polypred7$PRS,cex = 0.1, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 7")
+
+# mtext("PRS ( > 2 SD)",                   # Add main title
+#       side = 3,
+#       line = -1.5,
+#       outer = TRUE)
+
+plot_corr(polypred_no_NA_Diagnosis, susie_polypred_no_NA_Diagnosis, PRS)
+
+
+
+par(mfrow=c(1,1))
+plot(sort_polypred1$PRS, sort_susie_polypred1$PRS,col = factor(sort_susie_polypred1$Diagnosis), cex = 0.3, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 1")
+ 
+abline(a=0, b=1,col = "red")
+
+
+
+similarity <-lm(polypred[polypred$SNP == 3,]$PRS ~ polypred_susie[polypred_susie$SNP == 3,]$PRS)
+summary(similarity)
+
+summary(polypred[polypred$SNP == 3,]$PRS)
+summary(polypred_susie[polypred_susie$SNP == 3,]$PRS)
+
 
 par(mfrow=c(2,1))
 plot_correlation <- function (df,main){
@@ -178,19 +274,19 @@ legend("topleft", legend=c("Line 1", "Line 2"),
 
 par(mfrow=c(2,1))
 boxplot(polypred$PRS ~ polypred$SNP, horizontal=TRUE, xlab="PRS", ylab = "num of SNP per locus", col="dodgerblue", main = "Bellenguez with PolyFun") 
-boxplot(polypred_susie$PRS ~ polypred_susie$SNP, horizontal=TRUE, xlab="PRS", ylab = "num of SNP per locus", col="dodgerblue", main = "Bellenguez with SuSiE") 
-
-boxplot(polypred_sd$PRS ~ polypred_sd$SNP, horizontal=TRUE, xlab="PRS", ylab = "num of SNP per locus", col="dodgerblue", main = "Bellenguez with PolyFun") 
-boxplot(polypred_susie_sd$PRS ~ polypred_susie_sd$SNP, horizontal=TRUE, xlab="PRS", ylab = "num of SNP per locus", col="dodgerblue", main = "Bellenguez with SuSiE") 
+#boxplot(susie_polypred$PRS ~ susie_polypred$SNP, horizontal=TRUE, xlab="PRS", ylab = "num of SNP per locus", col="dodgerblue", main = "Bellenguez with SuSiE") 
+boxplot(beta_polypred$PRS ~ beta_polypred$SNP, horizontal=TRUE, xlab="PRS", ylab = "num of SNP per locus", col="dodgerblue", main = "Adjusted Beta, Polyfun") 
 
 
-plot(polypred$PRS, polypred$Diagnosis,ylim = c(0,1), xlab="PRS",ylab="diagnosis")
+
+plot(polypred$PRS, polypred$Diagnosis,ylim = c(0,1), xlab="PRS",ylab="Diagnosis")
 
 
 
 
 ## multi linear regression -------
-## polypred
+# remove SNP = 1
+polypred = subset(polypred[polypred$SNP !=1,])
 polypred_lm_confounder <- lm(Diagnosis ~ Sex + Age, data= polypred)
 summary(polypred_lm_confounder)
 
@@ -207,14 +303,193 @@ summary(polypred_susie_confunder)
 polypred_susie_lm_all <- lm(Diagnosis ~ PRS + Sex + Age , data= polypred_susie)
 summary(polypred_susie_lm_all)
 
+### you should see each SNP seperately:----
+
+regress_anova <- function(df){
+  df = subset(df, df$Diagnosis != -1)
+  polypred_lm_confounder <- lm(Diagnosis ~ Sex + Age, data= df)
+  print(summary(polypred_lm_confounder))
+  
+  polypred_lm_all <- lm(Diagnosis ~ PRS + Sex + Age, data= df)
+  print(summary(polypred_lm_all))
+  
+  print(anova(polypred_lm_confounder, polypred_lm_all))
+}
+  
+regress_anova(polypred1)
+regress_anova(polypred10)
+
+regress_anova(beta_polypred1)
+regress_anova(beta_polypred10)
 
 
+plot(density(polypred[polypred$Diagnosis==1,]$Age),ylim=(c(0.00,0.06)), main= "Age density plot")
+lines(density(polypred[polypred$Diagnosis==0,]$Age),col = "red")
 
 polypred_susie_lm_ld<- lm(Diagnosis ~ PRS + Sex + Age, data= polypred_susie_sd)
 summary(polypred_susie_lm_ld) ## PRS not significant
 
+par(mfrow=c(1,1))
+polypred10_rm = subset(polypred10,polypred10$Diagnosis!= -1)
+plot(density(polypred10[polypred10$Diagnosis == 1,]$Age), col = "red", main = 'Age distribution', xlab= '', ylim = c(0,0.05))
+lines(density(polypred10[polypred10$Diagnosis == 0,]$Age), main = "Control")
+legend('topleft', legend=c("Case", "Control"), fill=c("Red",'Black'))
+
+
+polypred10_rm$Sex = as.factor(polypred10_rm$Sex)
+polypred10_rm$Diagnosis = as.factor(polypred10_rm$Diagnosis)
+ggplot(polypred10_rm, aes(fill=Sex,  x=Diagnosis)) + 
+  geom_bar(position="fill", stat="count")+
+  ylab("percentage")+scale_y_continuous(labels = scales::percent, limits=c(0,1))+
+  scale_fill_manual(values = c("lightblue","pink"),labels=c("Male","Female"))+theme_bw()
+
+## strip plot -----
+stripchart(SNP~PRS,
+           data=polypred,
+           main="PRS of different SNP per locus",
+           xlab="PRS",
+           ylab="SNP per locus",
+           vertical=TRUE,
+           pch=16
+)
+
+
+## violin plot -----
+
+polypred$SNP <- as.factor(polypred$SNP)
+polypred$Diagnosis_type = "Case"
+
+polypred$Diagnosis_type[which(polypred$Diagnosis == 0)] = "Control"
+polypred$Diagnosis <- as.factor(polypred$Diagnosis)
+
+polypred_no_NA_Diagnosis <- subset(polypred, polypred$Diagnosis!= -1) 
+
+p <- ggplot(polypred, aes(x=SNP, y=PRS)) + 
+  geom_violin()
+
+
+credible10 <- 
+aggregrate10[c("SNP","POS",'CREDIBLE_SET')]
+
+
+p + geom_boxplot(width=0.1, color="#8B4C26")+theme_bw() + labs(title = "Bellenguez + all_annotations")+
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14))+ xlab("Max SNP per locus")
+
+
+
+p <- ggplot(polypred, aes(x=SNP, y=PRS, fill=Diagnosis_type))+
+  theme_bw()+
+  geom_violin() + labs(title = "Bellenguez + all_annotations")+
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14))+ xlab("Max SNP per locus")
+
+ 
+par(mfrow=c(1,1))
+
+polypred1_sd = polypred1[abs(scale(polypred1$PRS))>2,]
+polypred3_sd = polypred3[abs(scale(polypred3$PRS))>2,]
+polypred5_sd = polypred5[abs(scale(polypred5$PRS))>2,]
+polypred7_sd = polypred7[abs(scale(polypred7$PRS))>2,]
+polypred10_sd = polypred10[abs(scale(polypred10$PRS))>2,]
+
+polypred1_sd$SNP = 1
+polypred3_sd$SNP = 3
+polypred5_sd$SNP = 5
+polypred7_sd$SNP = 7
+polypred10_sd$SNP = 10
+
+polypred_sd = rbind(polypred1_sd,polypred3_sd,polypred5_sd,polypred7_sd,polypred10_sd)
+print(dim(polypred_sd))
+polypred_sd = subset(polypred_sd, polypred_sd$Diagnosis!= -1) 
+
+
+polypred_sd$SNP <- as.factor(polypred_sd$SNP)
+polypred_sd$Diagnosis_type = "Case"
+
+polypred_sd$Diagnosis_type[which(polypred_sd$Diagnosis == 0)] = "Control"
+
+p <- ggplot(polypred_sd, aes(x=SNP, y=PRS, fill=Diagnosis_type))+
+  theme_bw()+
+  geom_violin() + labs(title = "Bellenguez + all_annotations (> 2 SD)")+
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14))+ xlab("Max SNP per locus")
+
+
+
+p<-ggplot(polypred_sd, aes(x=SNP, y=PRS, color=Diagnosis_type)) +
+  geom_jitter(position=position_jitter(0.35))+theme_bw()
+  labs(title = "Bellenguez + all_annotations (> 2 SD)")+
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14))+ xlab("Max SNP per locus")
+
+p
+
+
+stripchart(PRS~SNP,data =polypred_sd,
+           main="PRS > 2SD",
+           xlab="Max SNP per locus",group.names = c(1,3,5,7,10),vertical= TRUE,
+           ylab="PRS",pch=16)
 
 
 
 
+### credible set plot -------
 
+# functions
+create_PIP_subset <- function(df, thres, upperthres=TRUE){
+  df <- subset(df, df$CREDIBLE_SET > 0) ## first extract those have credibleset != 0
+  
+  
+  df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end)
+  df_count <- df[df$PIP > thres,] %>% count(POS)
+  
+  if(upperthres == TRUE){
+    df_count <- df[df$PIP > thres,] %>% count(POS)
+  }else{
+    df_count <- df[df$PIP < thres,] %>% count(POS)
+  }
+  
+  df_count$n = as.numeric(as.character(df_count$n))  
+  split = str_split_fixed(df_count$POS, "_", 3)
+  df_count$CHR.BP = as.numeric(str_remove_all(str_c(split[,1],".",split[,2]),"Chr"))
+
+  attach(df_count)
+  df_count = df_count[order(-CHR.BP),]
+  df_count$POS <- factor(df_count$POS, levels=df_count$POS)
+  
+  return(df_count)
+  
+} 
+create_lollipop <- function(df, upperthres, lowerthres, title){
+  lower <- create_PIP_subset(df, lowerthres, FALSE)
+  upper <- create_PIP_subset(df, upperthres)  
+  lower$group <- paste("PIP <", lowerthres)
+  upper$group <- paste("PIP >", upperthres)
+  overlap <- rbind(upper,  subset(lower, lower$POS %in% upper$POS))
+  
+
+  
+  ##drawplot
+  ggplot(overlap, aes(x=POS, y = n), group(group)) +
+    geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), 
+                   position = "stack")+
+    geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
+    theme_light() + theme_bw()+coord_flip()+
+    scale_y_continuous(breaks = round(seq(min(1), max(50), by = 1),1))+
+    xlab("LD block")+ ylab("Credible set")+ggtitle(title)+
+    scale_color_manual(breaks = c(paste("PIP >",upperthres),paste("PIP <", lowerthres)),
+                       values=c("firebrick2", "darkblue"))+
+    guides(colour = guide_legend(override.aes = list(size = 4)))
+  
+  return(overlap)
+}
+
+
+PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
+PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
+
+subset(PIP_0.5,PIP_0.5$POS %in%  PIP_0.95$POS)
+
+
+aggregrate10[aggregrate10$PIP>0.95,c("SNP","BP","PIP","POS","CREDIBLE_SET")]
