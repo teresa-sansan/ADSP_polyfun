@@ -1,21 +1,29 @@
 #!/bin/bash
-exec 3>&1 4>&2
-trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1> /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/pT/max_10.log 2>&1
+#exec 3>&1 4>&2
+#trap 'exec 2>&4 1>&3' 0 1 2 3
+#exec 1> /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/pT/max_merge_10.log 2>&1
 
-for chr in {2..3}
+PATH='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10'
+echo SNP$'\t'P > $PATH/SNP.pvalue
+ 
+
+for chr in {1..22}
 do
 echo start chr $chr
-agg_file="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/chr${chr}.aggregrate.all.txt"
-gunzip $agg_file.gz
+agg_file="$PATH/chr${chr}.aggregrate.all.txt"
+#gunzip $agg_file.gz
+awk '{print $2,$10}' $agg_file  >> $PATH/SNP.pvalue
+done
 
-awk '{print $2,$10}' $agg_file  > SNP.pvalue
+for chr in {1..2}
+do
+agg_file="$PATH/chr${chr}.aggregrate.all.txt"
 
 ~/plink \
 --bfile /gpfs/commons/home/tlin/data/biallelic/${chr}_filt \
 --score ${agg_file} 2 4 12 'header' --q-score-range /gpfs/commons/home/tlin/polyfun_script/pipeline/range_list.txt  SNP.pvalue \
 --extract /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/clumping/clump_max10_chr${chr}.clumped \
---out /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/pT/max_snp_10/pT_max10_chr${chr}
+--out /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/pT/max_snp_10/pT_max10_merge_chr${chr}
 
 done
 
