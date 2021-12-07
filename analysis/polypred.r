@@ -554,9 +554,11 @@ boxplot(PRS~Diagnosis, data = updatePRS1[updatePRS1$Diagnosis >-1,],main="update
 
 mtext("max snp per locus = 1", outer = TRUE, cex = 2, side = 1, line=-35)
 
-boxplot(PRS~Diagnosis, data = polypred1[polypred1$Diagnosis >-1,],main="previous", names=c("Control", "Case"),col = c("skyblue","lightpink"),ylim = c(-0.003,0.002))
-boxplot(PRS~Diagnosis, data = updatePRS10,main="PLINK updated", names=c("Control", "Case"),col = c("skyblue","lightpink"),ylim = c(-0.002,0.002))
-boxplot(PRS~Diagnosis, data = updatePRS10filter,main="remove age < 65",names =c("Control", "Case"), col= c("skyblue","lightpink"),ylim = c(-0.002,0.002))
+updatePRS10 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_10_subset.tsv",header=T,fill = T)
+
+boxplot(PRS~Diagnosis, data = polypred1[polypred1$Diagnosis >-1,],main="previous", names=c("Control", "Case"),col = c("skyblue","lightpink"),ylim = c(-0.003,0.002),cex.main=1.5)
+boxplot(PRS~Diagnosis, data = updatePRS10[updatePRS10$Diagnosis!=-1,],main="PLINK updated", names=c("Control", "Case"),col = c("skyblue","lightpink"),ylim = c(-0.002,0.002), cex.main=1.5)
+boxplot(PRS~Diagnosis, data = updatePRS10filter,main="remove age < 65",names =c("Control", "Case"), col= c("skyblue","lightpink"), ylim = c(-0.002,0.002),cex.main=1.5)
 
 mtext("max snp per locus = 10", outer = TRUE, cex = 1.5, side = 1, line=-55)
 
