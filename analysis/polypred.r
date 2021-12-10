@@ -5,6 +5,7 @@ library(stringr)
 library(tidyr)
 library(ggstance)
 library(jtools)
+library(tibble)
 
 pre_process <- function(df, FILE=FALSE){
   if(FILE==FALSE){
@@ -321,6 +322,9 @@ plot(polypred$PRS, polypred$Diagnosis,ylim = c(0,1), xlab="PRS",ylab="Diagnosis"
 
 
 ## multi linear regression -------
+
+
+# previous try ----
 # remove SNP = 1
 polypred = subset(polypred[polypred$SNP !=1,])
 polypred_lm_confounder <- lm(Diagnosis ~ Sex + Age, data= polypred)
@@ -378,6 +382,60 @@ ggplot(polypred10_rm, aes(fill=Sex,  x=Diagnosis)) +
   geom_bar(position="fill", stat="count")+
   ylab("percentage")+scale_y_continuous(labels = scales::percent, limits=c(0,1))+
   scale_fill_manual(values = c("lightblue","pink"),labels=c("Male","Female"))+theme_bw()
+
+
+
+# new with filtered PRS ----
+
+## check first
+colSums(is.na(updatePRS10))==0  ## NAs only exist in X19 and X20
+summary(updatePRS10$Ethnicity)  ## why are there Ethnicity != 0 or 1? (there are floats and negative num...?)
+updatePRS10$EthnicityGroup = updatePRS10$Ethnicity
+updatePRS10[updatePRS10$Ethnicity != 0 & updatePRS10$Ethnicity !=1,]$EthnicityGroup = "Questionable"
+ethnicityGroup<- as.factor(updatePRS10$EthnicityGroup)
+plot(updatePRS10$Ethnicity, xlab = "count", ylab = "Ethnicity", col=ethnicityGroup)
+
+
+## running regression
+EU10 = updatePRS10[updatePRS10$Race == 5,]
+mod1 <- glm(Diagnosis ~ Sex + Age, data= EU10, family=binomial)
+mod2 <- glm(Diagnosis ~ Sex + Age + PRS, data= EU10, family=binomial)
+mod3 <- glm(Diagnosis ~ Sex+Age+ X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11+X12+X13+X14+X15+X16+X17+X18+X19, data  = EU10,family= binomial)
+mod4 <- glm(Diagnosis ~ Sex+Age+PRS+ X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11+X12+X13+X14+X15+X16+X17+X18+X19, data  = EU10,family= binomial)
+
+log_result <- EU10 %>%
+  select("Sex","Age","PRS","Diagnosis")
+  
+log_result <- log_result %>%
+  add_column('mod1_res' = residuals(mod1, type = "pearson")) %>% 
+  add_column('mod2_res' = residuals(mod2, type = "pearson")) %>%
+  add_column('mod3_res' = residuals(mod3, type = "pearson")) %>% 
+  add_column('mod4_res' = residuals(mod4, type = "pearson")) 
+log_result$mod4_res =  residuals(mod4, type = "pearson")
+log_result$Diagnosis<- as.factor(log_result$Diagnosis)
+
+par(mfrow=c(2,1))
+plot(log_result$mod2_res ~ log_result$PRS, ylab = "Residual", xlab = "PRS", col = log_result$Diagnosis,
+     cex=0.5,main= "Diagnosis ~ Sex + Age + PRS"
+     )
+plot(log_result$mod4_res ~ log_result$PRS, ylab = "Residual", xlab = "PRS", col = log_result$Diagnosis,
+     cex=0.5,main= "Diagnosis ~ Sex + Age + PRS + PCs (1 to 19)"
+)
+text(-0.00017, -3, cex = 0.8, col = "blue",expression("Sex = F, Age = 78, mod1_res = -0.994, mod2_res = -0.999, mod3_res = -3.51" ))
+
+plot(log_result$mod2_res ~ log_result$mod1_res, ylab = "w. PRS", xlab = "w/o PRS", col = log_result$Diagnosis,
+     cex=0.5,main= "Diagnosis ~ Sex + Age (+ PRS)")
+abline(0,1, col = "blue")
+plot(log_result$mod4_res ~ log_result$mod3_res, ylab = "w. PRS", xlab = "w/o PRS", col = log_result$Diagnosis,
+     cex = 0.5,main= "Diagnosis ~ Sex + Age (+ PRS) + PCs (1 to 19)")
+abline(0,1, col = "blue")
+
+
+summary(glm(Diagnosis ~ Sex + Age, data= updatePRS10))
+summary(lm(Diagnosis ~ Sex + Age + PRS, data= updatePRS10))
+dim(updatePRS10)
+
+
 
 ## strip plot -----
 stripchart(SNP~PRS,
@@ -564,7 +622,7 @@ mtext("max snp per locus = 10", outer = TRUE, cex = 1.5, side = 1, line=-55)
 
 
 
-##process data, remove those with diagnosis missing and with age <50
+##process data, remove those with diagnosis missing and with age < 65
 
 pre_process <- function(df){
   print(paste("original=",  dim(df)[1], "rows"))
@@ -574,7 +632,4 @@ pre_process <- function(df){
   return(df)
 }
 
-test <-
-  updatePRS10 %>%
-  filter(Diagnosis != -1 & Age >= 60)
 
