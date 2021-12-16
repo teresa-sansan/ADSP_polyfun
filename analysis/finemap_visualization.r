@@ -593,7 +593,20 @@ plot_credible_bar <- function(df, title){
     geom_text(aes(label = n), size = 2.5, position= "stack", hjust= 0.95) 
   print(first)
   print(second)
+  return(count_groupby)
   
 }
 
 plot_credible_bar(aggregrate10,"Max SNP per locus = 10")
+
+count_freq= as.data.frame(table(count_groupby$n))
+names(count_freq)[1] = "Credible_Set_Size"
+
+ggplot(data=count_freq, aes(Freq)) + 
+  geom_histogram()
+
+hist(count_freq$Freq)
+
+ggplot(data= count_freq, aes(x = Credible_Set_Size, y = Freq)) + geom_bar(stat = "identity", fill = "skyblue") +
+  theme_light() + theme_bw() + geom_text(aes(label = Freq), size = 3) +
+  ggtitle("max SNP per locus = 10")+xlab('the size of credible sets') +ylab("count")
