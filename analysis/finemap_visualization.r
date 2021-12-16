@@ -1,15 +1,10 @@
-#install.packages("qqman")
-#install.packages('R.utils')
-#install.packages("prob")
-#install.packages("heatmaply")
-install.packages("pheatmap")
-library("qqman")
 library("R.utils")
 library("prob")
 library("heatmaply")
 library("pheatmap")
 library("ggplot2")
 library("RColorBrewer")
+library("dplyr")
 col_name = c("CHR","SNP","BP","A1","A2","SNPVAR","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 par(mfrow=c(1,2)) 
 
@@ -108,6 +103,8 @@ bellenguez_all2_10 = read.table("/gpfs/commons/home/tlin/output/bellenguez/belle
 
 tau = read.csv('/gpfs/commons/home/tlin/polyfun/data/bl_annotation_tau.tsv', header=T, sep='\t')
 
+
+aggregrate10 = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
 
 
 
@@ -246,11 +243,6 @@ create_bar_plot_legend <- function(df,remove=T,main=F){
     
 }
   
-
-
-
-
-
 
 
 
@@ -418,7 +410,6 @@ draw_heatmap(bl_microglia_pip_anno,'Baseline+microglia PIP > 0.5')
 draw_heatmap(bl_pip_anno,"Baseline PIP > 0.5")
 
 
-
 draw_heatmap_tau <- function(df,title){
   # omit the columns that has more than 80% of 0s
   df_extracted <- df[,colSums(df == 0) <  round(dim(df)[1]*0.8)]
@@ -524,3 +515,85 @@ text(x = 398, y = 0.76,  sprintf("total num = %s",dim(credible_1)[1]),col = "red
 
 
 
+
+
+
+### credible set plot -------
+
+# functions
+create_PIP_subset <- function(df, thres, upperthres=TRUE){
+  df <- subset(df, df$CREDIBLE_SET > 0) ## first, extract those rows that have credibleset != 0
+  df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end) ## creat a new column thats easier to match in later stage
+  df_count <- df[df$PIP > thres,] %>% count(POS)
+  
+  ## check if the boundary of PIP is a upper bound or lower bound
+  if(upperthres == TRUE){
+    df_count <- df[df$PIP > thres,] %>% count(POS)
+  }else{
+    df_count <- df[df$PIP < thres,] %>% count(POS)
+  }
+  
+  df_count$n = as.numeric(as.character(df_count$n))  
+  split = str_split_fixed(df_count$POS, "_", 3)
+  df_count$CHR.BP = as.numeric(str_remove_all(str_c(split[,1],".",split[,2]),"Chr"))
+  df_count = df_count[order(-df_count$CHR.BP),]
+  df_count$POS <- factor(df_count$POS, levels=df_count$POS)
+  return(df_count)
+  
+}
+create_lollipop <- function(df, upperthres, lowerthres, title){
+  lower <- create_PIP_subset(df, lowerthres, upperthres=FALSE)
+  upper <- create_PIP_subset(df, upperthres)  
+  lower$group <- paste("PIP <", lowerthres)
+  upper$group <- paste("PIP >", upperthres)
+  overlap <- rbind(upper,  subset(lower, lower$POS %in% upper$POS))
+  
+  
+  ##drawplot
+  lollipop <- ggplot(overlap, aes(x=POS, y = n), group(group)) + geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), position = "stack")+
+    geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
+    theme_light() + theme_bw()+coord_flip()+
+    scale_y_continuous(breaks = round(seq(min(1), max(50), by = 1),1))+
+    xlab("LD block")+ ylab("number of SNP(s)")+ggtitle(title)+
+    scale_color_manual(breaks = c(paste("PIP >",upperthres),paste("PIP <", lowerthres)),
+                       values=c("firebrick2", "darkblue"))+
+    guides(colour = guide_legend(override.aes = list(size = 4)))
+   print(lollipop)
+  return(overlap)
+}
+
+
+PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
+PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
+
+
+
+## bar plot that David asked for ---
+plot_credible_bar <- function(df, title){
+  df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_",df$end)
+  groupby <- df %>% group_by(POS, CREDIBLE_SET) 
+  count_groupby <- groupby %>% count(POS) %>% filter(CREDIBLE_SET > 0)
+  split = str_split_fixed(count_groupby$POS, "_", 3)
+  count_groupby$CHR_BP = as.numeric(str_remove_all(str_c(split[,1],".",split[,2]),"Chr"))
+  
+  count_groupby = count_groupby[order(-count_groupby$CHR_BP),]
+  count_groupby$CREDIBLE_SET <- factor(count_groupby$CREDIBLE_SET, levels=c(1:10))
+  count_groupby$POS <- factor(count_groupby$POS, levels=unique(count_groupby$POS))
+  
+  ## plot them in 2 plot so that the lables won't be crushed all together. 
+  
+  
+  first<- ggplot(data=count_groupby[(dim(count_groupby)[1] - round(dim(count_groupby)[1]/2)):dim(count_groupby)[1],] , aes(x=POS, y=n, fill=CREDIBLE_SET)) +
+    geom_bar(stat="identity")+ coord_flip()+theme_light() + theme_bw() + ylab("number of SNP") + ggtitle(title)+
+    scale_fill_manual(values=rep(c("#E69F00", "#56B4E9"),5)) + 
+    geom_text(aes(label = n), size = 2.5, position= "stack", hjust= 0.95) 
+  second <- ggplot(data=count_groupby[1:round(dim(count_groupby)[1]/2),] , aes(x=POS, y=n, fill=CREDIBLE_SET)) +
+    geom_bar(stat="identity")+ coord_flip()+theme_light() + theme_bw() + ylab("number of SNP") + ggtitle(title)+
+    scale_fill_manual(values=rep(c("#E69F00", "#56B4E9"),5))+
+    geom_text(aes(label = n), size = 2.5, position= "stack", hjust= 0.95) 
+  print(first)
+  print(second)
+  
+}
+
+plot_credible_bar(aggregrate10,"Max SNP per locus = 10")

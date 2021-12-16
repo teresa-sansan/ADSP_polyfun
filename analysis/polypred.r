@@ -7,10 +7,13 @@ library(ggstance)
 library(jtools)
 library(tibble)
 
+
+## A function that filtered out all the young samples and the samples without Diagnosis
 pre_process <- function(df, FILE=FALSE){
   if(FILE==FALSE){
     df<- read.table(df,header=T,fill = T)
   }
+  df$Age <- as.numeric(as.character(df$Age))
   print(paste("original=",  dim(df)[1], "rows"))
   df <- df %>%
     filter(Diagnosis != -1 & Age >= 65)
@@ -43,10 +46,8 @@ updatePRS1 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/wi
 updatePRS3 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_3_subset.tsv")
 updatePRS5 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_5_subset.tsv")
 updatePRS7 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_7_subset.tsv")
-updatePRS10 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_10_subset.tsv")
+updatePRS10 = pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_10_subset_new.tsv")
 
-
-aggregrate10 = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
 
 
 ## bind df and filter
@@ -112,13 +113,9 @@ par(mfrow=c(2,1))
 hist(polypred[polypred$Diagnosis == 1,]$PRS, main = "AD patients",xlab="PRS", ylab='number', freq= FALSE)
 hist(polypred[polypred$Diagnosis == 0,]$PRS, main = "AD controls",xlab="PRS", ylab='number', freq= FALSE)
 
-
-
 par(mfrow=c(2,1))
 densityplot(~ polypred$PRS, polypred[polypred$diagnosis == 1,], main = "Case")
 densityplot(~ polypred$PRS, polypred[polypred$diagnosis == 0,], main = "Control")
-
-
 
 #densityplot(~PRS, data = polypred, group = diagnosis_case, auto.key= TRUE, plot.points=FALSE)
 
@@ -388,53 +385,59 @@ ggplot(polypred10_rm, aes(fill=Sex,  x=Diagnosis)) +
 # new with filtered PRS ----
 
 ## check first
-colSums(is.na(updatePRS10))==0  ## NAs only exist in X19 and X20
-summary(updatePRS10$Ethnicity)  ## why are there Ethnicity != 0 or 1? (there are floats and negative num...?)
-updatePRS10$EthnicityGroup = updatePRS10$Ethnicity
-updatePRS10[updatePRS10$Ethnicity != 0 & updatePRS10$Ethnicity !=1,]$EthnicityGroup = "Questionable"
-ethnicityGroup<- as.factor(updatePRS10$EthnicityGroup)
-plot(updatePRS10$Ethnicity, xlab = "count", ylab = "Ethnicity", col=ethnicityGroup)
+colSums(updatePRS10 == -100) ## NAs only exist in   Race and Ethnicity
+summary(updatePRS10$Ethnicity)
+
+#plot(updatePRS10$Ethnicity, xlab = "count", ylab = "Ethnicity", col=ethnicityGroup)
 
 
-## running regression
-EU10 = updatePRS10[updatePRS10$Race == 5,]
-mod1 <- glm(Diagnosis ~ Sex + Age, data= EU10, family=binomial)
-mod2 <- glm(Diagnosis ~ Sex + Age + PRS, data= EU10, family=binomial)
-mod3 <- glm(Diagnosis ~ Sex+Age+ X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11+X12+X13+X14+X15+X16+X17+X18+X19, data  = EU10,family= binomial)
-mod4 <- glm(Diagnosis ~ Sex+Age+PRS+ X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11+X12+X13+X14+X15+X16+X17+X18+X19, data  = EU10,family= binomial)
+## running regression ----
 
-log_result <- EU10 %>%
-  select("Sex","Age","PRS","Diagnosis")
+log_reg <- function(df, population, population_subset = TRUE){
+  if(population_subset == TRUE){
+    df = df[df$final_population == population,]
+  }
   
-log_result <- log_result %>%
-  add_column('mod1_res' = residuals(mod1, type = "pearson")) %>% 
-  add_column('mod2_res' = residuals(mod2, type = "pearson")) %>%
-  add_column('mod3_res' = residuals(mod3, type = "pearson")) %>% 
-  add_column('mod4_res' = residuals(mod4, type = "pearson")) 
-log_result$mod4_res =  residuals(mod4, type = "pearson")
-log_result$Diagnosis<- as.factor(log_result$Diagnosis)
+  mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial)
+  mod2 <- glm(Diagnosis ~ Sex + Age + PRS, data= df, family=binomial)
+  mod3 <- glm(Diagnosis ~ Sex+ Age + X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11+X12+X13+X14+X15+X16+X17+X18+X19+X20, data  = df, family= binomial)
+  mod4 <- glm(Diagnosis ~ Sex+ Age +PRS+ X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11+X12+X13+X14+X15+X16+X17+X18+X19+X20, data = df, family= binomial)
+  
+  log_result <- df %>%
+    select("Sex","Age","PRS","Diagnosis")
+  
+  log_result <- log_result %>%
+    add_column('mod1_res' = residuals(mod1, type = "pearson")) %>% 
+    add_column('mod2_res' = residuals(mod2, type = "pearson")) %>%
+    add_column('mod3_res' = residuals(mod3, type = "pearson")) %>% 
+    add_column('mod4_res' = residuals(mod4, type = "pearson")) 
+  log_result$Diagnosis<- as.factor(log_result$Diagnosis)    # Changed this into factor so that it can be matched. 
+  
+  par(oma = c(0,0,0,0))
+  par(mfrow=c(2,1))
+  
+  plot(log_result$mod2_res ~ log_result$PRS, ylab = "Residual", xlab = "PRS", col = log_result$Diagnosis,
+       cex=0.5, main= paste("Diagnosis ~ Sex + Age + PRS, in", population, "population"))
+  
+  plot(log_result$mod4_res ~ log_result$PRS, ylab = "Residual", xlab = "PRS", col = log_result$Diagnosis,
+       cex=0.5, main= paste("Diagnosis ~ Sex + Age + PRS + PCs (1 to 20), in ", population, "population"))
+  
+  
+  plot(log_result$mod2_res ~ log_result$mod1_res, ylab = "w. PRS", xlab = "w/o PRS", col = log_result$Diagnosis,
+       cex=0.5,main = paste("Diagnosis ~ Sex + Age (+ PRS), in", population, "population"))
+  abline(0,1, col = "blue")
+  plot(log_result$mod4_res ~ log_result$mod3_res, ylab = "w. PRS", xlab = "w/o PRS", col = log_result$Diagnosis,
+       cex = 0.5,main = paste("Diagnosis ~ Sex + Age (+ PRS) + PCs (1 to 20), in ", population, "population"))
+  abline(0,1, col = "blue")
+  
+  print(summary(mod1))
+  print(summary(mod2))
+  print(summary(mod3))
+  print(summary(mod4))
+}
 
-par(mfrow=c(2,1))
-plot(log_result$mod2_res ~ log_result$PRS, ylab = "Residual", xlab = "PRS", col = log_result$Diagnosis,
-     cex=0.5,main= "Diagnosis ~ Sex + Age + PRS"
-     )
-plot(log_result$mod4_res ~ log_result$PRS, ylab = "Residual", xlab = "PRS", col = log_result$Diagnosis,
-     cex=0.5,main= "Diagnosis ~ Sex + Age + PRS + PCs (1 to 19)"
-)
-text(-0.00017, -3, cex = 0.8, col = "blue",expression("Sex = F, Age = 78, mod1_res = -0.994, mod2_res = -0.999, mod3_res = -3.51" ))
-
-plot(log_result$mod2_res ~ log_result$mod1_res, ylab = "w. PRS", xlab = "w/o PRS", col = log_result$Diagnosis,
-     cex=0.5,main= "Diagnosis ~ Sex + Age (+ PRS)")
-abline(0,1, col = "blue")
-plot(log_result$mod4_res ~ log_result$mod3_res, ylab = "w. PRS", xlab = "w/o PRS", col = log_result$Diagnosis,
-     cex = 0.5,main= "Diagnosis ~ Sex + Age (+ PRS) + PCs (1 to 19)")
-abline(0,1, col = "blue")
-
-
-summary(glm(Diagnosis ~ Sex + Age, data= updatePRS10))
-summary(lm(Diagnosis ~ Sex + Age + PRS, data= updatePRS10))
-dim(updatePRS10)
-
+log_reg(updatePRS10, "EUR")
+log_reg(updatePRS10, "all", population_subset = FALSE)
 
 
 ## strip plot -----
@@ -528,69 +531,11 @@ stripchart(PRS~SNP,data =polypred_sd,
 
 
 
-### credible set plot -------
-
-# functions
-create_PIP_subset <- function(df, thres, upperthres=TRUE){
-  df <- subset(df, df$CREDIBLE_SET > 0) ## first extract those have credibleset != 0
-  
-  
-  df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end)
-  df_count <- df[df$PIP > thres,] %>% count(POS)
-  
-  if(upperthres == TRUE){
-    df_count <- df[df$PIP > thres,] %>% count(POS)
-  }else{
-    df_count <- df[df$PIP < thres,] %>% count(POS)
-  }
-  
-  df_count$n = as.numeric(as.character(df_count$n))  
-  split = str_split_fixed(df_count$POS, "_", 3)
-  df_count$CHR.BP = as.numeric(str_remove_all(str_c(split[,1],".",split[,2]),"Chr"))
-
-  attach(df_count)
-  df_count = df_count[order(-CHR.BP),]
-  df_count$POS <- factor(df_count$POS, levels=df_count$POS)
-  
-  return(df_count)
-  
-} 
-create_lollipop <- function(df, upperthres, lowerthres, title){
-  lower <- create_PIP_subset(df, lowerthres, FALSE)
-  upper <- create_PIP_subset(df, upperthres)  
-  lower$group <- paste("PIP <", lowerthres)
-  upper$group <- paste("PIP >", upperthres)
-  overlap <- rbind(upper,  subset(lower, lower$POS %in% upper$POS))
-  
-
-  
-  ##drawplot
-  ggplot(overlap, aes(x=POS, y = n), group(group)) +
-    geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), 
-                   position = "stack")+
-    geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
-    theme_light() + theme_bw()+coord_flip()+
-    scale_y_continuous(breaks = round(seq(min(1), max(50), by = 1),1))+
-    xlab("LD block")+ ylab("Credible set")+ggtitle(title)+
-    scale_color_manual(breaks = c(paste("PIP >",upperthres),paste("PIP <", lowerthres)),
-                       values=c("firebrick2", "darkblue"))+
-    guides(colour = guide_legend(override.aes = list(size = 4)))
-  
-  return(overlap)
-}
-
-
-PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
-PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
 
 subset(PIP_0.5,PIP_0.5$POS %in%  PIP_0.95$POS)
 
 
 aggregrate10[aggregrate10$PIP>0.95,c("SNP","BP","PIP","POS","CREDIBLE_SET")]
-
-
-
-
 
 
 # comparison between plink update----
@@ -619,17 +564,3 @@ boxplot(PRS~Diagnosis, data = updatePRS10[updatePRS10$Diagnosis!=-1,],main="PLIN
 boxplot(PRS~Diagnosis, data = updatePRS10filter,main="remove age < 65",names =c("Control", "Case"), col= c("skyblue","lightpink"), ylim = c(-0.002,0.002),cex.main=1.5)
 
 mtext("max snp per locus = 10", outer = TRUE, cex = 1.5, side = 1, line=-55)
-
-
-
-##process data, remove those with diagnosis missing and with age < 65
-
-pre_process <- function(df){
-  print(paste("original=",  dim(df)[1], "rows"))
-  df <- df %>%
-    filter(Diagnosis != -1 & Age >= 65)
-  print(paste("filtered=",  dim(df)[1], "rows"))
-  return(df)
-}
-
-
