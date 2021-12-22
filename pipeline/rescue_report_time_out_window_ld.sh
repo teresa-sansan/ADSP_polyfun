@@ -3,8 +3,11 @@
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie'
 #prefix=finemap_bellenguez_susie
 
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/'
-prefix=finemap_bellenguez_all_2
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/'
+#prefix=finemap_bellenguez_all_2
+
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap'
+prefix=finemap_bellenguez
 ld='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld'
 
 for snp in 1 3 5 7 10
