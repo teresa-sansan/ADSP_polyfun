@@ -7,13 +7,16 @@
 #SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/%x_%j.log
 
 path='/gpfs/commons/home/tlin/data'
+clump_path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/clumping'
+
+awk 'NR!=1{print $3}' $clump_path/clump_chr${chr}.clumped >  $clump_path/clump_chr${chr}.valid.snp
  
 ~/plink \
---bfile /gpfs/commons/home/tlin/data/biallelic/${chr}_filt \
---score ${path}/bellenguez_2021_final.tsv 3 4 7 'header' \
+--bfile /gpfs/commons/home/tlin/data/biallelic/check/${chr}_filt \
+--score ${path}/bellenguez_2021_final.tsv 3 4 7 header \
 --q-score-range range_list.txt  $path/bellenguez.pvalue \
---extract /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/clumping/clump_chr${chr}.clumped \
---out /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/pT_chr${chr}
+--extract $clump_path/clump_chr${chr}.valid.snp \
+--out /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/pT_check_chr${chr}
 
 
 
