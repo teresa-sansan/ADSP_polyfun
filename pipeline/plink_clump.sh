@@ -9,8 +9,9 @@
 
 
 echo start chr $chr
+
 ~/plink \
---bfile ~/data/biallelic/${chr}_filt \
+--bfile ~/data/biallelic/check/${chr}_filt \
 --clump-p1 1 \
 --clump-r2 0.1  \
 --clump-kb 250  \
