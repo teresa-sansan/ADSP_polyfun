@@ -1,5 +1,7 @@
 #!/bin/bash
-outputformat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/bellenguez_bl'
+
+outputformat='/gpfs/commons/home/tlin/output/wightman/wightman_all'
+#outputformat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/bellenguez_bl'
 #outputformat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all'
 #outputformat='/gpfs/commons/home/tlin/output/kunkle_all_2/all_anno'
 #outputformat=/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_deepsea_brain_atac/bl_roadmap_deepsea_brain_atac

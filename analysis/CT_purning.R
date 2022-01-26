@@ -9,14 +9,7 @@ library(tibble)
 library(readr)
 
 pT <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/pT/pT_PRS_withPC.tsv")
-
 pT_check <- read.delim('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/check_prs')
-height <- read.delim("/gpfs/commons/home/tlin/data/plink_tutorial/height_test/only_change_PLINK_input/height_prs")
-
-## check if the order of sample ID is identical in pT and PRS(1,3,5,7,10), 
-## so that we can merge different PRS into same file for easier comparison
-## (Already confirmed that they have the same number of rows (11721) after removing younger and undiagnosis data)
-
 all(pT$SampleID == updatePRS1$SampleID)
 all(pT$SampleID == updatePRS10$SampleID)
 
@@ -34,6 +27,8 @@ prs_var = c("prs_max1","prs_max5","prs_max10")
 pt_prs= c("PRS_001","PRS_01","PRS_05","PRS_1","PRS_2")
 covariant = c("Sex","APOE","Age","final_population")
 
+
+
 par(mfrow=c(2,2))
 plot(density(pT$PRS_001), main = "0.001")
 plot(density(pT$PRS_01), main = "0.01")
@@ -43,21 +38,19 @@ plot(density(pT$PRS_5), main = "0.5")
 plot(density(pT$prs_max1), main = "max1")
 plot(density(pT$prs_max3), main = "max3")
 plot(density(pT$PRS_1), main = "pT_0.1")
-plot(density(pT$PRS_5), main = "pT0.5")
+plot(density(pT$PRS_5), main = "pT_0.5")
 
 
 plot(density(pT_check$prs_5), main = "0.5")
+plot(density(pT_check$prs_1), main = "0.1")
+plot(density(pT_check$prs_01), main = "0.01")
+plot(density(pT_check$prs_001), main = "0.001")
 
+plot(density(height$prs_1), main = "height_pt_0.1")
+plot(density(height$prs_3), main = "height_pt_0.3")
+plot(density(height$prs_001), main = "height_pt_0.001")
+plot(density(height$prs_005), main = "height_pt_0.005")
 
-plot(density(height$prs_1), main = "0.1")
-plot(density(height$prs_3), main = "0.3")
-plot(density(height$prs_001), main = "0.001")
-plot(density(height$prs_005), main = "0.005")
-
-plot(density(height$prs_1), main = "0.1")
-plot(density(height$prs_01), main = "0.01")
-plot(density(height$prs_001), main = "0.001")
-plot(density(height$prs_5), main = "0.5")
 
 
 ggplot(pT[,c(prs_var, "Diagnosis",covariant)])+
@@ -71,12 +64,69 @@ ggplot(aes(x=value, colour=variable), data=pT_plotvar)+geom_density()+
   
 
 mod <- glm(Diagnosis ~ Sex + Age + PRS_1, data= pT, family=binomial)
+
 residuals(mod, type = "pearson")
 summary(mod)
 
 par(mfrow=c(1,1))
-plump_thres <- c(0.001, 0.01,0.05, 0.2,0.5)
+p_thres <- c(0.001, 0.01,0.05, 0.2,0.5)
 pvalue <- c(0.63852, 0.11226, 0.10054,0.10092, 0.0091)
 plot(plump_thres,pvalue, xlab = "threshold", ylab = "p-value", xlim = c(0,0.55))
 text(plump_thres, pvalue,c(pvalue) , pos=4, col = "blue", cex = 0.8)
 
+for(i in p_thres){
+  print(paste("p value threshold = ",i))
+  i = paste("PRS",str_replace(i,'0.','_'), sep='')
+
+
+  mod <- glm(substitute(Diagnosis ~ Sex + Age +i ,list(i = as.name(i))), data= pT, family=binomial)
+  #prs.beta <- as.numeric(mod$coefficients[1])
+  #prs.se <- as.numeric(mod$coefficients[2])
+  #prs.p <- as.numeric(mod$coefficients[4])
+  #prs.result <- rbind(prs.result, data.frame(Threshold=i, P=prs.p, BETA=prs.beta,SE=prs.se))
+  print(summary(mod))
+}
+
+
+## AUC -----
+
+library(pROC)
+roc_max1 <- roc(pT$Diagnosis, pT$prs_max1)
+
+roc_max3 <- roc(pT$Diagnosis, pT$prs_max3)
+plot(roc_max3)
+
+roc_PT05 <-  roc(pT$Diagnosis, pT$PRS_5)
+plot(roc_PT05)
+
+rocobj1 <-plot.roc(pT$Diagnosis, pT$prs_max1, main = 'AUC comparison')
+rocobj2 <-lines.roc(pT$Diagnosis, pT$prs_max3)
+testobj <- roc.test(rocobj1,rocobj2)
+text(50,50,labels=paste("pvalue = ", format.pval(testobj$p.value)), adj=c(0,.5))
+
+plot.roc(roc_max1, print.auc=TRUE)
+plot.roc(roc_max3, print.auc=TRUE)
+
+ ggroc(list(max1=roc_max1, max3=roc_max3))
+ 
+ 
+roc_list <- roc(Diagnosis ~prs_max1+prs_max5+prs_max10+PRS_01+PRS_5, data = pT)
+
+cal_auc <- function(col, df = pT){
+  AUC = round(auc(pT$Diagnosis, pT$col),3)
+  return(AUC)
+}
+
+rocvalue<-list()
+
+for (i in list("prs_max1","prs_max5","prs_max10","PRS_01","PRS_5")){
+  print (i)
+  print(substitute(auc(pT$Diagnosis, pT$i ,list(i = as.name(i)))))
+  }
+
+
+curve <- ggroc(roc_list)
+curve + xlab("FPR") + ylab("TPR") +
+  scale_colour_discrete(name="PRS",labels = c(paste("max_snp = 1, AUC = ",cal_auc(prs_max1)cal_auc(prs_max1)), "Treatment 1", "1","2","3"))
+  
+                        
