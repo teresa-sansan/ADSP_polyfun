@@ -49,26 +49,30 @@ def main(args):
         output_file_r = '%s.%s.%s.%s.gz'%(args.out_prefix, chr_num, start, end)
 	
         if not os.path.exists(output_file_r):
-            #print(output_file_r)
             err_msg = 'output file for chromosome %d bp %d-%d doesn\'t exist'%(chr_num, start, end)
             if args.allow_missing_jobs:
                 logging.warning(err_msg)
+                logging.warning(output_file_r) ## check path
                 continue
             else:
                 raise IOError(err_msg + '.\nTo override this error, please provide the flag --allow-missing-jobs')
         df_sumstats_r = pd.read_table(output_file_r)
-        
         #mark distance from center
         middle = (start+end)//2
         df_sumstats_r['DISTANCE_FROM_CENTER'] = np.abs(df_sumstats_r['BP'] - middle)
+        df_sumstats_r['start'] = start
+        df_sumstats_r['end'] = end
         df_sumstats_list.append(df_sumstats_r)
     if len(df_sumstats_list)==0:
+        print(df_sumstats_list)
         raise ValueError('no output files found')
     
     
     #keep only the most central result for each SNP
     df_sumstats = pd.concat(df_sumstats_list, axis=0)
     df_sumstats.sort_values('DISTANCE_FROM_CENTER', inplace=True, ascending=True)
+    #print(df_sumstats.head(5))
+    #print(df_sumstats.columns)
     df_sumstats = set_snpid_index(df_sumstats, allow_duplicates=True)
     df_sumstats = df_sumstats.loc[~df_sumstats.index.duplicated(keep='first')]
     del df_sumstats['DISTANCE_FROM_CENTER']
