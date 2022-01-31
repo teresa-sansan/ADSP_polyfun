@@ -1,0 +1,6 @@
+covariate <- read.table("/gpfs/commons/home/tlin/data/plink_tutorial/EUR.cov", header=T)
+pcs <- read.table("/gpfs/commons/home/tlin/data/plink_tutorial/EUR.eigenvec", header=F)
+colnames(pcs) <- c("FID", 'IID', paste0("PC", 1:6))
+cov <- merge(covariate, pcs, by =c("FID","IID"))
+write.table(cov, "EUR.covariate", quote=F, row.names=F)
+q()
