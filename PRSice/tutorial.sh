@@ -1,0 +1,12 @@
+Rscript ~/PRSice/PRSice.R \ 
+   --prsice ~/PRSice/PRSice_mac \
+   --base /gpfs/commons/home/tlin/data/plink_tutorial/Height.QC.gz \
+   --target /gpfs/commons/home/tlin/data/plink_tutorial/EUR.QC \ 
+   --binary-target F \
+   --pheno /gpfs/commons/home/tlin/data/plink_tutorial/EUR.height \
+   --cov EUR.covariate \
+   --base-maf MAF:0.01 \ 
+   --base-info INFO:0.8 \
+   --stat OR \
+   --or \  
+   --out ~/PRSice/tutorial
