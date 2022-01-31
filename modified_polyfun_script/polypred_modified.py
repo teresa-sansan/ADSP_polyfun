@@ -275,10 +275,14 @@ def computs_prs_all_files(args, betas_file, disable_jackknife=False, keep_file=N
     
     return df_prs_sum
     
-    
-def nonneg_lstsq(X, y):
 
-    assert np.all(X.std(axis=0)>0)
+##MODIFIED
+
+def nonneg_lstsq(X, y):
+    print((X.std(axis = 0)>0).shape)
+    print(X.std(axis= 0))
+    print(np.min(X.std(axis=0)))
+    assert np.all(X.std(axis=0)>=0)
     y_mean = y.mean()
     X_mean = X.mean(axis=0)
     y_c = y-y_mean
@@ -308,7 +312,7 @@ def estimate_mixing_weights(args):
     df_prs_sum_list = []
 
 
-##MODIFIED TERESA
+## modified by TERESA
     for betas_file in beta_files:
         #df_prs_sum = computs_prs_all_files(args, betas_file, disable_jackknife=True, keep_file=args.pheno)
         df_prs_sum = computs_prs_all_files(args, betas_file, disable_jackknife=True)
