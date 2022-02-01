@@ -13,14 +13,18 @@ Rscript /gpfs/commons/home/tlin/PRSice/PRSice.R \
    --target /gpfs/commons/home/tlin/data/biallelic/#_filt  \
    --binary-target T \
    --pheno /gpfs/commons/home/tlin/data/ADSP_pheno_merge_beta.tsv \
+   --cov /gpfs/commons/home/tlin/script/polypred/merge_beta/all_phenotypes_cov.tsv \
    --stat EFFECT \
    --A1 ALLELE1 \
    --A2 ALLELE2 \
    --snp RSID \
    --pvalue PVALUE \
    --beta \
-   --out ~/output/prs/PRSice_wpheno
+   --out ~/output/prs/PRSice_pheno_cov
 
+
+
+#   --pheno /gpfs/commons/home/tlin/data/ADSP_pheno_merge_beta.tsv \
 
 
 
