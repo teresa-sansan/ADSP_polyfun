@@ -564,3 +564,10 @@ boxplot(PRS~Diagnosis, data = updatePRS10[updatePRS10$Diagnosis!=-1,],main="PLIN
 boxplot(PRS~Diagnosis, data = updatePRS10filter,main="remove age < 65",names =c("Control", "Case"), col= c("skyblue","lightpink"), ylim = c(-0.002,0.002),cex.main=1.5)
 
 mtext("max snp per locus = 10", outer = TRUE, cex = 1.5, side = 1, line=-55)
+
+
+
+## compare with sbayesR
+sbayesR_bell <- read.table("/gpfs/commons/home/tlin/output/prs/sbayesr_polyfun/prs_pheno.tsv",header=T,fill = T)
+sbayesR_bell
+

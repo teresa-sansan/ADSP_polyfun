@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=30:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/check_new/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -32,7 +32,7 @@ do
 	  	--method susie \
      	  	--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_${max_num_snp}/finemap_bellenguez.${chr}.$start.$end.gz"
+		--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/check_new/max_snp_${max_num_snp}/finemap_bellenguez.${chr}.$start.$end.gz"
 
 	
 
