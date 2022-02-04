@@ -287,6 +287,9 @@ def nonneg_lstsq(X, y):
     X_mean = X.mean(axis=0)
     y_c = y-y_mean
     X_c = X-X_mean
+    print("check nan and inf")
+    print(np.isnan(X_c).any(),np.isnan(y_c).any())
+    print(np.isinf(X_c).any(),np.isinf(y_c).any())
     coef, _ = nnls(X_c, y_c)
     y_hat = X.dot(coef)
     intercept = np.mean(y-y_hat)

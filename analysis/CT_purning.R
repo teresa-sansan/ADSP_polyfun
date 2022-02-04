@@ -36,9 +36,12 @@ plot(density(pT$PRS_1), main = "0.1")
 plot(density(pT$PRS_5), main = "0.5")
 
 plot(density(pT$prs_max1), main = "max1")
-plot(density(pT$prs_max3), main = "max3")
+
+
+plot(density(pT$prs_max10), main = "max10")
 plot(density(pT$PRS_1), main = "pT_0.1")
 plot(density(pT$PRS_5), main = "pT_0.5")
+plot(density(na.omit(sbayesR_bell$PRS)), main = 'sbayesR+bellenguez')
 
 
 plot(density(pT_check$prs_5), main = "0.5")

@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=Polypred_updatePLINK
+#SBATCH --job-name=Polypred_updateRSID
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/polypred/%x_%j.log 
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/polypred/%x_%j.log 
 
 
 #/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/polypred/adjust_beta/%x_%j.log
@@ -15,13 +15,13 @@ source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2'
 
-prefix='PLINKupdate'
+prefix='updateRSID'
 
 
 python polypred.py \
 	--predict \
-	--betas ${path}/finemap_snpvar_constrained/max_snp_${max_snp}/aggregrate.all.txt.gz \
-	--output-prefix /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/polypred/${prefix}_max${max_snp} \
+	--betas /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_${max_snp}/aggregrate.all.txt.gz \
+	--output-prefix /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/polypred/${prefix}_max${max_snp} \
 	--plink-exe ~/plink \
 	/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/ADSP_chr*.bed
 
