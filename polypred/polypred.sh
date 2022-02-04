@@ -15,12 +15,12 @@ source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2'
 
-prefix='PLINKupdate'
+prefix='updateRSID'
 
 python polypred.py \
 	--predict \
-	--betas ${path}/finemap_snpvar_constrained/max_snp_${max_snp}/aggregrate.all.txt.gz \
-	--output-prefix /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/polypred/update_PLINK_${max_snp} \
+	--betas /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_${max_snp}/aggregrate.all.txt.gz \
+	--output-prefix /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/polypred/${max_snp} \
 	--plink-exe ~/plink \
 	/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/ADSP_chr*.bed
 
@@ -35,4 +35,7 @@ python polypred.py \
 #	--beta /gpfs/commons/home/tlin/output/sbayesR/mergebeta.betas \
 #       --output-prefix /gpfs/commons/home/tlin/output/sbayesR/polypred/polypred.pred \
 
+
+##updatePlink
+#	--betas ${path}/finemap_snpvar_constrained/max_snp_${max_snp}/aggregrate.all.txt.gz \
 

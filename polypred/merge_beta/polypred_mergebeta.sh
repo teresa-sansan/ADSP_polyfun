@@ -6,15 +6,17 @@
 #SBATCH --time=15:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/sbayesR/polypred/%x_%j.log
 
-cd /gpfs/commons/home/tlin/polyfun_omer_repo
+cd /gpfs/commons/home/tlin/polyfun_omer_repo/re-clone
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
 
-python polypred_modified.py --combine-betas \
-  --betas /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/aggregrate.all.txt.gz,~/output/sbayesR/bellenguez_agg_snpRes \
-  --pheno /gpfs/commons/home/tlin/data/ADSP_pheno_merge_beta_new.tsv \
-  --output-prefix /gpfs/commons/home/tlin/output/sbayesR/mergebeta_new \
+## only use one chr to see the result (faster debug)
+python polypred.py --combine-betas \
+  --betas /gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/aggregrate.all.txt.gz,~/output/sbayesR/bellenguez_agg_snpRes \
+  --pheno /gpfs/commons/home/tlin/data/ADSP_pheno_merge_beta.tsv \
+  --output-prefix /gpfs/commons/home/tlin/output/sbayesR/polypred/updated_polypred/0204_pull \
   --plink-exe ~/plink /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/ADSP_chr*.bed
 
+#  --betas /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/aggregrate.all.txt.gz,~/output/sbayesR/bellenguez_agg_snpRes \
 #  --betas ~/output/sbayesR/bellenguez_agg_snpRes,/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/aggregrate.all.txt.gz \
