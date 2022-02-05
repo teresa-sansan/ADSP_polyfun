@@ -1,6 +1,7 @@
 #!/bin/bash
 
-outputformat='/gpfs/commons/home/tlin/output/wightman/wightman_all'
+outputformat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/bellenguez_all'
+#outputformat='/gpfs/commons/home/tlin/output/wightman/wightman_all'
 #outputformat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/bellenguez_bl'
 #outputformat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/bellenguez_all'
 #outputformat='/gpfs/commons/home/tlin/output/kunkle_all_2/all_anno'
@@ -18,7 +19,7 @@ outputformat='/gpfs/commons/home/tlin/output/wightman/wightman_all'
 for i in {1..22}
 do
 
-sbatch --export=chr=$i,output=$outputformat polyfun_1_3.sh
+sbatch --export=chr=$i,output=$outputformat /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh
 
 done
 
