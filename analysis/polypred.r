@@ -21,6 +21,11 @@ pre_process <- function(df, FILE=FALSE){
   return(df)
 }
 
+
+
+
+
+
 # LOAD DATA ---------------
 polypred1 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_1.tsv",header=T,fill = T)
 polypred3 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_3.tsv",header=T,fill = T)
@@ -144,8 +149,11 @@ legend('topright', levels(diagnosis.f),fill=colfill)
 
 density_plot <- function(polypred, name){
   sort = polypred[order(polypred$PRS),]$PRS
-  plot(density(polypred[polypred$Diagnosis == 1,]$PRS),col = "red", main=name, xlab="PRS", xlim = c(head(sort)[6], tail(sort)[1])) 
+  plot(density(polypred[polypred$Diagnosis == 1,]$PRS),col = "red", main=name, xlab="PRS") 
   lines(density(polypred[polypred$Diagnosis == 0,]$PRS), col = "blue")
+  legend("topright", legend=c("Case", "Control"),
+         col=c("red", "blue"), lty=1:1, cex=0.8,
+         box.lty=0)
 }
 
 density_plot(polypred1, "snp per locus = 1")
