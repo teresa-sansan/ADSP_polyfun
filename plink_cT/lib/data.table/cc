@@ -1,0 +1,2 @@
+CC=x86_64-conda-linux-gnu-cc
+CFLAGS=-march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /gpfs/commons/home/tlin/.conda/envs/polyfun/include -fdebug-prefix-map=/home/conda/feedstock_root/build_artifacts/r-base-split_1621013729234/work=/usr/local/src/conda/r-base-4.0.5 -fdebug-prefix-map=/gpfs/commons/home/tlin/.conda/envs/polyfun=/usr/local/src/conda-prefix
