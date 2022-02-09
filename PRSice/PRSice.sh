@@ -2,7 +2,7 @@
 #SBATCH --job-name=PRSice_prs
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=100G
+#SBATCH --mem=150G
 #SBATCH --time=15:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/prs/PRSice/%x_%j.log 
 
