@@ -37,11 +37,13 @@ bellenguez_update <- rename_preprocess('/gpfs/commons/home/tlin/output/prs/belle
 bellenguez_all2 <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/bellenguez_all_PC_CS.tsv")
 
 ##susie
-susie <- rename_preprocess(read.delim("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv"))
+susie <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
 
 ##kunkle
 kunkle_cT <- rename_preprocess('/gpfs/commons/home/tlin/output/cT/kunkle/kunkle_prs.tsv')
 
+##PRSice
+PRSice <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 
 ##density_plot -------
 density_plot(sbayesR, name = "sbayesR")
@@ -117,9 +119,42 @@ plot_cs_density<- function(df, name){
 }
 plot_cs_density(susie, "susie")
 plot_cs_density(bellenguez_all2, "polyfun")
-
-
 lines(density(susie$PRS1), col='darkgreen', lty = 3, lwd = 1)
+
+
+
+### plot all of each method----
+par(mfrow=c(1,2))
+
+plot(density(pT$PRS_5),col="burlywood3", lty = 2, lwd = 2, xlab='PRS', main = " ", xlim = c(-0.016,0.004))
+lines(density(bellenguez_update$PRS10), col="darkolivegreen3",lwd = 2, lty = 2)
+abline(v = mean(pT$PRS_5), col = "burlywood3")
+abline(v = mean(bellenguez_update$PRS10), col = "darkolivegreen3")
+
+lines(density(PRSice$PRS), col = 'cadetblue1', lwd =2, lty = 2)
+abline(v = mean(PRSice$PRS), col = "cadetblue1")
+
+text(mean(pT$PRS_5)+0.002,1100,round(mean(pT$PRS_5),4), col = 'brown')
+text(mean(pT$PRS_5)+0.004,1200,'clumping+ pT (p = 0.5)', col = 'brown')
+text(mean(bellenguez_update$PRS10),400,round(mean(bellenguez_update$PRS10),4), col = 'darkolivegreen4')
+text(mean(bellenguez_update$PRS10),500,"polypred (max_snp = 10)", col = 'darkolivegreen4')
+text(mean(PRSice$PRS)-0.002,1400,"PRSice", col = 'deepskyblue')
+text(mean(PRSice$PRS)-0.002,1300,round(mean(PRSice$PRS),6), col = 'deepskyblue')
+
+## SbayesR & PRSice
+plot(density(sbayesR$PRS), col = 'darkseagreen3', lwd =2 ,lty = 2,xlab = 'PRS', xlim=c(-1e-03,6e-05), main = ' ')
+abline(v = mean(sbayesR$PRS), col = "darkseagreen3")
+lines(density(PRSice$PRS), col = 'cadetblue1', lwd =2, lty = 2)
+abline(v = mean(PRSice$PRS), col = "cadetblue1")
+
+text(mean(PRSice$PRS),2200,"PRSice", col = 'deepskyblue')
+text(mean(PRSice$PRS),1000,round(mean(PRSice$PRS),6), col = 'deepskyblue')
+
+text(mean(sbayesR$PRS),20000,"SBayesR", col = 'darkcyan')
+text(mean(sbayesR$PRS),19000,round(mean(sbayesR$PRS),6), col = 'darkcyan')
+
+
+
 
 ##AUC ------
 plot_roc <- function(roclist, roccol,legend="PRS_", replace="p = 0.",title = FALSE){
@@ -129,7 +164,7 @@ plot_roc <- function(roclist, roccol,legend="PRS_", replace="p = 0.",title = FAL
   }
   print(legendname)
   curve <- ggroc(roclist)
-  curve + xlab("FPR") + ylab("TPR") + ggtitle(title)+theme_bw()+
+  curve + ggtitle(title)+theme_bw()+
     scale_colour_discrete(name="PRS",labels = c(legendname))
 }   
 
@@ -138,21 +173,48 @@ roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = pT)
 col_roc <- list("PRS_005","PRS_05","PRS_5")
 pt_plot = plot_roc(roc_list,col_roc, title="bellenguez, clumping+pT")
 
+
 roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = kunkle_cT)
 kunkle_pt_plot = plot_roc(roc_list,col_roc, title="kunkle, clumping+pT")
+kunkle_pt_plot
 
 plot_grid(pt_plot, kunkle_pt_plot,ncol = 2, nrow = 1)
+
+
+
 
 ##bellenguez_all
 roc_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS10, data = bellenguez_all2)
 col_roc <- list("PRS1","PRS3","PRS5",'PRS10')
 bellenguez_roc = plot_roc(roc_list,col_roc, legend = 'PRS', replace = 'Max SNP = ', title="bellenguez(polyfun)")
 
+##bellenguez_eur
+eur_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS10, data =bellenguez_eur)
+eur_roc = plot_roc(eur_list, col_roc, legend = 'PRS', replace = 'Max SNP = ', title="bellenguez(EUR)")
+plot_grid(bellenguez_roc, eur_roc,ncol = 2, nrow = 1)
+
 ##susie
 roc_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS10, data = susie)
 susie_roc = plot_roc(roc_list,col_roc, legend = 'PRS', replace = 'Max SNP = ', title="bellenguez(SuSiE)")
 plot_grid(bellenguez_roc,susie_roc,ncol = 2, nrow = 1)
 
+plot_grid(bellenguez_roc,pt_plot,ncol= 2, nrow = 1)
+
+## all
+par(mfrow=c(1,1))
+color = c("red","blue","darkgreen","slategray")
+plot(roc(sbayesR$Diagnosis~sbayesR$PRS), col = color[1],main="auROC")
+lines(roc(PRSice$Diagnosis~PRSice$PRS),col =  color[2])
+lines(roc(bellenguez_update$Diagnosis~bellenguez_update$PRS5),col = color[3])
+lines(roc(pT$Diagnosis~pT$PRS_5),col = color[4])
+
+
+legend("bottom", legend=c(paste("SbayesR, auc = ",round(roc(sbayesR$Diagnosis~sbayesR$PRS)$auc,4)),
+                               paste("PRSice, auc = ",round(roc(PRSice$Diagnosis~PRSice$PRS)$auc,4)),
+                               paste("Polyfun-Pred, auc = ",round(roc(bellenguez_update$Diagnosis~bellenguez_update$PRS5)$auc,4)),
+                               paste("Clumping+pT, auc = ",round(roc(pT$Diagnosis~pT$PRS_5)$auc,4))),
+                      col=color, lty=1, cex=0.8,box.lty=0)
+     
 
 ## Regression ----
 
@@ -190,10 +252,15 @@ log_reg <- function(df, prs,main_title, population, population_subset = FALSE,pl
   }
   return(cof)
 }
-log_reg(kunkle_cT, col_roc, "kunkle_cT","all")
+kunkle_cT_log<-log_reg(kunkle_cT, col_roc, "kunkle_cT","all", plot=FALSE)
 bell_log <- log_reg(bellenguez_update, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_updated', 'all',plot = FALSE, legend="PRS", replace="max_snp_per_locus=")
-bell_log_eur <- log_reg(bellenguez_update, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_updated', 'EUR',population_subset = TRUE, legend="PRS", replace="max_snp_per_locus=")
-par(mfrow=c(1,2))
+bell_log_eur <- log_reg(bellenguez_eur, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_updated', 'EUR',population_subset = TRUE, legend="PRS", replace="max_snp_per_locus=")
+bell_susie_log<- log_reg(susie, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_susie', 'all',plot = FALSE, legend="PRS", replace="max_snp_per_locus=")
+
+sbayesr_log <-  glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = sbayesR)
+prsice_log <- glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = PRSice)
+
+par(mfrow=c(1,1))
 bell_cT <- log_reg(pT, c("PRS_005","PRS_05","PRS_5"), "bellenguez_cT","all")
 
 p_beta_plot <- function(mod, prs_pos, title){
@@ -214,6 +281,11 @@ p_beta_plot <- function(mod, prs_pos, title){
   
 }
 p_beta_plot(bell_cT,c(4,8,12),'bellenguez_c+pT')
-p_beta_plot(bell_log,c(4,8,12,16),'bellenguez_updated')
+p_beta_plot(bell_log,c(4,8,12,16),'bellenguez_updated_polyfunPred')
 p_beta_plot(bell_log_eur,c(4,8,12,16),'bellenguez_updated (EUR only)')
+p_beta_plot(bell_susie_log,c(4,8,12,16),'bellenguez_susie')
+p_beta_plot(kunkle_cT_log,c(4,8,12),'kunkle')
+
+
+
 
