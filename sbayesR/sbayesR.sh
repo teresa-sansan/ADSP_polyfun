@@ -7,7 +7,7 @@
 #SBATCH --output=/gpfs/commons/home/tlin/output/sbayesR/%x_%j.log
 #SBATCH --cpus-per-task=20
 
-chr=19
+
 /gpfs/commons/home/tlin/sbayesR/gctb_2.03beta_Linux/gctb --sbayes R \
      --ldm /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/SBayesR/ld_matrix/band_ukb_10k_hm3/band_chr${chr}.ldm.sparse \
      --gwas-summary /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/bellenguez_sbayesR_all.ma \
