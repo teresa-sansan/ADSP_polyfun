@@ -1,14 +1,8 @@
 import pandas as pd
 
-#prs_001 = pd.read_csv("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/pT_0.001.prs", sep = ' ', names = ["IID","PRS"])  
-#prs_01 = pd.read_csv("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/pT_0.01.prs", sep = ' ', names = ["IID","PRS"]) 
-#prs_05 = pd.read_csv("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/pT_0.05.prs", sep = ' ', names = ["IID","PRS"])
-#prs_1 = pd.read_csv("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/pT_0.1.prs", sep = ' ', names = ["IID","PRS"]) 
-#prs_2 = pd.read_csv("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/pT_0.2.prs", sep = ' ', names = ["IID","PRS"]) 
-#prs_5 = pd.read_csv("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT/pT_0.5.prs", sep = ' ', names = ["IID","PRS"]) 
-
-path='/gpfs/commons/home/tlin/output/cT/bellenguez/'
-
+#path='/gpfs/commons/home/tlin/output/cT/bellenguez/qc/'
+path='/gpfs/commons/home/tlin/output/cT/kunkle/qc/'
+prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
 prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
 prs_005 = pd.read_csv(path+"pT_0.005.prs", sep = ' ', names = ["IID","PRS"])   
 prs_01 = pd.read_csv(path+"pT_0.01.prs", sep = ' ', names = ["IID","PRS"]) 
@@ -18,11 +12,10 @@ prs_5 = pd.read_csv(path+"pT_0.5.prs", sep = ' ', names = ["IID","PRS"])
 
 
 pheno = pd.read_csv("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_10_subset.tsv", sep='\t')
-prs = [prs_001, prs_005, prs_01, prs_05, prs_1, prs_5]  
+prs = [prs_e5, prs_001, prs_005, prs_01, prs_05, prs_1, prs_5]  
 from functools import reduce  
 prs_merge = reduce(lambda left, right:pd.merge(left,right,on=["IID"]),prs)
 
-prs_merge = prs_merge.set_axis( ["IID","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5"], axis='columns')
-
+prs_merge = prs_merge.set_axis( ["IID","PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5"], axis='columns')
 all_merge = pd.merge(pheno,prs_merge, left_on ="SampleID", right_on='IID')  
-all_merge.to_csv("/gpfs/commons/home/tlin/output/prs/bellenguez_pT_PRS_withPC.tsv",index = False, sep='\t')
+all_merge.to_csv("/gpfs/commons/home/tlin/output/prs/kunkle_qc_pT_PRS.tsv",index = False, sep='\t')

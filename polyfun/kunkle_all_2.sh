@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=200G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_qc/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/kunkle/kunkle_qc/%x%j.log
 
 summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/kunkle_2019/Kunkle_etal_Stage1_qc.gz'
 output='/gpfs/commons/home/tlin/output/kunkle/kunkle_qc/kunkle'
@@ -24,9 +24,9 @@ cd ~/polyfun_omer_repo
 
 ## create parquet file
 
-#python munge_polyfun_sumstats.py \
-#  --sumstats $summary_stats \
-#  --out ~/data/bellenguez_munged.parquet 
+python munge_polyfun_sumstats.py \
+  --sumstats $summary_stats \
+  --out ~/data/kunkle_munged.parquet 
 
 summary_stats='/gpfs/commons/home/tlin/data/bellenguez_munged.parquet'
 
