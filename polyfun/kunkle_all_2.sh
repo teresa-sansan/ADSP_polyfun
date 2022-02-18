@@ -24,36 +24,36 @@ cd ~/polyfun_omer_repo
 
 ## create parquet file
 
-python munge_polyfun_sumstats.py \
-  --sumstats $summary_stats \
-  --out ~/data/kunkle_munged.parquet 
+#python munge_polyfun_sumstats.py \
+#  --sumstats $summary_stats \
+#  --out ~/data/kunkle_munged.parquet 
 
-summary_stats='/gpfs/commons/home/tlin/data/bellenguez_munged.parquet'
+summary_stats='/gpfs/commons/home/tlin/data/kunkle_munged.parquet'
 
 ##1-2
-python polyfun.py \
-  --compute-h2-L2 \
-  --output-prefix $output \
-  --sumstats $summary_stats \
-  --ref-ld-chr $bl/baselineLF2.2.UKB.,$all_anno,$brain_H3K4me3,$brain_H3K27ac \
-  --w-ld-chr $bl/weights.UKB. \
-  --allow-missing
+#python polyfun.py \
+#  --compute-h2-L2 \
+#  --output-prefix $output \
+#  --sumstats $summary_stats \
+#  --ref-ld-chr $bl/baselineLF2.2.UKB.,$all_anno,$brain_H3K4me3,$brain_H3K27ac \
+#  --w-ld-chr $bl/weights.UKB. \
+#  --allow-missing
 
-echo finish polyfun1_2
+#echo finish polyfun1_2
 
 #1-3
-for i in {1..22}
-do
-sbatch --export=chr=$i,output=$output /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
-done
+#for i in {1..22}
+#do
+#sbatch --export=chr=$i,output=$output /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
+#done
 
 
 #1-4
-#python polyfun.py \
-# 	--compute-h2-bins \
-#    	--output-prefix $output \
-#   	--sumstats $summary_stats \
-#    	--w-ld-chr $bl/weights.UKB. \
-#    	--allow-missing
+python polyfun.py \
+ 	--compute-h2-bins \
+    	--output-prefix $output \
+   	--sumstats $summary_stats \
+    	--w-ld-chr $bl/weights.UKB. \
+    	--allow-missing
 
-#echo finish polyfun1_4
+echo finish polyfun1_4
