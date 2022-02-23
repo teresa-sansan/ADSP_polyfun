@@ -30,7 +30,7 @@ clump_path='/gpfs/commons/home/tlin/output/cT/kunkle/qc_on_target'
 --score /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/kunkle_2019/kunkle_etal_Stage1_info.tsv 3 4 8 header \
 --q-score-range range_list.txt /gpfs/commons/home/tlin/data/kunkle.pvalue \
 --extract $clump_path/chr${chr}.valid.snp \
---out /gpfs/commons/home/tlin/output/cT/kunkle/qc_target/kunkle_pT_chr${chr}
+--out /gpfs/commons/home/tlin/output/cT/kunkle/qc_on_target/kunkle_pT_chr${chr}
 
 
 
