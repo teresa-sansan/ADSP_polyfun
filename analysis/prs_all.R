@@ -41,10 +41,13 @@ bellenguez_cT_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez_q
 susie <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
 
 ##kunkle
-kunkle_cT <- rename_preprocess('/gpfs/commons/home/tlin/output/cT/kunkle/kunkle_prs.tsv')
-
+kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/kunkle_pT_prs_before_qc.tsv')
+only2 <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/kunkle_2snp.tsv")
 ##kunkle_qc
-kunkle_cT_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle_qc_pT_PRS.tsv')
+kunkle_cT_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/kunkle_qc_pT_PRS.tsv')
+kunkle_cT_qc_update <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/kunkle_qc_pT_PRS_correct_cols.tsv')
+kunkle_qc_target <-pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/qc_on_target.tsv')
+kunkle_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/qc_on_base.tsv')
 
 ##PRSice
 PRSice <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
@@ -187,14 +190,12 @@ pt_plot = plot_roc(roc_list,col_roc, title="bellenguez, clumping+pT")
 
 ##bellenguez_qc
 roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = bellenguez_cT_qc)
-col_roc <- list("PRS_005","PRS_05","PRS_5")
 bellenguez_qc_plot = plot_roc(roc_list,col_roc, title="bellenguez(QCed), clumping+pT")
 
 plot_grid(pt_plot, bellenguez_qc_plot,ncol = 2, nrow = 1)
 
 ## bellenguez_EUR
 roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = extract_eur(pT))
-col_roc <- list("PRS_005","PRS_05","PRS_5")
 pt_plot = plot_roc(roc_list,col_roc, title="bellenguez(EUR), clumping+pT")
 
 ##bellenguez_qc_eur
@@ -208,20 +209,42 @@ plot_grid(pt_plot, kunkle_pt_plot,ncol = 2, nrow = 1)
 
 ## Kunkle
 # ori
-roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = kunkle_cT)
+roc_list <- roc(Diagnosis ~ PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = kunkle_cT)
 kunkle_pt_plot = plot_roc(roc_list,col_roc, title="kunkle, clumping+pT")
+
 # Qced
-roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = kunkle_cT_qc)
-kunkle_pt_qc_plot = plot_roc(roc_list,col_roc, title="kunkle(QCed), clumping+pT")
+
+col_roc <- list("PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
+roc(Diagnosis ~ PRS, data = only2)
+#roc_list <- roc(Diagnosis ~ PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = kunkle_cT_qc)
+#kunkle_pt_qc_plot = plot_roc(roc_list,col_roc, title="kunkle(QCed, wrong col), clumping+pT")
+
+kunkle_pt_qc_plot_update=plot_roc(roc(Diagnosis ~ PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = kunkle_cT_qc_update), col_roc, title="qc, clumping+pT")
+plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_update,ncol = 2, nrow = 1)
+
+#base
+kunkle_pt_qc_plot_base=plot_roc(roc(Diagnosis ~ PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = kunkle_qc_base), col_roc, title="kunkle_qc_summary_stats")
+
+#target
+kunkle_pt_qc_plot_target=plot_roc(roc(Diagnosis ~ PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = kunkle_qc_target), col_roc, title="kunkle_qc_target")
+plot_grid(kunkle_pt_plot,kunkle_pt_qc_plot_update,kunkle_pt_qc_plot_base,kunkle_pt_qc_plot_target,ncol = 2, nrow = 2)
+
 
 #Ori_EUR only
-roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = extract_eur(kunkle_cT))
-kunkle_pt_plot = plot_roc(roc_list,col_roc, title="kunkle(EUR), clumping+pT")
-# QCed EUR only
-roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = extract_eur(kunkle_cT_qc))
-kunkle_pt_qc_plot = plot_roc(roc_list,col_roc, title="kunkle(EUR, QCed), clumping+pT")
+roc_list1 <- roc(Diagnosis ~ PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = extract_eur(kunkle_cT))
+kunkle_pt_plot=plot_roc(roc_list1, col_roc, title="kunkle(EUR)")
 
-plot_grid(kunkle_pt_plot,kunkle_pt_qc_plot,ncol = 2, nrow = 1)
+# QCed EUR only
+roc_list2 <- roc(Diagnosis ~ PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = extract_eur(kunkle_cT_qc_update))
+kunkle_pt_plot_update=plot_roc(roc_list2, col_roc, title="qc, clumping+pT(EUR)")
+
+roc_list3 <- roc(Diagnosis ~ PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = extract_eur(kunkle_qc_target))
+kunkle_pt_plot_target=plot_roc(roc_list3, col_roc, title="kunkle_qc_target(EUR)")
+
+roc_list4 <- roc(Diagnosis ~ PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = extract_eur(kunkle_qc_base))
+kunkle_pt_plot_base=plot_roc(roc_list4, col_roc, title="kunkle_qc_summary_stats(EUR)")
+
+plot_grid(kunkle_pt_plot,kunkle_pt_qc_plot_update,kunkle_pt_qc_plot_base,kunkle_pt_qc_plot_target,ncol = 2, nrow = 2)
 
 
 
