@@ -48,7 +48,7 @@ fi
 summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37.munged.parquet'
 
 ##1-2
-if true; then
+if false; then
 echo $summary_stats
 
 python polyfun.py \
@@ -64,7 +64,7 @@ python polyfun.py \
 fi
 
 #1-3
-if true; then
+if false; then
 for i in {1..22}
 do
 sbatch --export=chr=$i,output=$output /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
@@ -72,7 +72,7 @@ done
 fi
 
 #1-4
-if false; then
+if true; then
 
 python polyfun.py \
  	--compute-h2-bins \
