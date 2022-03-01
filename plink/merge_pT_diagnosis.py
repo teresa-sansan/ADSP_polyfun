@@ -1,8 +1,8 @@
 import pandas as pd
 
-#path='/gpfs/commons/home/tlin/output/cT/bellenguez/qc_on_base/'
-path='/gpfs/commons/home/tlin/output/cT/kunkle/qc_check/'
-save_name='kunkle_qc_check'
+path='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/before_qc/'
+#path='/gpfs/commons/home/tlin/output/cT/kunkle/qc_check/'
+save_name='bellenguez/fixed_0224/bellenguez_no_qc'
 
 prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
 prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])

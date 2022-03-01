@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=3:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_qc/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/%x_%j.log
 
 
 
@@ -15,9 +15,10 @@ conda activate polyfun
 
 
 ##bellenguez
-bellenguez='/gpfs/commons/home/tlin/data/bellenguez_munged.parquet'
+#bellenguez='/gpfs/commons/home/tlin/data/bellenguez_munged.parquet'
+bellenguez='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37.tsv.gz'
 prefix='finemap_bellenguez'
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_qc/finemap'
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap'
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap'
 
 ##wightman

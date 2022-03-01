@@ -1,7 +1,7 @@
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/'
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/'
-
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/'
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/'
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/'
 for max_snp in 1 3 5 7 10
 
 
