@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=20
 
 
-for chr in 4
+for chr in {3..4}
 do
 /gpfs/commons/home/tlin/sbayesR/gctb_2.03beta_Linux/gctb  --sbayes R \
      --ldm /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/SBayesR/ld_matrix/band_ukb_10k_hm3/band_chr${chr}.ldm.sparse \

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-for i in {1..22} 
+for i in {19..21} 
 do
         echo "run chr$i" 
-        sbatch --export=chr=$i sbayesR.sh 
+        sbatch --export=chr=$i ~/script/sbayesR/sbayesR.sh 
 
 done
 
