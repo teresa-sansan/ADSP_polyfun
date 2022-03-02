@@ -2,7 +2,7 @@
 cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers
 
 #file='Bellenguez_et_al_2021_hg37_no_dup.tsv.gz'
-#qc_file_name='Bellenguez_et_al_2021_hg37_qc'
+#qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Bellenguez_et_al_2021_hg37_qc'
 
 file='Kunkle_et_al_2019_hg37_ldsc.tsv.gz'
 qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Kunkle_et_al_2019_hg37_ldsc_qc'
@@ -23,7 +23,6 @@ fi
 
 if true;then
 echo "removing duplicated SNPs..."
-echo ${qc_file_name}_nodup.tsv    
 zcat $file | awk '{seen[$1]++; if(seen[$1]==1){print}}' > ${qc_file_name}_nodup.tsv
 #cat $qc_file_name.tsv | awk '{seen[$1]++; if(seen[$1]==1){print}}' > ${qc_file_name}_nodup.tsv
 nodup=$(cat ${qc_file_name}_nodup.tsv| wc -l)

@@ -3,13 +3,14 @@ import os
 
 
 pre_file_repo='/gpfs/commons/home/tlin/output/kunkle/kunkle_qc/'
-file_name='2SNP_qc.prs.profile'
-save_name='kunkle/kunkle_2snp'
+file_name='updated_0224_2SNP_qc.prs.profile'
+save_name='kunkle/fixed_0224_kunkle_2snp'
 
 
 os.system("cd /gpfs/commons/home/tlin/output/kunkle/kunkle_qc/")
+os.system("pwd")
 os.system("echo trimming duplicated spaces!")
-os.system("cat 2SNP_qc.prs.profile|tr -s ' ' > no_dup_space.prs")
+os.system("cat updated_0224_2SNP_qc.prs.profile|tr -s ' ' > fixed_0224_no_dup_space.prs")
 
 
 prs= pd.read_csv('no_dup_space.prs', sep = ' ', names = ["FID","IID","PHENO","CNT","CNT2","PRS"])
