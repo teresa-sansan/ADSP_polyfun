@@ -1,4 +1,4 @@
-cd /gpfs/commons/home/tlin/output/sbayesR  
+cd /gpfs/commons/home/tlin/output/sbayesR/fixed_0224
 rm bellenguez_agg_snpRes
 cat bellenguez_chr1.snpRes| head -1 > bellenguez_agg_snpRes
 cat bellenguez_chr*.snpRes |grep -v 'A1'| tr -s ' '| cut -d ' ' -f 2-12  >> bellenguez_agg_snpRes
