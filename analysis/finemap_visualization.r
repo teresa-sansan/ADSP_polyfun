@@ -345,9 +345,12 @@ bl_all_max1[!bl_all_max1[,2] %in% bl_max1_overlap_notuniq]
 
 
 ## load data with aggregration by polypred
-aggregrate <- read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all_2/finemap/max_snp_1/aggregrate.all.txt.gz'))
+aggregrate <- read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle/kunkle_all_2/finemap/max_snp_1/aggregrate.all.txt.gz'))
 
-
+aggregate10 <- read.table('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/aggregrate.all.txt')
+names(aggregate10) <- lapply(aggregate10[1, ], as.character)
+aggregate10 <- aggregate10[-1,] 
+str(aggregate10)
 
 # bellenguez
 
@@ -523,8 +526,11 @@ text(x = 398, y = 0.76,  sprintf("total num = %s",dim(credible_1)[1]),col = "red
 # functions
 create_PIP_subset <- function(df, thres, upperthres=TRUE){
   df <- subset(df, df$CREDIBLE_SET > 0) ## first, extract those rows that have credibleset != 0
-  df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end) ## creat a new column thats easier to match in later stage
+  print(names(df))
+  print(str_c("Chr",df$CHR,'_' ,df$start, "_", df$end))
+  #df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end) ## creat a new column thats easier to match in later stage
   df_count <- df[df$PIP > thres,] %>% count(POS)
+  print("2")
   
   ## check if the boundary of PIP is a upper bound or lower bound
   if(upperthres == TRUE){
@@ -541,13 +547,14 @@ create_PIP_subset <- function(df, thres, upperthres=TRUE){
   return(df_count)
   
 }
+
 create_lollipop <- function(df, upperthres, lowerthres, title){
   lower <- create_PIP_subset(df, lowerthres, upperthres=FALSE)
   upper <- create_PIP_subset(df, upperthres)  
   lower$group <- paste("PIP <", lowerthres)
   upper$group <- paste("PIP >", upperthres)
   overlap <- rbind(upper,  subset(lower, lower$POS %in% upper$POS))
-  
+
   
   ##drawplot
   lollipop <- ggplot(overlap, aes(x=POS, y = n), group(group)) + geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), position = "stack")+
@@ -562,9 +569,14 @@ create_lollipop <- function(df, upperthres, lowerthres, title){
   return(overlap)
 }
 
+PIP_0.95 <- create_lollipop(aggregate10, 0.95,0.5,"Max SNP per locus = 10, fixed_0224")
+PIP_0.5 <-create_lollipop(aggregate10, 0.5,0.5,"Max SNP per locus = 10, fixed_0224")
 
 PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
 PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
+
+PIP_0.95 <- create_lollipop(aggregate10, 0.95,0.5,"Max SNP per locus = 10, fixed_0224")
+PIP_0.5 <-create_lollipop(aggregate10, 0.5,0.5,"Max SNP per locus = 10, fixed_0224")
 
 
 
@@ -610,3 +622,7 @@ hist(count_freq$Freq)
 ggplot(data= count_freq, aes(x = Credible_Set_Size, y = Freq)) + geom_bar(stat = "identity", fill = "skyblue") +
   theme_light() + theme_bw() + geom_text(aes(label = Freq), size = 3) +
   ggtitle("max SNP per locus = 10")+xlab('the size of credible sets') +ylab("count")
+
+
+
+
