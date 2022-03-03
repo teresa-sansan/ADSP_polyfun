@@ -9,7 +9,7 @@ library(tibble)
 library(readr)
 library(cowplot)
 library(pROC)
-library(fmsb)   ##psudo rsquare
+#library(fmsb)   ##psudo rsquare
 library(modEvA)  # psuedo rsquare
 
 ## first, look at the composition of ADSP phenotype file (in plink format) ----
@@ -33,11 +33,31 @@ rename_preprocess <-function(df){
   df = pre_process(df, FILE = TRUE)
   return (df)
 }
+pre_process <- function(df, FILE=FALSE){
+  if(FILE==FALSE){
+    df<- read.table(df,header=T,fill = T)
+  }
+  df$Age <- as.numeric(as.character(df$Age))
+  print(paste("original=",  dim(df)[1], "rows"))
+  df <- df %>%
+    filter(Diagnosis != -1 & Age >= 65)
+  print(paste("filtered=",  dim(df)[1], "rows"))
+  return(df)
+}
 sbayesR = rename_prepreocess("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
   
-bellenguez_update <- rename_preprocess('/gpfs/commons/home/tlin/output/prs/bellenguez_updateRSID_prs_PC.tsv')
+bellenguez_update <- rename_preprocess('/gpfs/commons/home/tlin/output/prs/bellenguez_bellenguez_updateRSID_prs_PC.tsv')
 bellenguez_all2 <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/bellenguez_all_PC_CS.tsv")
-bellenguez_cT_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez_qc_pT_PRS.tsv')
+bellenguez_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/bellenguez_pT_PRS_withPC.tsv')
+
+bellenguez_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/bellenguez_qc_pT_PRS.tsv')
+bellenguez_qc_on_target <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/qc_on_target.tsv')
+bellenguez_qc_on_base <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/qc_on_base.tsv')
+
+bellenguez_cT0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_no_qc.tsv')
+bellenguez_qc0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc.tsv')
+bellenguez_qc_on_target0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_target.tsv')
+bellenguez_qc_on_base0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_base.tsv')
 
 ##susie
 susie <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
@@ -191,42 +211,40 @@ plot_roc <- function(roclist, roccol,legend="PRS_", replace="p = 0.",title = FAL
 col_roc <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 
 roc_result <-function(df, title=' ',column_for_roc=col_roc){
-  roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
+  if('e5' %in% col_roc){
+    roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
+  }else
+    roc_list <- roc(Diagnosis ~ PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
+  
   plot_roc(roc_list,column_for_roc, title=title)
 }
+
 
 
 ###c+T (before and after qc)-----
 #### bellenguez-----
 ##bellenguez
-roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = pT)
-pt_plot = plot_roc(roc_list,col_roc, title="bellenguez, clumping+pT")
-
+col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
+bellenguez_cT_plot <- roc_result(bellenguez_cT,col_roc, title = "bellenguez, clumping+pT" )
 
 ##bellenguez_qc
-roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = bellenguez_cT_qc)
-bellenguez_qc_plot = plot_roc(roc_list,col_roc, title="bellenguez(QCed), clumping+pT")
-
-plot_grid(pt_plot, bellenguez_qc_plot,ncol = 2, nrow = 1)
+bellenguez_qc_plot = roc_result(bellenguez_qc,col_roc, title = "bellenguez, c+pT, QC" )
+plot_grid(bellenguez_cT_plot, bellenguez_qc_plot,ncol = 2, nrow = 1)
 
 ## bellenguez_EUR
-roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = extract_eur(pT))
-pt_plot = plot_roc(roc_list,col_roc, title="bellenguez(EUR), clumping+pT")
+bellenguez_eur_plot = roc_result(extract_eur(bellenguez_cT),col_roc, title = "bellenguez, c+pT, EUR" )
 
 ##bellenguez_qc_eur
-roc_list <- roc(Diagnosis ~ PRS_005+PRS_05+PRS_5, data = extract_eur(bellenguez_cT_qc))
-col_roc <- list("PRS_005","PRS_05","PRS_5")
-bellenguez_qc_plot = plot_roc(roc_list,col_roc, title="bellenguez(EUR,QCed), clumping+pT")
-plot_grid(pt_plot, bellenguez_qc_plot,ncol = 2, nrow = 1)
+bellenguez_qc_eur_plot = roc_result(extract_eur(bellenguez_qc),col_roc, title = "bellenguez, c+pT, QC, EUR" )
 
-plot_grid(pt_plot, kunkle_pt_plot,ncol = 2, nrow = 1)
+plot_grid(pt_plot, bellenguez_qc_plot,ncol = 2, nrow = 2)
+
 
 ####kunkle------
 
 ## Kunkle
 ### ori
 kunkle_pt_plot = roc_result(kunkle_cT,"kunkle, clumping+pT")
-
 
 ### Qced
 kunkle_pt_qc_plot_update=roc_result(kunkle_cT_qc_update,title="qc, clumping+pT")
@@ -293,14 +311,13 @@ legend("bottom", legend=c(paste("SbayesR, auc = ",round(roc(sbayesR$Diagnosis~sb
 
 ## Regression ----
 
-log_reg <- function(df, prs,main_title, population, population_subset = FALSE,plot = TRUE, legend="PRS_", replace="pT = 0."){
-  if(population_subset == TRUE){
-    df = df[df$final_population == population,]
-  }
+log_reg <- function(df, prs,main_title,plot = TRUE, legend="PRS_", replace="pT = 0."){
   mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial)
+  mod1_R2 <- NagelkerkeR2(mod1)$R2
   for (i in 1:length(prs)){
     frm <- as.formula(paste("Diagnosis ~ Sex + Age+", prs[[i]]))
     mod <- glm(formula = frm,family = 'binomial', data = df)
+    mod_R2 <- NagelkerkeR2(mod)$R2 
     ##plot
     if(plot == TRUE){
     plot(residuals(mod, type = "pearson") ~ df[,prs[[i]]], ylab = "Residual", xlab = "PRS", col = as.factor(df$Diagnosis), 
@@ -317,26 +334,41 @@ log_reg <- function(df, prs,main_title, population, population_subset = FALSE,pl
     ## table
     if(i ==1){
       cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
+      cof['R2'] = round(mod1_R2,5)
+      cof['R2_prs'] = round(mod_R2,5)
       cof['PRS'] =prs[i]
     }
     else{
       cof2 <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
+      cof2['R2'] = round(mod1_R2,5)
+      cof2['R2_prs'] = round(mod_R2,5)
       cof2['PRS'] =prs[i]
       cof <- rbind(cof, cof2)
     }  
   }
   return(cof)
 }
+
 kunkle_cT_log<-log_reg(kunkle_cT, col_roc, "kunkle_cT","all", plot=FALSE)
-bell_log <- log_reg(bellenguez_update, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_updated', 'all',plot = FALSE, legend="PRS", replace="max_snp_per_locus=")
-bell_log_eur <- log_reg(bellenguez_eur, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_updated', 'EUR',population_subset = TRUE, legend="PRS", replace="max_snp_per_locus=")
+bell_log <- log_reg(bellenguez_update, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_updated', plot = FALSE, legend="PRS", replace="max_snp_per_locus=")
+bell_log_eur <- log_reg(bellenguez_eur, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_updated', plot=FALSE, legend="PRS", replace="max_snp_per_locus=")
 bell_susie_log<- log_reg(susie, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_susie', 'all',plot = FALSE, legend="PRS", replace="max_snp_per_locus=")
 
-bell_qc_log <- log_reg(bellenguez_cT_qc, col_roc, "bellenguez_cT (QCed)","all", plot=FALSE)
-bell_qc_EUR_log <- log_reg(extract_eur(bellenguez_cT_qc), col_roc, "bellenguez_cT (QCed, EUR)","all", plot=FALSE)
+bell_qc_log <- log_reg(bellenguez_cT_qc, col_roc, "bellenguez_cT (QCed)", plot=FALSE)
+bell_qc_EUR_log <- log_reg(extract_eur(bellenguez_cT_qc), col_roc, "bellenguez_cT (QCed, EUR)", plot=FALSE)
 
-kunkle_cT_qc_log<-log_reg(kunkle_cT_qc, col_roc, "kunkle_QCed","all", plot=FALSE)
+kunkle_cT_log<-log_reg(extract_eur(kunkle_cT), col_roc, "kunkle_cT", plot=FALSE)
+kunkle_cT_qc_log<-log_reg(extract_eur(kunkle_cT_qc), col_roc, "kunkle_QCed","all", plot=FALSE)
+kunkle_cT_qc_target_log<-log_reg(extract_eur(kunkle_qc_target), col_roc, "kunkle_QCed","QC on target", plot=FALSE)
+kunkle_cT_qc_base_log<-log_reg(extract_eur(kunkle_qc_base), col_roc, "kunkle_QCed","qx on summary stats", plot=FALSE)
 kunkle_cT_qc_EUR_log<-log_reg(extract_eur(kunkle_cT_qc), col_roc, "kunkle_QCed (EUR)","all", plot=FALSE)
+
+par(mfrow=c(2,2))
+plotR2(kunkle_cT_log,"kunkle, cT, EUR")
+plotR2(kunkle_cT_qc_log,"kunkle, qc, EUR")
+plotR2(kunkle_cT_qc_target_log,"kunkle, qc on target, EUR")
+plotR2(kunkle_cT_qc_base_log,"kunkle, qc on summary stats,EUR")
+
 
 sbayesr_log <-  glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = sbayesR)
 prsice_log <- glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = PRSice)
@@ -359,7 +391,6 @@ p_beta_plot <- function(mod, prs_pos, title){
     geom_text(aes(label=Estimate), vjust=1.2, color="darkred",
               position = position_dodge(1), size=3)+  theme_minimal()
   plot_grid(pvalue, beta)
-  
 }
 p_beta_plot(bell_cT,c(4,8,12),'bellenguez_c+pT')
 p_beta_plot(bell_log,c(4,8,12,16),'bellenguez_updated_polyfunPred')
@@ -378,11 +409,27 @@ p_beta_plot(bell_qc_EUR_log,c(4,8,12),'bellenguez_c+pT, QC, EUR')
 
 
 
-
-mod1 <- glm(Diagnosis ~ Sex + Age, data=extract_eur(kunkle_cT_qc_update), family=binomial)
-mod2<- glm(Diagnosis ~ Sex + Age + PRS_01, data=extract_eur(kunkle_cT_qc_update), family=binomial)
-summary(mod)
-
 NagelkerkeR2(mod2)$R2
-
 RsqGLM(mod2)$Nagelkerke
+
+
+plotR2 <- function(log_output, header){
+  prs_col = seq(from=1, to=dim(log_output)[1], by=4)
+  plot(log_output$R2_prs[prs_col], ylim  = c(min(log_output$R2[1], min(log_output$R2_prs[prs_col])), max(log_output$R2[1], max(log_output$R2_prs[prs_col]))), 
+       ylab='R-squared', xlab = "different PRS",pch=4,col="darkgreen", main=header,xaxt = "n")
+  text(seq(from=1,to=length(prs_col)),log_output$R2_prs[prs_col] , 
+       labels = log_output$R2_prs[prs_col], adj = c(0.5,2), xpd = TRUE, cex=1) 
+  
+  
+  abline(h=log_output$R2[1], col=c("blue"), lty=2, lwd=3)
+  #text((length(prs_col)+1)/2,log_output$R2[1] , labels =  "Null model", adj = c(0.5,-2), xpd = TRUE, cex=1) 
+  text((length(prs_col)+1)/2,log_output$R2[1] , labels =  paste("Null model: ",log_output$R2[1]), adj = c(0.5,-1.5), xpd = TRUE, cex=1)
+  axis(1,                         # Define x-axis manually
+       at = 1:length(prs_col),
+       labels = c(str_replace(log_output$PRS[1],"PRS_e5","p = 1*e-5"),str_replace(log_output$PRS[seq(from=1, to=dim(test)[1], by=4)][-1],"PRS_","p = 0.")))
+}
+
+plotR2(kunkle_cT_qc_EUR_log,"kunkle, qc, EUR")
+plotR2(kunkle_cT_qc_log,"kunkle, qc")
+
+

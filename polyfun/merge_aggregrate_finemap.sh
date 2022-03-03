@@ -2,9 +2,9 @@
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/'
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/'
 path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/'
+
+
 for max_snp in 1 3 5 7 10
-
-
 do 
   echo max_snp${max_snp}
   cd ${path}/max_snp_${max_snp}
