@@ -9,102 +9,20 @@ col_name = c("CHR","SNP","BP","A1","A2","SNPVAR","N","Z","P","PIP","BETA_MEAN","
 par(mfrow=c(1,2)) 
 
 # load data ---------------------------------------------------------------
+test= read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/test.tsv", header=TRUE)
+old_test = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
 
 
-#bl_max1 = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl/output/finemap/max_causal_1/finemap_UKBBbaseline.extract_e-01.gz"), 
-#                col.names=col_name)
-#bl_max3 = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl/output/finemap/max_causal_3/finemap_bl.extract_e-01.gz"), 
-#                col.names=col_name)
-#bl_max5 = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl/output/finemap/max_causal_5/finemap_bl.extract_e-01.gz"), 
-#                col.names=col_name)
 
-#bl_susie = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl/finemap_susie/finemap_bl_susie.extract_e-01.csv.gz"), 
-#                col.names=col_name)
-
-#bl_roadmap = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_roadmap/all_col/finemap/finemap_bl_roadmap.extract_e-01.gz"), 
-#               col.names=col_name)
-#bl_roadmap_specific_col = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_roadmap/specific_col/finemap/finemap_bl_roadmap.extract_e-01.gz"), 
-#                col.names=col_name)
-#bl_roadmap_brainatac = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_brain_atac/finemap/finemap_bl_roadmap_extract_e-01.gz"), 
-#                col.names=col_name)
-#bl_roadmap_brainatac_susie = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_brain_atac/finemap_susie/finemap_bl_roadmap_brain_atac.extract_e-01.gz"), 
-#                col.names=col_name)
-#bl_roadmap_microglia = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_microglia/finemap/finemap_bl_roadmap_microglia.extract_e-01.gz"),
-#                col.names=col_name)
-# bl_roadmap_microglia_susie = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_microglia/finemap_susie/finemap_bl_roadmap_microglia.extract_e-01.gz"),
-# col.names=col_name)
-
-#bl_roadmap_susie = read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bl_roadmap/specific_col/finemap_susie/finemap_bl_roadmap.extract_e-01.csv.gz'),
-#                  col.names=col_name)
-
-
-# bl_brainatac_max1 = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_brain_atac/finemap/max_causal_1/finemap_UKBB_brainatac.extract_e-01.gz"), 
-#                 col.names=col_name)
-# 
-# bl_brainatac_max3 = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_brain_atac/finemap/max_causal_3/finemap_bl_brainatac_extract_e-01.gz"),
-#                 col.names=col_name)
-# 
-# bl_brainatac_max5 = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_brain_atac/finemap/max_causal_5/finemap_bl.brain_atac.extract_e-01.gz"), 
-#                 col.names=col_name)
-# 
-# bl_microglia = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_microglia/finemap/finemap_UKBB_brainatac.extract_e-01.gz"), 
-#                 col.names=col_name)
-# 
-# 
-# bl_brainatac_correct= read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/bl_brain_atac/finemap/correct/finemap_bl_brian_atac.extract_e-01.csv.gz"),
-#                       col.names=col_name)
-# bl_deepsea_brain_atac=read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bl_deepsea_brain_atac/finemap/finemap_deepsea_brian_atac.extract_e-01.csv.gz'),
-#                col.names=col_name)
-# 
-# bl_roadmap_deepsea = read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_deepsea/finemap/finemap_roadmap_deepsea.extract_e-01.csv.gz'), 
-#                                 col.names=col_name)
-#jansen = read.table(gzfile("/gpfs/commons/home/tlin/polyfun/output/jansenetal/finemap/finemap_jansen.extract_e-01.gz"), 
-#                     col.names=col_name)
-
-# kunkle_all=read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap/all_anno_extract_e-01.csv.gz'),
-                      # col.names=col_name)
-
-# bl_all_max1 = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_1/all_anno_extract_e-01.csv.gz'), col.names=col_name)
-# bl_all_max3 = read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_3/anno_all.extract_e-01.csv', col.names=col_name)
-# bl_all_max5 = read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_5/anno_all.extract_e-01.csv', col.names=col_name)
-# bl_all_max7 = read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_7/anno_all.extract_e-01.csv', col.names=col_name)
-# bl_all_max10 = read.table('/gpfs/commons/home/tlin/output/kunkle_all/finemap/finemap_max_snp_10/anno_all.extract_e-01.csv', col.names=col_name)
-# 
-# 
-# bl_all_max1_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_1/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
-# bl_all_max3_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_3/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
-# bl_all_max5_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_5/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
-# bl_all_max7_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_7/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
-# bl_all_max10_overlap = read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_10/all_anno_extract_uniq_e-01.csv.gz'), col.names=col_name)
-
-col_name_bellenguez =  c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
+#col_name_bellenguez =  c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 
 # bellenguez = read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bellenguez/bellenguez/finemap/finemap_bellenguez.extract_e-01.csv.gz'))
-colnames(bellenguez)<- c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
-bellenguez = bellenguez[,-7]
-bl_deepsea = read.table('/gpfs/commons/home/tlin/polyfun/output/bl_deepsea/specific_col/finemap/finemap_bl_deepsea.extract_e-01.csv.gz',  
-                      col.names=col_name)
-#bl_deepsea_microglia = read.table('/gpfs/commons/home/tlin/polyfun/output/bl_deepsea_microglia/finemap/finemap_deepsea_microglia.extract_e-01.csv.gz',
-#  col.names=col_name)
+#colnames(bellenguez)<- c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
+#bellenguez = bellenguez[,-7]
 
-#bl_pip_anno = read.table('/gpfs/commons/home/tlin/polyfun/output/bl/extract_anno/extract_pip_0.5.csv', header = TRUE,stringsAsFactors=FALSE)
-#bl_microglia_pip_anno = read.table('/gpfs/commons/home/tlin/polyfun/output/bl_roadmap_microglia/extract_anno/extract_pip_0.5.csv', header = TRUE,stringsAsFactors=FALSE)
-
-
-bellenguez_susie1 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/max_snp_1/finemap_bellenguez_susie.extract_1e-3.csv.gz",header = TRUE)
-bellenguez_susie3 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie/max_snp_3/finemap_bellenguez_susie.extract_1e-3.csv.gz", header = TRUE)
-
-bellenguez_all2_1 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_1/finemap_bellenguez_all_2.extract_1e-3.csv.gz",header = TRUE )
-bellenguez_all2_3 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_3/finemap_bellenguez_all_2.extract_1e-3.csv.gz", header =TRUE)
-bellenguez_all2_5 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_5/finemap_bellenguez_all_2.extract_1e-3.csv.gz",header = TRUE )
-bellenguez_all2_7 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_7/finemap_bellenguez_all_2.extract_1e-3.csv.gz", header =TRUE)
-bellenguez_all2_10 = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz",header = TRUE )
 
 
 tau = read.csv('/gpfs/commons/home/tlin/polyfun/data/bl_annotation_tau.tsv', header=T, sep='\t')
-
-
-aggregrate10 = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
 
 
 
@@ -347,7 +265,6 @@ bl_all_max1[!bl_all_max1[,2] %in% bl_max1_overlap_notuniq]
 ## load data with aggregration by polypred
 aggregrate <- read.table(gzfile('/gpfs/commons/home/tlin/output/kunkle/kunkle_all_2/finemap/max_snp_1/aggregrate.all.txt.gz'))
 
-aggregate10 <- read.table('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/aggregrate.all.txt')
 names(aggregate10) <- lapply(aggregate10[1, ], as.character)
 aggregate10 <- aggregate10[-1,] 
 str(aggregate10)
@@ -388,7 +305,7 @@ abline(h = c(max(test[,1]),max(test[,2]),max(test[,3])), lty=3, col = "red")
 #          cluster_cols = F, cluster_rows = F, angle_col = 315, fontsize_col = 8,
 #          annotation_row = PIP)
 
-
+##### heatmap ---------------------
 draw_heatmap <- function(df,title){
   # omit the columns that has more than 80% of 0s
   df_extracted <- df[,colSums(df == 0) <  round(dim(df)[1]*0.8)]
@@ -523,6 +440,8 @@ text(x = 398, y = 0.76,  sprintf("total num = %s",dim(credible_1)[1]),col = "red
 
 ### credible set plot -------
 
+test$POS = str_c("Chr",test$CHR,'_' ,test$start, "_",test$end)
+old_test$POS = str_c("Chr",old_test$CHR,'_' ,old_test$start, "_",old_test$end)
 # functions
 create_PIP_subset <- function(df, thres, upperthres=TRUE){
   df <- subset(df, df$CREDIBLE_SET > 0) ## first, extract those rows that have credibleset != 0
@@ -569,8 +488,8 @@ create_lollipop <- function(df, upperthres, lowerthres, title){
   return(overlap)
 }
 
-PIP_0.95 <- create_lollipop(aggregate10, 0.95,0.5,"Max SNP per locus = 10, fixed_0224")
-PIP_0.5 <-create_lollipop(aggregate10, 0.5,0.5,"Max SNP per locus = 10, fixed_0224")
+PIP_0.95 <- create_lollipop(old_test, 0.95,0.5,"Max SNP per locus = 10, fixed_0224")
+PIP_0.5 <-create_lollipop(test, 0.5,0.5,"Max SNP per locus = 10, fixed_0224")
 
 PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
 PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
@@ -593,8 +512,7 @@ plot_credible_bar <- function(df, title){
   count_groupby$POS <- factor(count_groupby$POS, levels=unique(count_groupby$POS))
   
   ## plot them in 2 plot so that the lables won't be crushed all together. 
-  
-  
+
   first<- ggplot(data=count_groupby[(dim(count_groupby)[1] - round(dim(count_groupby)[1]/2)):dim(count_groupby)[1],] , aes(x=POS, y=n, fill=CREDIBLE_SET)) +
     geom_bar(stat="identity")+ coord_flip()+theme_light() + theme_bw() + ylab("number of SNP") + ggtitle(title)+
     scale_fill_manual(values=rep(c("#E69F00", "#56B4E9"),5)) + 
@@ -609,9 +527,10 @@ plot_credible_bar <- function(df, title){
   
 }
 
-plot_credible_bar(aggregrate10,"Max SNP per locus = 10")
+plot_credible_bar(old_test,"Max SNP per locus = 10")
+test_plot <- plot_credible_bar(old_test,"old test")
 
-count_freq= as.data.frame(table(count_groupby$n))
+count_freq= as.data.frame(table(test_plot$n))
 names(count_freq)[1] = "Credible_Set_Size"
 
 ggplot(data=count_freq, aes(Freq)) + 
@@ -623,6 +542,16 @@ ggplot(data= count_freq, aes(x = Credible_Set_Size, y = Freq)) + geom_bar(stat =
   theme_light() + theme_bw() + geom_text(aes(label = Freq), size = 3) +
   ggtitle("max SNP per locus = 10")+xlab('the size of credible sets') +ylab("count")
 
+
+extract_SNP <- function(df){
+  df$unique = str_c(df$POS,'_' ,df$CREDIBLE_SET)
+  unique_LD <-
+    df%>% filter(CREDIBLE_SET>0)%>%
+    group_by(unique) %>% filter(n()==1) %>% ungroup()  %>% select(-c(start,end, unique))
+  return(unique_LD)
+}
+
+wow = extract_SNP(test)
 
 
 
