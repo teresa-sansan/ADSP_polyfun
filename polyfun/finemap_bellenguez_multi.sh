@@ -35,7 +35,4 @@ do
      	  	--max-num-causal $max_num_snp \
 	  	--allow-missing \
 		--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_qc/finemap/max_snp_${max_num_snp}/finemap_bellenguez.${chr}.$start.$end.gz"
-
-	
-
 done

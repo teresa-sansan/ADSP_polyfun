@@ -8,11 +8,11 @@ for max_snp in 1 3 5 7 10
 do 
   echo max_snp${max_snp}
   cd ${path}/max_snp_${max_snp}
-  zcat chr1.aggregrate.all.txt.gz| head -n 1 > aggregrate.all.txt
+  zcat chr11.aggregrate.all.txt.gz| head -n 1 > aggregrate.all.txt
   for i in {1..22}
   do
      echo merging chr $i
-     zcat chr${i}.aggregrate.all.txt.gz |grep -v CHR >> aggregrate.all.txt 
+     zcat chr${i}.aggregrate.all.txt.gz |grep -v CHR|cut -f 1-15 >> aggregrate.all.txt 
   done
   echo
   echo zipping the file....
