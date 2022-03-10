@@ -553,5 +553,8 @@ extract_SNP <- function(df){
 
 wow = extract_SNP(test)
 
+write.table(unique_LD,"/gpfs/commons/home/tlin/data/bellenguez_37SNPs.tsv", row.names = FALSE, sep = '\t')
+
+
 
 
