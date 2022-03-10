@@ -22,10 +22,6 @@ pre_process <- function(df, FILE=FALSE){
 }
 
 
-
-
-
-
 # LOAD DATA ---------------
 polypred1 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_1.tsv",header=T,fill = T)
 polypred3 = read.table("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/prs_diagnosis_0219.2021_max_snp_3.tsv",header=T,fill = T)
@@ -529,6 +525,8 @@ stripchart(PRS~SNP,data =polypred_sd,
 
 
 
+
+
 subset(PIP_0.5,PIP_0.5$POS %in%  PIP_0.95$POS)
 
 
@@ -544,8 +542,9 @@ boxplot(PRS~Diagnosis, data = polypred10[polypred10$Diagnosis >-1,],main="previo
 boxplot(PRS~Diagnosis, data = updatePRS10[updatePRS10$Diagnosis >-1,],main="updated",names =c("Control", "Case"), col= c("skyblue","lightpink"))
 mtext("max snp per locus = 10", outer = TRUE, cex = 2, side = 1, line=-35)
 
-#boxplot(PRS, data = polypred10[polypred$Diagnosis == 1,],main="previous")
-#boxplot(updatePRS10$PRS,main ="updated")
+
+boxplot(PRS~Diagnosis, data = kunkle_eur,main="kunkle_eur", names=c("Control", "Case"),col = c("skyblue","lightpink"))
+boxplot(PRS~Diagnosis, data = kunkle_cT,main="kunkle", names=c("Control", "Case"),col = c("skyblue","lightpink"))
 
 
 #max snp= 1
