@@ -44,10 +44,13 @@ pre_process <- function(df, FILE=FALSE){
   print(paste("filtered=",  dim(df)[1], "rows"))
   return(df)
 }
-sbayesR = rename_prepreocess("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
+sbayesR = rename_preprocess("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
   
 bellenguez_update <- rename_preprocess('/gpfs/commons/home/tlin/output/prs/bellenguez_bellenguez_updateRSID_prs_PC.tsv')
+bellenguez_fixed_0224 <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_fixed_0224.tsv")
 bellenguez_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/bellenguez_pT_PRS_withPC.tsv')
+
+bellenguez_fixed_0224 <-read.table("/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_fixed_0224.tsv", header = TRUE)
 
 bellenguez_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/bellenguez_qc_pT_PRS.tsv')
 bellenguez_qc_on_target <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/qc_on_target.tsv')
@@ -63,8 +66,8 @@ susie <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/
 
 ##kunkle
 #kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/kunkle_pT_prs_before_qc.tsv')
-#only2 <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/kunkle_2snp.tsv")
 kunkle_APOE <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/APOE.tsv")
+
 ##kunkle_qc
 kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_no_qc.tsv')
 kunkle_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc.tsv')
@@ -219,6 +222,8 @@ col_roc <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 roc_result <-function(df, title=' ',column_for_roc){
   if('PRS_e5' %in% column_for_roc){
     roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
+  }else if ('PRS10' %in% column_for_roc){
+    roc_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS7+PRS10, data = df)
   }else{
     roc_list <- roc(Diagnosis ~ PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
   }
@@ -310,14 +315,10 @@ auc(roc(Diagnosis~no2SNP, data = extract_eur(kunkle_APOE)))  ##0.5834
 ### polyfun----
 
 ##bellenguez_all
-roc_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS10, data = bellenguez_all2)
-col_roc <- list("PRS1","PRS3","PRS5",'PRS10')
-bellenguez_roc = plot_roc(roc_list,col_roc, legend = 'PRS', replace = 'Max SNP = ', title="bellenguez(polyfun)")
 
-##bellenguez_eur
-eur_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS10, data =bellenguez_eur)
-eur_roc = plot_roc(eur_list, col_roc, legend = 'PRS', replace = 'Max SNP = ', title="bellenguez(EUR)")
-plot_grid(bellenguez_roc, eur_roc,ncol = 2, nrow = 1)
+bellenguez_roc = roc_result(bellenguez_fixed_0224, title="bellenguez(polyfun_pred)", column_for_roc = polypred_col)
+bellenguez_eur_roc = roc_result(extract_eur(bellenguez_fixed_0224), title="bellenguez(polyfun_pred, EUR)", column_for_roc = polypred_col)
+plot_grid(bellenguez_roc, bellenguez_eur_roc,ncol = 2, nrow = 1)
 
  ##susie
 roc_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS10, data = susie)
@@ -522,4 +523,24 @@ RsqGLM(mod2)$Nagelkerke
 par(mfrow=c(2,2),xpd=FALSE)
 
 
+kunkle_eur = extract_eur(kunkle_cT)
+plot(density(kunkle_eur[kunkle_eur$Diagnosis == 1,]$PRS), main = "kunkle_EUR", col = "red", xlab = "PRS")
+lines(density(kunkle_eur[kunkle_eur$Diagnosis == 0,]$PRS), col = "black")
 
+
+extract_eur(kunkle_qc_base)
+plot(density(extract_eur(kunkle_qc_base)[extract_eur(kunkle_qc_base)$Diagnosis == 1,]$PRS), main = "kunkle_EUR_QC", col = "red", xlab = "PRS")
+lines(density(extract_eur(kunkle_qc_base)[extract_eur(kunkle_qc_base)$Diagnosis == 0,]$PRS), col = "black")
+
+PRS_density <- function(df, name){
+  plot(density(df[df$Diagnosis == 0,]$PRS_5), main = name, col = "black", xlab = "PRS")
+  lines(density(df[df$Diagnosis == 1,]$PRS_5), col = "red")
+}
+
+PRS_density(extract_eur(kunkle_cT),"Kunkle, EUR (P = 0.5)")
+PRS_density(extract_eur(kunkle_qc),"Kunkle, qc, EUR (P = 0.5)")
+PRS_density(extract_eur(kunkle_qc_base),"qc on summary stats, EUR (P = 0.5)")
+PRS_density(extract_eur(kunkle_qc_target),"qc on target, EUR (P = 0.5)")
+
+legend(-0.25,80, inset=.02, title="AD diagnosis",
+       c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")

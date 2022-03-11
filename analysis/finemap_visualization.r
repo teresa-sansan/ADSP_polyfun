@@ -10,9 +10,11 @@ par(mfrow=c(1,2))
 
 # load data ---------------------------------------------------------------
 test= read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/test.tsv", header=TRUE)
+bellenguez_max_10 <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/test.tsv", header = T)
+bellenguez_max_7 <- read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_7/agg_bellenguez.extract_1e-3.tsv.gz"), header = T, fill = T)
 old_test = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
-
-
+kunkle_max_10 <- read.table("/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_10/agg_kunkle_extract_1e-3.tsv", header = T)
+bellenguez_max_10_updateRSID <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_bellenguez_extract_1e-3.tsv", header = T)
 
 #col_name_bellenguez =  c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 
@@ -126,19 +128,34 @@ manhattan(subset(bl_max5, PIP>0.05), p="PIP", logp = FALSE,ylim = c(0,1.1), ylab
 # *bar plot (SNPs count in different categories) ------
 
 count_SNP <-function(df){
-  return(c(dim(subset(df,P<1e-8))[1],dim(subset(df,PIP >=0.8))[1],dim(subset(df, PIP>=0.5))[1],
+  return(c(dim(subset(df,P<1e-5))[1],dim(subset(df,PIP >=0.8))[1],dim(subset(df, PIP>=0.5))[1],
           dim(subset(df,PIP>=0.3))[1]))
 }
 
-create_bar_plot <- function(df,line=F){
-  colnames(df) <- c("P<1e-08","PIP >= 0.8","PIP >= 0.5","PIP >= 0.3")
-  only_pip <- df[,-1] #renmove P<1e-08
-  barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*0.35*dim(only_pip)[1]))
-  legend("topleft",rownames(df), fill=terrain.colors(dim(only_pip)[1]),bty='n')
-  if(line != F)
-    abline(h = c(max(test[,1]),max(test[,2]),max(test[,3])), lty=3, col = "red")
-}
 
+create_bar_plot <- function(df,title){
+  count <- data.frame(
+    name=c("PIP >= 0.8","PIP >= 0.5","PIP >= 0.3"),
+    SNP=count_SNP(df)[-1]
+  )
+  print(count)
+  plot<- barplot(height = count$SNP,names = count$name, col = 'skyblue', main = title)
+  text(plot, y = count$SNP+10, labels=count$SNP, font=1, col='black')
+  }
+
+create_bar_plot(bellenguez_max_10, title="bellenguez_fixed_0224")
+create_bar_plot(old_test, title="bellenguez_all_2")
+create_bar_plot(bellenguez_max_10_updateRSID, title="bellenguez_updateRSID")
+create_bar_plot(kunkle_max_10, title="kunkle_fixed_0224")  
+  #colnames(count) <- c("P<1e-05","PIP >= 0.8","PIP >= 0.5","PIP >= 0.3")
+  #barplot(count, beside=T, width=.2, col=terrain.colors(3), ylim = c(0,max(count)*0.35*dim(count)[1]))
+  
+  #legend("topleft",rownames(count), fill=terrain.colors(dim(count)[1]),bty='n')
+  #if(line != F)
+  #  abline(h = c(max(count[,1]),max(count[,2]),max(count[,3])), lty=3, col = "red")
+
+
+create_bar_plot(bellenguez_max_10, line=T)
 
 create_bar_plot_legend(SNP_main_new)
 
@@ -523,27 +540,26 @@ plot_credible_bar <- function(df, title){
     geom_text(aes(label = n), size = 2.5, position= "stack", hjust= 0.95) 
   print(first)
   print(second)
+  
+  ##  plot hist of SNP count
+  count_freq= as.data.frame(table(count_groupby$n))
+  names(count_freq)[1] = "Credible_Set_Size"
+  
+  SNP_count<- ggplot(data= count_freq, aes(x = Credible_Set_Size, y = Freq)) + geom_bar(stat = "identity", fill = "skyblue") +
+    theme_light() + theme_bw() + geom_text(aes(label = Freq), size = 3) +
+    ggtitle(title)+xlab('the size of credible sets') +ylab("count")
+  print(SNP_count)
   return(count_groupby)
   
 }
 
 plot_credible_bar(old_test,"Max SNP per locus = 10")
-test_plot <- plot_credible_bar(old_test,"old test")
-
-count_freq= as.data.frame(table(test_plot$n))
-names(count_freq)[1] = "Credible_Set_Size"
-
-ggplot(data=count_freq, aes(Freq)) + 
-  geom_histogram()
-
-hist(count_freq$Freq)
-
-ggplot(data= count_freq, aes(x = Credible_Set_Size, y = Freq)) + geom_bar(stat = "identity", fill = "skyblue") +
-  theme_light() + theme_bw() + geom_text(aes(label = Freq), size = 3) +
-  ggtitle("max SNP per locus = 10")+xlab('the size of credible sets') +ylab("count")
-
-
+test_plot <- plot_credible_bar(old_test,"bellenguez_all_2")
+test_plot <- plot_credible_bar(bellenguez_max_10,"bellenguez_fixed_0224")
+plot_credible_bar(kunkle_max_10,"kunkle_fixed_0224")
+plot_credible_bar(bellenguez_max_10_updateRSID, "bellenguez, updateRSID")
 extract_SNP <- function(df){
+  df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_",df$end)
   df$unique = str_c(df$POS,'_' ,df$CREDIBLE_SET)
   unique_LD <-
     df%>% filter(CREDIBLE_SET>0)%>%
@@ -551,10 +567,12 @@ extract_SNP <- function(df){
   return(unique_LD)
 }
 
-wow = extract_SNP(test)
-
+bellenguez_max_10_SNP= extract_SNP(test)
+unique_LD = extract_SNP(old_test)
+kunkle_SNP = extract_SNP(kunkle_max_10)
+bellenguez_updateRSID_snp = extract_SNP(bellenguez_max_10_updateRSID)
 write.table(unique_LD,"/gpfs/commons/home/tlin/data/bellenguez_37SNPs.tsv", row.names = FALSE, sep = '\t')
 
-
+unique_LD = read.table('/gpfs/commons/home/tlin/data/bellenguez_37SNP.tsv', header = T)
 
 
