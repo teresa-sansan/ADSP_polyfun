@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=bellenguez_finemap_multi
+#SBATCH --job-name=bellenguez_finemap_multi_fixed_assertionerror_0311
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=150G
-#SBATCH --time=30:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/%x_%j.log
+#SBATCH --mem=200G
+#SBATCH --time=70:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_fixed_assertion_susie_iter/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -34,5 +34,5 @@ do
 	  	--method susie \
      	  	--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_qc/finemap/max_snp_${max_num_snp}/finemap_bellenguez.${chr}.$start.$end.gz"
+		--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_fixed_assertion_susie_iter/max_snp_${max_num_snp}/finemap_bellenguez.${chr}.$start.$end.gz"
 done

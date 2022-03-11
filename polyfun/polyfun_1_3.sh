@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=200G
 #SBATCH --time=08:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_qc/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/%x_%j.log
 
 
 cd ~/polyfun_omer_repo

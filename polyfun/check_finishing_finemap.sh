@@ -1,5 +1,7 @@
-path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_susie"
-prefix=finemap_bellenguez_all2_susie
+#path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_susie"
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap'
+prefix=finemap_bellenguez
+#prefix=finemap_bellenguez_all2_susie
 #path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie"
 #prefix=finemap_bellenguez_susie
 if [ -f $path/check_finemap.txt ]; then rm $path/check_finemap.txt; fi #remove pre-exist file
@@ -25,6 +27,7 @@ echo
 for i in 1 3 5 7 10
 do 
 	cd ${path}/max_snp_$i
+        pwd
        	echo $prefix/max_snp_${i}| tee -a $path/check_finemap.txt 
 	check $prefix| tee -a $path/check_finemap.txt 
 done
