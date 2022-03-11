@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=30:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/finemap_fixed_assertion_susie_iter/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -29,7 +29,7 @@ do
 	  	--method susie \
      	  	--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out "/gpfs/commons/home/tlin/output/wightman/finemap/max_snp_${max_num_snp}/finemap_wightman.${chr}.$start.$end.gz"
+		--out "/gpfs/commons/home/tlin/output/wightman/finemap_fixed_assertion_susie_iter/max_snp_${max_num_snp}/finemap_wightman.${chr}.$start.$end.gz"
 
 	
 

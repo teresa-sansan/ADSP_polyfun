@@ -18,5 +18,5 @@ prs = pd.DataFrame({'PRS1':prs1.PRS,'PRS3':prs3.PRS, 'PRS5':prs5.PRS,'PRS7':prs7
 prs['SampleID'] = prs1.IID
 merged = pd.merge(pheno, prs, on="SampleID").drop(columns=['Duplicate_SUBJID', 'flag_age_covariate'])
 merged=merged.rename(columns={"AD_status_final":"Diagnosis", "age_covariate":"Age"})
-
+merged = merged.fillna(-100)
 merged.to_csv('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_fixed_0224.tsv', sep = '\t', index = False)

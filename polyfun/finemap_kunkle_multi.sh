@@ -4,14 +4,14 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=22:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/kunkle_all_2/finemap/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/%x%j.log
 cd ~/polyfun_omer_repo
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${chr}*" 
-summary_stat="/gpfs/commons/home/tlin/output/kunkle_all_2/all_anno.${chr}.snpvar_constrained.gz"
+summary_stat="/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/kunkle.${chr}.snpvar_constrained.gz"
 
 
 for i in $FILES
@@ -29,7 +29,7 @@ do
 	  	--method susie \
 		--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out /gpfs/commons/home/tlin/output/kunkle_all_2/max_snp_${max_num_snp}/all_anno_2.${chr}.$start.$end.gz 
+		--out /gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_${max_num_snp}/kunkle.${chr}.$start.$end.gz 
 	
 
 done
