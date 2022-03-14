@@ -1198,7 +1198,7 @@ if __name__ == '__main__':
     parser.add_argument('--susie-resvar', default=None, type=float, help='If specified, SuSiE will use this value of the residual variance')
     parser.add_argument('--susie-resvar-init', default=None, type=float, help='If specified, SuSiE will use this initial value of the residual variance')
     parser.add_argument('--susie-resvar-hess', default=False, action='store_true', help='If specified, SuSiE will specify the residual variance using the HESS estimate')
-    parser.add_argument('--susie-max-iter', default=100, type=int, help='SuSiE argument max_iter which controls the max number of IBSS iterations to perform (default: 100)')
+    parser.add_argument('--susie-max-iter', default=1000, type=int, help='SuSiE argument max_iter which controls the max number of IBSS iterations to perform (default: changed from 100 to 1000)')
     parser.add_argument('--hess', action='store_true', default=False, help='If specified, estimate causal effect variance via HESS')
     parser.add_argument('--hess-iter', type=int, default=100, help='Average HESS over this number of iterations (default: 100)')
     parser.add_argument('--hess-min-h2', type=float, default=None, help='When estimating causal effect variance via HESS, exclude SNPs that tag less than this amount of heritability (default: None)')
