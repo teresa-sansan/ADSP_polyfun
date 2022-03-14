@@ -1,13 +1,17 @@
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
-
-for chr in 1
+for max_snp in 1 3 5 7 10
 do
-	python create_finemapper_jobs_modified.py \
-    		--sumstats /gpfs/commons/home/tlin/output/kunkle_all_2/all_anno.${chr}.snpvar_constrained.gz \
-   	 	--n 63926 \
-		--method susie \
-    		--max-num-causal 1 \
-    		--out-prefix /gpfs/commons/home/tlin/output/kunkle_all_2/finemap/all_anno_2 \
-    		--jobs-file /gpfs/commons/home/tlin/polyfun_script/pipeline/create_job/finemap_all_jobs_kunkle2.${chr}.txt
+	echo start creating jobs in max_snp_${max_snp} ...
+	for chr in {1..22}
+	do
+		python create_finemapper_jobs.py \
+    			--sumstats /gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/bellenguez.${chr}.snpvar_constrained.gz \
+   	 		--n 487511 \
+			--method susie \
+    			--max-num-causal $max_snp \
+    			--out-prefix /gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_fixed_assertion_susie_iter/max_snp_${max_snp}/bellenguez \
+    			--jobs-file /gpfs/commons/home/tlin/script/polyfun/finemap_job/bellenguez_max_snp_${max_snp}_chr${chr}.sh &
+
+	done
 
 done

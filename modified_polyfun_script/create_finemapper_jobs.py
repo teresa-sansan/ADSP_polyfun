@@ -16,7 +16,8 @@ def create_finemapper_cmd(args, chr_num, start, end, url_prefix):
     output_file = '%s.chr%s.%s_%s.gz'%(args.out_prefix, chr_num, start, end)
     cmd = '%s %s --chr %s --start %s --end %s --out %s'%(args.python3, FINEMAPPER_SCRIPT, chr_num, start, end, output_file)
     if args.max_num_causal>1 and args.geno is None:
-        cmd += ' --ld %s'%(url_prefix)
+          #cmd += ' --ld %s'%(url_prefix)
+          cmd += ' --ld /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr%s_%s_%s'%(chr_num, start,end)
     
     #add command line arguments
     for key, value in vars(args).items():
@@ -27,8 +28,7 @@ def create_finemapper_cmd(args, chr_num, start, end, url_prefix):
                 cmd += ' --%s'%(key)                
         elif value is not None:
             cmd += ' --%s %s'%(key, value)
-    cmd += ' &'
-
+        
     return cmd
     
 
@@ -55,6 +55,13 @@ def main(args):
     
     #create jobs
     with open(args.jobs_file, 'w') as f:
+        f.write('#!/bin/bash \n#SBATCH --job-name=finemap \n#SBATCH --mail-type=FAIL \n#SBATCH --mail-user=tlin@nygenome.org \n#SBATCH --mem=150G \n#SBATCH --time=70:00:00 \n#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_fixed_assertion_susie_iter/%x_%j.log \n')
+        f.write('\n')
+        f.write('cd ~/polyfun_omer_repo \n')
+        f.write('source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate \n')
+        f.write('conda activate polyfun')
+        f.write('\n')
+
         for _, r in df_regions.iterrows():
             chr_num, start, end, url_prefix = r['CHR'], r['START'], r['END'], r['URL_PREFIX']
             
@@ -66,6 +73,7 @@ def main(args):
             #create and write the fine-mapping command for this region
             cmd = create_finemapper_cmd(args, chr_num, start, end, url_prefix)
             f.write(cmd + '\n')
+    
     logging.info('Wrote fine-mapping commands to %s'%(args.jobs_file))
         
 
