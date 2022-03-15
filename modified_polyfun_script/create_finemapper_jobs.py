@@ -8,7 +8,7 @@ from pyarrow import ArrowIOError
 from pyarrow.lib import ArrowInvalid
 from polyfun_utils import DEFAULT_REGIONS_FILE
 
-FINEMAPPER_SCRIPT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'finemapper.py')
+FINEMAPPER_SCRIPT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'finemapper_ori.py')
 
 
 def create_finemapper_cmd(args, chr_num, start, end, url_prefix):
@@ -55,7 +55,7 @@ def main(args):
     
     #create jobs
     with open(args.jobs_file, 'w') as f:
-        f.write('#!/bin/bash \n#SBATCH --job-name=finemap \n#SBATCH --mail-type=FAIL \n#SBATCH --mail-user=tlin@nygenome.org \n#SBATCH --mem=150G \n#SBATCH --time=70:00:00 \n#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_fixed_assertion_susie_iter/%x_%j.log \n')
+        f.write('#!/bin/bash \n#SBATCH --job-name=finemap \n#SBATCH --mail-type=FAIL \n#SBATCH --mail-user=tlin@nygenome.org \n#SBATCH --mem=150G \n#SBATCH --time=70:00:00 \n#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_check_pipeline/%x_%j.log \n')
         f.write('\n')
         f.write('cd ~/polyfun_omer_repo \n')
         f.write('source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate \n')
