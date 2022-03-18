@@ -24,7 +24,7 @@ bellenguez_max_10_updateRSID <- read.table("/gpfs/commons/home/tlin/output/belle
 
 
 
-tau = read.csv('/gpfs/commons/home/tlin/polyfun/data/bl_annotation_tau.tsv', header=T, sep='\t')
+#tau = read.csv('/gpfs/commons/home/tlin/polyfun/data/bl_annotation_tau.tsv', header=T, sep='\t')
 
 
 
@@ -464,7 +464,7 @@ create_PIP_subset <- function(df, thres, upperthres=TRUE){
   df <- subset(df, df$CREDIBLE_SET > 0) ## first, extract those rows that have credibleset != 0
   print(names(df))
   print(str_c("Chr",df$CHR,'_' ,df$start, "_", df$end))
-  #df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end) ## creat a new column thats easier to match in later stage
+  df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end) ## creat a new column thats easier to match in later stage
   df_count <- df[df$PIP > thres,] %>% count(POS)
   print("2")
   
@@ -511,8 +511,10 @@ PIP_0.5 <-create_lollipop(test, 0.5,0.5,"Max SNP per locus = 10, fixed_0224")
 PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
 PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
 
-PIP_0.95 <- create_lollipop(aggregate10, 0.95,0.5,"Max SNP per locus = 10, fixed_0224")
-PIP_0.5 <-create_lollipop(aggregate10, 0.5,0.5,"Max SNP per locus = 10, fixed_0224")
+PIP_0.95 <- create_lollipop(bellenguez_max_10_updateRSID, 0.95,0.5,"Max SNP per locus = 10, updateRSID")
+PIP_0.5 <-create_lollipop(bellenguez_max_10_updateRSID, 0.5,0.5,"Max SNP per locus = 10, updateRSID")
+
+
 
 
 
@@ -564,13 +566,18 @@ extract_SNP <- function(df){
   unique_LD <-
     df%>% filter(CREDIBLE_SET>0)%>%
     group_by(unique) %>% filter(n()==1) %>% ungroup()  %>% select(-c(start,end, unique))
-  return(unique_LD)
+  print(unique_LD)
+  #return(unique_LD)
 }
 
-bellenguez_max_10_SNP= extract_SNP(test)
-unique_LD = extract_SNP(old_test)
-kunkle_SNP = extract_SNP(kunkle_max_10)
 bellenguez_updateRSID_snp = extract_SNP(bellenguez_max_10_updateRSID)
+
+#bellenguez_max_10_SNP= extract_SNP(test)
+#unique_LD = extract_SNP(old_test)
+#kunkle_SNP = extract_SNP(kunkle_max_10)
+write.table(bellenguez_updateRSID_snp,"/gpfs/commons/home/tlin/data/update_RSID_bellenguez_33SNPs.tsv", row.names = FALSE, sep = '\t')
+
+
 write.table(unique_LD,"/gpfs/commons/home/tlin/data/bellenguez_37SNPs.tsv", row.names = FALSE, sep = '\t')
 
 unique_LD = read.table('/gpfs/commons/home/tlin/data/bellenguez_37SNP.tsv', header = T)
