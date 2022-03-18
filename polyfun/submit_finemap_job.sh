@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for max_snp in 10
+for max_snp in 1 3 5 7 10
 do
 	for i in {1..22} 
 	do
