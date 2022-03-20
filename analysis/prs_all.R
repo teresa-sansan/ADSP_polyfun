@@ -11,6 +11,7 @@ library(cowplot)
 library(pROC)
 #library(fmsb)   ##psudo rsquare
 library(modEvA)  # psuedo rsquare
+library(boot)
 
 ## first, look at the composition of ADSP phenotype file (in plink format) ----
 
@@ -347,9 +348,9 @@ legend("bottom", legend=c(paste("SbayesR, auc = ",round(roc(sbayesR$Diagnosis~sb
 
 ## Regression ----
 
-log_reg <- function(df,prs,main_title,plot = TRUE, legend="PRS_", replace="pT = 0."){
+log_reg <- function(df,prs,main_title,plot = FALSE, legend="PRS_", resample = TRUE, replace="pT = 0."){
   mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial)
-  mod1_R2 <- RsqGLM(mod1)$Nagelkerke
+  mod1_R2 <- RsqGLM(mod1, plot=FALSE)$Nagelkerke
   for (i in 1:length(prs)){
     frm <- as.formula(paste("Diagnosis ~ Sex + Age+", prs[[i]]))
     mod <- glm(formula = frm,family = 'binomial', data = df)
@@ -384,6 +385,70 @@ log_reg <- function(df,prs,main_title,plot = TRUE, legend="PRS_", replace="pT = 
   }
   return(cof)
 }
+
+rsq <- function(formula, data, indices=FALSE) {
+  if (indices !=FALSE){
+    d <- data[indices,] # allows boot to select sample
+  }
+  else 
+    d = data 
+  fit <- glm(formula = formula,family = 'binomial', data = d)
+  return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
+}
+
+
+##resample
+log_reg <- function(df,prs,main_title,plot = FALSE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
+  mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial)
+  mod1_R2 <- RsqGLM(mod1, plot=FALSE)$Nagelkerke
+  for (i in 1:length(prs)){
+    frm <- as.formula(paste("Diagnosis ~ Sex + Age+", prs[[i]]))
+    if(boot_num != FALSE){
+      mod <- boot(data=df, statistic=rsq,
+                     R=boot_num, formula=frm)
+      CI  <- boot.ci(boot.out=mod,type='norm')$normal[c(2,3)]
+      mean =  mean(mod$t0)
+      mod_R2<- c(mean, CI)
+    }
+    else{
+      mod <- glm(formula = frm,family = 'binomial', data = df)
+      mod_R2 <-  RsqGLM(mod, plot=FALSE)$Nagelkerke 
+      ## table
+      if(i ==1){
+        cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
+        cof['R2'] = round(mod1_R2,5)
+        cof['R2_prs'] = round(mod_R2,5)
+        cof['PRS'] =prs[i]
+      }
+      else{
+        cof2 <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
+        cof2['R2'] = round(mod1_R2,5)
+        cof2['R2_prs'] = round(mod_R2,5)
+        cof2['PRS'] =prs[i]
+        cof <- rbind(cof, cof2)
+      }  
+    }
+    #return(cof)
+    }
+    print(mod_R2)
+    ##plot
+    if(plot == TRUE){
+      plot(residuals(mod, type = "pearson") ~ df[,prs[[i]]], ylab = "Residual", xlab = "PRS", col = as.factor(df$Diagnosis), 
+           main =  paste(str_replace(prs[[i]], legend,replace), ", in ", population, 'population'), cex = 0.5)
+      plot(residuals(mod, type = "pearson") ~ residuals(mod1, type = "pearson"), ylab = "w. PRS", xlab = "w/o PRS", col = as.factor(df$Diagnosis),
+           cex=0.5,main = paste(str_replace(prs[[i]], legend,replace), ", in ", population, 'population'))
+      abline(0,1, col='blue')
+      legend("bottomright", legend = c("control","case"), col = 1:2, pch = 19, bty = "n")
+      mtext(paste("Diagnosis ~ Sex+Age+PRS, df=" ,main_title),                   # Add main title
+            side = 3,
+            line = -1.25,
+            outer = TRUE, cex =1.1)
+    }
+   
+}
+
+
+
 plotR2 <- function(log_output, header){
   prs_col = seq(from=1, to=dim(log_output)[1], by=4)
   plot(log_output$R2_prs[prs_col], ylim  = c(min(log_output$R2[1], min(log_output$R2_prs[prs_col])), max(log_output$R2[1], max(log_output$R2_prs[prs_col]))),
@@ -399,6 +464,29 @@ plotR2 <- function(log_output, header){
        labels = c(str_replace(log_output$PRS[1],"PRS_e5","p = 1*e-5"),str_replace(log_output$PRS[seq(from=1, to=dim(log_output)[1], by=4)][-1],"PRS_","p = 0.")))
   
 }
+
+
+rsq <- function(formula, data, indices) {
+  d <- data[indices,] # allows boot to select sample
+  fit <- glm(formula = formula,family = 'binomial', data = d)
+  return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
+}
+# bootstrapping with 1000 replications
+results <- boot(data=kunkle_cT, statistic=rsq,
+                R=20, formula=Diagnosis~Sex+Age,)
+
+# view results
+results
+plot(results)
+
+# get 95% confidence interval
+boot.ci(results, type="bca")
+result = boot.ci(boot.out=results,type='norm')
+print(c(mean(results$t) - 2*sd(results$t), mean(results$t) + 2*sd(results$t)))
+
+
+
+
 ##bellenguez------
 bell_log <- log_reg(bellenguez_update, col_roc_E5, 'bellenguez_updated', plot = FALSE, legend="PRS", replace="max_snp_per_locus=")
 bell_log_eur <- log_reg(bellenguez_eur, col_roc_E5, 'bellenguez_updated', plot=FALSE, legend="PRS", replace="max_snp_per_locus=")
