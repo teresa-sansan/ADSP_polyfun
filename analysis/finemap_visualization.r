@@ -549,7 +549,7 @@ plot_credible_bar <- function(df, title){
   
   SNP_count<- ggplot(data= count_freq, aes(x = Credible_Set_Size, y = Freq)) + geom_bar(stat = "identity", fill = "skyblue") +
     theme_light() + theme_bw() + geom_text(aes(label = Freq), size = 3) +
-    ggtitle(title)+xlab('the size of credible sets') +ylab("count")
+    ggtitle(title)+xlab('The number of SNP(s) in credible set') +ylab("count")
   print(SNP_count)
   return(count_groupby)
   
@@ -582,4 +582,17 @@ write.table(unique_LD,"/gpfs/commons/home/tlin/data/bellenguez_37SNPs.tsv", row.
 
 unique_LD = read.table('/gpfs/commons/home/tlin/data/bellenguez_37SNP.tsv', header = T)
 
+par(mfrow=c(1,1))
+plot(x = bellenguez_updateRSID_snp$CHR, y=bellenguez_updateRSID_snp$PIP, xlab = "CHR", ylab = "PIP", main= 'the only SNP in a credible set (bellenguez)',axes = FALSE, xlim =c(1,22))
+box(bty = "l")
+axis(1 , at=c(1:22))
+axis(2, at =c(0,0.25,0.5,0.75,1))
+lowpip <- bellenguez_updateRSID_snp %>%
+  filter(PIP < 0.5) 
 
+text(as.numeric(unlist(lowpip[,'CHR'])), as.numeric(unlist(lowpip[,'PIP'])),labels=(as.character(lowpip$SNP)),  
+     cex=1, pos=3,col="blue") 
+interested_SNP <- bellenguez_updateRSID_snp %>%
+  filter(PIP > 0.5) 
+
+write.table(interested_SNP,"/gpfs/commons/home/tlin/data/bellenguez_updateRSID_interested_SNP.tsv", row.names = FALSE, sep = '\t',quote=F)
