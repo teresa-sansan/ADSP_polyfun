@@ -62,6 +62,9 @@ bellenguez_qc0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/
 bellenguez_qc_on_target0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_target.tsv')
 bellenguez_qc_on_base0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_base.tsv')
 
+bellenguez_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_interested_SNP.tsv') 
+bellenguez_qc_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_qc_interested_SNP.tsv')
+
 ##susie
 susie <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
 
@@ -202,6 +205,12 @@ extract_afr <- function (df){
 }
 
 
+extract_amr <- function (df){
+  AMR = df[df$final_population == "AMR",]
+  return(AMR)
+}
+
+
 ##AUC ------
 plot_roc <- function(roclist, roccol,legend="PRS_", replace="p = 0.",title = FALSE){
   legendname = list()
@@ -264,6 +273,17 @@ bellenguez_qc_afr_plot = roc_result(extract_afr(bellenguez_qc0224),column_for_ro
 bellenguez_qc_amr_plot = roc_result(bellenguez_qc0224[bellenguez_qc0224$final_population == "AMR",],column_for_roc = col_roc_E5, title = "bellenguez, c+pT,QC,AMR")
 
 plot_grid(bellenguez_qc_plot,bellenguez_qc_eur_plot,bellenguez_qc_afr_plot, bellenguez_qc_amr_plot,ncol =2, nrow = 2)
+
+##bellenguez_interested_SNP
+auc(roc(Diagnosis~PRS, data = bellenguez_interested))  # 0.5187
+auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_interested))) ##0.5308
+auc(roc(Diagnosis~PRS, data = extract_afr(bellenguez_interested))) #0.529
+auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_interested))) #0.4991
+
+auc(roc(Diagnosis~PRS, data = bellenguez_qc_interested)) # 0.5255
+auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_qc_interested))) ##0.5422
+auc(roc(Diagnosis~PRS, data = extract_afr(bellenguez_qc_interested))) #0.5215
+auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_qc_interested))) #0.5182
 
 
 ####kunkle------
@@ -348,44 +368,6 @@ legend("bottom", legend=c(paste("SbayesR, auc = ",round(roc(sbayesR$Diagnosis~sb
 
 ## Regression ----
 
-log_reg <- function(df,prs,main_title,plot = FALSE, legend="PRS_", resample = TRUE, replace="pT = 0."){
-  mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial)
-  mod1_R2 <- RsqGLM(mod1, plot=FALSE)$Nagelkerke
-  for (i in 1:length(prs)){
-    frm <- as.formula(paste("Diagnosis ~ Sex + Age+", prs[[i]]))
-    mod <- glm(formula = frm,family = 'binomial', data = df)
-    mod_R2 <-  RsqGLM(mod)$Nagelkerke
-    ##plot
-    if(plot == TRUE){
-    plot(residuals(mod, type = "pearson") ~ df[,prs[[i]]], ylab = "Residual", xlab = "PRS", col = as.factor(df$Diagnosis), 
-         main =  paste(str_replace(prs[[i]], legend,replace), ", in ", population, 'population'), cex = 0.5)
-    plot(residuals(mod, type = "pearson") ~ residuals(mod1, type = "pearson"), ylab = "w. PRS", xlab = "w/o PRS", col = as.factor(df$Diagnosis),
-         cex=0.5,main = paste(str_replace(prs[[i]], legend,replace), ", in ", population, 'population'))
-    abline(0,1, col='blue')
-    legend("bottomright", legend = c("control","case"), col = 1:2, pch = 19, bty = "n")
-    mtext(paste("Diagnosis ~ Sex+Age+PRS, df=" ,main_title),                   # Add main title
-          side = 3,
-          line = -1.25,
-          outer = TRUE, cex =1.1)
-    }
-    ## table
-    if(i ==1){
-      cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
-      cof['R2'] = round(mod1_R2,5)
-      cof['R2_prs'] = round(mod_R2,5)
-      cof['PRS'] =prs[i]
-    }
-    else{
-      cof2 <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
-      cof2['R2'] = round(mod1_R2,5)
-      cof2['R2_prs'] = round(mod_R2,5)
-      cof2['PRS'] =prs[i]
-      cof <- rbind(cof, cof2)
-    }  
-  }
-  return(cof)
-}
-
 rsq <- function(formula, data, indices=FALSE) {
   if (indices !=FALSE){
     d <- data[indices,] # allows boot to select sample
@@ -396,9 +378,9 @@ rsq <- function(formula, data, indices=FALSE) {
   return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
 }
 
-
 ##resample
-log_reg <- function(df,prs,main_title,plot = FALSE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
+log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
+  set.seed(10)
   mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial)
   mod1_R2 <- RsqGLM(mod1, plot=FALSE)$Nagelkerke
   for (i in 1:length(prs)){
@@ -406,46 +388,63 @@ log_reg <- function(df,prs,main_title,plot = FALSE, legend="PRS_", boot_num = FA
     if(boot_num != FALSE){
       mod <- boot(data=df, statistic=rsq,
                      R=boot_num, formula=frm)
-      CI  <- boot.ci(boot.out=mod,type='norm')$normal[c(2,3)]
-      mean =  mean(mod$t0)
-      mod_R2<- c(mean, CI)
-    }
+      #CI  <- boot.ci(boot.out=mod,type='norm')$normal[c(2,3)]
+     
+      sd = sd(mod$t)
+      mean =  mean(mod$t)
+      CI = c(mean-2*sd, mean+2*sd)
+      ##table
+      if(i ==1){
+        R2 <- data.frame (
+                          'PRS' = prs[[i]],
+                          'boot_mean'  = mean,
+                          'boot_CI_upper' = CI[2],
+                          'boot_CI_lower' = CI[1],
+                          'SD' = sd,
+                          "null_R2" = mod1_R2)
+      }
+      else{
+        R2_else <- data.frame ('PRS' = prs[[i]],
+                          'boot_mean'  = mean,
+                          'boot_CI_upper' = CI[2],
+                          'boot_CI_lower' = CI[1],
+                          'SD' = sd,
+                          "null_R2" = mod1_R2)
+        R2 <- rbind(R2, R2_else)
+        if(dim(R2)[1]==length(prs) && plot == TRUE){
+          plotR2_boot(R2,main_title, prs,boot_num)
+          return (R2)
+        }
+      }
+    }  ##bootstrap
     else{
       mod <- glm(formula = frm,family = 'binomial', data = df)
       mod_R2 <-  RsqGLM(mod, plot=FALSE)$Nagelkerke 
       ## table
       if(i ==1){
         cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
-        cof['R2'] = round(mod1_R2,5)
+        cof['null_R2'] = round(mod1_R2,5)
         cof['R2_prs'] = round(mod_R2,5)
-        cof['PRS'] =prs[i]
+        cof['PRS'] = prs[i]
       }
       else{
         cof2 <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
-        cof2['R2'] = round(mod1_R2,5)
+        cof2['null_R2'] = round(mod1_R2,5)
         cof2['R2_prs'] = round(mod_R2,5)
         cof2['PRS'] =prs[i]
         cof <- rbind(cof, cof2)
-      }  
+        #print(cof)
+        if(dim(cof)[1]/4==length(prs) && plot == TRUE){
+          plotR2_boot(cof,main_title, prs,boot_num)
+          return (cof)
+        }
+      }
     }
-    #return(cof)
-    }
-    print(mod_R2)
-    ##plot
-    if(plot == TRUE){
-      plot(residuals(mod, type = "pearson") ~ df[,prs[[i]]], ylab = "Residual", xlab = "PRS", col = as.factor(df$Diagnosis), 
-           main =  paste(str_replace(prs[[i]], legend,replace), ", in ", population, 'population'), cex = 0.5)
-      plot(residuals(mod, type = "pearson") ~ residuals(mod1, type = "pearson"), ylab = "w. PRS", xlab = "w/o PRS", col = as.factor(df$Diagnosis),
-           cex=0.5,main = paste(str_replace(prs[[i]], legend,replace), ", in ", population, 'population'))
-      abline(0,1, col='blue')
-      legend("bottomright", legend = c("control","case"), col = 1:2, pch = 19, bty = "n")
-      mtext(paste("Diagnosis ~ Sex+Age+PRS, df=" ,main_title),                   # Add main title
-            side = 3,
-            line = -1.25,
-            outer = TRUE, cex =1.1)
-    }
-   
+  }
 }
+
+log_reg(kunkle_cT, col_roc,"test", boot_num = 6)
+
 
 
 
@@ -456,8 +455,7 @@ plotR2 <- function(log_output, header){
   text(seq(from=1,to=length(prs_col)),log_output$R2_prs[prs_col] , 
        labels = log_output$R2_prs[prs_col], adj = c(0.5,2), xpd = TRUE, cex=1, col="darkgreen") 
   
-  abline(h=log_output$R2[1], col=c("blue"), lty=2, lwd=4)
-  #text((length(prs_col)+1)/2,log_output$R2[1] , labels =  "Null model", adj = c(0.5,-2), xpd = TRUE, cex=1) 
+  abline(h=log_output$NULL_R2[1], col=c("blue"), lty=2, lwd=4)
   text((length(prs_col)+1)/2,log_output$R2[1] , labels =  paste("Null model: ",log_output$R2[1]), adj = c(0.5,-1), xpd = TRUE, cex=1, col="blue")
   axis(1,                         # Define x-axis manually
        at = 1:length(prs_col),
@@ -465,6 +463,45 @@ plotR2 <- function(log_output, header){
   
 }
 
+par(xpd = FALSE,mfrow=c(1,1))
+plotR2_boot <- function(log_output, header, prs_col, boot){
+  par(xpd = FALSE,mfrow=c(1,1))
+  if(boot == FALSE){   ## no bootstrapping
+    prs_col = seq(from=1, to=dim(log_output)[1], by=4)
+    plot(log_output$R2_prs[prs_col], ylim  = c(min(log_output$null_R2[1], min(log_output$R2_prs[prs_col]))*0.95, max(log_output$null_R2[1], max(log_output$R2_prs[prs_col]))),
+         ylab='R-squared', xlab = "different PRS",pch=4,col="darkgreen", main=header,xaxt = "n")
+    text(seq(from=1,to=length(prs_col)),log_output$R2_prs[prs_col] , 
+         labels = log_output$R2_prs[prs_col], adj = c(0.5,2), xpd = TRUE, cex=1, col="darkgreen") 
+    axis(1,                         # Define x-axis manually
+         at = 1:length(prs_col),
+         labels = c(str_replace(log_output$PRS[1],"PRS_e5","p = 1*e-5"),str_replace(log_output$PRS[seq(from=1, to=dim(log_output)[1], by=4)][-1],"PRS_","p = 0.")))
+    
+    
+  }
+  else
+  {
+    plot(log_output$boot_mean, ylim  = c(min(log_output$null_R2[1], min(log_output$boot_mean))*0.1, max(log_output$boot_mean[1], max(log_output$boot_mean)*1.5)),
+         ylab='R-squared', xlab = "different PRS",pch=4,col="darkgreen", main=header,xaxt = "n")
+    arrows(1:7, log_output$boot_CI_upper, 1:7, log_output$boot_CI_lower, length=0.05, angle=90, code=3, col='grey58') 
+    text(seq(from=1,to=length(prs_col)),log_output$boot_mean , 
+         labels = round(log_output$boot_mean,5), adj = c(0.5,2), xpd = TRUE, cex=1, col="darkgreen") 
+    axis(1,                         # Define x-axis manually
+         at = 1:length(prs_col),
+         labels = c(str_replace(prs_col[1],"PRS_e5","p = 1*e-5"),str_replace(prs_col[seq(from=1, to=length(prs_col))][-1],"PRS_","p = 0.")))
+  }
+  
+  abline(h=log_output$null_R2[1], col=c("blue"), lty=2, lwd=2)
+  text((length(prs_col)+1)/2,log_output$null_R2[1] , labels =  paste("Null model: ",round(log_output$null_R2[1],5)), adj = c(0.5,-1), xpd = TRUE, cex=1, col="blue")
+  
+}
+plotR2_boot(test, "test", col_roc, FALSE)
+#test_boot = log_reg(kunkle_cT, col_roc,"test", boot_num = 2)
+
+#test = log_reg(kunkle_cT, col_roc,"test", plot = T)
+
+
+
+par(mfrow=c(1,1)) 
 
 rsq <- function(formula, data, indices) {
   d <- data[indices,] # allows boot to select sample
