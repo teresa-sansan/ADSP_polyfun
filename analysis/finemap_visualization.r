@@ -10,7 +10,7 @@ par(mfrow=c(1,2))
 
 # load data ---------------------------------------------------------------
 test= read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/test.tsv", header=TRUE)
-bellenguez_max_10 <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/test.tsv", header = T)
+#bellenguez_max_10 <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/test.tsv", header = T)
 bellenguez_max_7 <- read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_7/agg_bellenguez.extract_1e-3.tsv.gz"), header = T, fill = T)
 old_test = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
 kunkle_max_10 <- read.table("/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_10/agg_kunkle_extract_1e-3.tsv", header = T)
@@ -69,6 +69,7 @@ gwas_data <- function(data, pvalue=FALSE, p=TRUE){
     return(subset(data, p<pvalue))
   }
 }
+
 
 kunkle_gwas = subset(kunkle, P<1e-8)
 jansen_gwas = subset(jansen, P<1e-8)
@@ -156,7 +157,6 @@ create_bar_plot(kunkle_max_10, title="kunkle_fixed_0224")
 
 
 create_bar_plot(bellenguez_max_10, line=T)
-
 create_bar_plot_legend(SNP_main_new)
 
 create_bar_plot_legend <- function(df,remove=T,main=F){
@@ -466,7 +466,6 @@ create_PIP_subset <- function(df, thres, upperthres=TRUE){
   print(str_c("Chr",df$CHR,'_' ,df$start, "_", df$end))
   df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end) ## creat a new column thats easier to match in later stage
   df_count <- df[df$PIP > thres,] %>% count(POS)
-  print("2")
   
   ## check if the boundary of PIP is a upper bound or lower bound
   if(upperthres == TRUE){
@@ -511,8 +510,8 @@ PIP_0.5 <-create_lollipop(test, 0.5,0.5,"Max SNP per locus = 10, fixed_0224")
 PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
 PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
 
-PIP_0.95 <- create_lollipop(bellenguez_max_10_updateRSID, 0.95,0.5,"Max SNP per locus = 10, updateRSID")
-PIP_0.5 <-create_lollipop(bellenguez_max_10_updateRSID, 0.5,0.5,"Max SNP per locus = 10, updateRSID")
+PIP_0.95 <- create_lollipop(kunkle_max_10, 0.95,0.5,"Max SNP per locus = 10, kunkle")
+PIP_0.5 <-create_lollipop(kunkle_max_10, 0.5,0.5,"Max SNP per locus = 10, kunkle")
 
 
 
@@ -571,16 +570,18 @@ extract_SNP <- function(df){
 }
 
 bellenguez_updateRSID_snp = extract_SNP(bellenguez_max_10_updateRSID)
+kunkle_snp =  extract_SNP(kunkle_max_10)
 
 #bellenguez_max_10_SNP= extract_SNP(test)
 #unique_LD = extract_SNP(old_test)
 #kunkle_SNP = extract_SNP(kunkle_max_10)
+
+
+
+
 write.table(bellenguez_updateRSID_snp,"/gpfs/commons/home/tlin/data/update_RSID_bellenguez_33SNPs.tsv", row.names = FALSE, sep = '\t')
 
-
 write.table(unique_LD,"/gpfs/commons/home/tlin/data/bellenguez_37SNPs.tsv", row.names = FALSE, sep = '\t')
-
-unique_LD = read.table('/gpfs/commons/home/tlin/data/bellenguez_37SNP.tsv', header = T)
 
 par(mfrow=c(1,1))
 plot(x = bellenguez_updateRSID_snp$CHR, y=bellenguez_updateRSID_snp$PIP, xlab = "CHR", ylab = "PIP", main= 'the only SNP in a credible set (bellenguez)',axes = FALSE, xlim =c(1,22))
@@ -596,3 +597,19 @@ interested_SNP <- bellenguez_updateRSID_snp %>%
   filter(PIP > 0.5) 
 
 write.table(interested_SNP,"/gpfs/commons/home/tlin/data/bellenguez_updateRSID_interested_SNP.tsv", row.names = FALSE, sep = '\t',quote=F)
+
+
+
+
+## another way of thinking?
+kunkle_max_10$pos = str_c("Chr",kunkle_max_10$CHR,'_' ,kunkle_max_10$start, "_",kunkle_max_10$end, '_', kunkle_max_10$CREDIBLE_SET)
+otherway_kunkle = kunkle_max_10 %>% filter(PIP >=0.5 ) %>% group_by(pos) %>% filter(n()==1) %>% ungroup()
+check_kunkle = kunkle_max_10 %>% group_by(pos) %>% filter(n()==1) %>% ungroup()  %>% filter(PIP >0 )
+ 
+bellenguez_max_10_updateRSID$pos = str_c("Chr",bellenguez_max_10_updateRSID$CHR,'_' ,bellenguez_max_10_updateRSID$start, "_",bellenguez_max_10_updateRSID$end, '_', bellenguez_max_10_updateRSID$CREDIBLE_SET)
+dim(bellenguez_max_10_updateRSID %>% filter(PIP >0))  ##37062
+check_bellenguez_snp <-
+  bellenguez_max_10_updateRSID %>% group_by(pos) %>% filter(n()==1) %>% ungroup()  %>% filter(PIP >0 ) ##106
+
+
+bellenguez_max_10_updateRSID %>% group_by(pos) %>% filter(n()==1) %>% ungroup()  %>% filter(PIP >0.5 ) %>% filter(CREDIBLE_SET ==0)
