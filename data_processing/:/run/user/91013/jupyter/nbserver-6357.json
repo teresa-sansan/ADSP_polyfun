@@ -1,0 +1,11 @@
+{
+  "base_url": "/",
+  "hostname": "pe2cl2-002.c.nygenome.org",
+  "notebook_dir": "/gpfs/commons/home/tlin/script/data_processing",
+  "password": false,
+  "pid": 6357,
+  "port": 8777,
+  "secure": false,
+  "token": "5a0895ac3474f73a0f928cb0f43e5fbbf57310a638a0da83",
+  "url": "http://pe2cl2-002.c.nygenome.org:8777/"
+}
