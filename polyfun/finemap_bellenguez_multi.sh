@@ -26,13 +26,13 @@ do
 	start=$(echo $filename| cut -d'_' -f 2)
 	end=$(echo $filename| cut -d'_' -f 3)
 	
-	python finemapper.py \
-		--ld $i \
-		--sumstats $sumstat \
-		--n 487511 \
-	  	--chr ${chr} --start $start --end $end \
-	  	--method susie \
-     	  	--max-num-causal $max_num_snp \
-	  	--allow-missing \
-		--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_fixed_assertion_susie_iter/max_snp_${max_num_snp}/finemap_bellenguez.${chr}.$start.$end.gz"
+#	python finemapper.py \
+#		--ld $i \
+#		--sumstats $sumstat \
+#		--n 487511 \
+#	  	--chr ${chr} --start $start --end $end \
+#	  	--method susie \
+#    	  	--max-num-causal $max_num_snp \
+#	  	--allow-missing \
+#		--out "/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_fixed_assertion_susie_iter/max_snp_${max_num_snp}/finemap_bellenguez.${chr}.$start.$end.gz"
 done

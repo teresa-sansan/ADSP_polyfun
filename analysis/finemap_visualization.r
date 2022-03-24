@@ -613,3 +613,9 @@ check_bellenguez_snp <-
 
 
 bellenguez_max_10_updateRSID %>% group_by(pos) %>% filter(n()==1) %>% ungroup()  %>% filter(PIP >0.5 ) %>% filter(CREDIBLE_SET ==0)
+
+check_ld = bellenguez_max_10_updateRSID[bellenguez_max_10_updateRSID$pos == 'Chr17_43000001_46000001_1',]
+
+write.table(check_ld,"/gpfs/commons/home/tlin/data/check_bellenguez_ld.tsv", row.names = FALSE, sep = '\t',quote=F)
+
+write.table(check_ld$SNP,"/gpfs/commons/home/tlin/data/check_bellenguez_ld_snp_only.tsv", row.names = FALSE, sep = '\t',quote=F)
