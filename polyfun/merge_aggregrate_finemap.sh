@@ -28,7 +28,8 @@ do
   for chr in {1..22}
   do
   echo start aggregate chr $chr
-  zcat min_chr${chr}.aggregrate.all.txt.gz| tail -n+2| awk '{if($9 <= 0.001) print$0}' >> agg_min_extract_1e-3.tsv
+### kunke p value is in 9th column, while bellengueez is in 10th
+  zcat min_chr${chr}.aggregrate.all.txt.gz| tail -n+2| awk '{if($10 <= 0.001) print$0}' >> agg_min_extract_1e-3.tsv
   done
   echo finished, total line = $( cat agg_min_extract_1e-3.tsv| wc -l )
 done

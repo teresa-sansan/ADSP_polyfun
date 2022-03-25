@@ -71,7 +71,7 @@ def main(args):
     #keep only the smallest PIP for each SNP
     df_sumstats = pd.concat(df_sumstats_list, axis=0)
     #df_sumstats.sort_values('DISTANCE_FROM_CENTER', inplace=True, ascending=True)
-    df_sumstats.sort_values('PIP', inplace=True, ascending=False)
+    df_sumstats.sort_values('PIP', inplace=True, ascending=True)
     #print(df_sumstats.head(5))
     #print(df_sumstats.columns)
     df_sumstats = set_snpid_index(df_sumstats, allow_duplicates=True)
