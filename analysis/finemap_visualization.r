@@ -15,6 +15,9 @@ bellenguez_max_7 <- read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez
 old_test = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
 kunkle_max_10 <- read.table("/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_10/agg_kunkle_extract_1e-3.tsv", header = T)
 bellenguez_max_10_updateRSID <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_bellenguez_extract_1e-3.tsv", header = T)
+bellenguez_min_pip <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_min_extract_1e-3.tsv", header = T)
+bellenguez_max_pip <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_max_extract_1e-3.tsv", header = T)
+
 
 #col_name_bellenguez =  c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 
@@ -156,8 +159,8 @@ create_bar_plot(kunkle_max_10, title="kunkle_fixed_0224")
   #  abline(h = c(max(count[,1]),max(count[,2]),max(count[,3])), lty=3, col = "red")
 
 
-create_bar_plot(bellenguez_max_10, line=T)
-create_bar_plot_legend(SNP_main_new)
+create_bar_plot(kunkle_max_10, line=T)
+create_bar_plot_legend(kunkle_max_10)
 
 create_bar_plot_legend <- function(df,remove=T,main=F){
   plot.new()
@@ -513,8 +516,13 @@ PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
 PIP_0.95 <- create_lollipop(kunkle_max_10, 0.95,0.5,"Max SNP per locus = 10, kunkle")
 PIP_0.5 <-create_lollipop(kunkle_max_10, 0.5,0.5,"Max SNP per locus = 10, kunkle")
 
+bellenguez_min_10
 
+PIP_0.95 <- create_lollipop(bellenguez_max_pip, 0.95,0.5,"bellenguez_updateRSID, aggregate by max PIP")
+PIP_0.5 <-create_lollipop(bellenguez_max_pip, 0.5,0.5,"bellenguez_updateRSID, aggregate by max PIP")
 
+PIP_0.95 <- create_lollipop(bellenguez_min_pip, 0.95,0.5,"bellenguez_updateRSID, aggregate by min PIP")
+PIP_0.5 <-create_lollipop(bellenguez_min_pip, 0.5,0.5,"bellenguez_updateRSID, aggregate by min PIP")
 
 
 ## bar plot that David asked for ---
@@ -559,6 +567,8 @@ test_plot <- plot_credible_bar(old_test,"bellenguez_all_2")
 test_plot <- plot_credible_bar(bellenguez_max_10,"bellenguez_fixed_0224")
 plot_credible_bar(kunkle_max_10,"kunkle_fixed_0224")
 plot_credible_bar(bellenguez_max_10_updateRSID, "bellenguez, updateRSID")
+plot_credible_bar(bellenguez_max_pip, "bellenguez, updateRSID, aggregate by max PIP")
+plot_credible_bar(bellenguez_min_pip, "bellenguez, updateRSID, aggregate by min PIP")
 extract_SNP <- function(df){
   df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_",df$end)
   df$unique = str_c(df$POS,'_' ,df$CREDIBLE_SET)
@@ -571,7 +581,8 @@ extract_SNP <- function(df){
 
 bellenguez_updateRSID_snp = extract_SNP(bellenguez_max_10_updateRSID)
 kunkle_snp =  extract_SNP(kunkle_max_10)
-
+bellenguez_updateRSID_max_snp = extract_SNP(bellenguez_max_pip)
+bellenguez_updateRSID_min_snp = extract_SNP(bellenguez_min_pip)
 #bellenguez_max_10_SNP= extract_SNP(test)
 #unique_LD = extract_SNP(old_test)
 #kunkle_SNP = extract_SNP(kunkle_max_10)
@@ -603,7 +614,7 @@ write.table(interested_SNP,"/gpfs/commons/home/tlin/data/bellenguez_updateRSID_i
 
 ## another way of thinking?
 kunkle_max_10$pos = str_c("Chr",kunkle_max_10$CHR,'_' ,kunkle_max_10$start, "_",kunkle_max_10$end, '_', kunkle_max_10$CREDIBLE_SET)
-otherway_kunkle = kunkle_max_10 %>% filter(PIP >=0.5 ) %>% group_by(pos) %>% filter(n()==1) %>% ungroup()
+otherway_kunkle = kunkle_max_10 %>% filter(PIP >=0.5 ) %>% group_by(pos) %>% ungroup()
 check_kunkle = kunkle_max_10 %>% group_by(pos) %>% filter(n()==1) %>% ungroup()  %>% filter(PIP >0 )
  
 bellenguez_max_10_updateRSID$pos = str_c("Chr",bellenguez_max_10_updateRSID$CHR,'_' ,bellenguez_max_10_updateRSID$start, "_",bellenguez_max_10_updateRSID$end, '_', bellenguez_max_10_updateRSID$CREDIBLE_SET)
