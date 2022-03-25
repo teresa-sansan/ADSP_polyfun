@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in  7 10
+for i in  10
 do
         echo "max_snp = $i" 
         sbatch --export=max_snp=$i aggregate_finemap_result.sh 
