@@ -8,9 +8,10 @@ cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/
 #qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Kunkle_et_al_2019_hg37_ldsc_qc'
 
 
-file='Wightman_et_al_2021_hg37_ldsc.tsv.gz'
-qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman'
-ori=$(zcat $file | wc -l)
+#file='Wightman_et_al_2021_hg37_ldsc.tsv.gz'
+file='processed/Wightman_2021_hg37_withbeta.tsv'
+qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_withbeta'
+ori=$(cat $file | wc -l)
 echo There are $(expr $ori - 1) lines of SNPs in $file
 
 ## remove SNPs MAF < 0.01   ##kunkle and wightman don't have MAF info, so skip this step for kunkle
@@ -22,11 +23,12 @@ echo $(expr $ori - $remove_maf) 'of SNPs that MAF < 0.01 were removed, ' $(expr 
 echo
 fi
 
+
 ## duplicated SNPs   ##remember to change input
 
 if true;then
 echo "removing duplicated SNPs..."
-zcat $file | awk '{seen[$1]++; if(seen[$1]==1){print}}' > ${qc_file_name}_nodup.tsv
+cat $file | awk '{seen[$1]++; if(seen[$1]==1){print}}' > ${qc_file_name}_nodup.tsv
 #cat $qc_file_name.tsv | awk '{seen[$1]++; if(seen[$1]==1){print}}' > ${qc_file_name}_nodup.tsv
 nodup=$(cat ${qc_file_name}_nodup.tsv| wc -l)
 echo $(expr $ori - $nodup) duplicated SNPs were removed,  $(expr $nodup - 1) of SNPs remain.
@@ -45,4 +47,4 @@ echo total number of SNPs = $(expr $no_ambiguous - 1)
 
 
 gzip $qc_file_name.tsv 
-#rm $qc_file_name_nodup.tsv
+rm $qc_file_name_nodup.tsv
