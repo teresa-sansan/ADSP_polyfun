@@ -10,7 +10,7 @@ cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/
 
 #file='Wightman_et_al_2021_hg37_ldsc.tsv.gz'
 file='processed/Wightman_2021_hg37_withbeta.tsv'
-qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_withbeta'
+qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_withbeta_qc'
 ori=$(cat $file | wc -l)
 echo There are $(expr $ori - 1) lines of SNPs in $file
 
