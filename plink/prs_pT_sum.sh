@@ -2,11 +2,21 @@
 
 #cd /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/pT
 #cd /gpfs/commons/home/tlin/output/cT/kunkle/qc_check
+#cd /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc
 
-cd /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc
-
-for i in e-5 0.001 0.005 0.01 0.05 0.1 0.5
+#path='/gpfs/commons/home/tlin/output/cT/wightman/'
+path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224'
+#for qc in before_qc qc_on_base qc_on_target qc
+for qc in qc_all_maf01 qc_target_maf01	
 do
-echo write pT_$i.prs
-awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' kunkle_pT_chr*.$i.profile > pT_$i.prs
+	echo in $qc
+	cd $path/$qc
+	for i in e-5 0.001 0.005 0.01 0.05 0.1 0.5
+	do
+	echo write pT_$i.prs
+	awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' *.$i.profile > pT_$i.prs
+	done
+	echo '  '
 done
+
+echo finish summing up all PRS!

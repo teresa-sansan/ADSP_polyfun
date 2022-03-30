@@ -13,19 +13,22 @@ sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzh
 ## Pvalue, SNP
 
 ##qc 
+if true; then
 echo qc
 ~/plink \
---bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
+--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_maf_0.1/ADSP_qc_chr${chr} \
 --clump-p1 1 \
 --clump-r2 0.1  \
 --clump-kb 250  \
 --clump $sumstats \
 --clump-snp-field SNP \
 --clump-field P \
---out /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc/kunkle_clump_chr${chr}
+--out /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_all_maf01/kunkle_clump_chr${chr}
 echo
+fi
 
 ##qc on base
+if false; then
 echo qc on base
 ~/plink \
 --bfile ~/data/biallelic/${chr}_filt \
@@ -37,24 +40,26 @@ echo qc on base
 --clump-field P \
 --out /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_on_base/kunkle_clump_chr${chr}
 echo
+fi
 
 ## qc on target
 sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Kunkle_et_al_2019_hg37_ldsc.tsv.gz'
-
-
+if true; then
 echo qc on target
 ~/plink \
---bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
+--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_maf_0.1/ADSP_qc_chr${chr} \
 --clump-p1 1 \
 --clump-r2 0.1  \
 --clump-kb 250  \
 --clump $sumstats \
 --clump-snp-field SNP \
 --clump-field P \
---out /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_on_target/kunkle_clump_chr${chr}
+--out /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_target_maf01/kunkle_clump_chr${chr}
 echo
+fi
 
 ##before qc
+if false; then
 echo qc on base
 ~/plink \
 --bfile ~/data/biallelic/${chr}_filt \
@@ -65,6 +70,6 @@ echo qc on base
 --clump-snp-field SNP \
 --clump-field P \
 --out /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/before_qc/kunkle_clump_chr${chr}
-
+fi
 
 

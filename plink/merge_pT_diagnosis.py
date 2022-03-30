@@ -1,8 +1,8 @@
 import pandas as pd
 
-path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_on_base/'
+path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_target_maf01/'
 #path='/gpfs/commons/home/tlin/output/cT/kunkle/qc_check/'
-save_name='kunkle/fixed_0224/kunkle_qc_on_base'
+save_name='kunkle/fixed_0224/kunkle_qc_target_maf01'
 
 prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
 prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
