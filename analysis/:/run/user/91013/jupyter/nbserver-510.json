@@ -1,0 +1,11 @@
+{
+  "base_url": "/",
+  "hostname": "pe2cc3-043.c.nygenome.org",
+  "notebook_dir": "/gpfs/commons/home/tlin/script/analysis",
+  "password": false,
+  "pid": 510,
+  "port": 8788,
+  "secure": false,
+  "token": "6061229010ee20d5e366d84dc108361c36067e2a52f12b44",
+  "url": "http://pe2cc3-043.c.nygenome.org:8788/"
+}

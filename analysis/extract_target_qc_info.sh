@@ -1,7 +1,7 @@
-cd /gpfs/commons/home/tlin/output/others/qc
+#cd /gpfs/commons/home/tlin/output/others/qc
+cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_maf_0.1
 
-
-for i in {11..22}
+for i in {1..22}
 do
 
 
