@@ -57,6 +57,7 @@ bellenguez_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/upda
 bellenguez_qc_on_target <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/qc_on_target.tsv')
 bellenguez_qc_on_base <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/qc_on_base.tsv')
 
+
 bellenguez_cT0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_no_qc.tsv')
 bellenguez_qc0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc.tsv')
 bellenguez_qc_on_target0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_target.tsv')
@@ -77,6 +78,10 @@ kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/k
 kunkle_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc.tsv')
 kunkle_qc_target <-pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_target.tsv')
 kunkle_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_base.tsv')
+
+kunkle_qc_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_all_maf01.tsv')
+kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_target_maf01.tsv')
+
 
 ##PRSice
 PRSice <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
@@ -311,17 +316,23 @@ auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_qc_interested))) #0.5182
 
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 ### ori
-kunkle_pt_plot = roc_result(extract_eur(kunkle_cT),"kunkle, clumping+pT, EUR", column_for_roc = col_roc_E5)
+kunkle_pt_plot = roc_result(kunkle_cT,"kunkle, clumping+pT", column_for_roc = col_roc_E5)
 
 ### Qced
-kunkle_pt_qc_plot_update=roc_result(extract_eur(kunkle_qc),title="qc, clumping+pT, EUR", column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot_update=roc_result(kunkle_qc,title="qc, clumping+pT", column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot_maf=roc_result(kunkle_qc_maf,title="qc, c+pT, MAF = 0.1%", column_for_roc = col_roc_E5)
 
 ### base
-kunkle_pt_qc_plot_base=roc_result(extract_eur(kunkle_qc_base), title="kunkle_qc_summary_stats,EUR",column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot_base=roc_result(kunkle_qc_base, title="kunkle_qc_summary_stats",column_for_roc = col_roc_E5)
 
 ### target
-kunkle_pt_qc_plot_target=roc_result(extract_eur(kunkle_qc_target),title="kunkle_qc_target,EUR", col_roc_E5)
+kunkle_pt_qc_plot_target=roc_result(kunkle_qc_target,title="kunkle_qc_target", col_roc_E5)
+kunkle_pt_qc_plot_target_maf=roc_result(kunkle_qc_target_maf,title="kunkle_qc_target, MAF = 0.1%,EUR", col_roc_E5)
+
+
 plot_grid(kunkle_pt_plot,kunkle_pt_qc_plot_update,kunkle_pt_qc_plot_base,kunkle_pt_qc_plot_target,ncol = 2, nrow = 2)
+
+plot_grid(kunkle_pt_qc_plot_update,kunkle_pt_qc_plot_maf,kunkle_pt_qc_plot_target,kunkle_pt_qc_plot_target_maf,ncol = 2, nrow = 2)
 
 ## Kunkle_EUR
 ### ori
@@ -667,7 +678,7 @@ p_beta_plot(bell_qc_EUR_log,c(4,8,12),'bellenguez_c+pT, QC, EUR')
 
 NagelkerkeR2(mod2)$R2
 RsqGLM(mod2)$Nagelkerke
-par(mfrow=c(2,2),xpd=FALSE)
+par(mfrow=c(2,3),xpd=FALSE)
 
 
 kunkle_eur = extract_eur(kunkle_cT)
@@ -688,6 +699,13 @@ PRS_density(extract_eur(kunkle_cT),"Kunkle, EUR (P = 0.5)")
 PRS_density(extract_eur(kunkle_qc),"Kunkle, qc, EUR (P = 0.5)")
 PRS_density(extract_eur(kunkle_qc_base),"qc on summary stats, EUR (P = 0.5)")
 PRS_density(extract_eur(kunkle_qc_target),"qc on target, EUR (P = 0.5)")
+PRS_density(extract_eur(kunkle_qc_maf),"qc,MAF=0.1% EUR (P = 0.5)")
+PRS_density(extract_eur(kunkle_qc_target_maf),"qc on target, MAF=0.1%, EUR (P = 0.5)")
+
+legend(-0.3,170, inset=.02, title="AD diagnosis",
+       c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
+
 
 legend(-0.25,80, inset=.02, title="AD diagnosis",
        c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
+
