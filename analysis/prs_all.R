@@ -83,6 +83,12 @@ kunkle_qc_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_02
 kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_target_maf01.tsv')
 
 
+##wightman
+wightman_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/before_qc.tsv')
+wightman_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc.tsv')
+wightman_qc_target <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_target.tsv')
+wightman_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_base.tsv')
+
 ##PRSice
 PRSice <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 
@@ -242,15 +248,6 @@ roc_result <-function(df, title=' ',column_for_roc){
   plot_roc(roc_list,column_for_roc, title=title)
 }
 
-
-
-###c+T (before and after qc)-----
-#### bellenguez-----
-##bellenguez
-col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
-col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
-#bellenguez_cT_plot <- roc_result(bellenguez_cT, title = "bellenguez, clumping+pT", column_for_roc = col_roc_E5 )
-
 plot_ethnic_roc <- function(df, title, col){
   all = roc_result(df, title = paste(title, ", all population") , column_for_roc = col)
   EUR = roc_result(extract_eur(df), title = paste(title, ", EUR") , column_for_roc = col)
@@ -259,7 +256,25 @@ plot_ethnic_roc <- function(df, title, col){
   
   plot_grid(all, EUR, AFR, AMR,ncol = 2, nrow = 2)
 }
+plot_auc_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to_use){
+  cT_plot = roc_result(df, title = paste(sumstat_name, ", c+pT") , column_for_roc = col_to_use)
+  qc_plot = roc_result(df_qc, title = paste(sumstat_name, ", QC") , column_for_roc = col_to_use)
+  qc_on_base_plot = roc_result(df_qc_base, title = paste(sumstat_name, ", QC on summary stat") , column_for_roc = col_to_use)
+  qc_on_target_plot = roc_result(df_qc_target, title = paste(sumstat_name, "QC on target") , column_for_roc = col_to_use)
+  
+  plot_grid(cT_plot, qc_plot, qc_on_base_plot, qc_on_target_plot,ncol = 2, nrow = 2)
+  
+}
 
+
+
+
+###c+T (before and after qc)-----
+#### bellenguez-----
+##bellenguez
+col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
+col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
+#bellenguez_cT_plot <- roc_result(bellenguez_cT, title = "bellenguez, clumping+pT", column_for_roc = col_roc_E5 )
 
 
 
@@ -361,6 +376,12 @@ auc(roc(Diagnosis~no2SNP, data = kunkle_APOE))##0.5131
 
 auc(roc(Diagnosis~only2SNP, data = extract_eur(kunkle_APOE))) ##0.621
 auc(roc(Diagnosis~no2SNP, data = extract_eur(kunkle_APOE)))  ##0.5834
+
+
+
+##wightman
+plot_auc_cT(wightman_cT,wightman_qc, wightman_qc_base, wightman_qc_target, 'Wightman', col_roc_E5)
+plot_ethnic_roc(wightman_qc, "wightman_qc", col_roc_E5)
 
 
 ### polyfun----
@@ -501,6 +522,7 @@ plotR2_boot <- function(log_output, header, prs_col, boot){
   text((length(prs_col)+1)/2,log_output$null_R2[1] , labels =  paste("Null model: ",round(log_output$null_R2[1],5)), adj = c(0.5,-1), xpd = TRUE, cex=1, col="blue")
   
 }
+
 par(mfrow=c(1,1)) 
 
 rsq <- function(formula, data, indices) {
@@ -523,6 +545,14 @@ result = boot.ci(boot.out=results,type='norm')
 print(c(mean(results$t) - 2*sd(results$t), mean(results$t) + 2*sd(results$t)))
 
 
+plot_R2_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to_use, plot, boot_num = FALSE){
+  par(mfrow=c(2,2),xpd=FALSE)
+  cT= log_reg(df, col_to_use, paste(sumstat_name, ", c+pT") , plot = plot,  boot_num = boot_num,replace="max_snp_per_locus=")
+  qc= log_reg(df_qc, col_to_use, paste(sumstat_name, ", QC") , plot = plot,  boot_num = boot_num,replace="max_snp_per_locus=")
+  qc_on_base= log_reg(df_qc_base, col_to_use, paste(sumstat_name, ", QC on summary stat") , plot = plot,  boot_num = boot_num,replace="max_snp_per_locus=")
+  qc_on_target= log_reg(df_qc_target, col_to_use, paste(sumstat_name, ", QC on target") , plot = plot,  boot_num = boot_num,replace="max_snp_per_locus=")
+}
+
 
 
 
@@ -536,24 +566,8 @@ bell_log <- plot_ethnic_R2(bellenguez_cT, col_roc, 'bellenguez_updateRSID', boot
 bell_log_eur <- log_reg(bellenguez_eur, col_roc_E5, 'bellenguez_updated', plot=FALSE, legend="PRS", replace="max_snp_per_locus=")
 bell_susie_log<- log_reg(susie, list("PRS1","PRS3","PRS5",'PRS10'), 'bellenguez_susie', 'all',plot = FALSE, legend="PRS", replace="max_snp_per_locus=")
 
-bell_cT_log<-log_reg(extract_eur(bellenguez_cT), col_roc, "bellenguez_cT, EUR", plot=TRUE)   
-bell_cT_qc_log<-log_reg(extract_eur(bellenguez_qc), col_roc, "bellenguez QC, EUR", plot=TRUE)
-bell_cT_qc_base_log<-log_reg(extract_eur(bellenguez_qc_on_base), col_roc, "bellenguez QC on summary stats, EUR", plot=TRUE)
-bell_cT_qc_target_log<-log_reg(extract_eur(bellenguez_qc_on_target), col_roc, "bellenguez QC on target, EUR", plot=TRUE)
+plot_R2_cT(bellenguez_cT, bellenguez_qc, bellenguez_qc_on_base, bellenguez_qc_on_target, 'bellenguez', col_roc, plot=TRUE, boot_num = 50)
 
-
-par(mfrow=c(2,2),xpd=FALSE)
-bell_cT_log<-log_reg(extract_eur(bellenguez_cT), col_roc, "bellenguez_cT, EUR", boot_num = 50,plot=TRUE)   
-bell_cT_qc_log<-log_reg(extract_eur(bellenguez_qc), col_roc, "bellenguez QC, EUR", boot_num = 50,plot=TRUE)
-bell_cT_qc_base_log<-log_reg(extract_eur(bellenguez_qc_on_base), col_roc, "bellenguez QC on summary stats, EUR", boot_num = 50,plot=TRUE)
-bell_cT_qc_target_log<-log_reg(extract_eur(bellenguez_qc_on_target), col_roc, "bellenguez QC on target, EUR", boot_num = 50,plot=TRUE)
-
-
-par(mfrow=c(2,2),xpd=FALSE)
-bell_cT_log<-log_reg(bellenguez_cT, col_roc, "bellenguez_cT", boot_num = 50,plot=TRUE)   
-bell_cT_qc_log<-log_reg(bellenguez_qc, col_roc, "bellenguez QC", boot_num = 50,plot=TRUE)
-bell_cT_qc_base_log<-log_reg(bellenguez_qc_on_base, col_roc, "bellenguez QC on summary stats", boot_num = 50,plot=TRUE)
-bell_cT_qc_target_log<-log_reg(bellenguez_qc_on_target, col_roc, "bellenguez QC on target", boot_num = 50,plot=TRUE)
 
 par(mfrow=c(2,2),xpd=FALSE)
 plotR2(bell_cT_log,"bellenguez")
@@ -598,49 +612,37 @@ plotR2(kunkle_cT_qc_log_amr,"kunkle, AMR")
 
 
 ##all population
-kunkle_cT_log<-log_reg(kunkle_cT, col_roc_E5, "kunkle_cT", plot=FALSE)   
-kunkle_cT_qc_log<-log_reg(kunkle_qc, col_roc_E5, "kunkle QC", plot=FALSE)
-kunkle_cT_qc_base_log<-log_reg(kunkle_qc_base, col_roc, "kunkle QC","qc on summary stats", plot=FALSE)
-kunkle_cT_qc_target_log<-log_reg(kunkle_qc_target, col_roc, "kunkle QC on target", plot=FALSE)
+
+plot_R2_cT(kunkle_cT, kunkle_qc, kunkle_qc_base,kunkle_qc_target, 'Kunkle', col_roc_E5, plot=TRUE, boot_num = 50)
+plot_R2_cT(kunkle_cT, kunkle_qc_maf, kunkle_qc_base,kunkle_qc_target_maf, 'Kunkle, MAF = 0.1%', col_roc_E5, plot=TRUE, boot_num = 50)
 
 
-kunkle_cT_log<-log_reg(kunkle_cT, col_roc_E5, "kunkle_cT", boot_num = 100,plot=TRUE)   
-kunkle_cT_qc_log<-log_reg(kunkle_qc, col_roc_E5, "kunkle QC", boot_num = 100,plot=TRUE)
-kunkle_cT_qc_base_log<-log_reg(kunkle_qc_base, col_roc, "kunkle qc on summary stats", boot_num = 100,plot=TRUE)
-kunkle_cT_qc_target_log<-log_reg(kunkle_qc_target, col_roc, "kunkle QC on target", boot_num = 100,plot=TRUE)
+plot_ethnic_R2(kunkle_cT, col_roc_E5, 'Kunkle', 50)
+plot_ethnic_R2(kunkle_qc, col_roc_E5, 'Kunkle_QC, MAF 1%', 50)
+plot_ethnic_R2(kunkle_qc_maf, col_roc_E5, 'Kunkle_QC, MAF 0.1%', 50)
+
+par(mfrow=c(2,2)) ## EUR
+plot_R2_cT(extract_eur(kunkle_cT), extract_eur(kunkle_qc), extract_eur(kunkle_qc_base),extract_eur(kunkle_qc_target), 'Kunkle, extract_EUR', col_roc_E5, plot=TRUE, boot_num = 50)
 
 
-par(mfrow=c(2,2),xpd=FALSE)
-plotR2(kunkle_cT_log,"kunkle, cT")
-plotR2(kunkle_cT_qc_log,"kunkle, qc")
-plotR2(kunkle_cT_qc_base_log,"kunkle, qc on summary stats")
-plotR2(kunkle_cT_qc_target_log,"kunkle, qc on target")
-
-## EUR
-kunkle_cT_log<-log_reg(extract_eur(kunkle_cT), col_roc_E5, "kunkle_cT, EUR", plot=TRUE)   
-kunkle_cT_log<-log_reg(extract_eur(kunkle_cT), col_roc_E5, "kunkle_cT, EUR", boot_num = 1000,plot=TRUE)  
-kunkle_cT_qc_log<-log_reg(extract_eur(kunkle_qc), col_roc_E5, "kunkle QC,EUR", plot=FALSE)
-kunkle_cT_qc_base_log<-log_reg(extract_eur(kunkle_qc_base), col_roc, "kunkle QC","qx on summary stats", plot=FALSE)
-kunkle_cT_qc_target_log<-log_reg(extract_eur(kunkle_qc_target), col_roc, "kunkle QC on target,EUR", plot=FALSE)
-
-
-par(mfrow=c(2,2))
 plotR2(kunkle_cT_log,"kunkle, cT, EUR")
 plotR2(kunkle_cT_qc_log,"kunkle, qc, EUR")
 plotR2(kunkle_cT_qc_base_log,"kunkle, qc on summary stats, EUR")
 plotR2(kunkle_cT_qc_target_log,"kunkle, qc on target, EUR")
 
-##other
-kunkle_cT_log_amr <- log_reg(kunkle_cT[kunkle_cT$final_population == "AMR",], col_roc_E5, "kunkle_cT, AMR", plot=FALSE)
-kunkle_cT_log_afr<-log_reg(extract_afr(kunkle_cT), col_roc_E5, "kunkle_cT, AFR", plot=FALSE)   
 
-par(mfrow=c(1,2))
-plotR2(kunkle_cT_log_afr,"kunkle, cT, AFR")
-plotR2(kunkle_cT_log_amr,"kunkle, cT, AMR")
-plotR2(kunkle_cT_log,"kunkle, cT, EUR")
+
+
+
+##wightman ------
+plot_R2_cT(wightman_cT, wightman_qc, wightman_qc_base, wightman_qc_target, 'Wightman', col_roc_E5, plot=TRUE, boot_num = 50)
+plot_ethnic_R2(wightman_cT, col_roc_E5, 'Wightman', 50)
+##other
 
 sbayesr_log <-  glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = sbayesR)
 prsice_log <- glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = PRSice)
+
+
 
 
 p_beta_plot <- function(mod, prs_pos, title){
