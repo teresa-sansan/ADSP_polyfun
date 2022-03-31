@@ -14,8 +14,7 @@ sumfile='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzhe
 snp='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_withbeta.pvalue'
 qc_snp='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_withbeta_qc.pvalue'
 
-if true; then
-
+if false; then
 cat /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Wightman_2021_hg37_withbeta.tsv | cut -f 1,7 > $snp
 cat /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_withbeta_qc.tsv | cut -f 1,7 > $qc_snp
 fi
