@@ -610,7 +610,9 @@ interested_SNP <- bellenguez_updateRSID_snp %>%
 write.table(interested_SNP,"/gpfs/commons/home/tlin/data/bellenguez_updateRSID_interested_SNP.tsv", row.names = FALSE, sep = '\t',quote=F)
 
 
-
+bellenguez_updateRSID_snp[bellenguez_updateRSID_snp$PIP> 0.95,]$SNP
+bellenguez_updateRSID_min_snp[bellenguez_updateRSID_min_snp$PIP> 0.95,]$SNP
+bellenguez_updateRSID_max_snp[bellenguez_updateRSID_max_snp$PIP> 0.95,]$SNP
 
 ## another way of thinking?
 kunkle_max_10$pos = str_c("Chr",kunkle_max_10$CHR,'_' ,kunkle_max_10$start, "_",kunkle_max_10$end, '_', kunkle_max_10$CREDIBLE_SET)
