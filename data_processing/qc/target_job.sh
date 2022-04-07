@@ -9,7 +9,7 @@
 ## Filtered on MAF, genotype missingness rate
 
 ~/plink \
-  --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/filt/$i_filt \
+  --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/filt/${i}_filt \
   --maf 0.001 \
   --geno 0.01 \
   --make-bed \
@@ -20,7 +20,7 @@
 
 
 ~/plink \
-  --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/filt/$i_filt \
+  --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/filt/${i}_filt \
   --mind 0.01 \
   --make-bed \
   --out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_on_individual/ADSP_qc_chr$i
