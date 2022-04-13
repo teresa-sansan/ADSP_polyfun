@@ -4,8 +4,10 @@ import pandas as pd
 #path='/gpfs/commons/home/tlin/output/cT/kunkle/qc_check/'
 #save_name='kunkle/fixed_0224/kunkle_qc_target_maf01'
 
-path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
-save_name='wightman/before_qc' 
+#path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
+#save_name='kunkle/fixed_0224/qc_on_variant_maf01'
+path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_check_target/qc_on_individual/'
+save_name='kunkle/fixed_0224/qc_on_individual'
 
 prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
 prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])

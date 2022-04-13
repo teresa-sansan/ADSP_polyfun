@@ -5,9 +5,13 @@
 #cd /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc
 
 #path='/gpfs/commons/home/tlin/output/cT/wightman/'
-path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224'
+#path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224'
+path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_check_target'
+
 #for qc in before_qc qc_on_base qc_on_target qc
-for qc in qc_all_maf01 qc_target_maf01	
+#for qc in qc_all_maf01 qc_target_maf01	
+
+for qc in qc_on_individual qc_on_variant
 do
 	echo in $qc
 	cd $path/$qc
