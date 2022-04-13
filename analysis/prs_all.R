@@ -82,6 +82,8 @@ kunkle_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0
 kunkle_qc_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_all_maf01.tsv')
 kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_target_maf01.tsv')
 
+kunkle_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/qc_on_variant_maf01.tsv')
+kunkle_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/qc_on_individual.tsv')
 
 ##wightman
 wightman_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/before_qc.tsv')
@@ -703,6 +705,16 @@ PRS_density(extract_eur(kunkle_qc_base),"qc on summary stats, EUR (P = 0.5)")
 PRS_density(extract_eur(kunkle_qc_target),"qc on target, EUR (P = 0.5)")
 PRS_density(extract_eur(kunkle_qc_maf),"qc,MAF=0.1% EUR (P = 0.5)")
 PRS_density(extract_eur(kunkle_qc_target_maf),"qc on target, MAF=0.1%, EUR (P = 0.5)")
+
+par(mfrow=c(3,2),xpd=FALSE)
+PRS_density(extract_eur(kunkle_cT),"Kunkle, EUR, P = 0.5")
+PRS_density(extract_eur(kunkle_qc_target),"qc on target,EUR, P = 0.5")
+PRS_density(extract_eur(kunkle_qc_base),"qc on summary stats, EUR (P = 0.5)")
+PRS_density(extract_eur(kunkle_qc_variant), "qc on variants only, EUR,  MAF=0.1%, P = 0.5")
+PRS_density(extract_eur(kunkle_qc_individual), "qc on individual only, EUR, MAF=0.1%, P = 0.5")
+
+
+PRS_density(kunkle_qc_target,"qc on target, P = 0.5")
 
 legend(-0.3,170, inset=.02, title="AD diagnosis",
        c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
