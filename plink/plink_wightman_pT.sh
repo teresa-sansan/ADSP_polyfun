@@ -20,7 +20,7 @@ cat /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers
 fi
 
 ##qc on both
-if true; then
+if false; then
 qc='qc'
 
 awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
@@ -33,7 +33,7 @@ awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped >
 fi
 
 ##qc on base
-if true; then
+if false; then
 qc='qc_on_base'
 awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 ~/plink \
@@ -46,7 +46,9 @@ fi
 
 ##qc_on_target
 if true; then
-qc='qc_on_target'
+for qc in qc_on_variant
+do
+#qc='qc_on_target'
 awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 
 ~/plink \
@@ -55,10 +57,11 @@ awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped >
 --q-score-range range_list.txt $snp \
 --extract $clump_path/$qc/chr${chr}.valid.snp \
 --out $clump_path/$qc/$which_sumstat_pT_chr${chr}
+done
 fi
 
 ##no qc
-if true; then
+if false; then
 qc='before_qc'
 awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 

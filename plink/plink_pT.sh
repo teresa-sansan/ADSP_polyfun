@@ -9,7 +9,7 @@
 clump_path='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224'
 
 ##qc on both
-if true; then
+if false; then
 qc='qc'
 #awk 'NR!=1{print $3}' $clump_path/$qc/bellenguez_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 ~/plink \
@@ -34,17 +34,25 @@ qc='qc_on_base'
 fi
 
 ##qc_on_target
-if false; then
-qc='qc_on_target'
-#awk 'NR!=1{print $3}' $clump_path/$qc/bellenguez_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
+if true; then
+
+for chr in {1..22}
+do
+#qc='qc_on_target'
+for qc in qc_on_individual qc_on_variant
+do
+awk 'NR!=1{print $3}' $clump_path/$qc/bellenguez_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 
 ~/plink \
---bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
+--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/$qc/ADSP_qc_chr${chr} \
 --score /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_no_dup.tsv 1 4 7 header \
 --q-score-range range_list.txt /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_no_dup.pvalue \
 --extract $clump_path/$qc/chr${chr}.valid.snp \
---out /gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/qc_on_target/bellenguez_pT_chr${chr}
+--out /gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/$qc/bellenguez_pT_chr${chr}
+done
+done
 fi
+
 
 ##no qc
 if false; then
