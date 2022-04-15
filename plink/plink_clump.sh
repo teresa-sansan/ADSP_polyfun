@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=wightman_clump
+#SBATCH --job-name=bellenguez_clump_test_qc_target
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/wightman/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/%x_%j.log
 
 ##bellenguçez_QCed
 #sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_qc.tsv.gz'
@@ -15,15 +15,16 @@
 #--out /gpfs/commons/home/tlin/output/cT/kunkle/qc/kunkle_clump_chr${chr}
 
 ##bellenguez_not_qced
-#sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/bellenguez_2021_final_rename.tsv.gz'
+sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/bellenguez_2021_final_rename.tsv.gz'
+output='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224'
 
 ##wightman
-sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_qc.tsv.gz'
+#sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_qc.tsv.gz'
 
 ## Pvalue, SNP
 
 ##qc
-if true; then
+if false; then
 echo start chr $chr
 ~/plink \
 --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
@@ -37,7 +38,7 @@ echo start chr $chr
 fi
 
 ##qc_base
-if true; then
+if false; then
 echo start chr $chr
 ~/plink \
 --bfile ~/data/biallelic/${chr}_filt \
@@ -51,25 +52,41 @@ echo start chr $chr
 fi
 
 #sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_no_dup.tsv.gz'
-sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Wightman_et_al_2021_hg37_ldsc.tsv.gz'
+#sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Wightman_et_al_2021_hg37_ldsc.tsv.gz'
 
 
 ##qc_target
 if true; then
+for chr in 22
+do
 echo start chr $chr
 ~/plink \
---bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
+--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_on_variant/ADSP_qc_chr${chr} \
 --clump-p1 1 \
 --clump-r2 0.1  \
 --clump-kb 250  \
 --clump $sumstats \
 --clump-snp-field SNP \
---clump-field P \
---out /gpfs/commons/home/tlin/output/cT/wightman/qc_on_target/wightman_clump_chr${chr}
+--clump-field PVALUE \
+--out $output/qc_on_variant/bellenguez_clump_chr${chr}
+
+
+~/plink \
+--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_on_individual/ADSP_qc_chr${chr} \
+--clump-p1 1 \
+--clump-r2 0.1  \
+--clump-kb 250  \
+--clump $sumstats \
+--clump-snp-field SNP \
+--clump-field PVALUE \
+--out $output/qc_on_individual/bellenguez_clump_chr${chr}
+echo
+
+done
 fi
 
 ##before qc
-if true; then
+if false; then
 echo start chr $chr
 ~/plink \
 --bfile ~/data/biallelic/${chr}_filt \
