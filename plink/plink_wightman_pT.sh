@@ -2,7 +2,7 @@
 #SBATCH --job-name=pT
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=50G
+#SBATCH --mem=40G
 #SBATCH --time=2:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/cT/wightman/%x_%j.log
 
@@ -46,13 +46,13 @@ fi
 
 ##qc_on_target
 if true; then
-for qc in qc_on_variant
+for qc in qc_on_variant qc_on_individual
 do
 #qc='qc_on_target'
 awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 
 ~/plink \
---bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
+--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/$qc/ADSP_qc_chr${chr} \
 --score $sumfile 1 4 9 header \
 --q-score-range range_list.txt $snp \
 --extract $clump_path/$qc/chr${chr}.valid.snp \
@@ -66,7 +66,7 @@ qc='before_qc'
 awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 
 ~/plink \
---bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
+--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/$qc/ADSP_qc_chr${chr} \
 --score $sumfile 1 4 9 header \
 --q-score-range range_list.txt $snp \
 --extract $clump_path/$qc/chr${chr}.valid.snp \

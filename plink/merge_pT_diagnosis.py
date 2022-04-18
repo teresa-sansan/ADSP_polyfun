@@ -6,16 +6,16 @@ import pandas as pd
 
 #path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
 #save_name='kunkle/fixed_0224/qc_on_variant_maf01'
-path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_check_target/qc_on_individual/'
-save_name='kunkle/fixed_0224/qc_on_individual'
+path='/gpfs/commons/home/tlin/output/cT/wightman/qc_on_individual/'
+save_name='wightman/qc_on_variant_update'
 
-prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
-prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
-prs_005 = pd.read_csv(path+"pT_0.005.prs", sep = ' ', names = ["IID","PRS"])   
-prs_01 = pd.read_csv(path+"pT_0.01.prs", sep = ' ', names = ["IID","PRS"]) 
-prs_05 = pd.read_csv(path+"pT_0.05.prs", sep = ' ', names = ["IID","PRS"])
-prs_1 = pd.read_csv(path+"pT_0.1.prs", sep = ' ', names = ["IID","PRS"]) 
-prs_5 = pd.read_csv(path+"pT_0.5.prs", sep = ' ', names = ["IID","PRS"]) 
+prs_e5 = pd.read_csv(path+"pT_e-5_update.prs", sep = ' ', names = ["IID","PRS"])
+prs_001 = pd.read_csv(path+"pT_0.001_update.prs", sep = ' ', names = ["IID","PRS"])
+prs_005 = pd.read_csv(path+"pT_0.005_update.prs", sep = ' ', names = ["IID","PRS"])   
+prs_01 = pd.read_csv(path+"pT_0.01_update.prs", sep = ' ', names = ["IID","PRS"]) 
+prs_05 = pd.read_csv(path+"pT_0.05_update.prs", sep = ' ', names = ["IID","PRS"])
+prs_1 = pd.read_csv(path+"pT_0.1_update.prs", sep = ' ', names = ["IID","PRS"]) 
+prs_5 = pd.read_csv(path+"pT_0.5_update.prs", sep = ' ', names = ["IID","PRS"]) 
 
 
 pheno = pd.read_csv("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_10_subset.tsv", sep='\t')
