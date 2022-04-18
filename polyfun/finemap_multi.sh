@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=bellenguez_finemap_multi
+#SBATCH --job-name=finemap_multi
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
@@ -12,25 +12,46 @@ source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
 echo chr $chr
-FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${chr}*"
+FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${chr}*.gz"
+
+##kunkle
+if true; then
+sumstat="/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/kunkle.${chr}.snpvar_constrained.gz"
+n=63926
+output='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_${max_num_snp}/kunkle'
+
+fi
+
+
+##bellenguez
+if true; then
+sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/bellenguez.${chr}.snpvar_constrained.gz"
+n=487511
+output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_fixed_assertion_susie_iter/'
+fi
+
+## wightman
+if true; then
 sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_all.${chr}.snpvar_constrained.gz"
+n=74004
+output="/gpfs/commons/home/tlin/output/wightman/finemap_fixed_assertion_susie_iter/"
+fi
+
 
 for i in $FILES
 do	
-	filename=$(echo $i | cut -d'/' -f 10 |cut -d'.' -f1)
-	start=$(echo $filename| cut -d'_' -f 2)
-	end=$(echo $filename| cut -d'_' -f 3)
+	filename=$(echo $i | cut -d'/' -f 10 |cut -d '.' -f 1)
+	start=$(echo $filename| cut -d '_' -f 2)
+	end=$(echo $filename| cut -d '_' -f 3)
 	
 	python finemapper.py \
-		--ld $i \
+		--ld $filename \
 		--sumstats $sumstat \
-		--n 74004 \
+		--n $n \
 	  	--chr ${chr} --start $start --end $end \
 	  	--method susie \
      	  	--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out "/gpfs/commons/home/tlin/output/wightman/finemap_fixed_assertion_susie_iter/max_snp_${max_num_snp}/finemap_wightman.${chr}.$start.$end.gz"
-
-	
+		--out $output/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz 
 
 done

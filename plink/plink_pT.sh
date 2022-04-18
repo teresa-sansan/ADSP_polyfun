@@ -36,8 +36,7 @@ fi
 ##qc_on_target
 if true; then
 
-for chr in {1..22}
-do
+
 #qc='qc_on_target'
 for qc in qc_on_individual qc_on_variant
 do
@@ -49,7 +48,6 @@ awk 'NR!=1{print $3}' $clump_path/$qc/bellenguez_clump_chr${chr}.clumped > $clum
 --q-score-range range_list.txt /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_no_dup.pvalue \
 --extract $clump_path/$qc/chr${chr}.valid.snp \
 --out /gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/$qc/bellenguez_pT_chr${chr}
-done
 done
 fi
 

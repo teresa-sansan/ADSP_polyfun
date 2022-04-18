@@ -5,7 +5,7 @@ do
 	for i in {1..22} 
 	do
 		if true; then
-		sbatch /gpfs/commons/home/tlin/script/polyfun/finemap_job/bellenguez/check/bellenguez_max_snp_${max_snp}_chr${i}.sh
+		sbatch /gpfs/commons/home/tlin/script/polyfun/finemap_job/bellenguez/fixed_0224/bellenguez_max_snp_${max_snp}_chr${i}.sh
 		fi
 	done		
 done

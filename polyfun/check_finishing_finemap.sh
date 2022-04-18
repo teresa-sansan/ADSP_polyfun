@@ -1,6 +1,6 @@
 #path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_susie"
 path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap'
-prefix=finemap_bellenguez
+prefix=bellenguez.chr
 #prefix=finemap_bellenguez_all2_susie
 #path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie"
 #prefix=finemap_bellenguez_susie
@@ -11,8 +11,8 @@ function check
 {
 for i in {1..22}
 do
-  export gz=$(ls $1.$i.*|grep -v log|wc -l)   
-  export log=$(ls $1.$i.*|grep .gz.log|wc -l)
+  export gz=$(ls $prefix$i.*|grep -v log|wc -l)   
+  export log=$(ls $prefix$i.*|grep .gz.log|wc -l)
   export ld=$(ls /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${i}_*_*.gz | wc -l)
 
 #  if [ $gz -ne $log ] ;then 
