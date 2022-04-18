@@ -19,16 +19,16 @@ if false; then
 echo run kunkle
 sumstat="/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/kunkle.${chr}.snpvar_constrained.gz"
 n=63926
-output='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_${max_num_snp}/kunkle'
+output='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/'
 fi
 
 
 ##bellenguez
 if true; then
 echo run bellenguez
-sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/bellenguez.${chr}.snpvar_constrained.gz"
+sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/bellenguez.${chr}.snpvar_constrained.gz"
 n=487511
-output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap_fixed_assertion_susie_iter/'
+output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/finemap/'
 fi
 
 ## wightman

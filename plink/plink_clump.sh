@@ -2,7 +2,7 @@
 #SBATCH --job-name=bellenguez_clump_test_qc_target
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=150G
+#SBATCH --mem=30G
 #SBATCH --time=10:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/%x_%j.log
 
@@ -57,8 +57,6 @@ fi
 
 ##qc_target
 if true; then
-for chr in 22
-do
 echo start chr $chr
 ~/plink \
 --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_on_variant/ADSP_qc_chr${chr} \
@@ -82,7 +80,6 @@ echo start chr $chr
 --out $output/qc_on_individual/bellenguez_clump_chr${chr}
 echo
 
-done
 fi
 
 ##before qc
