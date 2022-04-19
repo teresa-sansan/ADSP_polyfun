@@ -6,7 +6,7 @@ import pandas as pd
 
 #path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
 #save_name='kunkle/fixed_0224/qc_on_variant_maf01'
-path='/gpfs/commons/home/tlin/output/cT/wightman/qc_on_individual/'
+path='/gpfs/commons/home/tlin/output/cT/wightman/qc_on_variant/'
 save_name='wightman/qc_on_variant_update'
 
 prs_e5 = pd.read_csv(path+"pT_e-5_update.prs", sep = ' ', names = ["IID","PRS"])

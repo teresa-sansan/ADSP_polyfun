@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=wightman_clump_qc_target
+#SBATCH --job-name=bellenguez_clump_qc_target
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=30G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/wightman/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/a%x_%j.log
 
 ##bellenguçez_QCed
 #sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_qc.tsv.gz'
@@ -51,8 +51,8 @@ echo start chr $chr
 --out /gpfs/commons/home/tlin/output/cT/wightman/qc_on_base/wightman_clump_chr${chr}
 fi
 
-#sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_no_dup.tsv.gz'
-sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Wightman_et_al_2021_hg37_ldsc.tsv.gz'
+sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_no_dup.tsv.gz'
+#sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Wightman_et_al_2021_hg37_ldsc.tsv.gz'
 
 
 ##qc_target
