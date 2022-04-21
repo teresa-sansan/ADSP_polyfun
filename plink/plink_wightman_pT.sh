@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=40G
 #SBATCH --time=2:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/wightman/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/wightman/qc_on_variant_sumstat/%x_%j.log
 
 which_sumstat='wightman'
 clump_path='/gpfs/commons/home/tlin/output/cT/wightman'
@@ -20,12 +20,12 @@ cat /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers
 fi
 
 ##qc on both
-if false; then
-qc='qc'
-
-awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
+if true; then
+#qc='qc'
+qc='qc_on_variant_sumstat'
+awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_qc_on_both_clump_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 ~/plink \
---bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
+--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_on_variant/ADSP_qc_chr${chr} \
 --score $qc_sumfile 1 4 9 header \
 --q-score-range range_list.txt $qc_snp \
 --extract $clump_path/$qc/chr${chr}.valid.snp \
@@ -45,7 +45,7 @@ awk 'NR!=1{print $3}' $clump_path/$qc/${which_sumstat}_clump_chr${chr}.clumped >
 fi
 
 ##qc_on_target
-if true; then
+if false; then
 for qc in qc_on_variant qc_on_individual
 do
 #qc='qc_on_target'
