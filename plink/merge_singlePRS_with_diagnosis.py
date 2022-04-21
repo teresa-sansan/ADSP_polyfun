@@ -4,8 +4,8 @@ import os
 
 #pre_file_repo='/gpfs/commons/home/tlin/output/kunkle/kunkle_qc/'
 #file_name='/gpfs/commons/home/tlin/output/sbayesR/fixed_0224/sbayesR.prs'
-file_name='/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/updateRSID_qc_interested_SNP.prs'
-save_name='/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_qc_interested_SNP.tsv'
+file_name='/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/maxPIP/updateRSID_interested_SNP_maxPIP.prs'
+save_name='/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/maxPIP/merged_updateRSID_qc_interested_SNP.tsv'
 
 
 #os.system("cd /gpfs/commons/home/tlin/output/kunkle/kunkle_qc/")
