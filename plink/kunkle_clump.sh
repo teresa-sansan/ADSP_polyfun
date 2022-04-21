@@ -13,17 +13,19 @@ sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzh
 ## Pvalue, SNP
 
 ##qc 
-if false; then
+#--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
+
+if true; then
 echo qc
 ~/plink \
---bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr${chr} \
+--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_on_variant/ADSP_qc_chr${chr} \
 --clump-p1 1 \
 --clump-r2 0.1  \
 --clump-kb 250  \
 --clump $sumstats \
 --clump-snp-field SNP \
 --clump-field P \
---out /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_check_target/qc_on_variant/kunkle_qc_both_clump_chr${chr}
+--out /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_on_variant_sumstat/kunkle_qc_both_clump_chr${chr}
 echo
 fi
 
@@ -44,7 +46,7 @@ fi
 
 ## qc on target
 sumstats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Kunkle_et_al_2019_hg37_ldsc.tsv'
-if true; then
+if false; then
 for qc in  qc_on_variant qc_on_individual
 do
 ~/plink \
