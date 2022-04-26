@@ -41,7 +41,7 @@ do
 		--sumstats $sumstat.${chr}.snpvar_constrained.gz \
 		--n $n 	--chr $chr --start $start --end $end \
 	  	--method susie \
-    	  	--max-num-causal $max_num_snp \
+    	  	--max-num-causal $max_num_snp/3 \
 	  	--allow-missing \
 		--out $output/try_rescue_not_converge/finemap_max_snp_${max_num_snp}_chr${chr}.${start}.${end}.gz 
 	done

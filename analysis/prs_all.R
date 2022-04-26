@@ -54,6 +54,10 @@ bellenguez_qc_on_target0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/b
 bellenguez_qc_on_base0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_base.tsv')
 bellenguez_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_interested_SNP.tsv') 
 bellenguez_qc_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_qc_interested_SNP.tsv')
+bellenguez_interest_max <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/maxPIP/merged_updateRSID_qc_interested_SNP.tsv')
+bellenguez_interest_min <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/minPIP/merged_updateRSID_qc_interested_SNP.tsv')
+
+
 bellenguez_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_individual.tsv')
 bellenguez_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_variant.tsv')
 
@@ -75,6 +79,7 @@ kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/f
 
 kunkle_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_variant_update.tsv')
 kunkle_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_individual_update.tsv')
+kunkle_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/qc_on_variant_sumstat.tsv')
 
 ##wightman
 wightman_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/before_qc.tsv')
@@ -83,6 +88,7 @@ wightman_qc_target <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/q
 wightman_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_base.tsv')
 wightman_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_individual_update.tsv')
 wightman_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_variant_update.tsv')
+wightman_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_variant_sumstat.tsv')
 
 ##PRSice
 PRSice <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
@@ -282,7 +288,13 @@ plot_ethnic_roc(bellenguez_cT, title= 'bellenguez(updateRSID), pT', col_roc)
 
 ##bellenguez_interested_SNP
 auc(roc(Diagnosis~PRS, data = bellenguez_interested))  # 0.5187
+auc(roc(Diagnosis~PRS, data = bellenguez_interest_max))  # 0.515
+auc(roc(Diagnosis~PRS, data = bellenguez_interest_min))  #0.5109
+
 auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_interested))) ##0.5308
+auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_interest_max))) ##0.5247
+auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_interest_min))) ##0.5224
+
 auc(roc(Diagnosis~PRS, data = extract_afr(bellenguez_interested))) #0.529
 auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_interested))) #0.4991
 
@@ -300,7 +312,18 @@ plot_auc_cT(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle", co
 plot_auc_cT(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle, EUR", col_roc_E5, eur=TRUE)
 
 ### Qced
-kunkle_pt_qc_plot=roc_result(kunkle_qc,title="kunkle (QC, MAF >= 1%)", column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot=roc_result(kunkle_cT,title="kunkle (no qc)", column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot_target=roc_result(kunkle_qc_target_maf,title="QC on target", column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot_variant=roc_result(kunkle_qc_variant,title="QC on variant", column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot_variant_sumstat=roc_result(kunkle_qc_variant_sumstat,title="QC on variant and sumstat", column_for_roc = col_roc_E5)
+plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_target, kunkle_pt_qc_plot_variant,kunkle_pt_qc_plot_variant_sumstat, ncol = 2, nrow = 2)
+
+kunkle_pt_qc_plot=roc_result(extract_eur(kunkle_cT),title="kunkle, EUR, (no qc)", column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot_target=roc_result(extract_eur(kunkle_qc_target_maf),title="EUR, QC on target", column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot_variant=roc_result(extract_eur(kunkle_qc_variant),title="EUR, QC on variant", column_for_roc = col_roc_E5)
+kunkle_pt_qc_plot_variant_sumstat=roc_result(extract_eur(kunkle_qc_variant_sumstat),title="EUR, QC on variant and sumstat", column_for_roc = col_roc_E5)
+plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_target, kunkle_pt_qc_plot_variant,kunkle_pt_qc_plot_variant_sumstat, ncol = 2, nrow = 2)
+
 kunkle_pt_qc_plot_maf=roc_result(kunkle_qc_maf,title="QC, MAF >0 0.1%", column_for_roc = col_roc_E5)
 ##kunkle_pt_qc_plot_base=roc_result(kunkle_qc_base, title="kunkle_qc_summary_stats",column_for_roc = col_roc_E5)
 plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_maf,ncol = 2, nrow = 1)
@@ -345,11 +368,6 @@ legend("bottom", legend=c(paste("SbayesR, auc = ",round(roc(sbayesR$Diagnosis~sb
                                paste("Clumping+pT, auc = ",round(roc(pT$Diagnosis~pT$PRS_5)$auc,4))),
                       col=color, lty=1, cex=0.8,box.lty=0)
      
-
-
-
-
-
 
 ## Regression function----
 ## plot beta and pvalue
@@ -530,10 +548,13 @@ p_beta_plot(bell_qc_EUR_log,c(4,8,12),'bellenguez_c+pT, QC, EUR')
 
 ## interested SNP
 bellenguez_qc_interested
-mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= extract_eur(bellenguez_qc_interested), family=binomial)
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= bellenguez_interested, family=binomial)
  RsqGLM(mod1, plot=FALSE)$Nagelkerke
 
 ## kunkle----
+ 
+ ##qc on 
+
 ## remove two APOE allele
 col_roc_APOE = list("only2SNP","no2SNP","no2SNP_qc")
 kunkle_cT_log<-log_reg(kunkle_APOE, col_roc_APOE, "kunkle_cT", plot=FALSE)   
@@ -572,7 +593,6 @@ prsice_log <- glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = PRSice)
 
 
 
-
 # Density
 PRS_density <- function(df, name, Pthreshold){
   if(Pthreshold == 'PRS_e5'){
@@ -602,6 +622,11 @@ plot_density <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, Pthr
 }
 
 
+
+
+PRS_density(wightman_qc_variant_sumstat, "Wightman, QC on variant_sumstat","PRS_5")
+PRS_density(extract_eur(wightman_qc_variant_sumstat), "Wightman, EUR, QC on variant_sumstat","PRS_05")
+
 plot_density(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle", "PRS_5", eur=FALSE)
 plot_density(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle_eur", "PRS_05", eur=TRUE)
 legend(-0.32,69, inset=.02, title="AD diagnosis",
@@ -615,9 +640,11 @@ legend(-0.12,179, inset=.02, title="AD diagnosis",
 
 par(mfrow=c(2,2),xpd=FALSE)
 PRS_density(extract_eur(kunkle_cT),"Kunkle, EUR","PRS_5")
-PRS_density(extract_eur(kunkle_qc_target_maf),"qc on target, MAF=0.1%,","PRS_5")
-PRS_density(extract_eur(kunkle_qc_variant), "qc on variants only, EUR,  MAF=0.1%", "PRS_5")
-PRS_density(extract_eur(kunkle_qc_individual), "qc on individual only, EUR, MAF=0.1%", "PRS_5")
+PRS_density(extract_eur(kunkle_qc),"Kunkle, EUR, QC both","PRS_5")
+#PRS_density(extract_eur(kunkle_qc_target_maf),"qc on target, MAF=0.1%,","PRS_5")
+PRS_density(extract_eur(kunkle_qc_variant_sumstat), "Kunkle, EUR, QC on variant_sumstat","PRS_5")
+PRS_density(extract_eur(kunkle_qc_variant), "QC on variants only, EUR,  MAF=0.1%", "PRS_5")
+PRS_density(extract_eur(kunkle_qc_individual), "QC on individual only, EUR, MAF=0.1%", "PRS_5")
 legend(-0.2,179, inset=.02, title="AD diagnosis",
        c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
 

@@ -1,16 +1,16 @@
 #!/bin/bash
-#SBATCH --job-name=polyfun_bellenguez
+#SBATCH --job-name=polyfun_bellenguez_update0224
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=200G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_test/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/%x%j.log
 
 
 summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_ldsc.tsv.gz'
 ##create munge
-output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_test/bellenguez'
-#output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/test_chr10/bellenguez'
+#output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_test/bellenguez'
+output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/bellenguez'
 #output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_qc/bellenguez'
 
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_no_dup.tsv.gz'
@@ -20,7 +20,8 @@ output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_test/bel
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/bellenguez_2021_final_rename.tsv'
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/bellenguez_2021_final.tsv.gz'
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Wightman_et_al_2021_hg37_ldsc.tsv.gz'
-#output='/gpfs/commons/home/tlin/output/wightman/wightman_all'
+#summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/wightman_2021/wightman_2021_fixed.parquet'
+#output='/gpfs/commons/home/tlin/output/wightman/previous/wightman_all'
 
 bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
 all_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/combined_AD_annotations_polyfun/combined_AD_annotations_polyfun_'
@@ -40,14 +41,17 @@ cd ~/polyfun_omer_repo
 ## create parquet file
 
 if false;then
+#  --out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Wightman_previous.munged.parquet
+
+
 python munge_polyfun_sumstats.py \
   --sumstats $summary_stats \
   --out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Bellenguez_et_al_2021_hg37_ldsc.munged.parquet
-#  --out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Wightman.munged.parquet
 
 fi
 summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Bellenguez_et_al_2021_hg37_ldsc.munged.parquet'
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Wightman.munged.parquet'
+#summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Wightman_previous.munged.parquet'
 
 ##1-2
 if false; then
