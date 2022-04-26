@@ -9,16 +9,23 @@
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate 
 conda activate polyfun
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224'
 
-max_snp=3
-#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224'
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID'
-python re-clone/polypred.py \
+max_snp=5
+python polypred.py \
 	--predict \
-	--betas $path/finemap/max_snp_${max_snp}/aggregrate.all.txt.gz \
-	--output-prefix /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/polypred_qc/${max_snp} \
+	--betas /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_${max_snp}/aggregrate.all.txt.gz \
+	--output-prefix /gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/polypred_qc/max_snp_${max_snp} \
 	--plink-exe ~/plink \
 	/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc_maf_0.1/ADSP_qc_chr*.bed
+
+##no_qced target
+#	/gpfs/commons/home/tlin/data/biallelic/ADSP_chr*.bed
+
+
+##fixed 0224
+#	--betas $path/finemap/max_snp_${max_snp}/aggregrate.all.txt.gz \
+#	--output-prefix $path/finemap/polypred/max_snp_${max_snp} \
 
 
 ##updateRSID

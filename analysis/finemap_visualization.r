@@ -20,7 +20,6 @@ bellenguez_max_pip <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bell
 
 
 #col_name_bellenguez =  c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
-
 # bellenguez = read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bellenguez/bellenguez/finemap/finemap_bellenguez.extract_e-01.csv.gz'))
 #colnames(bellenguez)<- c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 #bellenguez = bellenguez[,-7]
@@ -609,6 +608,7 @@ interested_SNP <- bellenguez_updateRSID_snp %>%
 
 write.table(interested_SNP,"/gpfs/commons/home/tlin/data/bellenguez_updateRSID_interested_SNP.tsv", row.names = FALSE, sep = '\t',quote=F)
 
+write.table(bellenguez_updateRSID_min_snp[bellenguez_updateRSID_min_snp$PIP> 0.5,], "/gpfs/commons/home/tlin/data/bellenguez_updateRSID_interested_SNP_minPIP.tsv", row.names = FALSE, sep = '\t',quote=F)
 
 bellenguez_updateRSID_snp[bellenguez_updateRSID_snp$PIP> 0.95,]$SNP
 bellenguez_updateRSID_min_snp[bellenguez_updateRSID_min_snp$PIP> 0.95,]$SNP
