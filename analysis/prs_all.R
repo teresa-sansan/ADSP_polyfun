@@ -237,7 +237,7 @@ plot_roc <- function(roclist, roccol,legend="PRS_", replace="p = 0.",title = FAL
 }   
 col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
-roc_result <-function(df, title=' ',column_for_roc){
+roc_result <-function(df, title=' ',column_for_roc, plot=TRUE){
   if('PRS_e5' %in% column_for_roc){
     roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
   }else if ('PRS10' %in% column_for_roc){
@@ -245,16 +245,43 @@ roc_result <-function(df, title=' ',column_for_roc){
   }else{
     roc_list <- roc(Diagnosis ~ PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
   }
-  plot_roc(roc_list,column_for_roc, title=title)
+  if(plot == TRUE){
+    plot_roc(roc_list,column_for_roc, title=title)
+  }
+  else{
+    
+    len = length(roc_list)
+    my_list=list()
+    for (i in 1:len){
+      my_list[i] = roc_list[[i]]$auc
+    }
+    return(my_list)
+  }
+    
 }
-plot_ethnic_roc <- function(df, title, col){
-  all = roc_result(df, title = paste(title, ", all population") , column_for_roc = col)
-  EUR = roc_result(extract_eur(df), title = paste(title, ", EUR") , column_for_roc = col)
-  AFR = roc_result(extract_afr(df), title = paste(title, ", AFR") , column_for_roc = col)
-  AMR = roc_result(extract_amr(df), title = paste(title, ", AMR") , column_for_roc = col)
+
+roc_result(kunkle_cT, title="t", col_roc_E5, plot=FALSE)
+
+plot_ethnic_roc <- function(df, title, col, plot=TRUE){
+  #all = roc_result(df, title = paste(title, ", all population") , column_for_roc = col, plot=plot)
+  EUR = roc_result(extract_eur(df), title = paste(title, ", EUR") , column_for_roc = col,plot=plot)
+  AFR = roc_result(extract_afr(df), title = paste(title, ", AFR") , column_for_roc = col, plot=plot)
+  AMR = roc_result(extract_amr(df), title = paste(title, ", AMR") , column_for_roc = col, plot=plot)
   
-  plot_grid(all, EUR, AFR, AMR,ncol = 2, nrow = 2)
+  if(plot == TRUE){
+    plot_grid(all, EUR, AFR, AMR,ncol = 1, nrow = 2)
+  }
+  else{
+    df <- data_frame(matrix(ncol = 0, nrow = 7))
+    df$PRS = unlist(col)
+    df$EUR = unlist(EUR)
+    df$AFR = unlist(AFR)
+    df$AMR = unlist(AMR)
+    return(df[,c(2:5)])
+  }
+  
 }
+
 plot_auc_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to_use, eur=FALSE){
   
   if(eur==TRUE){
@@ -432,17 +459,18 @@ log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FA
                           'SD' = sd,
                           "null_R2" = mod1_R2)
         R2 <- rbind(R2, R2_else)
-        if(dim(R2)[1]==length(prs) && plot == TRUE){
-          plotR2_boot(R2,main_title, prs,boot_num)
+        if(dim(R2)[1]==length(prs)){
+          if(plot == TRUE)
+            plotR2_boot(R2,main_title, prs,boot_num)
           return (R2)
         }
       }
-    }  ##bootstrap
+    }  ##bootstrap or not
     else{
       mod <- glm(formula = frm,family = 'binomial', data = df)
       mod_R2 <-  RsqGLM(mod, plot=FALSE)$Nagelkerke 
       ## table
-      if(i ==1){
+      if(i ==1){  ## if theres only one threshold
         cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
         cof['null_R2'] = round(mod1_R2,5)
         cof['R2_prs'] = round(mod_R2,5)
@@ -455,8 +483,9 @@ log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FA
         cof2['PRS'] =prs[i]
         cof <- rbind(cof, cof2)
         #print(cof)
-        if(dim(cof)[1]/4==length(prs) && plot == TRUE){
-          plotR2_boot(cof,main_title, prs,boot_num)
+        if(dim(cof)[1]/4==length(prs) ){
+          if (plot == TRUE)
+            plotR2_boot(cof,main_title, prs,boot_num)
           return (cof)
         }
       }
@@ -464,6 +493,8 @@ log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FA
   }
 }
 
+
+log_reg(kunkle_cT,col_roc, " ", FALSE, boot_num=5)
 par(xpd = FALSE,mfrow=c(1,1))
 plotR2_boot <- function(log_output, header, prs_col, boot){
   par(xpd = FALSE)
@@ -495,13 +526,21 @@ plotR2_boot <- function(log_output, header, prs_col, boot){
   text((length(prs_col)+1)/2,log_output$null_R2[1] , labels =  paste("Null model: ",round(log_output$null_R2[1],5)), adj = c(0.5,-1), xpd = TRUE, cex=1, col="blue")
   
 }
-plot_ethnic_R2 <- function(df, col, title, boot_num, replace){
-  all = log_reg(df, col, paste(title, ", ALL"), plot =T, legend="PRS",boot_num = boot_num, replace=replace)
-  EUR =log_reg(extract_eur(df), col,  paste(title, ", EUR"), plot =T, legend="PRS",boot_num = boot_num, replace=replace)
-  AFR = log_reg(extract_afr(df), col, paste(title, ", AFR"), plot =T, legend="PRS",boot_num = boot_num, replace=replace)
-  AMR = log_reg(extract_amr(df), col,  paste(title, ", AMR"), plot =T, legend="PRS",boot_num = boot_num, replace=replace)
 
+plot_ethnic_R2 <- function(df, col, title, boot_num, replace,plot= "T"){
+  #all = log_reg(df, col, paste(title, ", ALL"), plot =T, legend="PRS",boot_num = boot_num, replace=replace)
+  print(paste("running EUR with bootstrapping ", boot_num, ' times'))
+  EUR = log_reg(extract_eur(df), col,  paste(title, ", EUR"), plot =plot, legend="PRS",boot_num = boot_num, replace=replace)
+  EUR$ethnicity="EUR"
+  print(paste("running AFR with bootstrapping ", boot_num, ' times'))
+  AFR = log_reg(extract_afr(df), col, paste(title, ", AFR"), plot =plot, legend="PRS",boot_num = boot_num, replace=replace)
+  AFR$ethnicity="AFR"
+  print(paste("running  with bootstrapping ", boot_num, ' times'))
+  AMR = log_reg(extract_amr(df), col,  paste(title, ", AMR"), plot =plot, legend="PRS",boot_num = boot_num, replace=replace)
+  AMR$ethnicity="AMR"
+  return(rbind(EUR, AFR, AMR))
 }
+
 
 # test pseudo rsquare
 NagelkerkeR2(mod2)$R2
@@ -529,6 +568,32 @@ plot_R2_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to
   qc_on_target= log_reg(df_qc_target, col_to_use, paste(sumstat_name, ", QC on target") , plot = plot,  boot_num = boot_num,replace="max_snp_per_locus=")
 }
 
+
+##plot facet
+plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num){
+  QC1 = plot_ethnic_R2(QC1, col, '', boot_num, plot="F")
+  QC1$qc_status = "QC_on_base"
+  QC2 = plot_ethnic_R2(QC2, col, '', boot_num, plot="F")
+  QC2$qc_status = "QC_on_base+variants"
+  QC3 = plot_ethnic_R2(QC3, col, '', boot_num, plot="F")
+  QC3$qc_status = "no_qc"
+  all = rbind(QC1,QC2, QC3)
+  all %>% 
+    filter(PRS !="PRS-001" & PRS != "PRS_1") 
+  
+  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
+  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
+  
+  
+  ggplot(data = all, aes(x=boot_mean, y = PRS, shape=qc_status, color = qc_status))+
+    geom_point(size=3)+
+    geom_pointrange(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), linetype="dotted") +
+    facet_wrap(~ethnicity, ncol=1)+
+    xlab('R squared')+
+    theme_bw()
+  return(all)
+}
+plot_ethnic_R2_facut(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT, col_roc_E5, 50)
 
 
 # R2 
