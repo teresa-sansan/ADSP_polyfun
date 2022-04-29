@@ -1,13 +1,19 @@
 cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37
 
-for i in {1..22}
+for i in {1..9}
 do
 echo running chr $i
-sbatch --mem=70G -c 5 --wrap="~/plink --vcf ADSP_annotated_chr$i.vcf.gz --recode --double-id -allow-extra-chr --out plink/ADSP_annotated_chr$i"
+sbatch --mem=90G -c 5 --wrap="~/plink --vcf ADSP_annotated_chr$i.vcf.gz --fill-missing-a2 --make-bed --double-id -allow-extra-chr --out plink/ADSP_annotated_check_chr$i"
 done
 
 
 ## added two flags (--double-id & --allow_extra-chr) because
-## there were and 
+## there were 
+## Error: Multiple instances of '_' in sample ID. (If you do not want '_' to be treated as a FID/IID delimiter, use --double-id )
 ## Error: Invalid chromosome code 'chr17_gl000205_random' on line 1790 of .vcf file. (e.g. in chr21)
 ## increase the memrory size. ( bus error)
+
+
+##zero-cluster flag doesnt work
+##--zero-cluster plink/zero_cluster_chr$i
+##Error: --zero-cluster must be used with --within/--family.
