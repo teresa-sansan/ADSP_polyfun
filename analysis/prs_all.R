@@ -570,7 +570,7 @@ plot_R2_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to
 
 
 ##plot facet
-plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num){
+plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title){
   QC1 = plot_ethnic_R2(QC1, col, '', boot_num, plot="F")
   QC1$qc_status = "QC_on_base"
   QC2 = plot_ethnic_R2(QC2, col, '', boot_num, plot="F")
@@ -585,15 +585,78 @@ plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num){
   all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
   
   
-  ggplot(data = all, aes(x=boot_mean, y = PRS, shape=qc_status, color = qc_status))+
+  plot <- ggplot(data = all, aes(x=boot_mean, y = PRS, shape=qc_status, color = qc_status))+
     geom_point(size=3)+
     geom_pointrange(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), linetype="dotted") +
     facet_wrap(~ethnicity, ncol=1)+
-    xlab('R squared')+
+    xlab('R squared')+ ggtitle(title)+
     theme_bw()
-  return(all)
+  return(plot)
 }
-plot_ethnic_R2_facut(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT, col_roc_E5, 50)
+plot_ethnic_R2_facut(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT, col_roc_E5, 5,"kunkle")
+
+plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, boot_num=50){
+  a = plot_ethnic_R2_facut(s1_qc1, s1_qc2, s1_qc3, col, boot_num,'Kunkle')
+  b = plot_ethnic_R2_facut(s2_qc1, s2_qc2, s2_qc3, col, boot_num,'Bellenguez')
+  c = plot_ethnic_R2_facut(s3_qc1, s3_qc2, s3_qc3, col, boot_num,'Wightman')
+  prow <- plot_grid(a+ theme(legend.position="none"), 
+                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
+                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
+                    ncol = 3, nrow = 1)
+  legend_b <- get_legend(
+    c+ guides(color = guide_legend(nrow = 1)) +
+      theme(legend.position = "bottom")
+  )
+  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
+
+}
+
+plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title){
+  QC1 = plot_ethnic_roc(QC1, '',col, plot="F")
+  QC1$qc_status = "QC_on_base"
+  QC2 = plot_ethnic_roc(QC2, '', col, plot="F")
+  QC2$qc_status = "QC_on_base+variants"
+  QC3 = plot_ethnic_roc(QC3, '', col, plot="F")
+  QC3$qc_status = "no_qc"
+  all = rbind(QC1,QC2, QC3)
+  all %>% 
+    filter(PRS !="PRS-001" & PRS != "PRS_1") 
+  
+  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
+  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
+  
+  
+  plot <- ggplot(data = all, aes(x=auc, y = PRS, shape=qc_status, color = qc_status))+
+    geom_point(size=3)+
+    facet_wrap(~ethnicity, ncol=1)+
+    xlab('AUC')+ ggtitle(title)+
+    theme_bw()
+  return(plot)
+}
+plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5){
+  a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle')
+  b = plot_ethnic_roc_facut(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez')
+  c = plot_ethnic_roc_facut(s3_qc1, s3_qc2, s3_qc3, col,'Wightman')
+  prow <- plot_grid(a+ theme(legend.position="none"), 
+                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
+                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
+                    ncol = 3, nrow = 1)
+  legend_b <- get_legend(
+    c+ guides(color = guide_legend(nrow = 1)) +
+      theme(legend.position = "bottom")
+  )
+  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
+  
+}
+
+## this will take awhile.
+plot_R2_facut_allsumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,bellenguez_qc_on_base, bellenguez_qc_on_variant_sumstat, bellenguez_cT0224, 
+                         wightman_qc_base, wightman_qc_variant_sumstat, wightman_cT)
+
+
+
+plot_auc_facut_all_sumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,bellenguez_qc_on_base, bellenguez_qc_on_variant_sumstat,bellenguez_cT0224, 
+                      wightman_qc_base, wightman_qc_variant_sumstat, wightman_cT) 
 
 
 # R2 
