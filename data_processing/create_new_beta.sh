@@ -4,7 +4,7 @@
 
 cd /gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_10
 
-save='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/new_beta/kunkle_max_snp_10.aggregate.csv'
+save='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/new_beta/kunkle_max_snp_10.aggregate.tsv'
 echo $(zcat chr1.aggregrate.all.txt.gz | head -1) NEW_BETA | tr " " "\t" > $save
 
 for i in {1..22}

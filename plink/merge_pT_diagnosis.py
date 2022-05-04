@@ -11,7 +11,12 @@ import pandas as pd
 #path='/gpfs/commons/home/tlin/output/cT/wightman/qc_on_variant_sumstat/'
 #save_name='wightman/qc_on_variant_sumstat'
 
+#path='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/qc_on_variant_sumstat/'
+#save_name='bellenguez/fixed_0224/bellenguez_qc_on_variant_sumstat'
 
+## new beta
+path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/new_beta/'
+save_name='kunkle/fixed_0224/new_beta_noqc'
 
 prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
 prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
