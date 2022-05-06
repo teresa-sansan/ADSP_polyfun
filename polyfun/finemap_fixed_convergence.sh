@@ -3,7 +3,7 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
-#SBATCH --time=30:00:00
+#SBATCH --time=100:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
@@ -29,11 +29,12 @@ do
 	block_tail=$(echo $line | cut -d '.' -f 2| cut -d '_' -f 2)   ##only taking the tail 1MB, here is only taking the end of the 1MB tail
 	block_head=$(expr $block_tail - 1000000) 
 	block_1=$(expr $block_head - 500000)
-	block_3=$(expr $block_head + 500000)
+	block_2=$(expr $block_head + 500000)
+	block_3=$(expr $block_tail + 500000) 
 	LD_start=$(expr $block_head - 1000000)
 	LD_end=$(expr $block_head + 2000000)
 #$block_1	
-	for start in  $block_head $block_3
+	for start in  $block_head $block_head $block_3
 	do
 	end=$(expr $start + 1000000)
 	python finemapper_max_iter_1000.py \
