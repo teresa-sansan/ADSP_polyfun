@@ -29,36 +29,53 @@ def main(args):
         
     #read regions file
     #df_regions = pd.read_table(args.regions_file)
-    df_regions = pd.read_table('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/IBSS_not_converge_list.txt', sep ='.', names = ["CHR","POS","else"]) 
-    df_regions = df_regions[1:]
-    df_regions.index -=1
-    new = pd.DataFrame(df_regions.POS.str.split('_').tolist(), columns=["START","END"]) 
-    new["CHR"] = df_regions.CHR.str.replace('chr','')
-  
-    #if args.chr is not None:
-    #    df_regions = df_regions.query('CHR==%d'%(args.chr))
-    #    if df_regions.shape[0]==0: raise ValueError('no SNPs found in chromosome %d'%(args.chr))
-    df_regions = df_regions.loc[df_regions.apply(lambda r: np.any((df_sumstats['CHR']==r['CHR']) & (df_sumstats['BP'].between(r['START'], r['END']))), axis=1)]
-    
+    table = pd.read_table('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/IBSS_not_converge_list.txt', sep ='.', names = ["CHR","POS","else"]) 
+    table = table[1:]
+    table.index -=1
+    new = pd.DataFrame(table.POS.str.split('_').tolist(), columns=["START","END"]).astype(int)
+    new.START = new.END - 1000000 ## only take the last 1MB of the 3MB window
+    new["CHR"] = table.CHR.str.replace('chr','')
+
+    new['block_1'] = new.START -500000
+    new['block_2'] = new.START + 500000   ## a.k.a new.end - 500000 
+    new['block_3'] = new.END + 500000 
+
+    new1 = pd.concat([new.block_1, new.block_2, new.CHR], axis=1,keys=["START","END","CHR"]).sort_values(['CHR',"START"])
+    new2 = pd.concat([new.START, new.END, new.CHR], axis=1,keys=["START","END","CHR"]).sort_values(['CHR',"START"])
+    new3 = pd.concat([new.block_2, new.block_3, new.CHR], axis=1,keys=["START","END","CHR"]).sort_values(['CHR',"START"])
+
+    df_regions = pd.concat([new1,new2, new3]) 
+    df_regions.astype(int)
+    df_regions = df_regions[df_regions.START > 0]
+    df_regions = df_regions.sort_values(['CHR',"START"]).reset_index().drop(columns=["index"]) 
+    #print(df_regions)
+
+ #   if args.chr is not None:
+ #       print(df_regions.head)
+ #       df_regions = df_regions.query('CHR==%d'%(args.chr))
+ #       if df_regions.shape[0]==0: raise ValueError('no SNPs found in chromosome %d'%(args.chr))
+
+    #df_regions = df_regions.loc[df_regions.apply(lambda r: np.any((df_sumstats['CHR']==r['CHR']) & (df_sumstats['BP'].between(r['START'], r['END']))), axis=1)]
+
     #aggregate outputs
     df_sumstats_list = []
     logging.info('Aggregating results...')
     for _, r in tqdm(df_regions.iterrows()):
         #chr_num, start, end, url_prefix = r['CHR'], r['START'], r['END'], r['URL_PREFIX']
         chr_num, start, end = r['CHR'], r['START'], r['END']
-        
+        r = r.astype(int)
         #apply p-value filter if needed
         if args.pvalue_cutoff is not None:
             df_sumstats_r = df_sumstats.query('CHR==%d & %d <= BP <= %d'%(chr_num, start, end))
             if np.all(df_sumstats_r['P'] > args.pvalue_cutoff): continue        
-
         #output_file_r = '%s.chr%s.%s_%s.gz'%(args.out_prefix, chr_num, start, end)   ## original script        
         #output_file_r = '%s.%s.%s.%s.gz'%(args.out_prefix, chr_num, start, end)  ##need to change again here
         output_file_r = '%s_chr%s.%s.%s.gz'%(args.out_prefix, chr_num, start, end)   ## original script
 
 	
         if not os.path.exists(output_file_r):
-            err_msg = 'output file for chromosome %d bp %d-%d doesn\'t exist'%(chr_num, start, end)
+            print('not found %s_chr%s.%s.%s.gz'%(args.out_prefix, chr_num, start, end))
+            err_msg = 'output file for chromosome %s bp %s-%s doesn\'t exist'%(chr_num, start, end)
             if args.allow_missing_jobs:
                 logging.warning(err_msg)
                 logging.warning(output_file_r) ## check path
@@ -80,8 +97,6 @@ def main(args):
     #keep only the most central result for each SNP
     df_sumstats = pd.concat(df_sumstats_list, axis=0)
     df_sumstats.sort_values('DISTANCE_FROM_CENTER', inplace=True, ascending=True)
-    #print(df_sumstats.head(5))
-    #print(df_sumstats.columns)
     df_sumstats = set_snpid_index(df_sumstats, allow_duplicates=True)
     df_sumstats = df_sumstats.loc[~df_sumstats.index.duplicated(keep='first')]
     del df_sumstats['DISTANCE_FROM_CENTER']

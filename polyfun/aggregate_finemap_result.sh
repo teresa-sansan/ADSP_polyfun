@@ -55,15 +55,11 @@ fi
 ## this part is trying to rescue the region that fails to converge. 
 
 if true; then
-for chr in 1 2 
-do
+
 python aggregate_finemapper_results_fixed_convergence.py \
                 --out-prefix $path/$prefix \
                 --sumstats $bellenguez \
-                --out $path/chr${chr}.aggregrate.all.txt.gz \
                 --allow-missing \
-                --chr $chr
-done
-
+                --out $path/aggregrate.all.txt.gz
 
 fi
