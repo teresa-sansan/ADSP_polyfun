@@ -12,6 +12,8 @@ library(pROC)
 #library(fmsb)   ##psudo rsquare
 library(modEvA)  # psuedo rsquare
 library(boot)
+library("gridGraphics")
+
 
 ## first, look at the composition of ADSP phenotype file (in plink format) ----
 
@@ -67,6 +69,8 @@ susie <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/
 ##kunkle
 #kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/kunkle_pT_prs_before_qc.tsv')
 kunkle_APOE <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/APOE.tsv")
+kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_polypred.tsv')
+
 
 ##kunkle_qc
 kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_no_qc.tsv')
@@ -81,6 +85,8 @@ kunkle_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixe
 kunkle_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_individual_update.tsv')
 kunkle_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/qc_on_variant_sumstat.tsv')
 
+kunkle_new_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/new_beta_noqc.tsv')
+
 ##wightman
 wightman_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/before_qc.tsv')
 wightman_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc.tsv')
@@ -94,6 +100,7 @@ wightman_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/w
 PRSice <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 
 ##density_plot -------
+
 density_plot(sbayesR, name = "sbayesR")
 par(mfrow=c(1,3))
 
@@ -132,7 +139,10 @@ mtext("kunkle",                   # Add main title
 
 ##draw max_snp_per ld
 prs_col =  c("PRS1","PRS3","PRS5","PRS10")
+prs_col =  c("PRS1","PRS3","PRS5","PRS10")
 
+
+##plotting case/control plot
 plot_density_diag <- function(df, col, title){
   for(i in 1:length(col)) {  
     plot(density((df[, col[i]])),col="grey", lty = 2, lwd = 2,main=str_replace(col[i],"PRS", "max_snp_per_LD = "), xlab='PRS')
@@ -147,6 +157,8 @@ plot_density_diag <- function(df, col, title){
 }
 
 par(mfrow=c(1,2))
+plot_density_diag(kunkle_cT, c("PRS_e5", "PRS_001", "PRS_005", "PRS_01", "PRS_05", "PRS_1", 
+                               "PRS_5"),"kunkle_cT")
 
 plot_density_diag(bellenguez_update,c("PRS1","PRS10"), "bellenguez_update")
 plot_density_diag(susie,c("PRS1","PRS10"), "susie")
@@ -156,18 +168,93 @@ plot_density_diag(bellenguez_eur,c("PRS1","PRS10"), "bellenguez_EUR")
 
 par(mfrow=c(2,2))
 
+## plot density plot for polypred
 plot_cs_density<- function(df, name){
-  plot(density((df$PRS1)),col="red", lty = 1, lwd = 1,main=name, xlab='PRS', xlim = c(-0.004,0.003), ylim = c(0,1150))
-  lines(density(df$PRS3), col='blue',lwd = 3)
-  lines(density(df$PRS5), col='brown',lwd = 2,lty = 2)
-  lines(density(df$PRS10), col='darkgreen', lty = 3, lwd = 1)
+  plot(density(df$PRS1),col="red", lty = 1, lwd = 1,main=name, xlab='PRS', xlim = c(min(min(df$PRS1), min(df$PRS3),min(df$PRS5),min(df$PRS10)),max(max(df$PRS1), max(df$PRS3),max(df$PRS5),max(df$PRS10))),
+       ylim = c(0,max(max(density(df$PRS1)$y),max(density(df$PRS5)$y),max(density(df$PRS10)$y))*1.1))
+  print(max(max(density(df$PRS1)$y),max(density(df$PRS5)$y),max(density(df$PRS10)$y)))
+  lines(density(df$PRS3), col='blue',lwd = 1)
+  lines(density(df$PRS5), col='brown',lwd = 1,lty = 2)
+  lines(density(df$PRS10), col='darkgreen', lty = 2, lwd = 1)
   legend("topright", legend=c("max SNP = 1","max SNP = 3","max SNP = 5","max SNP = 10"),
-         col=c("red", "blue","brown","darkgreen"), lty=c(1,1,2,3), lwd = c(1,3,2,1), cex=0.8,
+         col=c("red", "blue","brown","darkgreen"), lty=c(1,1,1,1), lwd = c(1,1,1,1), cex=0.8,
          box.lty=0)
 }
+head(kunkle_polypred)
+
+
+pivot_df<- function(df){
+  df_new <- df %>%
+    subset(final_population ==  "EUR" | final_population == "AMR"| final_population =="AFR") %>%   ## only keep the race of interest
+    pivot_longer(                           ## can be appy to different method (polyfunpred or pT)
+      cols = starts_with("PRS"),
+      names_to = 'method', 
+      values_to = 'PRS') %>% 
+    as.data.frame()
+  
+  df_new$Diagnosis = as.factor(df_new$Diagnosis)
+  
+  return(df_new)
+}
+
+kunkle_polyprednew <-pivot_df(kunkle_polypred)
+
+ggplot(kunkle_polyprednew, aes(x =PRS, group=Diagnosis,fill = Diagnosis, color =Diagnosis))+
+  geom_density(alpha = 0.01) +
+  facet_grid(method~final_population)+theme_bw()+ggtitle("kunkle_cT")
+
+ggplot(kunkle_polyprednew, aes(x =PRS, group= method,fill = method, color =max_snp))+
+  geom_density(alpha = 0.01) +
+  facet_grid(Diagnosis~final_population, 
+             labeller = labeller(Diagnosis= diagnosis_label))+
+  theme_bw()+ggtitle("kunkle_cT")
+
+
+
+
+kunkle_cT_new <- kunkle_cT %>%
+  subset(select = -PRS) %>%
+  subset(final_population ==  "EUR" | final_population == "AMR"| final_population =="AFR")
+
+test <- kunkle_cT_new %>%                          
+  pivot_longer(
+    cols = starts_with("prs"),
+    names_to = 'pT',
+    values_to = 'PRS') %>% 
+  as.data.frame()
+
+
+diagnosis_label = c("Control","Case")
+names(diagnosis_label) = c(0,1)
+
+
+ test$Diagnosis = as.factor(test$Diagnosis)
+
+
+
+ggplot(test, aes(x =PRS, group=Diagnosis,fill = Diagnosis, color =Diagnosis))+
+  geom_density(alpha = 0.01) +
+  facet_grid(pT~final_population)+theme_bw()+ggtitle("kunkle_cT")
+
+
+
+ggplot(test, aes(x =PRS, group= pT,fill = pT, color =pT))+
+  geom_density(alpha = 0.3) +
+  facet_grid(Diagnosis~final_population, 
+             labeller = labeller(Diagnosis= diagnosis_label))+
+  theme_bw()+ggtitle("kunkle_cT")
+
+rplot_cs_density(kunkle_polypred, "kunkle_polypred")
+
+
+
+
+
 plot_cs_density(susie, "susie")
 plot_cs_density(bellenguez_all2, "polyfun")
 lines(density(susie$PRS1), col='darkgreen', lty = 3, lwd = 1)
+
+PRS_density(kunkle_cT,"Kunkle","PRS_5")
 
 
 
@@ -269,7 +356,7 @@ plot_ethnic_roc <- function(df, title, col, plot=TRUE){
   AMR = roc_result(extract_amr(df), title = paste(title, ", AMR") , column_for_roc = col, plot=plot)
   
   if(plot == TRUE){
-    plot_grid(all, EUR, AFR, AMR,ncol = 1, nrow = 2)
+    plot_grid(EUR, AFR, AMR,ncol = 2, nrow = 2)
   }
   else{
     df <- data_frame(matrix(ncol = 0, nrow = 7))
@@ -279,8 +366,9 @@ plot_ethnic_roc <- function(df, title, col, plot=TRUE){
     df$AMR = unlist(AMR)
     return(df[,c(2:5)])
   }
-  
 }
+
+
 
 plot_auc_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to_use, eur=FALSE){
   
@@ -353,10 +441,13 @@ plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_target, kunkle_pt_qc_plot_variant,
 
 kunkle_pt_qc_plot_maf=roc_result(kunkle_qc_maf,title="QC, MAF >0 0.1%", column_for_roc = col_roc_E5)
 ##kunkle_pt_qc_plot_base=roc_result(kunkle_qc_base, title="kunkle_qc_summary_stats",column_for_roc = col_roc_E5)
-plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_maf,ncol = 2, nrow = 1)
+plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_maf,ncol = 2, nrow = 2)
+
+
 
 ##cros group
 plot_ethnic_roc (kunkle_cT, 'kunkle', col_roc_E5)
+plot_ethnic_roc(kunkle_new_beta, 'kunkle, (effectsize * pip) ',col_roc_E5)
 
 ## APOE
 col_roc <- list("only2SNP","no2SNP","no2SNP_qc")
@@ -767,6 +858,7 @@ legend(-0.12,179, inset=.02, title="AD diagnosis",
 #par(mfrow=c(2,3),xpd=FALSE)
 
 par(mfrow=c(2,2),xpd=FALSE)
+
 PRS_density(extract_eur(kunkle_cT),"Kunkle, EUR","PRS_5")
 PRS_density(extract_eur(kunkle_qc),"Kunkle, EUR, QC both","PRS_5")
 #PRS_density(extract_eur(kunkle_qc_target_maf),"qc on target, MAF=0.1%,","PRS_5")
