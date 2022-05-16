@@ -6,6 +6,10 @@ import pandas as pd
 #path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_on_variant_sumstat/'
 #save_name='kunkle/fixed_0224/qc_on_variant_sumstat'
 
+##kunkle_no_apoe
+path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/subsets/qc_on_variant_sumstat/'
+save_name='kunkle/fixed_0224/remove_APOE_qc'
+
 #path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
 #save_name='kunkle/fixed_0224/qc_on_variant_maf01'
 #path='/gpfs/commons/home/tlin/output/cT/wightman/qc_on_variant_sumstat/'
@@ -15,8 +19,8 @@ import pandas as pd
 #save_name='bellenguez/fixed_0224/bellenguez_qc_on_variant_sumstat'
 
 ## new beta
-path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/new_beta/'
-save_name='kunkle/fixed_0224/new_beta_noqc'
+#path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/new_beta/'
+#save_name='kunkle/fixed_0224/new_beta_noqc'
 
 prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
 prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
