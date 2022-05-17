@@ -1,0 +1,66 @@
+chr 1 in hg38 has 17062141 SNPs, 10247037  (60.06%) left after liftover.
+Where 10247036 (100.00% ) SNPs are correctly mapped.
+
+chr 2 in hg38 has 18185507 SNPs, 5964098  (32.80%) left after liftover.
+Where 5961747 (99.96% ) SNPs are correctly mapped.
+
+chr 3 in hg38 has 14971063 SNPs, 11458337  (76.54%) left after liftover.
+Where 11456135 (99.98% ) SNPs are correctly mapped.
+
+chr 4 in hg38 has 14429711 SNPs, 5165296  (35.80%) left after liftover.
+Where 5164782 (99.99% ) SNPs are correctly mapped.
+
+chr 5 in hg38 has 13510691 SNPs, 5810031  (43.00%) left after liftover.
+Where 5796210 (99.76% ) SNPs are correctly mapped.
+
+chr 6 in hg38 has 12667813 SNPs, 6387063  (50.42%) left after liftover.
+Where 6383578 (99.95% ) SNPs are correctly mapped.
+
+chr 7 in hg38 has 12127605 SNPs, 6618567  (54.57%) left after liftover.
+Where 6612147 (99.90% ) SNPs are correctly mapped.
+
+chr 8 in hg38 has 11516131 SNPs, 7221154  (62.70%) left after liftover.
+Where 7221151 (100.00% ) SNPs are correctly mapped.
+
+chr 9 in hg38 has 9495260 SNPs, 8569227  (90.25%) left after liftover.
+Where 8565450 (99.96% ) SNPs are correctly mapped.
+
+chr 10 in hg38 has 10147599 SNPs, 7751114  (76.38%) left after liftover.
+Where 7750411 (99.99% ) SNPs are correctly mapped.
+
+chr 11 in hg38 has 10177806 SNPs, 7842869  (77.06%) left after liftover.
+Where 7842719 (100.00% ) SNPs are correctly mapped.
+
+chr 12 in hg38 has 9880387 SNPs, 8076229  (81.74%) left after liftover.
+Where 8075988 (100.00% ) SNPs are correctly mapped.
+
+chr 13 in hg38 has 7379904 SNPs, 7204557  (97.62%) left after liftover.
+Where 7162934 (99.42% ) SNPs are correctly mapped.
+
+chr 14 in hg38 has 6765630 SNPs, 6745303  (99.70%) left after liftover.
+Where 6744118 (99.98% ) SNPs are correctly mapped.
+
+chr 15 in hg38 has 6287129 SNPs, 6255586  (99.50%) left after liftover.
+Where 6254444 (99.98% ) SNPs are correctly mapped.
+
+chr 16 in hg38 has 6911704 SNPs, 6806883  (98.48%) left after liftover.
+Where 6796997 (99.85% ) SNPs are correctly mapped.
+
+chr 17 in hg38 has 6119360 SNPs, 6011165  (98.23%) left after liftover.
+Where 5999470 (99.81% ) SNPs are correctly mapped.
+
+chr 18 in hg38 has 5762144 SNPs, 5652053  (98.09%) left after liftover.
+Where 5651156 (99.98% ) SNPs are correctly mapped.
+
+chr 19 in hg38 has 4687310 SNPs, 4678751  (99.82%) left after liftover.
+Where 4678672 (100.00% ) SNPs are correctly mapped.
+
+chr 20 in hg38 has 4866190 SNPs, 4570042  (93.91%) left after liftover.
+Where 4539632 (99.33% ) SNPs are correctly mapped.
+
+chr 21 in hg38 has 2952942 SNPs, 2856904  (96.75%) left after liftover.
+Where 2813011 (98.46% ) SNPs are correctly mapped.
+
+chr 22 in hg38 has 3105683 SNPs, 2955495  (95.16%) left after liftover.
+Where 2731010 (92.40% ) SNPs are correctly mapped.
+
