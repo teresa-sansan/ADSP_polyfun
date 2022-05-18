@@ -1,3 +1,6 @@
+## modified the aggregate scrip so that I can aggregate the regions that has 1MB window, 0.5MB overlap instead of 3 MB window and 1 MB overlap
+## The idea is the same. I am still taking the most centric one. 
+
 ## modified line 45 in the original script.
 ## changed '%s.chr%s.%s_%s.gz' to the output prefix I set for finemap job
 
@@ -29,12 +32,20 @@ def main(args):
         
     #read regions file
     #df_regions = pd.read_table(args.regions_file)
-    table = pd.read_table('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/IBSS_not_converge_list.txt', sep ='.', names = ["CHR","POS","else"]) 
+    
+    table = pd.read_table(args.regions_file, sep ='.', names = ["CHR","POS","else"]) 
+    if not os.path.exists(args.regions_file):
+       print("regions file not found, please recheck the path.")
+
     table = table[1:]
     table.index -=1
     new = pd.DataFrame(table.POS.str.split('_').tolist(), columns=["START","END"]).astype(int)
     new.START = new.END - 1000000 ## only take the last 1MB of the 3MB window
     new["CHR"] = table.CHR.str.replace('chr','')
+    
+
+
+    ## caluclate the three start sites of three windows that cover the 1MB window. 
 
     new['block_1'] = new.START -500000
     new['block_2'] = new.START + 500000   ## a.k.a new.end - 500000 
@@ -43,12 +54,14 @@ def main(args):
     new1 = pd.concat([new.block_1, new.block_2, new.CHR], axis=1,keys=["START","END","CHR"]).sort_values(['CHR',"START"])
     new2 = pd.concat([new.START, new.END, new.CHR], axis=1,keys=["START","END","CHR"]).sort_values(['CHR',"START"])
     new3 = pd.concat([new.block_2, new.block_3, new.CHR], axis=1,keys=["START","END","CHR"]).sort_values(['CHR',"START"])
-
-    df_regions = pd.concat([new1,new2, new3]) 
+    
+    
+    ## concat all the 1MB window and sort them
+    df_regions = pd.concat([new1,new2,new3]) 
     df_regions.astype(int)
     df_regions = df_regions[df_regions.START > 0]
     df_regions = df_regions.sort_values(['CHR',"START"]).reset_index().drop(columns=["index"]) 
-    #print(df_regions)
+#    print(df_regions)
 
  #   if args.chr is not None:
  #       print(df_regions.head)
@@ -82,6 +95,7 @@ def main(args):
                 continue
             else:
                 raise IOError(err_msg + '.\nTo override this error, please provide the flag --allow-missing-jobs')
+
         df_sumstats_r = pd.read_table(output_file_r)
         #mark distance from center
         middle = (start+end)//2

@@ -46,7 +46,8 @@ def main(args):
             if np.all(df_sumstats_r['P'] > args.pvalue_cutoff): continue        
         
         #output_file_r = '%s.chr%s.%s_%s.gz'%(args.out_prefix, chr_num, start, end)   ## original script
-        output_file_r = '%s.%s.%s.%s.gz'%(args.out_prefix, chr_num, start, end)
+        #output_file_r = '%s.%s.%s.%s.gz'%(args.out_prefix, chr_num, start, end)
+        output_file_r = '%s.chr%s.%s_%s.gz'%(args.out_prefix, chr_num, start, end)
 	
         if not os.path.exists(output_file_r):
             err_msg = 'output file for chromosome %d bp %d-%d doesn\'t exist'%(chr_num, start, end)
