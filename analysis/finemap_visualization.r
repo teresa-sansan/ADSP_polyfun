@@ -18,7 +18,9 @@ bellenguez_max_10_updateRSID <- read.table("/gpfs/commons/home/tlin/output/belle
 bellenguez_min_pip <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_min_extract_1e-3.tsv", header = T)
 bellenguez_max_pip <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_max_extract_1e-3.tsv", header = T)
 
-
+kunkle_pip = read.table("/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_10/agg_kunkle_extract_1e-3.tsv", header =T)
+wightman_pip = read.table("/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/agg_extract_1e-3.tsv", header= T)
+new_bellenguez_pip = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge/finemap_genomewide_1e-3.tsv", header = T)
 #col_name_bellenguez =  c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 # bellenguez = read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bellenguez/bellenguez/finemap/finemap_bellenguez.extract_e-01.csv.gz'))
 #colnames(bellenguez)<- c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
@@ -587,7 +589,7 @@ bellenguez_updateRSID_min_snp = extract_SNP(bellenguez_min_pip)
 #kunkle_SNP = extract_SNP(kunkle_max_10)
 
 
-
+extract_SNP(wightman_pip)
 
 write.table(bellenguez_updateRSID_snp,"/gpfs/commons/home/tlin/data/update_RSID_bellenguez_33SNPs.tsv", row.names = FALSE, sep = '\t')
 
@@ -606,9 +608,25 @@ text(as.numeric(unlist(lowpip[,'CHR'])), as.numeric(unlist(lowpip[,'PIP'])),labe
 interested_SNP <- bellenguez_updateRSID_snp %>%
   filter(PIP > 0.5) 
 
+
+interested_SNP_kunkle <- kunkle_pip %>%
+  filter(CREDIBLE_SET != 0) %>%
+  filter(PIP > 0.5)
+
+interested_SNP_wightman <- wightman_pip %>%
+  filter(CREDIBLE_SET != 0) %>%
+  filter(PIP > 0.5)
+
+
+interested_SNP_bellenguez_new <- new_bellenguez_pip %>%
+  filter(CREDIBLE_SET != 0) %>%
+  filter(PIP > 0.5)
+
+
 write.table(interested_SNP,"/gpfs/commons/home/tlin/data/bellenguez_updateRSID_interested_SNP.tsv", row.names = FALSE, sep = '\t',quote=F)
 
 write.table(bellenguez_updateRSID_min_snp[bellenguez_updateRSID_min_snp$PIP> 0.5,], "/gpfs/commons/home/tlin/data/bellenguez_updateRSID_interested_SNP_minPIP.tsv", row.names = FALSE, sep = '\t',quote=F)
+write.table(bellenguez_updateRSID_max_snp[bellenguez_updateRSID_max_snp$PIP> 0.5,], "/gpfs/commons/home/tlin/data/bellenguez_updateRSID_interested_SNP_maxPIP.tsv", row.names = FALSE, sep = '\t',quote=F)
 
 bellenguez_updateRSID_snp[bellenguez_updateRSID_snp$PIP> 0.95,]$SNP
 bellenguez_updateRSID_min_snp[bellenguez_updateRSID_min_snp$PIP> 0.95,]$SNP

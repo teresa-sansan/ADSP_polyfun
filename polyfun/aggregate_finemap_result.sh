@@ -28,8 +28,8 @@ path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap'
 
 
 ## bellenguez_fixed_convergence
-prefix_converge='finemap_max_snp_3'
-path_converge='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge'
+#prefix_converge='finemap_max_snp_3'
+#path_converge='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge'
 
 ##wightman
 #wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Wightman_et_al_2021_hg37_ldsc.tsv.gz'
@@ -41,7 +41,7 @@ path_converge='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/f
 kunkle='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/kunkle_2019/Kunkle_etal_Stage1_qc.gz'
 
 max_snp=10
-if true; then
+if false; then
 for chr in {1..22}
 do
 	#python aggregate_finemapper_results_min.py \
@@ -60,7 +60,7 @@ fi
 
 ## this part is trying to rescue the region that fails to converge. 
 
-if false; then
+if true; then
 
 python aggregate_finemapper_results_fixed_convergence.py \
                 --out-prefix $path_converge/$prefix_converge \

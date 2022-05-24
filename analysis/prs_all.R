@@ -58,7 +58,7 @@ bellenguez_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/belleng
 bellenguez_qc_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_qc_interested_SNP.tsv')
 bellenguez_interest_max <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/maxPIP/merged_updateRSID_qc_interested_SNP.tsv')
 bellenguez_interest_min <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/minPIP/merged_updateRSID_qc_interested_SNP.tsv')
-
+bellenguez_polypred_new <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/fixed_0224_polypred.prs')
 
 bellenguez_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_individual.tsv')
 bellenguez_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_variant.tsv')
@@ -84,10 +84,11 @@ kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/f
 kunkle_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_variant_update.tsv')
 kunkle_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_individual_update.tsv')
 kunkle_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/qc_on_variant_sumstat.tsv')
-
 kunkle_new_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/new_beta_noqc.tsv')
 
-##wightman
+kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/kunkle_polypred.tsv')
+
+kunkle_polypred##wightman
 wightman_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/before_qc.tsv')
 wightman_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc.tsv')
 wightman_qc_target <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_target.tsv')
@@ -95,7 +96,7 @@ wightman_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_
 wightman_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_individual_update.tsv')
 wightman_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_variant_update.tsv')
 wightman_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_variant_sumstat.tsv')
-
+wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv')
 ##PRSice
 PRSice <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 
@@ -139,8 +140,6 @@ mtext("kunkle",                   # Add main title
 
 ##draw max_snp_per ld
 prs_col =  c("PRS1","PRS3","PRS5","PRS10")
-prs_col =  c("PRS1","PRS3","PRS5","PRS10")
-
 
 ##plotting case/control plot
 plot_density_diag <- function(df, col, title){
@@ -156,11 +155,46 @@ plot_density_diag <- function(df, col, title){
         side = 3,line = -1.25,outer = TRUE)
 }
 
+bellenguez_polypred_new
+par(mfrow=c(3,1))
+
+df = extract_eur(bellenguez_polypred_new)
+plot(density(df$PRS),col="grey", lty = 2, lwd = 2,main="EUR", xlab='PRS', xlim = c(4.15,4.32))
+lines(density(df[df$Diagnosis == 1,"PRS"]), col = 'red')
+lines(density(df[df$Diagnosis == 0, "PRS"]), col = 'blue')
+legend("topright", legend=c("ALL","Case", "Control"),
+       col=c("darkgrey","red", "blue"), lty=c(2,1,1), cex=0.8,
+       box.lty=0)
+df = extract_afr(bellenguez_polypred_new)
+plot(density(df$PRS),col="grey", lty = 2, lwd = 2,main="AFR", xlab='PRS',xlim = c(4,7))
+lines(density(df[df$Diagnosis == 1,"PRS"]), col = 'red')
+lines(density(df[df$Diagnosis == 0, "PRS"]), col = 'blue')
+legend("topright", legend=c("ALL","Case", "Control"),
+       col=c("darkgrey","red", "blue"), lty=c(2,1,1), cex=0.8,
+       box.lty=0)
+
+df = extract_amr(bellenguez_polypred_new)
+plot(density(df$PRS),col="grey", lty = 2, lwd = 2,main="AMR", xlab='PRS',xlim = c(4.15,4.4))
+lines(density(df[df$Diagnosis == 1,"PRS"]), col = 'red')
+lines(density(df[df$Diagnosis == 0, "PRS"]), col = 'blue')
+legend("topright", legend=c("ALL","Case", "Control"),
+       col=c("darkgrey","red", "blue"), lty=c(2,1,1), cex=0.8,
+       box.lty=0)
+
+mtext("bellenguez_polypred",                
+      side = 3,line = -1.25,outer = TRUE)
+  
+
 par(mfrow=c(1,2))
 plot_density_diag(kunkle_cT, c("PRS_e5", "PRS_001", "PRS_005", "PRS_01", "PRS_05", "PRS_1", 
                                "PRS_5"),"kunkle_cT")
 
 plot_density_diag(bellenguez_update,c("PRS1","PRS10"), "bellenguez_update")
+
+plot_density_diag(extract_eur(wightman_polypred),c("PRS1","PRS3","PRS7","PRS10"), "wightman_eur")
+plot_density_diag(extract_amr(wightman_polypred),c("PRS1","PRS3","PRS7","PRS10"), "wightman_amr")
+plot_density_diag(extract_afr(wightman_polypred),c("PRS1","PRS3","PRS7","PRS10"), "wightman_afr")
+
 plot_density_diag(susie,c("PRS1","PRS10"), "susie")
 bellenguez_eur = bellenguez_update[bellenguez_update$final_population == "EUR",]
 plot_density_diag(bellenguez_eur,c("PRS1","PRS10"), "bellenguez_EUR")
@@ -199,10 +233,13 @@ pivot_df<- function(df){
 
 kunkle_polyprednew <-pivot_df(kunkle_polypred)
 
-ggplot(kunkle_polyprednew, aes(x =PRS, group=Diagnosis,fill = Diagnosis, color =Diagnosis))+
+p <- ggplot(kunkle_polyprednew, aes(x =PRS, group=Diagnosis,fill = Diagnosis, color =Diagnosis))+
   geom_density(alpha = 0.01) +
   facet_grid(method~final_population)+theme_bw()+ggtitle("kunkle_cT")
 
+
+ 
+p
 ggplot(kunkle_polyprednew, aes(x =PRS, group= method,fill = method, color =max_snp))+
   geom_density(alpha = 0.01) +
   facet_grid(Diagnosis~final_population, 
@@ -356,7 +393,7 @@ plot_ethnic_roc <- function(df, title, col, plot=TRUE){
   AMR = roc_result(extract_amr(df), title = paste(title, ", AMR") , column_for_roc = col, plot=plot)
   
   if(plot == TRUE){
-    plot_grid(EUR, AFR, AMR,ncol = 2, nrow = 2)
+    plot_grid(EUR, AFR, AMR,ncol = 1, nrow = 3)
   }
   else{
     df <- data_frame(matrix(ncol = 0, nrow = 7))
@@ -446,10 +483,19 @@ plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_maf,ncol = 2, nrow = 2)
 
 
 ##cros group
+
+col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
 plot_ethnic_roc (kunkle_cT, 'kunkle', col_roc_E5)
+plot_ethnic_roc (kunkle_polypred, 'kunkle', col_roc_polypred)
+plot_ethnic_roc (wightman_polypred, 'wightman', col_roc_polypred)
+plot_ethnic_roc (bellenguez_fixed_0224,'bellenguez', col_roc_polypred)
+auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_polypred_new)))
+auc(roc(Diagnosis~PRS, data = extract_afr(bellenguez_polypred_new)))
+auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_polypred_new)))
 plot_ethnic_roc(kunkle_new_beta, 'kunkle, (effectsize * pip) ',col_roc_E5)
 
 ## APOE
+
 col_roc <- list("only2SNP","no2SNP","no2SNP_qc")
 kunkle_APOE_roc <- roc(Diagnosis ~ only2SNP+no2SNP+no2SNP_qc, data = kunkle_APOE)
 auc(roc(Diagnosis~only2SNP, data = kunkle_APOE)) ##0.621
@@ -466,7 +512,7 @@ plot_ethnic_roc(wightman_cT, "wightman_qc", col_roc_E5)
 ## polyfun----
 
  ##susie
-roc_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS10, data = susie)
+
 susie_roc = plot_roc(roc_list,col_roc, legend = 'PRS', replace = 'Max SNP = ', title="bellenguez(SuSiE)")
 plot_grid(bellenguez_roc,susie_roc,ncol = 2, nrow = 1)
 plot_grid(bellenguez_roc,pt_plot,ncol= 2, nrow = 1)
@@ -684,6 +730,7 @@ plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title){
     theme_bw()
   return(plot)
 }
+
 plot_ethnic_R2_facut(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT, col_roc_E5, 5,"kunkle")
 
 plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, boot_num=50){
@@ -751,6 +798,38 @@ plot_auc_facut_all_sumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,
 
 
 # R2 
+
+## polyfun ------
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= extract_afr(bellenguez_polypred_new), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+
+
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS10, data= extract_eur(kunkle_polypred), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS10, data= extract_afr(kunkle_polypred), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS10, data= extract_amr(kunkle_polypred), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+
+
+
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS3, data= extract_eur(wightman_polypred), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS10, data= extract_afr(wightman_polypred), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS10, data= extract_amr(wightman_polypred), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+
+
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS3, data= extract_eur(bellenguez_fixed_0224), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS1, data= extract_afr(bellenguez_fixed_0224), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+mod1 <- glm(Diagnosis ~ Sex + Age + PRS1, data= extract_amr(bellenguez_fixed_0224), family=binomial)
+RsqGLM(mod1, plot=FALSE)$Nagelkerke
+
+
+
 ## bellenguez------
 #df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."
 plot_ethnic_R2(bellenguez_updateRSID, title, col, boot_num, replace)
