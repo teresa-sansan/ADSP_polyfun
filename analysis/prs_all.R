@@ -58,7 +58,7 @@ bellenguez_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/belleng
 bellenguez_qc_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_qc_interested_SNP.tsv')
 bellenguez_interest_max <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/maxPIP/merged_updateRSID_qc_interested_SNP.tsv')
 bellenguez_interest_min <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/minPIP/merged_updateRSID_qc_interested_SNP.tsv')
-bellenguez_polypred_new <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/fixed_0224_polypred.prs')
+
 
 bellenguez_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_individual.tsv')
 bellenguez_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_variant.tsv')
@@ -66,13 +66,13 @@ bellenguez_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/belleng
 ##susie
 susie <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
 
-##kunkle
+##kunkle_qc
 #kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/kunkle_pT_prs_before_qc.tsv')
 kunkle_APOE <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/APOE.tsv")
-kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_polypred.tsv')
+kunkle_withoutAPOE_qc <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv")
+kunkle_withoutAPOE <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/remove_APOE.tsv")
 
 
-##kunkle_qc
 kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_no_qc.tsv')
 kunkle_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc.tsv')
 kunkle_qc_target <-pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_target.tsv')
@@ -86,9 +86,8 @@ kunkle_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/f
 kunkle_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/qc_on_variant_sumstat.tsv')
 kunkle_new_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/new_beta_noqc.tsv')
 
-kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/kunkle_polypred.tsv')
-
-kunkle_polypred##wightman
+  
+##wightman
 wightman_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/before_qc.tsv')
 wightman_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc.tsv')
 wightman_qc_target <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_target.tsv')
@@ -96,7 +95,15 @@ wightman_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_
 wightman_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_individual_update.tsv')
 wightman_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_variant_update.tsv')
 wightman_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_variant_sumstat.tsv')
+
+
+
+## polyfun-Pred
+bellenguez_polypred_new <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/fixed_0224_polypred.prs')
+kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_polypred.tsv')
+kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/kunkle_polypred.tsv')
 wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv')
+
 ##PRSice
 PRSice <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 
@@ -344,6 +351,9 @@ extract_amr <- function (df){
 }
 
 
+col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
+col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
+
 ##AUC function ------
 plot_roc <- function(roclist, roccol,legend="PRS_", replace="p = 0.",title = FALSE){
   legendname = list()
@@ -359,8 +369,7 @@ plot_roc <- function(roclist, roccol,legend="PRS_", replace="p = 0.",title = FAL
   curve + ggtitle(title)+theme_bw()+
     scale_colour_discrete(name="PRS",labels = c(legendname))
 }   
-col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
-col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
+
 roc_result <-function(df, title=' ',column_for_roc, plot=TRUE){
   if('PRS_e5' %in% column_for_roc){
     roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
@@ -388,6 +397,7 @@ roc_result(kunkle_cT, title="t", col_roc_E5, plot=FALSE)
 
 plot_ethnic_roc <- function(df, title, col, plot=TRUE){
   #all = roc_result(df, title = paste(title, ", all population") , column_for_roc = col, plot=plot)
+
   EUR = roc_result(extract_eur(df), title = paste(title, ", EUR") , column_for_roc = col,plot=plot)
   AFR = roc_result(extract_afr(df), title = paste(title, ", AFR") , column_for_roc = col, plot=plot)
   AMR = roc_result(extract_amr(df), title = paste(title, ", AMR") , column_for_roc = col, plot=plot)
@@ -404,8 +414,6 @@ plot_ethnic_roc <- function(df, title, col, plot=TRUE){
     return(df[,c(2:5)])
   }
 }
-
-
 
 plot_auc_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to_use, eur=FALSE){
   
@@ -464,7 +472,13 @@ plot_auc_cT(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle", co
 plot_auc_cT(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle, EUR", col_roc_E5, eur=TRUE)
 
 ### Qced
-kunkle_pt_qc_plot=roc_result(kunkle_cT,title="kunkle (no qc)", column_for_roc = col_roc_E5)
+
+NoAPOE_QC = roc_result(kunkle_withoutAPOE_qc,title="kunkle without APOE, qc on sumstats and variants", column_for_roc=col_roc_E5)
+NoAPOE = roc_result(kunkle_withoutAPOE,title="kunkle without APOE", column_for_roc=col_roc_E5)
+
+plot_grid(kunkle_pt_plot,kunkle_pt_qc_plot_variant_sumstat,NoAPOE,NoAPOE_QC,ncol = 2, nrow = 2)
+
+kunkle_pt_plot=roc_result(kunkle_cT,title="kunkle (no qc)", column_for_roc = col_roc_E5)
 kunkle_pt_qc_plot_target=roc_result(kunkle_qc_target_maf,title="QC on target", column_for_roc = col_roc_E5)
 kunkle_pt_qc_plot_variant=roc_result(kunkle_qc_variant,title="QC on variant", column_for_roc = col_roc_E5)
 kunkle_pt_qc_plot_variant_sumstat=roc_result(kunkle_qc_variant_sumstat,title="QC on variant and sumstat", column_for_roc = col_roc_E5)
@@ -483,9 +497,10 @@ plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_maf,ncol = 2, nrow = 2)
 
 
 ##cros group
-
+par(mfrow=c(3,1))
 col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
 plot_ethnic_roc (kunkle_cT, 'kunkle', col_roc_E5)
+plot_ethnic_roc(kunkle_qc_variant_sumstat, "kunkle_qc_sumstat_variant", col_roc_E5)
 plot_ethnic_roc (kunkle_polypred, 'kunkle', col_roc_polypred)
 plot_ethnic_roc (wightman_polypred, 'wightman', col_roc_polypred)
 plot_ethnic_roc (bellenguez_fixed_0224,'bellenguez', col_roc_polypred)
@@ -495,7 +510,7 @@ auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_polypred_new)))
 plot_ethnic_roc(kunkle_new_beta, 'kunkle, (effectsize * pip) ',col_roc_E5)
 
 ## APOE
-
+plot_ethnic_roc(kunkle_withoutAPOE, "kunkle remove APOE region", col_roc_E5)
 col_roc <- list("only2SNP","no2SNP","no2SNP_qc")
 kunkle_APOE_roc <- roc(Diagnosis ~ only2SNP+no2SNP+no2SNP_qc, data = kunkle_APOE)
 auc(roc(Diagnosis~only2SNP, data = kunkle_APOE)) ##0.621
@@ -503,6 +518,9 @@ auc(roc(Diagnosis~no2SNP, data = kunkle_APOE))##0.5131
 
 auc(roc(Diagnosis~only2SNP, data = extract_eur(kunkle_APOE))) ##0.621
 auc(roc(Diagnosis~no2SNP, data = extract_eur(kunkle_APOE)))  ##0.5834
+
+plot_ethnic_roc(kunkle_withoutAPOE_qc, 'kunkle (No APOE, qc on sumstats and variants) ',col_roc_E5)
+plot_ethnic_roc(kunkle_withoutAPOE, 'kunkle (No APOE)',col_roc_E5)
 
 ## wightman ----
 plot_auc_cT(wightman_cT,wightman_qc, wightman_qc_base, wightman_qc_target, 'Wightman', col_roc_E5)
@@ -664,18 +682,22 @@ plotR2_boot <- function(log_output, header, prs_col, boot){
   
 }
 
-plot_ethnic_R2 <- function(df, col, title, boot_num, replace,plot= "T"){
+plot_ethnic_R2 <- function(df, col, title, boot_num, replace, plot= TRUE){
   #all = log_reg(df, col, paste(title, ", ALL"), plot =T, legend="PRS",boot_num = boot_num, replace=replace)
   print(paste("running EUR with bootstrapping ", boot_num, ' times'))
-  EUR = log_reg(extract_eur(df), col,  paste(title, ", EUR"), plot =plot, legend="PRS",boot_num = boot_num, replace=replace)
+  EUR = log_reg(extract_eur(df), col,  paste(title, ", EUR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
   EUR$ethnicity="EUR"
   print(paste("running AFR with bootstrapping ", boot_num, ' times'))
-  AFR = log_reg(extract_afr(df), col, paste(title, ", AFR"), plot =plot, legend="PRS",boot_num = boot_num, replace=replace)
+  AFR = log_reg(extract_afr(df), col, paste(title, ", AFR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
   AFR$ethnicity="AFR"
   print(paste("running  with bootstrapping ", boot_num, ' times'))
-  AMR = log_reg(extract_amr(df), col,  paste(title, ", AMR"), plot =plot, legend="PRS",boot_num = boot_num, replace=replace)
+  AMR = log_reg(extract_amr(df), col,  paste(title, ", AMR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
   AMR$ethnicity="AMR"
-  return(rbind(EUR, AFR, AMR))
+  if(plot == "F"){
+    return(rbind(EUR, AFR, AMR))
+  }
+  
+  
 }
 
 
@@ -850,9 +872,10 @@ mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= bellenguez_interested, family=bin
  RsqGLM(mod1, plot=FALSE)$Nagelkerke
 
 ## kunkle----
+## remove all APOE
+plot_ethnic_R2(kunkle_withoutAPOE, col_roc_E5,"Kunkle without APOE", 5)
+plot_ethnic_R2(kunkle_withoutAPOE_qc, col_roc_E5,"Kunkle without APOE, QC on sumstat_variant", 50)
  
- ##qc on 
-
 ## remove two APOE allele
 col_roc_APOE = list("only2SNP","no2SNP","no2SNP_qc")
 kunkle_cT_log<-log_reg(kunkle_APOE, col_roc_APOE, "kunkle_cT", plot=FALSE)   
