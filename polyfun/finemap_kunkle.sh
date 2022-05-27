@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=Finemap
-#SBATCH --mail-type=FAIL
+#SBATCH --job-name=Finemap_susie_kunkle
+#SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
-#SBATCH --time=22:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/%x%j.log
+#SBATCH --time=42:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/%x%j.log
 cd ~/polyfun_omer_repo
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
@@ -26,20 +26,22 @@ do
 		--sumstats $summary_stat \
 		--n 63926 \
 	  	--chr $chr --start $start --end $end \
+		--non-funct \
 	  	--method susie \
 		--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out /gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_${max_num_snp}/kunkle.${chr}.$start.$end.gz 
+		--out /gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/max_snp_${max_num_snp}/kunkle.${chr}.$start.$end.gz 
 	else
 		python finemapper.py \
                 --ld $i\
                 --sumstats $summary_stat \
                 --n 63926 \
                 --chr $chr --start $start --end $end \
+		--non-funct \
                 --method susie \
                 --max-num-causal $max_num_snp \
                 --allow-missing \
-                --out /gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_${max_num_snp}/kunkle.${chr}.$start.$end.gz
+                --out /gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/max_snp_${max_num_snp}/kunkle.${chr}.$start.$end.gz
 
 	fi	
 

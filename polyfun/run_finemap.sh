@@ -3,7 +3,8 @@
 for i in {1..22}
 do
 	for max_snp in 1 3 5 7 10
-	do
+	do	
+		echo "run_max_snp_$max_snp"
         	echo "run chr$i"
 
 		if false; then
