@@ -10,22 +10,16 @@
 ## setting missing variant id because 
 ## Warning: Multiple chromosomes seen for variant '.'.
 ## 	--set-missing-var-ids "." \ there were errors
+## 	tried 	--set-missing-var-ids @:#"." \
+
+## 	--flip /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_annotated-merge.missnp \
+##	--exclude /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_annotated-merge.triallele.txt \ 
   
-if true; then
+
 ~/plink --allow-no-sex \
 	--bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_annotated_chr1 \
 	--merge-list /gpfs/commons/home/tlin/data/ADSP_merge_list.txt \
-	--flip /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_annotated-merge.missnp \
 	--make-bed \
+	--exclude /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_annotated-merge_extract.txt \
 	--out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_annotated_fixed
-fi
 
-
-##with_qc
-if false; then
-~/plink --allow-no-sex \
-        --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_chr1 \
-        --merge-list /gpfs/commons/home/tlin/data/ADSP_qc_merge_list.txt \
-        --make-bed \
-        --out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/plink_biallelic/qc/ADSP_qc_merged
-fi
