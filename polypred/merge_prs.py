@@ -7,15 +7,19 @@ import pandas as pd
 #path = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/polypred/'
 #path = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/polypred/'
 #path = '/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/polypred/'
-path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/polypred/'
-save = '/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv'
+#path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/polypred/'
+path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/polypred/'
 
 
-prs1 = pd.read_csv(path+'max_snp_1.wightman_polypred.tsv.prs', sep = '\t')
-prs3 = pd.read_csv(path+'max_snp_3.wightman_polypred.tsv.prs', sep = '\t') 
-prs5 = pd.read_csv(path+'max_snp_5.wightman_polypred.tsv.prs', sep = '\t')
-prs7 = pd.read_csv(path+'max_snp_7.wightman_polypred.tsv.prs', sep = '\t')
-prs10 = pd.read_csv(path+'max_snp_10.wightman_polypred.tsv.prs', sep = '\t')
+#save = '/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv'
+save = '/gpfs/commons/home/tlin/output/prs/polypred/kunkle/susie.prs.tsv'
+name= '_kunkle_susie_polypred.tsv.prs'
+
+prs1 = pd.read_csv(path+'max_snp_1' + name , sep = '\t')
+prs3 = pd.read_csv(path+'max_snp_3' + name, sep = '\t') 
+prs5 = pd.read_csv(path+'max_snp_5' + name, sep = '\t')
+prs7 = pd.read_csv(path+'max_snp_7' + name, sep = '\t')
+prs10 = pd.read_csv(path+'max_snp_10' + name, sep = '\t')
 
 
 pheno = pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv', sep = '\t')
