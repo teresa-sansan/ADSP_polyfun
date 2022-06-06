@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in {1..22}
+for i in {1..21}
 do
 	for max_snp in 1 3 5 7 10
 	do	
@@ -11,17 +11,15 @@ do
 		sbatch --export=chr=$i,max_num_snp=$max_snp polyfun_finemap_susie.sh 
 		fi
 
-		if false; then
+		if true; then
 		echo run bellenguez
-        	sbatch --export=chr=$i finemap_bellenguez.sh
-        	sbatch --export=chr=$i,max_num_snp=3 finemap_bellenguez_multi.sh
-        	sbatch --export=chr=$i,max_num_snp=5 finemap_bellenguez_multi.sh
-        	sbatch --export=chr=$i,max_num_snp=7 finemap_bellenguez_multi.sh
-        	sbatch --export=chr=$i,max_num_snp=10 finemap_bellenguez_multi.sh
+		for anno in bl bl_dl_annotations bl_brain_atac
+		do
+        		sbatch --export=chr=$i,max_num_snp=${max_snp},anno=${anno} finemap_bellenguez.sh
+		done
         	fi
 
-
-	        if true; then 
+	        if false; then 
 		echo run kunkle
         	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap_kunkle.sh 
 		fi
@@ -37,4 +35,3 @@ do
 	done
 		
 done
-

@@ -2,9 +2,9 @@
 #SBATCH --job-name=polyfun_1-3
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=200G
+#SBATCH --mem=100G
 #SBATCH --time=08:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/%x_%j.log
 
 
 cd ~/polyfun_omer_repo
