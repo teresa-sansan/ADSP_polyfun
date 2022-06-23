@@ -1,3 +1,7 @@
+## This script is a tracking record of the process of fixing convergence issue.
+## 1 MB window size with 0.5 MB overlap
+
+
 table = pd.read_table('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/IBSS_not_converge_list.txt',sep = '.', names=["CHR","POS", else]
 table = table[1:]
 table.index -=1 

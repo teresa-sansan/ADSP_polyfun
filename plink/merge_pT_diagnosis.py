@@ -8,7 +8,7 @@ import pandas as pd
 
 ##kunkle_no_apoe
 path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/subsets/qc_on_variant_sumstat/'
-save_name='kunkle/fixed_0224/remove_APOE_qc'
+save_name='kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv'
 
 #path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
 #save_name='kunkle/fixed_0224/qc_on_variant_maf01'
@@ -31,7 +31,7 @@ prs_1 = pd.read_csv(path+"pT_0.1.prs", sep = ' ', names = ["IID","PRS"])
 prs_5 = pd.read_csv(path+"pT_0.5.prs", sep = ' ', names = ["IID","PRS"]) 
 
 
-pheno = pd.read_csv("/gpfs/commons/home/tlin/output/prs/bellenguez_all_2/with_PC/UPDATEprs_diagnosis_0219.2021_max_snp_10_subset.tsv", sep='\t')
+pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
 prs = [prs_e5, prs_001, prs_005, prs_01, prs_05, prs_1, prs_5]  
 from functools import reduce  
 prs_merge = reduce(lambda left, right:pd.merge(left,right,on=["IID"]),prs)

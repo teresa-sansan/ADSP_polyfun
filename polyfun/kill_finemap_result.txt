@@ -1,0 +1,375 @@
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_1
+finemap_bellenguez./max_snp_1
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=120 log=127 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_3
+finemap_bellenguez./max_snp_3
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=120 log=127 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_5
+finemap_bellenguez./max_snp_5
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=3 log=4 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_7
+finemap_bellenguez./max_snp_7
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=0 log=0 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_10
+finemap_bellenguez./max_snp_10
+chr1 gz=205 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=0 log=0 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_1
+finemap_bellenguez./max_snp_1
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=120 log=127 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_3
+finemap_bellenguez./max_snp_3
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=8 log=9 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_5
+finemap_bellenguez./max_snp_5
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=2 log=3 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_7
+finemap_bellenguez./max_snp_7
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=0 log=0 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_10
+finemap_bellenguez./max_snp_10
+chr1 gz=203 log=246 ld=232
+chr2 gz=238 log=239 ld=244
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=0 log=0 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_dl_annotations/max_snp_1
+finemap_bellenguez./max_snp_1
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=120 log=127 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_dl_annotations/max_snp_3
+finemap_bellenguez./max_snp_3
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=120 log=127 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_dl_annotations/max_snp_5
+finemap_bellenguez./max_snp_5
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=2 log=3 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_dl_annotations/max_snp_7
+finemap_bellenguez./max_snp_7
+chr1 gz=230 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=0 log=0 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+
+/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_dl_annotations/max_snp_10
+finemap_bellenguez./max_snp_10
+chr1 gz=217 log=246 ld=232
+chr2
+chr3
+chr4 gz=191 log=192 ld=192
+chr5
+chr6 gz=167 log=169 ld=169
+chr7
+chr8
+chr9 gz=0 log=0 ld=127
+chr10 gz=0 log=0 ld=136
+chr11 gz=0 log=0 ld=135
+chr12 gz=0 log=0 ld=134
+chr13 gz=0 log=0 ld=99
+chr14 gz=0 log=0 ld=91
+chr15 gz=0 log=0 ld=85
+chr16 gz=0 log=0 ld=83
+chr17 gz=0 log=0 ld=82
+chr18 gz=0 log=0 ld=79
+chr19 gz=0 log=0 ld=60
+chr20 gz=0 log=0 ld=63
+chr21 gz=0 log=0 ld=42
+chr22
+

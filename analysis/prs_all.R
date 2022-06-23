@@ -355,6 +355,11 @@ auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_qc_interested))) ##0.5422
 auc(roc(Diagnosis~PRS, data = extract_afr(bellenguez_qc_interested))) #0.5215
 auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_qc_interested))) #0.5182
 
+auc(roc(Diagnosis~PRS10, data = susie)) ##0.5075
+auc(roc(Diagnosis~PRS10, data = bellenguez_fixed_0224)) #0.5223
+
+auc(roc(Diagnosis~PRS1, data = kunkle_susie)) ## 0.5046
+auc(roc(Diagnosis~PRS1, data = kunkle_polypred)) # 0.5026
 
 
 ## kunkle------
@@ -401,7 +406,7 @@ auc(roc(Diagnosis~PRS, data = extract_afr(bellenguez_polypred_new)))
 auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_polypred_new)))
 plot_ethnic_roc(kunkle_new_beta, 'kunkle, (effectsize * pip) ',col_roc_E5)
 plot_ethnic_roc(kunkle_susie, "kunkle(susie)", col_roc_polypred)
-
+plot_ethnic_roc(susie, "bellenguez(susie)", col_roc_polypred)
 ## APOE
 plot_ethnic_roc(kunkle_withoutAPOE, "kunkle remove APOE region", col_roc_E5)
 col_roc <- list("only2SNP","no2SNP","no2SNP_qc")
@@ -409,8 +414,10 @@ kunkle_APOE_roc <- roc(Diagnosis ~ only2SNP+no2SNP+no2SNP_qc, data = kunkle_APOE
 auc(roc(Diagnosis~only2SNP, data = kunkle_APOE)) ##0.621
 auc(roc(Diagnosis~no2SNP, data = kunkle_APOE))##0.5131
 
-auc(roc(Diagnosis~only2SNP, data = extract_eur(kunkle_APOE))) ##0.621
+auc(roc(Diagnosis~only2SNP, data = extract_eur(kunkle_APOE))) ##0.6187
 auc(roc(Diagnosis~no2SNP, data = extract_eur(kunkle_APOE)))  ##0.5834
+auc(roc(Diagnosis~no2SNP, data = extract_amr(kunkle_APOE)))
+auc(roc(Diagnosis~no2SNP, data = extract_afr(kunkle_APOE)))
 
 plot_ethnic_roc(kunkle_withoutAPOE_qc, 'kunkle (No APOE, qc on sumstats and variants) ',col_roc_E5)
 plot_ethnic_roc(kunkle_withoutAPOE, 'kunkle (No APOE)',col_roc_E5)
@@ -716,6 +723,10 @@ plot_auc_facut_all_sumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,
 mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= extract_afr(bellenguez_polypred_new), family=binomial)
 RsqGLM(mod1, plot=FALSE)$Nagelkerke
 
+#RsqGLM(glm(Diagnosis~PRS1+Sex+Age,family = 'binomial', data = bellenguez_polypred_new), plot=FALSE)$Nagelkerke
+RsqGLM(glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = bellenguez_polypred_new), plot=FALSE)$Nagelkerke
+
+
 plot_ethnic_R2(kunkle_polypred, "kunkle_polypred",  polypred_col, 50, "max_snp_per LD = ")
 plot_ethnic_R2(wightman_polypred, "wightman_polypred",  polypred_col, 50, "max_snp_per LD = ")
 plot_ethnic_R2(bellenguez_fixed_0224, "bellenguez_polypred",  polypred_col, 50, "max_snp_per LD = ")
@@ -743,6 +754,10 @@ mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= bellenguez_interested, family=bin
 ## remove all APOE
 plot_ethnic_R2(kunkle_withoutAPOE, col_roc_E5,"Kunkle without APOE", 5)
 plot_ethnic_R2(kunkle_withoutAPOE_qc, col_roc_E5,"Kunkle without APOE, QC on sumstat_variant", 50)
+
+
+RsqGLM(glm(Diagnosis~PRS1+Sex+Age,family = 'binomial', data = kunkle_polypred), plot=FALSE)$Nagelkerke
+RsqGLM(glm(Diagnosis~PRS10+Sex+Age,family = 'binomial', data = kunkle_polypred), plot=FALSE)$Nagelkerke
  
 ## remove two APOE allele
 col_roc_APOE = list("only2SNP","no2SNP","no2SNP_qc")
@@ -769,9 +784,21 @@ plot_R2_cT(wightman_cT, wightman_qc,wightman_qc_base,wightman_qc_target, 'Wightm
 plot_ethnic_R2(wightman_cT, col_roc_E5, 'Wightman', 50)
 
 
+##susie ------
+plot_ethnic_R2(susie, col_roc_polypred, "bellenguez_susie",50)
+plot_ethnic_R2(kunkle_susie, col_roc_polypred, "kunkle_susie",50)
+
+RsqGLM(glm(Diagnosis~PRS10+Sex+Age,family = 'binomial', data = kunkle_susie), plot=FALSE)$Nagelkerke ## 0.14%
+RsqGLM(glm(Diagnosis~PRS1+Sex+Age,family = 'binomial', data = kunkle_susie), plot=FALSE)$Nagelkerke ##0.139
+
+
+
+
 ##others -----
 sbayesr_log <-  glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = sbayesR)
 prsice_log <- glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = PRSice)
+
+
 
 
 # Density

@@ -2,8 +2,8 @@
 #SBATCH --job-name=bellenguez_finemap
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=200G
-#SBATCH --time=58:00:00
+#SBATCH --mem=190G
+#SBATCH --time=50:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
