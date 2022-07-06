@@ -4,20 +4,20 @@
 ## note: remember to check finemap file name before running this. 
 
 
-
-finemap_path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap'
+finemap_path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_dl_annotations'
+#finemap_path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap'
 #finemap_path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap'
 #finemap_path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap'
 #finemap_path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/old/finemap'
-summary_stat='wightman'
-#summary_stat='bellenguez'
+#summary_stat='wightman'
+summary_stat='bellenguez'
 
 cd $finemap_path
-echo block counts for those failed to converge > IBSS_not_converge_count.txt
+echo block counts for those failed to converge > $finemap_path/IBSS_not_converge_count.txt
 
-for max_snp in  3 5 7 10
+for max_snp in 1 3 5 7 10
 do
-echo WRITE not converge list in max_snp = $max_snp | tee -a IBSS_not_converge_count.txt
+echo WRITE not converge list in max_snp = $max_snp | tee -a $finemap_path/IBSS_not_converge_count.txt
 echo max_snp $max_snp | tee  $finemap_path/max_snp_$max_snp/IBSS_not_converge_list.txt 	
 	for chr in {1..22} 
 	do	
@@ -37,7 +37,7 @@ echo max_snp $max_snp | tee  $finemap_path/max_snp_$max_snp/IBSS_not_converge_li
 		if [ $dont_converge == 'T' ]
 		then
 		count=$(cat $finemap_path/max_snp_$max_snp/IBSS_not_converge_list.txt | grep chr$chr| wc -l)
-		echo chr$chr : $count >> IBSS_not_converge_count.txt
+		echo chr$chr : $count >> $finemap_path/IBSS_not_converge_count.txt
 
 		fi
 		

@@ -1,38 +1,29 @@
 #!/bin/bash
-#SBATCH --job-name=aggregrate_finemap
-#SBATCH --mail-type=FAIL
+#SBATCH --job-name=aggregate_finemap
+#SBATCH --mail-type=FAIl,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=3:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/try_rescue_not_converge/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
-
 ##bellenguez_fixed_0224
 #bellenguez='/gpfs/commons/home/tlin/data/bellenguez_munged.parquet'
 
-bellenguez='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Bellenguez_et_al_2021_hg37_ldsc.munged.parquet'
-prefix='bellenguez'
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap'
-
-
+#bellenguez='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Bellenguez_et_al_2021_hg37_ldsc.munged.parquet'
+#prefix='bellenguez'
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap'
 
 ##bellenguez_updateRSID
 #bellenguez='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/bellenguez_2021/bellenguez_munged.parquet'
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap'
 
-
-
-## bellenguez_fixed_convergence
-#prefix_converge='finemap_max_snp_3'
-#path_converge='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge'
-
 ##wightman
-#wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Wightman_et_al_2021_hg37_ldsc.tsv.gz'
+wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Wightman_et_al_2021_hg37_ldsc.tsv.gz'
 #wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/wightman_2021/wightman_2021_fixed.parquet'
 #prefix='finemap_wightman'
 #path='/gpfs/commons/home/tlin/output/wightman/finemap'
@@ -60,12 +51,20 @@ fi
 
 ## this part is trying to rescue the region that fails to converge. 
 
-if true; then
+prefix_converge='finemap_max_snp_3'                                                                                                                    
 
+## bellenguez_fixed_convergence
+#path_converge='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge'
+
+## wightman fixed convergence ##070622
+path_converge='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/try_rescue_not_converge'
+
+
+if true; then
 python aggregate_finemapper_results_fixed_convergence.py \
                 --out-prefix $path_converge/$prefix_converge \
-                --sumstats $bellenguez \
-                --regions-file /gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/IBSS_not_converge_list.txt \
+                --sumstats $wightman \
+                --regions-file /gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/IBSS_not_converge_list.txt \
                 --allow-missing \
                 --out $path_converge/aggregrate.all.txt.gz
 fi
