@@ -21,14 +21,15 @@ sumstat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotat
 
 n=487511
 output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations'
+fi
+
 
 ## run it using 1 MB window sliding window, with 0.5 MB overlap.
 ## this file only have the failing regions in max_num_snp  = 10
 ## set max_num_snp to 3 (10/3 = 3)
 max_num_snp=3
 
-#echo "run not converge regions in /gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/"${anno}'/max_snp_10/IBSS_not_converge_list.txt'
-#echo $file
+echo "run not converge regions in /gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/"${anno}'/max_snp_10/IBSS_not_converge_list.txt'
 while IFS= read -r line
 do	
 	
