@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=finemap_fixed_convergence_issue
-#SBATCH --mail-type=FAIL
+#SBATCH --job-name=bl_fixed_convergence_issue
+#SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
-#SBATCH --time=100:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge/%x_%j.log
+#SBATCH --time=150:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_10/try_rescue_not_converge/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -12,23 +12,23 @@ source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
-
+anno='bl'
 ##bellenguez
 if true; then
 echo run bellenguez
-sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/bellenguez"
-n=487511
-output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/'
-fi
+#sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/bellenguez"
+sumstat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/'
 
+n=487511
+output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations'
 
 ## run it using 1 MB window sliding window, with 0.5 MB overlap.
 ## this file only have the failing regions in max_num_snp  = 10
 ## set max_num_snp to 3 (10/3 = 3)
 max_num_snp=3
 
-
-#for line in $(cat /gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/IBSS_not_converge_list.txt| grep chr)
+#echo "run not converge regions in /gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/"${anno}'/max_snp_10/IBSS_not_converge_list.txt'
+#echo $file
 while IFS= read -r line
 do	
 	
@@ -44,19 +44,16 @@ do
 	for start in  $block_1 $block_head $block_2   ## do finemap in each chunk. 
 	do
 	end=$(expr $start + 1000000)
-		if [ $end > 0 ]; then
+		if [ $start > 0 ]; then
 			python finemapper_max_iter_1000.py \
 			--ld $FILES/chr${chr}_${LD_start}_${LD_end} \
-			--sumstats $sumstat.${chr}.snpvar_constrained.gz \
+			--sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
 			--n $n 	--chr $chr --start $start --end $end \
 	  		--method susie \
     	  		--max-num-causal ${max_num_snp} \
 	  		--allow-missing \
-			--out $output/try_rescue_not_converge/finemap_max_snp_${max_num_snp}_chr${chr}.${start}.${end}.gz 
+			--out $output/$anno/max_snp_10/try_rescue_not_converge/finemap_max_snp_${max_num_snp}_chr${chr}.${start}.${end}.gz 
 		fi
 	
 	done
-done </gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/IBSS_not_converge_list_nospace_head.txt
-
-
-#		--out $output/max_snp_${max_num_snp}/test_convergence_chr${chr}.$start.$LD.gz 
+done < /gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_10/run_IBSS_not_converge_list.txt
