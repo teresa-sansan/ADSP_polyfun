@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=brain_atac_fixed_convergence_issue
+#SBATCH --job-name=dl_anno_fixed_convergence_issue
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=150:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_10/try_rescue_not_converge/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_dl_annotations/max_snp_10/try_rescue_not_converge/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -12,7 +12,7 @@ source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
-anno='bl_brain_atac'
+anno='bl_dl_annotations'
 ##bellenguez
 if true; then
 echo run bellenguez
