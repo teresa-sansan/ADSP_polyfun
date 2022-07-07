@@ -33,15 +33,18 @@ def main(args):
     #read regions file
     #df_regions = pd.read_table(args.regions_file)
     
-    table = pd.read_table(args.regions_file, sep ='.', names = ["CHR","POS","else"]) 
+    #table = pd.read_table(args.regions_file, sep ='.', names = ["CHR","START","else"]) 
+    table = pd.read_table(args.regions_file, sep =';', names = ["INFO","else"]) 
     if not os.path.exists(args.regions_file):
        print("regions file not found, please recheck the path.")
 
     table = table[1:]
     table.index -=1
-    new = pd.DataFrame(table.POS.str.split('_').tolist(), columns=["START","END"]).astype(int)
-    new.START = new.END - 1000000 ## only take the last 1MB of the 3MB window
-    new["CHR"] = table.CHR.str.replace('chr','')
+    #new = pd.DataFrame(table.POS.str.split('_').tolist(), columns=["START","END"]).astype(int)
+    new = pd.DataFrame(table.INFO.str.split('.').tolist(), columns=["CHR","START","END"])
+    new.END = new.END.astype(int)
+    new["START"] = new.END - 1000000 ## only take the last 1MB of the 3MB window
+    new["CHR"] = new.CHR.str.replace('chr','')
     
 
 

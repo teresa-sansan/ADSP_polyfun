@@ -66,5 +66,5 @@ python aggregate_finemapper_results_fixed_convergence.py \
                 --sumstats $wightman \
                 --regions-file /gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/IBSS_not_converge_list.txt \
                 --allow-missing \
-                --out $path_converge/aggregrate.all.txt.gz
+                --out $path_converge/aggregate.all.txt.gz
 fi
