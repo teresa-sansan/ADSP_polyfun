@@ -12,7 +12,7 @@ clump_path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/'
 #pvalue='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Kunkle_et_al_2019_hg37_ldsc_qc.pvalue'
 
 
-## summary stat with beta
+## summary stat with new beta
 summary_stat='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/new_beta/kunkle_max_snp_10.aggregate.tsv'
 pvalue='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/new_beta/kunkle.pvalue'
 
