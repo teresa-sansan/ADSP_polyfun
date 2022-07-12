@@ -17,19 +17,23 @@ fi
 #file='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/agg_fixed_converge.tsv.gz'
 #echo $(zcat $file | head -1) NEW_BETA | tr " " "\t" > $save   ## create column for new file. 
 
-cd /gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10
-save='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/agg_all_new_beta.tsv'
-echo $(zcat chr1.aggregrate.all.txt.gz | head -1) NEW_BETA | tr " " "\t" > $save
+for max_snp in max_snp_1 max_snp_3 max_snp_5 max_snp_7 max_snp_10
+do
+ echo 'Start processing in max_snp_' $max_snp
+ cd /gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/$max_snp
+ pwd
+ save=$(echo "/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/"${max_snp}"/agg_all_new_beta.tsv")
+ echo $(zcat chr1.aggregrate.all.txt.gz | head -1) NEW_BETA | tr " " "\t" > $save
 
 
 ## run this when you are still running chr-separated file. 
-if true; then
-for i in {1..22}
-do
-echo 'calculate new beta (effect size * PIP) for chr' ${i}.... 
-zcat chr${i}.aggregrate.all.txt.gz | tail -n+2| awk -v OFS='\t' '{print $0 "\t" $10*$11}'>> $save ## column 10 and 11 are PIP and BETA_MEAN
-done
-fi
+ if true; then
+ for i in {1..22}
+ do
+ echo 'calculate new beta (effect size * PIP) for chr' ${i}.... 
+ zcat chr${i}.aggregrate.all.txt.gz | tail -n+2| awk -v OFS='\t' '{print $0 "\t" $10*$11}'>> $save ## column 10 and 11 are PIP and BETA_MEAN
+ done
+ fi
 
 
 ## run this if they are already aggregate into one file.
@@ -43,3 +47,4 @@ echo Start compressing the result...
 gzip $save
 
 echo Done!
+done
