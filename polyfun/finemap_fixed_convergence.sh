@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=dl_anno_convergence_issue
+#SBATCH --job-name=dl_annotations_convergence_issue
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=100:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/try_rescue_not_converge/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_dl_annotations/max_snp_10/try_rescue_not_converge/%x_%j.log
 
 
 ## change #56 and add the revision in #57.
@@ -15,9 +15,9 @@ conda activate polyfun
 
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
 
-#anno='bl_dl_annotations'
+anno='bl_dl_annotations'
 ##bellenguez
-if false; then
+if true; then
 echo run bellenguez
 #sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/bellenguez"
 sumstat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/'
@@ -33,12 +33,14 @@ fi
 
 
 #wightman
-if true; then
+if false; then
 echo run wightman
 sumstat='/gpfs/commons/home/tlin/output/wightman/fixed_0224'
 n=74004
 output='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10'
 echo "run not converge regions in /gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/run_IBSS_not_converge_list.txt"
+
+#			--sumstats $sumstat/wightman_all.${chr}.snpvar_constrained.gz \
 
 fi
 
@@ -66,16 +68,19 @@ do
 	for start in  $block_1 $block_head $block_2   ## do finemap in each chunk. 
 	do
 	end=$(expr $start + 1000000)
-		if [ $start > 0 -a ! -f $output/try_rescue_not_converge/finemap_max_snp_${max_num_snp}_chr${chr}.${start}.${end}.log ]; then
+		if [ $start > 0 -a ! -f $output/$anno/max_snp_10/try_rescue_not_converge/finemap_max_snp_${max_num_snp}_chr${chr}.${start}.${end}.log ]; then
 			python finemapper_max_iter_1000.py \
 			--ld $FILES/chr${chr}_${LD_start}_${LD_end} \
-			--sumstats $sumstat/wightman_all.${chr}.snpvar_constrained.gz \
+			--sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
 			--n $n 	--chr $chr --start $start --end $end \
 	  		--method susie \
     	  		--max-num-causal ${max_num_snp} \
 	  		--allow-missing \
-			--out $output/try_rescue_not_converge/finemap_max_snp_${max_num_snp}_chr${chr}.${start}.${end}.gz 
+			--out $output/$anno/max_snp_10/try_rescue_not_converge/finemap_max_snp_${max_num_snp}_chr${chr}.${start}.${end}.gz 
+
 		fi
 	
 	done
-done < /gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/run_IBSS_not_converge_list.txt
+done < /gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/$anno/max_snp_10/run_IBSS_not_converge_list.txt  
+
+#/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/run_IBSS_not_converge_list.txt
