@@ -45,6 +45,7 @@ for x in sumstat:
 
   prs_merge = prs_merge.set_axis( ["IID","PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5"], axis='columns')
   all_merge = pd.merge(pheno,prs_merge, left_on ="SampleID", right_on='IID')
+  all_merge.fillna('-1', inplace=True) # Race and Ethniciity
   save="/gpfs/commons/home/tlin/output/prs/"+ save_name+'.tsv'
   all_merge.to_csv(save,index = False, sep='\t')
   print("save prs to " + save)
