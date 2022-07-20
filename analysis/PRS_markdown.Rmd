@@ -106,27 +106,42 @@ wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wi
 filtered <- subset(wightman_adsp, !IID %in%  wightman_adsp_qc$IID)
 summary(filtered[c('cohort', 'Diagnosis','final_population')])
 summary(wightman_adsp[c('cohort', 'Diagnosis','final_population')])
+
 ```
 
-```{r, figure.align = "center", figure.height = 8, figure.width = 20,echo = FALSE}
-par(mfrow=c(1,2))
-
+```{r, echo = FALSE, fig.height=5, fig.width=15}
+par(mfrow=c(1,3))
 draw_pie_chart <- function(df, col, name=' '){
- pie_labels <- paste(names(summary(df[[col]])),'\n', "(", round(summary(df[[col]])/sum(summary(df[[col]])) * 100,2), "%)")
- pie(summary(df[[col]]), main= name, labels = pie_labels,cex=0.75,radius=0.75, cex.main=0.9)
+ if (col != 'Diagnosis' && col != 'AD_status_final'){
+  df[[col]]<-factor(df[[col]])
+ }
+  pie_labels <- paste(names(summary(df[[col]])),'\n', "(", round(summary(df[[col]])/sum(summary(df[[col]])) * 100,2), "%)")
+  pie(summary(df[[col]]), main= name, labels = pie_labels,cex=1,radius=0.75, cex.main=1.5)
 }
 
 for (col in c('cohort', 'final_population')){
- draw_pie_chart(wightman_adsp, col, name= 'before QC')
+ draw_pie_chart(wightman_adsp, col, name= 'Before QC')
  draw_pie_chart(filtered, col, name= "Individual been filtered out")
- 
+ draw_pie_chart(wightman_adsp_qc, col, name= "After QC")
 }
-
 
 
 ```
 
+## Check the if the individual being filtered out in genotyping file has duplicates in phenotyping file
+```{r}
+remove=read.csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_qc_all/ADSP_qc_all.irem", sep = '\t',header = FALSE)
+phenotype = read.csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep = '\t')
+colnames(remove) <- c('FID','IID')
+```
 
 
-
+```{r, echo = FALSE, fig.height=5, fig.width=15}
+phenotype_should_remove =phenotype[phenotype$SampleID %in% remove$IID,]
+par(mfrow=c(1,3))
+draw_pie_chart(phenotype_should_remove, 'Duplicate_SUBJID', name= 'Duplicated SUBJID')
+draw_pie_chart(phenotype_should_remove, 'cohort', name= 'Cohort')
+draw_pie_chart(phenotype_should_remove, 'AD_status_final', name= 'Diagnosis')
+write.table(phenotype_should_remove, file='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_qc_all/phenotype_should_remove.tsv', quote = F, sep = '\t')
+```
 ## Including Plots
