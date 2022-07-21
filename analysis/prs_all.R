@@ -338,15 +338,16 @@ plot_ethnic_roc <- function(df, title, col, plot=TRUE){
     plot_grid(EUR, AFR, AMR,ncol = 1, nrow = 3)
   }
   else{
-    df <- data_frame(matrix(ncol = 0, nrow = 7))
-    df$PRS = unlist(col)
-    df$EUR = unlist(EUR)
-    df$AFR = unlist(AFR)
-    df$AMR = unlist(AMR)
-    return(df[,c(2:5)])
+    df <- data_frame(matrix(ncol = 0, nrow = length(col)*3))
+    df$PRS =  rep(unlist(col),3)
+    df$auc = append(append(unlist(EUR),unlist(AFR)),unlist(AMR))
+    df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)))
+    
+    df$ethnicity <- factor(df$ethnicity,      # Reordering group factor levels
+                             levels = c("EUR","AFR","AMR"))
+    return(df[,c(2:4)])
   }
 }
-
 
 plot_auc_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to_use, eur=FALSE){
   
@@ -655,8 +656,11 @@ plot_ethnic_R2 <- function(df, col, title, boot_num, replace='', plot= TRUE){
   print(paste("running AMR with bootstrapping ", boot_num, ' times'))
   AMR = log_reg(extract_amr(df), col,  paste(title, ", AMR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
   AMR$ethnicity="AMR"
+  df = rbind(EUR, AFR, AMR)
+  df$ethnicity <- factor(df$ethnicity,      # Reordering group factor levels
+                         levels = c("EUR","AFR","AMR"))
   if(plot != "TRUE"){
-    return(rbind(EUR, AFR, AMR))
+    return(df)
   }
   
 }
@@ -688,7 +692,7 @@ plot_R2_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to
 
 
 ##plot facet
-##R2
+##R2 ----
 ## plot ethnic facut plot for one sumstat
 plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
   QC1 = plot_ethnic_R2(QC1, col, '', boot_num, plot="F")
@@ -703,15 +707,16 @@ plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title,QC1name="QC
   
   all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
   all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
- 
-  plot <- ggplot(data = all, aes(x=boot_mean, y = PRS, shape=qc_status, color = qc_status))+
+  all$boot_mean = all$boot_mean * 100
+  plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, shape=qc_status, color = qc_status))+
     geom_point(size=3)+
-    geom_pointrange(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), linetype="dotted") +
+    geom_pointrange(aes(xmin=boot_CI_lower*100, xmax=boot_CI_upper*100), linetype="dotted") +
     facet_wrap(~ethnicity, ncol=1)+
-    xlab('R squared')+ ggtitle(title)+
+    xlab('R squared (%)')+ ggtitle(title)+xlim(-1, 25)
     theme_bw()
-  return(plot)
+    return(plot)
 }
+plot_ethnic_R2_facut(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, col_roc_E5, 2, ' ')
 
 ## plot ethnic facut plot for multiple sumstat
 plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot_num=50){
@@ -730,6 +735,7 @@ plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc
 
 }
 
+
 ## auc ----debug ------
 plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
   QC1 = plot_ethnic_roc(QC1, '',col, plot="F")
@@ -738,6 +744,7 @@ plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base"
   QC2$qc_status = QC2name
   QC3 = plot_ethnic_roc(QC3, '', col, plot="F")
   QC3$qc_status = QC3name
+
   all = rbind(QC1,QC2, QC3)
   all %>% 
     filter(PRS !="PRS-001" & PRS != "PRS_1") 
@@ -751,7 +758,8 @@ plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base"
     facet_wrap(~ethnicity, ncol=1)+
     xlab('AUC')+ ggtitle(title)+
     theme_bw()
-  return(plot)
+  return(all)
+  #return(plot)
 }
 plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
   a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name)
@@ -769,10 +777,8 @@ plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2
   
 }
 
-#plot_auc_facut_all_sumstat(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, bellenguez_adsp,  bellenguez_qc_on_variant_sumstat,bellenguez_adsp_qc, wightman_adsp,wightman_qc_variant_sumstat, wightman_adsp_qc)
-
 plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
-  QC1 = plot_ethnic_roc(QC1, '',col, plot="F")
+  QC1 = plot_ethnic_roc(QC1, '', col, plot="F")
   QC1$qc_status = QC1name
   QC2 = plot_ethnic_roc(QC2, '', col, plot="F")
   QC2$qc_status = QC2name
@@ -794,21 +800,8 @@ plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base"
   return(plot)
 }
 
-plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc", col = col_roc_E5){
-  a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name)
-  b = plot_ethnic_roc_facut(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name)
-  c = plot_ethnic_roc_facut(s3_qc1, s3_qc2, s3_qc3, col,'Wightman',QC1name, QC2name,QC3name)
-  prow <- plot_grid(a+ theme(legend.position="none"), 
-                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
-                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
-                    ncol = 3, nrow = 1)
-  legend_b <- get_legend(
-    c+ guides(color = guide_legend(nrow = 1)) +
-      theme(legend.position = "bottom")
-  )
-  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
-  
-}
+plot_auc_facut_all_sumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,bellenguez_qc_on_base, bellenguez_qc_on_variant_sumstat,bellenguez_cT0224, 
+                           wightman_qc_base, wightman_qc_variant_sumstat, wightman_cT) 
 
 ## this will take awhile. ------
 plot_R2_facut_allsumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,bellenguez_qc_on_base, bellenguez_qc_on_variant_sumstat, bellenguez_cT0224, 
@@ -826,6 +819,8 @@ plot_R2_facut_allsumstat(kunkle_adsp,kunkle_adsp_qc,kunkle_UKBB_qc, bellenguez_a
                          QC1name="No QC",  QC2name="QC on all", QC3name="QC, UKBB variants only",boot_num=50)
 
 
+plot_auc_facut_all_sumstat(kunkle_adsp,kunkle_adsp_qc,kunkle_UKBB_qc, bellenguez_adsp,bellenguez_adsp_qc, bellenguez_UKBB_qc, wightman_adsp, wightman_adsp_qc,wightman_UKBB_qc,
+                         QC1name="No QC",  QC2name="QC on all", QC3name="QC, UKBB variants only")
 
 
 
