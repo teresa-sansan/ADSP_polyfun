@@ -9,23 +9,11 @@ library(tibble)
 library(readr)
 library(cowplot)
 library(pROC)
-#library(fmsb)   ##psudo rsquare
 library(modEvA)  # psuedo rsquare
 library(boot)
 library("gridGraphics")
 
-## first, look at the composition of ADSP phenotype file (in plink format) ----
-
-pT <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_pT_PRS_withPC.tsv")
-pheno_all <- read.delim("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_all_all.tsv")
-pheno_subset <- read.delim("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv")
-
-pheno_all %>% count(AD_status_final)
-pheno_subset %>% count(AD_status_final)
-pheno_subset %>% count(age_covariate)
-pT %>% count(final_population)
-pT[pT$final_population=="EUR",]%>% count(Diagnosis)
-
+## load PRS data ----
 pre_process <- function(df, FILE=FALSE){
   if(FILE==FALSE){
     df<- read.csv(df,sep = '\t', header=T,fill = T)
@@ -45,57 +33,38 @@ pre_process <- function(df, FILE=FALSE){
   print(paste("filtered=",  dim(df)[1], "rows"))
   return(df)
 }
-
-
-## load PRS data ----
-
-### bellenguez ----- 
-bellenguez_updateRSID <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/bellenguez_polypred_prs.tsv')
-bellenguez_fixed_0224 <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_fixed_0224.tsv")
-bellenguez_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/bellenguez_pT_PRS_withPC.tsv')
-bellenguez_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/bellenguez_qc_pT_PRS.tsv')
-bellenguez_qc_on_target <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/qc_on_target.tsv')
-bellenguez_qc_on_base <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/qc_on_base.tsv')
-bellenguez_cT0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_no_qc.tsv')
-bellenguez_qc0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc.tsv')
-bellenguez_qc_on_target0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_target.tsv')
-bellenguez_qc_on_base0224 <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_base.tsv')
-bellenguez_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_interested_SNP.tsv') 
-bellenguez_qc_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_qc_interested_SNP.tsv')
-bellenguez_interest_max <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/maxPIP/merged_updateRSID_qc_interested_SNP.tsv')
-bellenguez_interest_min <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/minPIP/merged_updateRSID_qc_interested_SNP.tsv')
-
-bellenguez_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_individual.tsv')
-bellenguez_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_variant.tsv')
-
-
-
-### kunkle_qc ----
+### kunkle ----
 kunkle_APOE <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/APOE.tsv")
 kunkle_withoutAPOE_qc <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv")
 kunkle_withoutAPOE <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/remove_APOE.tsv")
 
 kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_no_qc.tsv')
-kunkle_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc.tsv')
+kunkle_qc_all <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
 kunkle_qc_target <-pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_target.tsv')
 kunkle_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_base.tsv')
+kunkle_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/qc_on_variant_sumstat.tsv')
 
 kunkle_qc_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_all_maf01.tsv')
 kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_target_maf01.tsv')
-
-kunkle_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_variant_update.tsv')
-kunkle_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_individual_update.tsv')
-kunkle_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/qc_on_variant_sumstat.tsv')
 kunkle_new_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/new_beta_noqc.tsv')
-kunkle_new_beta <- kunkle_new_beta[-31]
 
+
+### bellenguez ----- 
+bellenguez_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_no_qc.tsv')
+bellenguez_qc_all <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
+bellenguez_qc_on_base <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_base.tsv')
+
+bellenguez_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_interested_SNP.tsv') 
+bellenguez_qc_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_qc_interested_SNP.tsv')
+bellenguez_interest_max <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/maxPIP/merged_updateRSID_qc_interested_SNP.tsv')
+bellenguez_interest_min <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/minPIP/merged_updateRSID_qc_interested_SNP.tsv')
+
+bellenguez_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_variant.tsv')
 
 ### wightman ----
 wightman_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/before_qc.tsv')
-wightman_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc.tsv')
-wightman_qc_target <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_target.tsv')
+wightman_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_qc_all.tsv')
 wightman_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_base.tsv')
-wightman_qc_individual <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_individual_update.tsv')
 wightman_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_variant_update.tsv')
 wightman_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/qc_on_variant_sumstat.tsv')
 
@@ -116,7 +85,6 @@ kunkle_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/
 bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP.tsv')
 wightman_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP.tsv')
 
-
 kunkle_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
 bellenguez_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
 wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_qc_all.tsv')
@@ -125,57 +93,16 @@ kunkle_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunk
 bellenguez_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_UKBB_qc.tsv')
 wightman_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_UKBB_qc.tsv')
 
-
-
 ### susie -----
 kunkle_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/kunkle/susie.prs.tsv")
-susie <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
+susie <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
 
 ## Others
-PRSice <- rename_preprocess("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
-sbayesR = rename_preprocess("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
+PRSice <- pre_process("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
+sbayesR = pre_process("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
 
-##density_plot -------
-density_plot(sbayesR, name = "sbayesR")
-par(mfrow=c(1,3))
-
-p_threshold_col <- c("PRS_005","PRS_05","PRS_1","PRS_5")
-pT_subset = pT[p_threshold_col]
-
-for(i in c(33,35,37,34,36,38)) {       # for-loop over columns
-  plot(density((pT[, i])),col='grey', lty = 2, lwd = 2,main=str_replace(colnames(pT)[i],"PRS_", "p=0."), xlab='PRS')
-  lines(density(pT[pT$Diagnosis == 1,i]), col = 'red')
-  lines(density(pT[pT$Diagnosis == 0,i]), col = "blue")
-  legend("topright", legend=c("ALL","Case", "Control"),
-         col=c("darkgrey","red", "blue"), lty=c(2,1,1), cex=0.8,
-         box.lty=0)
-}
-
-mtext("bellenguez (updated RSID)",                   # Add main title
-      side = 3,
-      line = -1.25,
-      outer = TRUE)
-
-
-for(i in c(3,5,7)) {       # for-loop over columns
-  plot(density((kunkle_cT[, i])),col='grey', lty = 2, lwd = 2,main=str_replace(colnames(kunkle_cT)[i],"PRS_", "p=0."), xlab='PRS')
-  lines(density(kunkle_cT[kunkle_cT$Diagnosis == 1,i]), col = 'red')
-  lines(density(kunkle_cT[kunkle_cT$Diagnosis == 0,i]), col = "blue")
-  legend("topright", legend=c("ALL","Case", "Control"),
-         col=c("darkgrey","red", "blue"), lty=c(2,1,1), cex=0.8,
-         box.lty=0)
-}
-mtext("kunkle",                   # Add main title
-      side = 3,
-      line = -1.25,
-      outer = TRUE)
-
-
-
-##draw max_snp_per ld
-prs_col =  c("PRS1","PRS3","PRS5","PRS10")
-
-##plotting case/control plot ---- 
+## Density plot
+## plotting case/control plot ---- 
 ## However, instead of plotting it in whole population, we should plot them with race_separate plots (facet plot)
 ## Hence, this function is not useful compare with the facet one.
 plot_density_diag <- function(df, col, title){
@@ -203,11 +130,12 @@ plot_density_diag(susie,c("PRS1","PRS10"), "susie")
 plot_density_diag(kunkle_susie,c("PRS1","PRS3","PRS7","PRS10"), "kunkle_susie")
 plot_density_diag(kunkle_new_beta,c("PRS_e5", "PRS_005", "PRS_05", "PRS_5"), "kunkle_pT_newbeta")
 
-## create a race-separated pivot df for poly_pred (which is easier for plotting). Where method = how many causal SNPs are assumed in the LD block.
+## create a race-separated pivot df for poly_pred (which is easier for plotting). 
+## can be apply to different methods (polyfunpred or pT)
 pivot_df<- function(df){ 
   df_new <- df %>%
     subset(final_population ==  "EUR" | final_population == "AMR"| final_population =="AFR") %>%   ## only keep the race of interest
-    pivot_longer(                           ## can be apply to different methods (polyfunpred or pT)
+    pivot_longer(                           
       cols = starts_with("PRS"),
       names_to = 'method', 
       values_to = 'PRS') %>% 
@@ -216,19 +144,22 @@ pivot_df<- function(df){
   df_new$Diagnosis_state=ifelse(df_new$Diagnosis == 0, "control","case")  ## create a new column so that it will show case/control when plotting
   return(df_new)
 }
-plot_facut_dist <- function(df, title){
+
+## draw facet dist plot (by method) 
+## can be apply to different methods (polyfunpred or pT)
+##W here method = how many causal SNPs are assumed in the LD block/ pT threshold.
+plot_facet_dist <- function(df, title){
   ggplot(pivot_df(df), aes(x =PRS, group=Diagnosis_state,fill = Diagnosis_state, color = Diagnosis_state))+
     geom_density(alpha = 0.01) +
     facet_grid(method~final_population)+theme_bw()+ggtitle(title)
-} ## plot race/method separated dist plots
+} 
 
-plot_facut_dist(kunkle_polypred, "kunkle_polypred")
-plot_facut_dist(kunkle_new_beta, "kunkle_new_beta")
-plot_facut_dist(kunkle_susie, "kunkle_susie")
-
-plot_facut_dist(wightman_beta, "wightman_new_beta")
-plot_facut_dist(wightman_beta_cT, "wightman_new_beta_cT")
-plot_facut_dist(wightman_susie_max10_polypred, "wightman_susie_new_beta")
+## plot race/method separated dist plots
+plot_facet_dist(kunkle_polypred, "kunkle_polypred")
+plot_faect_dist(kunkle_new_beta, "kunkle_new_beta")
+plot_facet_dist(kunkle_susie, "kunkle_susie")
+plot_facet_dist(wightman_beta, "wightman_new_beta")
+plot_facet_dist(wightman_susie_max10_polypred, "wightman_susie_new_beta")
 
 
 ## plot it another way? -----
@@ -290,30 +221,43 @@ extract_amr <- function (df){
 col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 
-##AUC function ------
-plot_roc <- function(roclist, roccol,legend="PRS_", replace="p = 0.",title = FALSE){
+
+## AUC function ------
+
+plot_roc <- function(roclist, roccol,title = FALSE){
   legendname = list()
-  for (i in roccol){
+  for (i in roccol){                
+    auc_value = round(roclist[[i]]$auc,3)
     if(i == "PRS_e5"){
-      legendname = append(legendname,paste('p = 1e-5, auc =',round(roclist[[i]]$auc,3)))
+      legendname = append(legendname,paste('p = 1e-5, auc =',auc_value))
+    }else if(!grepl("_",i, fixed = T)){
+      legendname = append(legendname,paste(str_replace(i,"PRS",'max_snp_'),', auc =',auc_value))
     }else{
-      legendname = append(legendname,paste(str_replace(i,legend,replace),', auc =',round(roclist[[i]]$auc,3)))
+      legendname = append(legendname,paste(str_replace(i,"PRS_","p = 0."),', auc =',auc_value))
     }
   }
-  print(legendname)
   curve <- ggroc(roclist)
   curve + ggtitle(title)+theme_bw()+
     scale_colour_discrete(name="PRS",labels = c(legendname))
 }   
-roc_result <-function(df, title=' ',column_for_roc, plot=TRUE){
+
+roc_result_boot(kunkle_adsp, title=' ', col_roc_E5,mean=F)
+roc_result(kunkle_adsp, title=' ', col_roc_E5, plot=T)
+
+
+## A function that can calculate AUC with different method/threshold
+## If plot = T(default), will return a plot with AUC using different method/threshold, if false, will return a list for 
+## other purpose. 
+
+roc_result <-function(df, title=' ',column_for_roc = col_roc_E5, plot = TRUE){
   if('PRS_e5' %in% column_for_roc){
-    roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
+    roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df, quiet=T)
   }else if ('PRS10' %in% column_for_roc){
-    roc_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS7+PRS10, data = df)
+    roc_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS7+PRS10, data = df, quiet=T)
   }else if ('new_beta' %in% column_for_roc){
-    roc_list <- roc(Diagnosis ~ new_beta + new_beta_cT +new_beta_susie, data=df)
+    roc_list <- roc(Diagnosis ~ new_beta + new_beta_cT +new_beta_susie, data=df, quiet=T)
   }else{
-    roc_list <- roc(Diagnosis ~ PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df)
+    roc_list <- roc(Diagnosis ~ PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df, quiet = T)
   }
   if(plot == TRUE){
     plot_roc(roc_list,column_for_roc, title=title)
@@ -328,53 +272,288 @@ roc_result <-function(df, title=' ',column_for_roc, plot=TRUE){
   }
 }
 
-plot_ethnic_roc <- function(df, title, col, plot=TRUE){
-  #all = roc_result(df, title = paste(title, ", all population") , column_for_roc = col, plot=plot)
-  EUR = roc_result(extract_eur(df), title = paste(title, ", EUR") , column_for_roc = col,plot=plot)
-  AFR = roc_result(extract_afr(df), title = paste(title, ", AFR") , column_for_roc = col, plot=plot)
-  AMR = roc_result(extract_amr(df), title = paste(title, ", AMR") , column_for_roc = col, plot=plot)
-  
-  if(plot == TRUE){
-    plot_grid(EUR, AFR, AMR,ncol = 1, nrow = 3)
+roc_result_boot <-function(df, title=' ',column_for_roc=col_roc_E5, boot_num=50, mean=FALSE, plot=FALSE){
+  CI_roc = data.frame(matrix(ncol = 4, nrow = 0))
+  colnames(CI_roc) = c("PRS","boot_CI_lower","boot_mean","boot_CI_upper")
+  for (i in 1:length(column_for_roc)){
+    col = column_for_roc[[i]]
+    roc_formula <- roc(df[["Diagnosis"]],df[[col]], quiet=T)
+    ci = ci.auc(roc_formula, conf.level = 0.95, method='bootstrap', boot.n = boot_num)
+    CI_roc[nrow(CI_roc) + 1,] = c(col,ci)
   }
-  else{
-    df <- data_frame(matrix(ncol = 0, nrow = length(col)*3))
-    df$PRS =  rep(unlist(col),3)
+  ## only return auc if mean = TRUE
+  if (mean==TRUE){ 
+    roclist=list()
+    for (i in 1:dim(CI_roc)[1]){
+      roclist[i] = as.numeric(CI_roc$boot_mean[i])
+    }
+    return(roclist)
+  }
+  return(CI_roc)
+}
+
+# A function to plot result of diff race all at once. 
+plot_ethnic_roc <- function(df, title, col,boot=TRUE,boot_num=5, plot=TRUE){
+  if (boot != TRUE){ ## no bootstraping, use the OG roc_result
+    EUR = roc_result(extract_eur(df), title = paste(title, ", EUR") , column_for_roc = col, plot=plot)
+    AFR = roc_result(extract_afr(df), title = paste(title, ", AFR") , column_for_roc = col, plot=plot)
+    AMR = roc_result(extract_amr(df), title = paste(title, ", AMR") , column_for_roc = col, plot=plot)
+    if (plot == TRUE){
+      plot_grid(EUR, AFR, AMR,ncol = 1, nrow = 3)
+      return()
+    }
+  } else {
+    EUR = roc_result_boot(extract_eur(df), column_for_roc = col, boot_num = boot_num)
+    AFR = roc_result_boot(extract_afr(df), column_for_roc = col, boot_num = boot_num)
+    AMR = roc_result_boot(extract_amr(df), column_for_roc = col, boot_num = boot_num)
+  }
+  df <- data_frame(matrix(ncol = 0, nrow = length(col)*3))
+  df$PRS =  rep(unlist(col),3)
+  df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)))
+  df$ethnicity <- factor(df$ethnicity,      # Reordering group factor levels
+                         levels = c("EUR","AFR","AMR"))
+  if (boot != TRUE){
     df$auc = append(append(unlist(EUR),unlist(AFR)),unlist(AMR))
-    df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)))
-    
-    df$ethnicity <- factor(df$ethnicity,      # Reordering group factor levels
-                             levels = c("EUR","AFR","AMR"))
     return(df[,c(2:4)])
+  }else{
+    df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
+    df$auc_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
+    df$auc_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
+    return(df[,c(2:6)])
+    
   }
 }
 
-plot_auc_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to_use, eur=FALSE){
-  
-  if(eur==TRUE){
-    df = extract_eur(df)
-    df_qc = extract_eur(df_qc)
-    df_qc_base = extract_eur(df_qc_base)
-    df_qc_target = extract_eur(df_qc_target)
-  }
-    
-    
-  cT_plot = roc_result(df, title = paste(sumstat_name, ", c+pT") , column_for_roc = col_to_use)
-  qc_plot = roc_result(df_qc, title = paste(sumstat_name, ", QC") , column_for_roc = col_to_use)
-  qc_on_base_plot = roc_result(df_qc_base, title = paste(sumstat_name, ", QC on summary stat") , column_for_roc = col_to_use)
-  qc_on_target_plot = roc_result(df_qc_target, title = paste(sumstat_name, "QC on target") , column_for_roc = col_to_use)
-  
-  plot_grid(cT_plot, qc_plot, qc_on_base_plot, qc_on_target_plot,ncol = 2, nrow = 2)
+
+plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
+  a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name)
+  b = plot_ethnic_roc_facut(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name)
+  c = plot_ethnic_roc_facut(s3_qc1, s3_qc2, s3_qc3, col,'Wightman',QC1name, QC2name,QC3name)
+  prow <- plot_grid(a+ theme(legend.position="none"), 
+                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
+                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
+                    ncol = 3, nrow = 1)
+  legend_b <- get_legend(
+    c+ guides(color = guide_legend(nrow = 1)) +
+      theme(legend.position = "bottom")
+  )
+  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
   
 }
 
+plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
+  QC1 = plot_ethnic_roc(QC1, '', col, plot="F")
+  QC1$qc_status = QC1name
+  QC2 = plot_ethnic_roc(QC2, '', col, plot="F")
+  QC2$qc_status = QC2name
+  QC3 = plot_ethnic_roc(QC3, '', col, plot="F")
+  QC3$qc_status = QC3name
+  all = rbind(QC1,QC2, QC3)
+  all %>% 
+    filter(PRS !="PRS-001" & PRS != "PRS_1") 
+  
+  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
+  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
+  
+  
+  plot <- ggplot(data = all, aes(x=auc, y = PRS, shape=qc_status, color = qc_status))+
+    geom_point(size=3)+
+    facet_wrap(~ethnicity, ncol=1)+
+    xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+
+    theme_bw()
+  return(plot)
+}
+
+
+
+## R2 functions ----
+
+## calcualte pseudo rsquare 
+rsq <- function(formula, data, indices=FALSE) {    
+  if (indices !=FALSE){
+    d <- data[indices,] # allows boot to select sample
+  }
+  else 
+    d = data 
+  fit <- glm(formula = formula,family = 'binomial', data = d)
+  return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
+}
+
+##resample
+log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
+  set.seed(10)
+  mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a formula only using covariates
+  mod1_R2 <- RsqGLM(mod1, plot=FALSE)$Nagelkerke
+  for (i in 1:length(prs)){
+    frm <- as.formula(paste("Diagnosis ~ Sex + Age+", prs[[i]])) ## add the PRS you wanted
+    if(boot_num != FALSE){              
+      mod <- boot(data=df, statistic=rsq,
+                  R=boot_num, formula=frm)
+      #CI  <- boot.ci(boot.out=mod,type='norm')$normal[c(2,3)]
+      sd = sd(mod$t)
+      mean =  mean(mod$t)
+      CI = c(mean-2*sd, mean+2*sd)
+      ##table
+      if(i ==1){
+        R2 <- data.frame (
+          'PRS' = prs[[i]],
+          'boot_mean'  = mean,
+          'boot_CI_upper' = CI[2],
+          'boot_CI_lower' = CI[1],
+          'SD' = sd,
+          "null_R2" = mod1_R2)
+      }
+      else{
+        R2_else <- data.frame ('PRS' = prs[[i]],
+                               'boot_mean'  = mean,
+                               'boot_CI_upper' = CI[2],
+                               'boot_CI_lower' = CI[1],
+                               'SD' = sd,
+                               "null_R2" = mod1_R2)
+        R2 <- rbind(R2, R2_else)
+        if(dim(R2)[1]==length(prs)){
+          if(plot == TRUE)
+            plotR2_boot(R2,main_title, prs,boot_num)
+          return (R2)
+        }
+      }
+    }  ##if don't do boostrap
+    else{
+      mod <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
+      mod_R2 <-  RsqGLM(mod, plot=FALSE)$Nagelkerke 
+      ## table
+      if(i ==1){  ## if theres only one threshold
+        cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
+        cof['null_R2'] = round(mod1_R2,5)
+        cof['R2_prs'] = round(mod_R2,5)
+        cof['PRS'] = prs[i]
+      }
+      else{
+        cof2 <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
+        cof2['null_R2'] = round(mod1_R2,5)
+        cof2['R2_prs'] = round(mod_R2,5)
+        cof2['PRS'] =prs[i]
+        cof <- rbind(cof, cof2)
+        if(dim(cof)[1]/4==length(prs) ){
+          if (plot == TRUE)
+            plotR2_boot(cof,main_title, prs,boot_num)
+          return (cof)
+        }
+      }
+    }
+  }
+}
+
+plotR2_boot <- function(log_output, header, prs_col, boot){
+  par(xpd = FALSE)
+  if(boot == FALSE){   ## no bootstrapping
+    prs_col = seq(from=1, to=dim(log_output)[1], by=4)
+    plot(log_output$R2_prs[prs_col], ylim  = c(min(log_output$null_R2[1], min(log_output$R2_prs[prs_col]))*0.95, max(log_output$null_R2[1], max(log_output$R2_prs[prs_col]))),
+         ylab='R-squared', xlab = "different PRS",pch=4,col="darkgreen", main=header,xaxt = "n")
+    text(seq(from=1,to=length(prs_col)),log_output$R2_prs[prs_col] , 
+         labels = log_output$R2_prs[prs_col], adj = c(0.5,2), xpd = TRUE, cex=1, col="darkgreen") 
+    axis(1,                         # Define x-axis manually
+         at = 1:length(prs_col),
+         labels = c(str_replace(log_output$PRS[1],"PRS_e5","p = 1*e-5"),str_replace(log_output$PRS[seq(from=1, to=dim(log_output)[1], by=4)][-1],"PRS_","p = 0.")))
+  }
+  else
+  {
+    plot(log_output$boot_mean, ylim  = c(min(log_output$null_R2[1], min(log_output$boot_mean))*0.1, max(log_output$boot_mean[1], max(log_output$boot_mean)*1.5)),
+         ylab='R-squared', xlab = "different PRS",pch=4,col="darkgreen", main=header,xaxt = "n")
+    arrows(1:7, log_output$boot_CI_upper, 1:7, log_output$boot_CI_lower, length=0.05, angle=90, code=3, col='grey58') 
+    text(seq(from=1,to=length(prs_col)),log_output$boot_mean , 
+         labels = round(log_output$boot_mean,5), adj = c(0.5,2), xpd = TRUE, cex=1, col="darkgreen") 
+    axis(1,                         # Define x-axis manually
+         at = 1:length(prs_col),
+         labels = c(str_replace(prs_col[1],"PRS_e5","p = 1*e-5"),str_replace(prs_col[seq(from=1, to=length(prs_col))][-1],"PRS_","p = 0.")))
+  }
+  
+  abline(h=log_output$null_R2[1], col=c("blue"), lty=2, lwd=2)
+  text((length(prs_col)+1)/2,log_output$null_R2[1] , labels =  paste("Null model: ",round(log_output$null_R2[1],5)), adj = c(0.5,-1), xpd = TRUE, cex=1, col="blue")
+  
+}
+
+plot_ethnic_R2 <- function(df, col, title, boot_num, replace='', plot= TRUE){
+  #all = log_reg(df, col, paste(title, ", ALL"), plot =T, legend="PRS",boot_num = boot_num, replace=replace)
+  print(paste("running EUR with bootstrapping ", boot_num, ' times'))
+  EUR = log_reg(extract_eur(df), col,  paste(title, ", EUR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
+  EUR$ethnicity="EUR"
+  print(paste("running AFR with bootstrapping ", boot_num, ' times'))
+  AFR = log_reg(extract_afr(df), col, paste(title, ", AFR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
+  AFR$ethnicity="AFR"
+  print(paste("running AMR with bootstrapping ", boot_num, ' times'))
+  AMR = log_reg(extract_amr(df), col,  paste(title, ", AMR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
+  AMR$ethnicity="AMR"
+  df = rbind(EUR, AFR, AMR)
+  df$ethnicity <- factor(df$ethnicity,      # Reordering group factor levels
+                         levels = c("EUR","AFR","AMR"))
+  if(plot != "TRUE"){
+    return(df)
+  }
+}
+
+## plot facet 
+## plot ethnic facut plot for one sumstat
+plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
+  QC1 = plot_ethnic_R2(QC1, col, '', boot_num, plot="F")
+  QC1$qc_status = QC1name
+  QC2 = plot_ethnic_R2(QC2, col, '', boot_num, plot="F")
+  QC2$qc_status = QC2name
+  QC3 = plot_ethnic_R2(QC3, col, '', boot_num, plot="F")
+  QC3$qc_status = QC3name
+  all = rbind(QC1,QC2, QC3)
+  all %>% 
+    filter(PRS !="PRS-001" & PRS != "PRS_1") 
+  
+  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
+  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
+  all$boot_mean = all$boot_mean * 100
+  plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, shape=qc_status, color = qc_status))+
+    geom_point(size=3)+
+    geom_pointrange(aes(xmin=boot_CI_lower*100, xmax=boot_CI_upper*100), linetype="dotted") +
+    facet_wrap(~ethnicity, ncol=1)+
+    xlab('R squared (%)')+ ggtitle(title)+xlim(-1, 25)+
+    theme_bw()
+  return(plot)
+}
+## plot ethnic facut plot for multiple sumstat
+plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot_num=50){
+  a = plot_ethnic_R2_facut(s1_qc1, s1_qc2, s1_qc3, col, boot_num, 'Kunkle', QC1name, QC2name,QC3name)
+  b = plot_ethnic_R2_facut(s2_qc1, s2_qc2, s2_qc3, col, boot_num, 'Bellenguez',QC1name, QC2name,QC3name)
+  c = plot_ethnic_R2_facut(s3_qc1, s3_qc2, s3_qc3, col, boot_num,'Wightman', QC1name, QC2name,QC3name)
+  prow <- plot_grid(a+ theme(legend.position="none"), 
+                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
+                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
+                    ncol = 3, nrow = 1)
+  legend_b <- get_legend(
+    c+ guides(color = guide_legend(nrow = 1)) +
+      theme(legend.position = "bottom")
+  )
+  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
+  
+}
+
+
+
+## Regression (plot beta and pvalue)
+p_beta_plot <- function(mod, prs_pos, title){
+  pvalue = ggplot(mod[prs_pos,], aes(x =rownames(mod[prs_pos,]), y =  Pr...z..)) + ylab('P value')+xlab(' ')+
+    ggtitle(title)+
+    geom_point( size=2, shape=17,fill="white")+ylim(c(min(mod[,3])-0.1,max(mod[,3])+0.1))+
+    scale_fill_brewer(palette="Paired")+
+    geom_text(aes(label=Pr...z..), vjust=1.6, color="black",
+              position = position_dodge(1), size=3)+  theme_minimal()
+  
+  beta = ggplot(mod[prs_pos,], aes(x =rownames(mod[prs_pos,]), y =  Estimate, fill = PRS)) + ylab('Beta')+xlab(' ')+
+    geom_bar(stat="identity") +scale_fill_brewer(palette="Paired")+
+    geom_errorbar(aes(ymin=Estimate-Std..Error, ymax=Estimate+Std..Error), width=.2,
+                  position=position_dodge(.9),) +
+    geom_text(aes(label=Estimate), vjust=1.2, color="darkred",
+              position = position_dodge(1), size=3)+  theme_minimal()
+  plot_grid(pvalue, beta)
+}
 # c+T (before and after qc)-----
 ## bellenguez-----
-
-##bellenguez_qc
-plot_auc_cT(bellenguez_cT, bellenguez_qc, bellenguez_qc_on_base, bellenguez_qc_on_target, "bellenguez(updateRSID)", col_roc)
-plot_auc_cT(bellenguez_cT, bellenguez_qc, bellenguez_qc_on_base, bellenguez_qc_on_target, "bellenguez(updateRSID, EUR)", col_roc, eur =TRUE)
-
 
 ## bellenguez_ethnics ----
 plot_ethnic_roc(bellenguez_cT, title= 'bellenguez(updateRSID), pT', col_roc)
@@ -383,27 +562,17 @@ plot_ethnic_roc(bellenguez_adsp_qc, title= 'bellenguez(new_plink, qc), pT', col_
 
 
 ##bellenguez_interested_SNP ------
-auc(roc(Diagnosis~PRS, data = bellenguez_interested))  # 0.5187
-auc(roc(Diagnosis~PRS, data = bellenguez_interest_max))  # 0.515
-auc(roc(Diagnosis~PRS, data = bellenguez_interest_min))  #0.5109
 
-auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_interested))) ##0.5308
-auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_interest_max))) ##0.5247
-auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_interest_min))) ##0.5224
+df_list <- list(bellenguez_interested, bellenguez_interest_max,bellenguez_interest_min,
+                extract_eur(bellenguez_interested),extract_eur(bellenguez_interest_max),extract_eur(bellenguez_interest_min),
+                extract_afr(bellenguez_interested),extract_afr(bellenguez_interest_max),extract_afr(bellenguez_interest_min),
+                extract_amr(bellenguez_interested),extract_amr(bellenguez_interest_max),extract_amr(bellenguez_interest_min))
 
-auc(roc(Diagnosis~PRS, data = extract_afr(bellenguez_interested))) #0.529
-auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_interested))) #0.4991
+for (i in df_list){
+  print(auc(roc(Diagnosis~PRS, data = i, quiet=T))[1])
+}
 
-auc(roc(Diagnosis~PRS, data = bellenguez_qc_interested)) # 0.5255
-auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_qc_interested))) ##0.5422
-auc(roc(Diagnosis~PRS, data = extract_afr(bellenguez_qc_interested))) #0.5215
-auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_qc_interested))) #0.5182
 
-auc(roc(Diagnosis~PRS10, data = susie)) ##0.5075
-auc(roc(Diagnosis~PRS10, data = bellenguez_fixed_0224)) #0.5223
-
-auc(roc(Diagnosis~PRS1, data = kunkle_susie)) ## 0.5046
-auc(roc(Diagnosis~PRS1, data = kunkle_polypred)) # 0.5026
 
 
 ## kunkle------
@@ -514,298 +683,11 @@ legend("bottom", legend=c(paste("SbayesR, auc = ",round(roc(sbayesR$Diagnosis~sb
                       col=color, lty=1, cex=0.8,box.lty=0)
      
 
-## Regression function----
-## plot beta and pvalue
-p_beta_plot <- function(mod, prs_pos, title){
-  pvalue = ggplot(mod[prs_pos,], aes(x =rownames(mod[prs_pos,]), y =  Pr...z..)) + ylab('P value')+xlab(' ')+
-    ggtitle(title)+
-    geom_point( size=2, shape=17,fill="white")+ylim(c(min(mod[,3])-0.1,max(mod[,3])+0.1))+
-    scale_fill_brewer(palette="Paired")+
-    geom_text(aes(label=Pr...z..), vjust=1.6, color="black",
-              position = position_dodge(1), size=3)+  theme_minimal()
-  
-  beta = ggplot(mod[prs_pos,], aes(x =rownames(mod[prs_pos,]), y =  Estimate, fill = PRS)) + ylab('Beta')+xlab(' ')+
-    geom_bar(stat="identity") +scale_fill_brewer(palette="Paired")+
-    geom_errorbar(aes(ymin=Estimate-Std..Error, ymax=Estimate+Std..Error), width=.2,
-                  position=position_dodge(.9),) +
-    geom_text(aes(label=Estimate), vjust=1.2, color="darkred",
-              position = position_dodge(1), size=3)+  theme_minimal()
-  plot_grid(pvalue, beta)
-}
 
-##calcualte pseudo rsquare
-rsq <- function(formula, data, indices=FALSE) {    
-  if (indices !=FALSE){
-    d <- data[indices,] # allows boot to select sample
-  }
-  else 
-    d = data 
-  fit <- glm(formula = formula,family = 'binomial', data = d)
-  return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
-}
+## auc ------------
 
-##resample
-log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
-  set.seed(10)
-  mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial)
-  mod1_R2 <- RsqGLM(mod1, plot=FALSE)$Nagelkerke
-  for (i in 1:length(prs)){
-    frm <- as.formula(paste("Diagnosis ~ Sex + Age+", prs[[i]]))
-    if(boot_num != FALSE){
-      mod <- boot(data=df, statistic=rsq,
-                     R=boot_num, formula=frm)
-      #CI  <- boot.ci(boot.out=mod,type='norm')$normal[c(2,3)]
-     
-      sd = sd(mod$t)
-      mean =  mean(mod$t)
-      CI = c(mean-2*sd, mean+2*sd)
-      ##table
-      if(i ==1){
-        R2 <- data.frame (
-                          'PRS' = prs[[i]],
-                          'boot_mean'  = mean,
-                          'boot_CI_upper' = CI[2],
-                          'boot_CI_lower' = CI[1],
-                          'SD' = sd,
-                          "null_R2" = mod1_R2)
-      }
-      else{
-        R2_else <- data.frame ('PRS' = prs[[i]],
-                          'boot_mean'  = mean,
-                          'boot_CI_upper' = CI[2],
-                          'boot_CI_lower' = CI[1],
-                          'SD' = sd,
-                          "null_R2" = mod1_R2)
-        R2 <- rbind(R2, R2_else)
-        if(dim(R2)[1]==length(prs)){
-          if(plot == TRUE)
-            plotR2_boot(R2,main_title, prs,boot_num)
-          return (R2)
-        }
-      }
-    }  ##bootstrap or not
-    else{
-      mod <- glm(formula = frm,family = 'binomial', data = df)
-      mod_R2 <-  RsqGLM(mod, plot=FALSE)$Nagelkerke 
-      ## table
-      if(i ==1){  ## if theres only one threshold
-        cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
-        cof['null_R2'] = round(mod1_R2,5)
-        cof['R2_prs'] = round(mod_R2,5)
-        cof['PRS'] = prs[i]
-      }
-      else{
-        cof2 <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
-        cof2['null_R2'] = round(mod1_R2,5)
-        cof2['R2_prs'] = round(mod_R2,5)
-        cof2['PRS'] =prs[i]
-        cof <- rbind(cof, cof2)
-        #print(cof)
-        if(dim(cof)[1]/4==length(prs) ){
-          if (plot == TRUE)
-            plotR2_boot(cof,main_title, prs,boot_num)
-          return (cof)
-        }
-      }
-    }
-  }
-}
-
-
-log_reg(kunkle_cT,col_roc, " ", FALSE, boot_num=5)
-par(xpd = FALSE,mfrow=c(1,1))
-plotR2_boot <- function(log_output, header, prs_col, boot){
-  par(xpd = FALSE)
-  if(boot == FALSE){   ## no bootstrapping
-    prs_col = seq(from=1, to=dim(log_output)[1], by=4)
-    plot(log_output$R2_prs[prs_col], ylim  = c(min(log_output$null_R2[1], min(log_output$R2_prs[prs_col]))*0.95, max(log_output$null_R2[1], max(log_output$R2_prs[prs_col]))),
-         ylab='R-squared', xlab = "different PRS",pch=4,col="darkgreen", main=header,xaxt = "n")
-    text(seq(from=1,to=length(prs_col)),log_output$R2_prs[prs_col] , 
-         labels = log_output$R2_prs[prs_col], adj = c(0.5,2), xpd = TRUE, cex=1, col="darkgreen") 
-    axis(1,                         # Define x-axis manually
-         at = 1:length(prs_col),
-         labels = c(str_replace(log_output$PRS[1],"PRS_e5","p = 1*e-5"),str_replace(log_output$PRS[seq(from=1, to=dim(log_output)[1], by=4)][-1],"PRS_","p = 0.")))
-    
-    
-  }
-  else
-  {
-    plot(log_output$boot_mean, ylim  = c(min(log_output$null_R2[1], min(log_output$boot_mean))*0.1, max(log_output$boot_mean[1], max(log_output$boot_mean)*1.5)),
-         ylab='R-squared', xlab = "different PRS",pch=4,col="darkgreen", main=header,xaxt = "n")
-    arrows(1:7, log_output$boot_CI_upper, 1:7, log_output$boot_CI_lower, length=0.05, angle=90, code=3, col='grey58') 
-    text(seq(from=1,to=length(prs_col)),log_output$boot_mean , 
-         labels = round(log_output$boot_mean,5), adj = c(0.5,2), xpd = TRUE, cex=1, col="darkgreen") 
-    axis(1,                         # Define x-axis manually
-         at = 1:length(prs_col),
-         labels = c(str_replace(prs_col[1],"PRS_e5","p = 1*e-5"),str_replace(prs_col[seq(from=1, to=length(prs_col))][-1],"PRS_","p = 0.")))
-  }
-  
-  abline(h=log_output$null_R2[1], col=c("blue"), lty=2, lwd=2)
-  text((length(prs_col)+1)/2,log_output$null_R2[1] , labels =  paste("Null model: ",round(log_output$null_R2[1],5)), adj = c(0.5,-1), xpd = TRUE, cex=1, col="blue")
-  
-}
-
-plot_ethnic_R2 <- function(df, col, title, boot_num, replace='', plot= TRUE){
-  #all = log_reg(df, col, paste(title, ", ALL"), plot =T, legend="PRS",boot_num = boot_num, replace=replace)
-  print(paste("running EUR with bootstrapping ", boot_num, ' times'))
-  EUR = log_reg(extract_eur(df), col,  paste(title, ", EUR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
-  EUR$ethnicity="EUR"
-  print(paste("running AFR with bootstrapping ", boot_num, ' times'))
-  AFR = log_reg(extract_afr(df), col, paste(title, ", AFR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
-  AFR$ethnicity="AFR"
-  print(paste("running AMR with bootstrapping ", boot_num, ' times'))
-  AMR = log_reg(extract_amr(df), col,  paste(title, ", AMR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
-  AMR$ethnicity="AMR"
-  df = rbind(EUR, AFR, AMR)
-  df$ethnicity <- factor(df$ethnicity,      # Reordering group factor levels
-                         levels = c("EUR","AFR","AMR"))
-  if(plot != "TRUE"){
-    return(df)
-  }
-  
-}
-
-
-# test pseudo rsquare
-NagelkerkeR2(mod2)$R2
-RsqGLM(mod2)$Nagelkerke
-# test ti get 95% confidence interval
-boot.ci(results, type="bca")
-result = boot.ci(boot.out=results,type='norm')
-print(c(mean(results$t) - 2*sd(results$t), mean(results$t) + 2*sd(results$t)))
-
-## wrapped up function ## for easier calculation for pseudo r2
-plot_R2_cT <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, col_to_use, plot=TRUE, boot_num = FALSE, eur =FALSE){
-  par(mfrow=c(2,2),xpd=FALSE)
-  if (eur ==TRUE){
-    df = extract_eur(df)
-    df_qc = extract_eur(df_qc)
-    df_qc_base = extract_eur(df_qc_base)
-    df_qc_target = extract_eur(df_qc_target)
-  }
-
-  cT= log_reg(df, col_to_use, paste(sumstat_name, ", c+pT") , plot = plot,  boot_num = boot_num,replace="max_snp_per_locus=")
-  qc= log_reg(df_qc, col_to_use, paste(sumstat_name, ", QC") , plot = plot,  boot_num = boot_num,replace="max_snp_per_locus=")
-  qc_on_base= log_reg(df_qc_base, col_to_use, paste(sumstat_name, ", QC on summary stat") , plot = plot,  boot_num = boot_num,replace="max_snp_per_locus=")
-  qc_on_target= log_reg(df_qc_target, col_to_use, paste(sumstat_name, ", QC on target") , plot = plot,  boot_num = boot_num,replace="max_snp_per_locus=")
-}
-
-
-##plot facet
-##R2 ----
-## plot ethnic facut plot for one sumstat
-plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
-  QC1 = plot_ethnic_R2(QC1, col, '', boot_num, plot="F")
-  QC1$qc_status = QC1name
-  QC2 = plot_ethnic_R2(QC2, col, '', boot_num, plot="F")
-  QC2$qc_status = QC2name
-  QC3 = plot_ethnic_R2(QC3, col, '', boot_num, plot="F")
-  QC3$qc_status = QC3name
-  all = rbind(QC1,QC2, QC3)
-  all %>% 
-    filter(PRS !="PRS-001" & PRS != "PRS_1") 
-  
-  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
-  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
-  all$boot_mean = all$boot_mean * 100
-  plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, shape=qc_status, color = qc_status))+
-    geom_point(size=3)+
-    geom_pointrange(aes(xmin=boot_CI_lower*100, xmax=boot_CI_upper*100), linetype="dotted") +
-    facet_wrap(~ethnicity, ncol=1)+
-    xlab('R squared (%)')+ ggtitle(title)+xlim(-1, 25)
-    theme_bw()
-    return(plot)
-}
-plot_ethnic_R2_facut(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, col_roc_E5, 2, ' ')
-
-## plot ethnic facut plot for multiple sumstat
-plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot_num=50){
-  a = plot_ethnic_R2_facut(s1_qc1, s1_qc2, s1_qc3, col, boot_num, 'Kunkle', QC1name, QC2name,QC3name)
-  b = plot_ethnic_R2_facut(s2_qc1, s2_qc2, s2_qc3, col, boot_num, 'Bellenguez',QC1name, QC2name,QC3name)
-  c = plot_ethnic_R2_facut(s3_qc1, s3_qc2, s3_qc3, col, boot_num,'Wightman', QC1name, QC2name,QC3name)
-  prow <- plot_grid(a+ theme(legend.position="none"), 
-                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
-                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
-                    ncol = 3, nrow = 1)
-  legend_b <- get_legend(
-    c+ guides(color = guide_legend(nrow = 1)) +
-      theme(legend.position = "bottom")
-  )
-  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
-
-}
-
-
-## auc ----debug ------
-plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
-  QC1 = plot_ethnic_roc(QC1, '',col, plot="F")
-  QC1$qc_status = QC1name
-  QC2 = plot_ethnic_roc(QC2, '', col, plot="F")
-  QC2$qc_status = QC2name
-  QC3 = plot_ethnic_roc(QC3, '', col, plot="F")
-  QC3$qc_status = QC3name
-
-  all = rbind(QC1,QC2, QC3)
-  all %>% 
-    filter(PRS !="PRS-001" & PRS != "PRS_1") 
-  
-  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
-  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
-  print(colnames(all))
-  
-  plot <- ggplot(data = all, aes(x=auc, y = PRS, shape=qc_status, color = qc_status))+
-    geom_point(size=3)+
-    facet_wrap(~ethnicity, ncol=1)+
-    xlab('AUC')+ ggtitle(title)+
-    theme_bw()
-  return(all)
-  #return(plot)
-}
-plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
-  a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name)
-  b = plot_ethnic_roc_facut(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name)
-  c = plot_ethnic_roc_facut(s3_qc1, s3_qc2, s3_qc3, col,'Wightman',QC1name, QC2name,QC3name)
-  prow <- plot_grid(a+ theme(legend.position="none"), 
-                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
-                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
-                    ncol = 3, nrow = 1)
-  legend_b <- get_legend(
-    c+ guides(color = guide_legend(nrow = 1)) +
-      theme(legend.position = "bottom")
-  )
-  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
-  
-}
-
-plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
-  QC1 = plot_ethnic_roc(QC1, '', col, plot="F")
-  QC1$qc_status = QC1name
-  QC2 = plot_ethnic_roc(QC2, '', col, plot="F")
-  QC2$qc_status = QC2name
-  QC3 = plot_ethnic_roc(QC3, '', col, plot="F")
-  QC3$qc_status = QC3name
-  all = rbind(QC1,QC2, QC3)
-  all %>% 
-    filter(PRS !="PRS-001" & PRS != "PRS_1") 
-  
-  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
-  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
-  
-  
-  plot <- ggplot(data = all, aes(x=auc, y = PRS, shape=qc_status, color = qc_status))+
-    geom_point(size=3)+
-    facet_wrap(~ethnicity, ncol=1)+
-    xlab('AUC')+ ggtitle(title)+
-    theme_bw()
-  return(plot)
-}
-
-plot_auc_facut_all_sumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,bellenguez_qc_on_base, bellenguez_qc_on_variant_sumstat,bellenguez_cT0224, 
-                           wightman_qc_base, wightman_qc_variant_sumstat, wightman_cT) 
 
 ## this will take awhile. ------
-plot_R2_facut_allsumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,bellenguez_qc_on_base, bellenguez_qc_on_variant_sumstat, bellenguez_cT0224, 
-                         wightman_qc_base, wightman_qc_variant_sumstat, wightman_cT)
 
 plot_auc_facut_all_sumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,bellenguez_qc_on_base, bellenguez_qc_on_variant_sumstat,bellenguez_cT0224, 
                       wightman_qc_base, wightman_qc_variant_sumstat, wightman_cT) 
@@ -823,6 +705,8 @@ plot_auc_facut_all_sumstat(kunkle_adsp,kunkle_adsp_qc,kunkle_UKBB_qc, bellenguez
                          QC1name="No QC",  QC2name="QC on all", QC3name="QC, UKBB variants only")
 
 
+plot_auc_facut_all_sumstat(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, bellenguez_adsp,  bellenguez_qc_on_variant_sumstat,bellenguez_adsp_qc, wightman_adsp,wightman_qc_variant_sumstat, wightman_adsp_qc,
+                           QC1name="No QC", QC2name="QC on variant and sumstat", QC3name="QC on all")
 
 
 ## R2
