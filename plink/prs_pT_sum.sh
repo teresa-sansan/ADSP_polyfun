@@ -16,11 +16,12 @@
 #for qc in qc_on_individual qc_on_variant
 #for path in /gpfs/commons/home/tlin/output/cT/wightman /gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224 /gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224
 #for qc in before_qc qc_on_variant_sumstat
-#for dir in kunkle wightman
-for dir in bellenguez
+#for dir in kunkle wightman bellenguez
+for dir in kunkle
 do
 cd /gpfs/commons/home/tlin/output/cT/genomewide_plink/$dir
- for qc in ADSP ADSP_qc_all ADSP_qc_variant ADSP_UKBB ADSP_UKBB_qc
+ #for qc in ADSP ADSP_qc_all ADSP_qc_variant ADSP_UKBB ADSP_UKBB_qc
+ for qc in ADSP_no_apoe
  do	
 
 	#cd $path/$qc

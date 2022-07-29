@@ -7,8 +7,10 @@ import pandas as pd
 #save_name='kunkle/fixed_0224/qc_on_variant_sumstat'
 
 ##kunkle_no_apoe
-path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/subsets/qc_on_variant_sumstat/'
-save_name='kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv'
+#path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/subsets/qc_on_variant_sumstat/'
+#save_name='kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv'
+path='/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle/ADSP_no_apoe/'
+save_name='/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_no_apoe_qc'
 
 #path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
 #save_name='kunkle/fixed_0224/qc_on_variant_maf01'
@@ -23,8 +25,11 @@ save_name='kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv'
 #save_name='kunkle/fixed_0224/new_beta_noqc'
 
 
-sumstat=["bellenguez","kunkle","wightman"]
-plink=["ADSP","ADSP_qc_all","ADSP_qc_variant","ADSP_UKBB","ADSP_UKBB_qc"]
+#sumstat=["bellenguez","kunkle","wightman"]
+#plink=["ADSP","ADSP_qc_all","ADSP_qc_variant","ADSP_UKBB","ADSP_UKBB_qc"]
+sumstat=["kunkle"]
+plink=["ADSP_no_apoe"]
+
 for x in sumstat:
  for y in plink:
   path = '/gpfs/commons/home/tlin/output/cT/genomewide_plink/'+ x + '/' + y + '/'
