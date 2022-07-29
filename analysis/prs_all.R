@@ -341,7 +341,7 @@ plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2
   plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
 }
 
-plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50){
+plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50){
   QC1 = plot_ethnic_roc(QC1, '', col, plot="F",boot=boot,boot_num=boot_num)
   QC1$qc_status = QC1name
   QC2 = plot_ethnic_roc(QC2, '', col, plot="F",boot=boot,boot_num=boot_num)
@@ -354,18 +354,18 @@ plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title,QC1name="QC_on_base"
   all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
   all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
   plot <- ggplot(data = all, aes(x=auc, y = PRS, shape=qc_status, color = qc_status))+
+    geom_point(size=3,alpha=0.8)+
     facet_wrap(~ethnicity, ncol=1)+
     xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+
     theme_bw()
   
   if (boot == TRUE){  ## plot error bar or not
-    plot <- plot+geom_point(size=3) + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), width=.2,alpha=0.6) 
+    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), width=.2,alpha=0.5) 
   }
   
   return(plot)
 }
 
-plot_ethnic_roc_facut(bellenguez_adsp,bellenguez_adsp_qc, bellenguez_cT,col_roc,' ',boot=TRUE)
 
 ## R2 functions ----
 ## calcualte pseudo rsquare 
@@ -552,17 +552,16 @@ p_beta_plot <- function(mod, prs_pos, title){
               position = position_dodge(1), size=3)+  theme_minimal()
   plot_grid(pvalue, beta)
 }
+
+##result ----
 # c+T (before and after qc)-----
 ## bellenguez-----
 
-## bellenguez_ethnics ----
-plot_ethnic_roc(bellenguez_cT, title= 'bellenguez(updateRSID), pT', col_roc)
-plot_ethnic_roc(bellenguez_adsp, title= 'bellenguez(new_plink), pT', col_roc)
-plot_ethnic_roc(bellenguez_adsp_qc, title= 'bellenguez(new_plink, qc), pT', col_roc)
+## bellenguez_ethnics 
+plot_ethnic_roc_facut(bellenguez_cT0224,bellenguez_adsp,bellenguez_adsp_qc,col_roc_E5,title='bellenguez',
+                      QC1name= "k=old plink", QC2name="new_plink",QC3name='new_plink, qc')
 
-
-##bellenguez_interested_SNP ------
-
+##bellenguez_interested_SNP 
 df_list <- list(bellenguez_interested, bellenguez_interest_max,bellenguez_interest_min,
                 extract_eur(bellenguez_interested),extract_eur(bellenguez_interest_max),extract_eur(bellenguez_interest_min),
                 extract_afr(bellenguez_interested),extract_afr(bellenguez_interest_max),extract_afr(bellenguez_interest_min),
@@ -573,15 +572,9 @@ for (i in df_list){
 }
 
 
-
-
 ## kunkle------
 
-## Kunkle
-plot_auc_cT(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle", col_roc_E5)
-plot_auc_cT(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle, EUR", col_roc_E5, eur=TRUE)
-
-### Qced
+## Kunkle Qced
 
 NoAPOE_QC = roc_result(kunkle_withoutAPOE_qc,title="kunkle without APOE, qc on sumstats and variants", column_for_roc=col_roc_E5)
 NoAPOE = roc_result(kunkle_withoutAPOE,title="kunkle without APOE", column_for_roc=col_roc_E5)
@@ -606,29 +599,44 @@ plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_maf,ncol = 2, nrow = 2)
 
 
 
-##cros group -----
+##cros group 
 par(mfrow=c(3,1))
 col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
 plot_ethnic_roc (kunkle_cT, 'kunkle', col_roc_E5)
 plot_ethnic_roc(kunkle_qc_variant_sumstat, "kunkle_qc_sumstat_variant", col_roc_E5)
 plot_ethnic_roc (kunkle_polypred, 'kunkle', col_roc_polypred)
-plot_ethnic_roc (wightman_polypred, 'wightman', col_roc_polypred)
 plot_ethnic_roc (bellenguez_fixed_0224,'bellenguez', col_roc_polypred)
-auc(roc(Diagnosis~PRS, data = extract_eur(bellenguez_polypred_new)))
-auc(roc(Diagnosis~PRS, data = extract_afr(bellenguez_polypred_new)))
-auc(roc(Diagnosis~PRS, data = extract_amr(bellenguez_polypred_new)))
 plot_ethnic_roc(kunkle_new_beta, 'kunkle, (effectsize * pip) ',col_roc_E5)
 plot_ethnic_roc(kunkle_susie, "kunkle(susie)", col_roc_polypred)
 plot_ethnic_roc(susie, "bellenguez(susie)", col_roc_polypred)
 
+
+## APOE
+plot_ethnic_roc(kunkle_withoutAPOE, "kunkle remove APOE region", col_roc_E5)
+col_roc <- list("only2SNP","no2SNP","no2SNP_qc")
+
+
+kunkle_APOE_roc <- roc(Diagnosis ~ only2SNP+no2SNP+no2SNP_qc, data = kunkle_APOE)
+auc(roc(Diagnosis~only2SNP, data = kunkle_APOE)) ##0.621
+auc(roc(Diagnosis~only2SNP, data = extract_eur(kunkle_APOE))) ##0.6187
+
+for (i in list(extract_eur(kunkle_APOE),extract_afr(kunkle_APOE),extract_amr(kunkle_APOE))){
+  print(auc(roc(Diagnosis~no2SNP, data = i, quiet=T))[1])
+}
+
+plot_ethnic_roc_facut(kunkle_cT,kunkle_withoutAPOE,kunkle_withoutAPOE_qc,col_roc_E5, title='kunkle',
+                      QC1name= "with APOE", QC2name= "without APOE", QC3name="without APOE, QC")
+
+### wightman 
+plot_ethnic_roc (wightman_polypred, 'wightman', col_roc_polypred)
+plot_auc_cT(wightman_cT,wightman_qc, wightman_qc_base, wightman_qc_target, 'Wightman', col_roc_E5)
+plot_ethnic_roc(wightman_cT, "wightman_qc", col_roc_E5)
 new_beta_col = list("new_beta","new_beta_cT","new_beta_susie")
 plot_ethnic_roc(wightman_new_beta, 'wightman, newbeta(effectsize * pip) ',new_beta_col, plot=TRUE)
 title='wightman, newbeta(effectsize * pip) '
 
 roc(Diagnosis ~ PRS_new_beta+new_beta_cT+new_beta_susie, df=wightman_new_beta)
-
 roc(Diagnosis~PRS_new_beta+new_beta_cT+new_beta_susie, data = extract_eur(wightman_new_beta))
-
 
 wightman_new_beta=wightman_beta
 wightman_new_beta["new_beta_cT"] = wightman_beta_cT$PRS
@@ -637,32 +645,11 @@ wightman_new_beta$PRS
 colnames(wightman_new_beta)[which(names(wightman_new_beta) == 'PRS')] <- 'new_beta'
 colnames(wightman_new_beta)[which(names(wightman_new_beta) == 'PRS_new_beta')] <- 'new_beta'
 PRS_new_beta
-wightman_new_beta
-
-## APOE
-plot_ethnic_roc(kunkle_withoutAPOE, "kunkle remove APOE region", col_roc_E5)
-col_roc <- list("only2SNP","no2SNP","no2SNP_qc")
-kunkle_APOE_roc <- roc(Diagnosis ~ only2SNP+no2SNP+no2SNP_qc, data = kunkle_APOE)
-auc(roc(Diagnosis~only2SNP, data = kunkle_APOE)) ##0.621
-auc(roc(Diagnosis~no2SNP, data = kunkle_APOE))##0.5131
-
-auc(roc(Diagnosis~only2SNP, data = extract_eur(kunkle_APOE))) ##0.6187
-auc(roc(Diagnosis~no2SNP, data = extract_eur(kunkle_APOE)))  ##0.5834
-auc(roc(Diagnosis~no2SNP, data = extract_amr(kunkle_APOE)))
-auc(roc(Diagnosis~no2SNP, data = extract_afr(kunkle_APOE)))
-
-plot_ethnic_roc(kunkle_withoutAPOE_qc, 'kunkle (No APOE, qc on sumstats and variants) ',col_roc_E5)
-plot_ethnic_roc(kunkle_withoutAPOE, 'kunkle (No APOE)',col_roc_E5)
-
-## wightman ----
-plot_auc_cT(wightman_cT,wightman_qc, wightman_qc_base, wightman_qc_target, 'Wightman', col_roc_E5)
-plot_ethnic_roc(wightman_cT, "wightman_qc", col_roc_E5)
 
 
 ## polyfun----
 
 ##susie
-
 susie_roc = plot_roc(roc_list,col_roc, legend = 'PRS', replace = 'Max SNP = ', title="bellenguez(SuSiE)")
 plot_grid(bellenguez_roc,susie_roc,ncol = 2, nrow = 1)
 plot_grid(bellenguez_roc,pt_plot,ncol= 2, nrow = 1)
@@ -722,7 +709,7 @@ plot_ethnic_R2(kunkle_polypred, "kunkle_polypred",  polypred_col, 50, "max_snp_p
 plot_ethnic_R2(wightman_polypred, "wightman_polypred",  polypred_col, 50, "max_snp_per LD = ")
 plot_ethnic_R2(bellenguez_fixed_0224, "bellenguez_polypred",  polypred_col, 50, "max_snp_per LD = ")
 
-## bellenguez------
+## bellenguez----
 #df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."
 plot_ethnic_R2(bellenguez_updateRSID, title, col, boot_num, replace)
 plot_R2_cT(bellenguez_cT, bellenguez_qc, bellenguez_qc_on_base, bellenguez_qc_on_target, 'bellenguez_updateRSID', col_roc, plot=TRUE, boot_num = 50)
@@ -737,7 +724,6 @@ p_beta_plot(bell_qc_log,c(4,8,12),'bellenguez_c+pT, QC')
 p_beta_plot(bell_qc_EUR_log,c(4,8,12),'bellenguez_c+pT, QC, EUR')
 
 ## interested SNP
-bellenguez_qc_interested
 mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= bellenguez_interested, family=binomial)
  RsqGLM(mod1, plot=FALSE)$Nagelkerke
 
@@ -745,7 +731,6 @@ mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= bellenguez_interested, family=bin
 ## remove all APOE
 plot_ethnic_R2(kunkle_withoutAPOE, col_roc_E5,"Kunkle without APOE", 5)
 plot_ethnic_R2(kunkle_withoutAPOE_qc, col_roc_E5,"Kunkle without APOE, QC on sumstat_variant", 50)
-
 
 RsqGLM(glm(Diagnosis~PRS1+Sex+Age,family = 'binomial', data = kunkle_polypred), plot=FALSE)$Nagelkerke
 RsqGLM(glm(Diagnosis~PRS10+Sex+Age,family = 'binomial', data = kunkle_polypred), plot=FALSE)$Nagelkerke
@@ -770,8 +755,6 @@ p_beta_plot(kunkle_cT_qc_EUR_log,c(4,8,12),'kunkle_c+pT, QC, EUR')
 
 
 ## wightman ------
-plot_R2_cT(wightman_cT, wightman_qc,wightman_qc_base,wightman_qc_target, 'Wightman', col_roc_E5, boot_num = 50)
-plot_R2_cT(wightman_cT, wightman_qc,wightman_qc_base,wightman_qc_target, 'Wightman, EUR', col_roc_E5, boot_num = 50, eur=TRUE)
 plot_ethnic_R2(wightman_cT, col_roc_E5, 'Wightman', 50)
 
 
