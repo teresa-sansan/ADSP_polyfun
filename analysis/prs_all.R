@@ -37,13 +37,10 @@ pre_process <- function(df, FILE=FALSE){
 kunkle_APOE <- pre_process("/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/APOE_SNP_qc.tsv")
 kunkle_withoutAPOE_qc <- pre_process("/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_no_apoe.tsv")
 
-kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_no_qc.tsv')
-kunkle_qc_all <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
-kunkle_qc_target <-pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_target.tsv')
-kunkle_qc_base <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_on_base.tsv')
-kunkle_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/qc_on_variant_sumstat.tsv')
-
+kunkle_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP.tsv')
+kunkle_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
 kunkle_qc_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_all_maf01.tsv')
+
 kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_target_maf01.tsv')
 kunkle_new_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/new_beta_noqc.tsv')
 
@@ -80,11 +77,11 @@ bellenguez_polypred_new <- pre_process('/gpfs/commons/home/tlin/output/prs/polyp
 wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv')
 
 ## new plink ------
-kunkle_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP.tsv')
+
 bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP.tsv')
 wightman_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP.tsv')
 
-kunkle_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
+
 bellenguez_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
 wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_qc_all.tsv')
 
@@ -218,7 +215,7 @@ extract_amr <- function (df){
 
 col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
-
+col_APOE <- list("PRS")
 ## AUC function ------
 plot_roc <- function(roclist, roccol,title = FALSE){
   legendname = list()
@@ -244,13 +241,15 @@ plot_roc <- function(roclist, roccol,title = FALSE){
 roc_result <-function(df, title=' ',column_for_roc = col_roc_E5, plot = TRUE){
   if('PRS_e5' %in% column_for_roc){
     roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df, quiet=T)
-  }else if ('PRS10' %in% column_for_roc){
+  }else if ('PRS3' %in% column_for_roc){
     roc_list <- roc(Diagnosis ~ PRS1+PRS3+PRS5+PRS7+PRS10, data = df, quiet=T)
+  }else if ('PRS10' %in% column_for_roc){
+    roc_list <- roc(Diagnosis ~ PRS1+PRS5+PRS10, data = df, quiet=T)
   }else if ('new_beta' %in% column_for_roc){
     roc_list <- roc(Diagnosis ~ new_beta + new_beta_cT +new_beta_susie, data=df, quiet=T)
-  }else{
+  }else 
     roc_list <- roc(Diagnosis ~ PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df, quiet = T)
-  }
+  
   if(plot == TRUE){
     plot_roc(roc_list,column_for_roc, title=title)
   }
@@ -282,6 +281,7 @@ roc_result_boot <-function(df, title=' ',column_for_roc=col_roc_E5, boot_num=50,
   }
   return(CI_roc)
 }
+
 
 # A function to plot result of diff race all at once. 
 plot_ethnic_roc <- function(df, title, col,boot=TRUE,boot_num=5, plot=TRUE){
@@ -316,14 +316,18 @@ plot_ethnic_roc <- function(df, title, col,boot=TRUE,boot_num=5, plot=TRUE){
     
   }
 }
-plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50, legendname=FALSE){
+plot_ethnic_roc_facut <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50, legendname=FALSE){
   QC1 = plot_ethnic_roc(QC1, '', col, plot="F",boot=boot,boot_num=boot_num)
   QC1$qc_status = QC1name
   QC2 = plot_ethnic_roc(QC2, '', col, plot="F",boot=boot,boot_num=boot_num)
   QC2$qc_status = QC2name
-  QC3 = plot_ethnic_roc(QC3, '', col, plot="F",boot=boot,boot_num=boot_num)
-  QC3$qc_status = QC3name
-  all = rbind(QC1,QC2, QC3)
+  if(QC3 != FALSE){
+    QC3 = plot_ethnic_roc(QC3, '', col, plot="F",boot=boot,boot_num=boot_num)
+    QC3$qc_status = QC3name
+    all = rbind(QC1,QC2, QC3)
+  }else
+    all  = rbind(QC1,QC2)
+ 
   all %>% 
     filter(PRS !="PRS-001" & PRS != "PRS_1") 
   all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
@@ -342,6 +346,9 @@ plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
   }
   return(plot)
 }
+
+
+
 plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=5){
   a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
   b = plot_ethnic_roc_facut(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
@@ -357,6 +364,67 @@ plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2
   )
   plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
 }
+
+
+## every race should have diff APOE value
+## fixed legend
+plot_ethnic_roc_facut_add <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50, legendname=FALSE, APOE=FALSE){
+  
+  QC1 = plot_ethnic_roc(QC1, '', col, plot="F",boot=boot,boot_num=boot_num)
+  QC1$qc_status = QC1name
+  QC2 = plot_ethnic_roc(QC2, '', col, plot="F",boot=boot,boot_num=boot_num)
+  QC2$qc_status = QC2name
+  if(class(QC3) != "logical"){
+    QC3 = plot_ethnic_roc(QC3, '', col, plot="F",boot=boot,boot_num=boot_num)
+    QC3$qc_status = QC3name
+    all = rbind(QC1,QC2, QC3)
+  }else
+    all  = rbind(QC1,QC2)
+  
+  all %>% 
+    filter(PRS !="PRS-001" & PRS != "PRS_1") 
+  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
+  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
+  
+  if (class(APOE) != "logical"){
+    roc_formula= roc(APOE[["Diagnosis"]],APOE[["PRS"]],quiet=TRUE)
+    if(boot==TRUE){
+      APOE_CI = ci.auc(roc_formula, conf.level = 0.95, method='bootstrap', boot.n = boot_num )[1:3]
+      #print(APOE_CI)
+    } else{ ## no bootstrapping
+      APOE_roc = roc_formula$auc
+      print(roc_formula$auc)
+    } 
+  }
+  
+  plot <- ggplot(data = all, aes(x=auc, y = PRS, color = qc_status))+
+    geom_point(size=3,alpha=0.8)+
+    facet_wrap(~ethnicity, ncol=1)+
+    xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+
+    theme_bw()
+ 
+  if (boot == TRUE){  ## plot error bar or not
+    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), width=.2,alpha=0.5) 
+  }
+  if(legendname != FALSE){ 
+    plot = plot +guides(col=guide_legend(legendname))
+  }
+  if(class(APOE) != "logical"){
+    if(boot == TRUE){
+      plot = plot + geom_vline(xintercept=APOE_CI[2],lwd=0.8,colour="black") + 
+        geom_vline(xintercept=APOE_CI[1],lwd=0.5,colour="grey") +
+        geom_vline(xintercept=APOE_CI[3],lwd=0.5,colour="grey")
+    }else
+      plot = plot + geom_vline(xintercept=APOE_roc,lwd=0.8,colour="black")
+  }
+  return(plot)
+}
+
+
+
+plot_ethnic_roc_facut_add(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,boot_num=2, APOE=kunkle_APOE)
+
+
 
 ## R2 functions ----
 ## calcualte pseudo rsquare 
@@ -485,14 +553,17 @@ plot_ethnic_R2 <- function(df, col, title, boot_num, replace='', plot= TRUE){
 
 ## plot facet 
 ## plot ethnic facut plot for one sumstat
-plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc", legendname=FALSE){
+plot_ethnic_R2_facut <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=50, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc", legendname=FALSE){
   QC1 = plot_ethnic_R2(QC1, col, '', boot_num, plot="F")
-  QC1$qc_status = QC1name
   QC2 = plot_ethnic_R2(QC2, col, '', boot_num, plot="F")
+  QC1$qc_status = QC1name
   QC2$qc_status = QC2name
-  QC3 = plot_ethnic_R2(QC3, col, '', boot_num, plot="F")
-  QC3$qc_status = QC3name
-  all = rbind(QC1,QC2, QC3)
+  if(QC3 != FALSE){
+    QC3 = plot_ethnic_R2(QC3, col, '', boot_num, plot="F")
+    QC3$qc_status = QC3name
+    all = rbind(QC1,QC2, QC3)
+  }else
+    all = rbind(QC1, QC2)
   all %>% 
     filter(PRS !="PRS-001" & PRS != "PRS_1") 
   
@@ -500,7 +571,7 @@ plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title,QC1name="QC
   all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
   all$boot_mean = all$boot_mean * 100
   plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, color = qc_status))+
-    geom_point(size=3)+
+    geom_point(size=3, alpha=0.75)+
     geom_pointrange(aes(xmin=boot_CI_lower*100, xmax=boot_CI_upper*100), linetype="dotted") +
     facet_wrap(~ethnicity, ncol=1)+
     xlab('R squared (%)')+ ggtitle(title)+xlim(-1, 25)+
@@ -572,22 +643,10 @@ for (i in df_list){
 
 ## Kunkle Qced
 
-NoAPOE_QC = roc_result(kunkle_withoutAPOE_qc,title="kunkle without APOE, qc on sumstats and variants", column_for_roc=col_roc_E5)
-NoAPOE = roc_result(kunkle_withoutAPOE,title="kunkle without APOE", column_for_roc=col_roc_E5)
+plot_ethnic_roc_facut(kunkle_qc_all, kunkle_withoutAPOE_qc,title='kunkle (QC)',
+                      QC1name = "kunkle", QC2name = "kunkle_no_APOE", 
+                      legendname = "APOE status", boot_num=2)
 
-plot_grid(kunkle_pt_plot,kunkle_pt_qc_plot_variant_sumstat,NoAPOE,NoAPOE_QC,ncol = 2, nrow = 2)
-
-kunkle_pt_plot=roc_result(kunkle_cT,title="kunkle (no qc)", column_for_roc = col_roc_E5)
-kunkle_pt_qc_plot_target=roc_result(kunkle_qc_target_maf,title="QC on target", column_for_roc = col_roc_E5)
-kunkle_pt_qc_plot_variant=roc_result(kunkle_qc_variant,title="QC on variant", column_for_roc = col_roc_E5)
-kunkle_pt_qc_plot_variant_sumstat=roc_result(kunkle_qc_variant_sumstat,title="QC on variant and sumstat", column_for_roc = col_roc_E5)
-plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_target, kunkle_pt_qc_plot_variant,kunkle_pt_qc_plot_variant_sumstat, ncol = 2, nrow = 2)
-
-kunkle_pt_qc_plot=roc_result(extract_eur(kunkle_cT),title="kunkle, EUR, (no qc)", column_for_roc = col_roc_E5)
-kunkle_pt_qc_plot_target=roc_result(extract_eur(kunkle_qc_target_maf),title="EUR, QC on target", column_for_roc = col_roc_E5)
-kunkle_pt_qc_plot_variant=roc_result(extract_eur(kunkle_qc_variant),title="EUR, QC on variant", column_for_roc = col_roc_E5)
-kunkle_pt_qc_plot_variant_sumstat=roc_result(extract_eur(kunkle_qc_variant_sumstat),title="EUR, QC on variant and sumstat", column_for_roc = col_roc_E5)
-plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_target, kunkle_pt_qc_plot_variant,kunkle_pt_qc_plot_variant_sumstat, ncol = 2, nrow = 2)
 
 kunkle_pt_qc_plot_maf=roc_result(kunkle_qc_maf,title="QC, MAF >0 0.1%", column_for_roc = col_roc_E5)
 ##kunkle_pt_qc_plot_base=roc_result(kunkle_qc_base, title="kunkle_qc_summary_stats",column_for_roc = col_roc_E5)
