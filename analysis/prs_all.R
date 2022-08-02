@@ -34,9 +34,8 @@ pre_process <- function(df, FILE=FALSE){
   return(df)
 }
 ### kunkle ----
-kunkle_APOE <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/APOE.tsv")
-kunkle_withoutAPOE_qc <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv")
-kunkle_withoutAPOE <- pre_process("/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/remove_APOE.tsv")
+kunkle_APOE <- pre_process("/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/APOE_SNP_qc.tsv")
+kunkle_withoutAPOE_qc <- pre_process("/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_no_apoe.tsv")
 
 kunkle_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_no_qc.tsv')
 kunkle_qc_all <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
@@ -217,13 +216,10 @@ extract_amr <- function (df){
   return(AMR)
 }
 
-
 col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 
-
 ## AUC function ------
-
 plot_roc <- function(roclist, roccol,title = FALSE){
   legendname = list()
   for (i in roccol){                
@@ -240,10 +236,6 @@ plot_roc <- function(roclist, roccol,title = FALSE){
   curve + ggtitle(title)+theme_bw()+
     scale_colour_discrete(name="PRS",labels = c(legendname))
 }   
-
-roc_result_boot(kunkle_adsp, title=' ', col_roc_E5,mean=F)
-roc_result(kunkle_adsp, title=' ', col_roc_E5, plot=T)
-
 
 ## A function that can calculate AUC with different method/threshold
 ## If plot = T(default), will return a plot with AUC using different method/threshold, if false, will return a list for 
@@ -271,7 +263,6 @@ roc_result <-function(df, title=' ',column_for_roc = col_roc_E5, plot = TRUE){
     return(my_list)
   }
 }
-
 roc_result_boot <-function(df, title=' ',column_for_roc=col_roc_E5, boot_num=50, mean=FALSE, plot=FALSE){
   CI_roc = data.frame(matrix(ncol = 4, nrow = 0))
   colnames(CI_roc) = c("PRS","boot_CI_lower","boot_mean","boot_CI_upper")
@@ -325,23 +316,7 @@ plot_ethnic_roc <- function(df, title, col,boot=TRUE,boot_num=5, plot=TRUE){
     
   }
 }
-
-plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=5){
-  a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
-  b = plot_ethnic_roc_facut(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
-  c = plot_ethnic_roc_facut(s3_qc1, s3_qc2, s3_qc3, col,'Wightman',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
-  prow <- plot_grid(a+ theme(legend.position="none"), 
-                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
-                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
-                    ncol = 3, nrow = 1)
-  legend_b <- get_legend(
-    c+ guides(color = guide_legend(nrow = 1)) +
-      theme(legend.position = "bottom")
-  )
-  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
-}
-
-plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50){
+plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50, legendname=FALSE){
   QC1 = plot_ethnic_roc(QC1, '', col, plot="F",boot=boot,boot_num=boot_num)
   QC1$qc_status = QC1name
   QC2 = plot_ethnic_roc(QC2, '', col, plot="F",boot=boot,boot_num=boot_num)
@@ -353,7 +328,7 @@ plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title=' ',QC1name="QC_on_b
     filter(PRS !="PRS-001" & PRS != "PRS_1") 
   all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
   all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
-  plot <- ggplot(data = all, aes(x=auc, y = PRS, shape=qc_status, color = qc_status))+
+  plot <- ggplot(data = all, aes(x=auc, y = PRS, color = qc_status))+
     geom_point(size=3,alpha=0.8)+
     facet_wrap(~ethnicity, ncol=1)+
     xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+
@@ -362,10 +337,26 @@ plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col, title=' ',QC1name="QC_on_b
   if (boot == TRUE){  ## plot error bar or not
     plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), width=.2,alpha=0.5) 
   }
-  
+  if(legendname != FALSE){ 
+    plot = plot +guides(col=guide_legend(legendname))
+  }
   return(plot)
 }
-
+plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=5){
+  a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
+  b = plot_ethnic_roc_facut(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
+  c = plot_ethnic_roc_facut(s3_qc1, s3_qc2, s3_qc3, col,'Wightman',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
+  
+  prow <- plot_grid(a+ theme(legend.position="none"), 
+                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
+                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
+                    ncol = 3, nrow = 1)
+  legend_b <- get_legend(
+    c+ guides(color = guide_legend(nrow = 1)) +
+      theme(legend.position = "bottom")
+  )
+  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
+}
 
 ## R2 functions ----
 ## calcualte pseudo rsquare 
@@ -494,7 +485,7 @@ plot_ethnic_R2 <- function(df, col, title, boot_num, replace='', plot= TRUE){
 
 ## plot facet 
 ## plot ethnic facut plot for one sumstat
-plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc"){
+plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title,QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc", legendname=FALSE){
   QC1 = plot_ethnic_R2(QC1, col, '', boot_num, plot="F")
   QC1$qc_status = QC1name
   QC2 = plot_ethnic_R2(QC2, col, '', boot_num, plot="F")
@@ -508,14 +499,20 @@ plot_ethnic_R2_facut <- function(QC1, QC2, QC3, col, boot_num, title,QC1name="QC
   all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
   all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
   all$boot_mean = all$boot_mean * 100
-  plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, shape=qc_status, color = qc_status))+
+  plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, color = qc_status))+
     geom_point(size=3)+
     geom_pointrange(aes(xmin=boot_CI_lower*100, xmax=boot_CI_upper*100), linetype="dotted") +
     facet_wrap(~ethnicity, ncol=1)+
     xlab('R squared (%)')+ ggtitle(title)+xlim(-1, 25)+
     theme_bw()
+  if(legendname != FALSE){  ## testout new legend title
+    plot = plot +guides(col=guide_legend(legendname))
+  }
   return(plot)
 }
+
+
+
 ## plot ethnic facut plot for multiple sumstat
 plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot_num=50){
   a = plot_ethnic_R2_facut(s1_qc1, s1_qc2, s1_qc3, col, boot_num, 'Kunkle', QC1name, QC2name,QC3name)
@@ -532,7 +529,6 @@ plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc
   plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
   
 }
-
 
 
 ## Regression (plot beta and pvalue)
