@@ -1,8 +1,9 @@
 #!/bin/bash
 
-for i in 10 11 20
+for i in 21 22
+
 do
-	for max_snp in  5 10
+	for max_snp in 1 5 10
 	do	
 		echo "run_max_snp_$max_snp"
         	echo "run chr$i"

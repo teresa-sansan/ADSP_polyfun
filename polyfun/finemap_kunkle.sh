@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=assertion_error_fix
+#SBATCH --job-name=susie_kunkle
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
@@ -8,7 +8,7 @@
 cd ~/polyfun_omer_repo
 
 #--job-name=susie_kunkle
-
+#--job-name-assertion_error_fix
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 anno="bl_brain_atac"
@@ -20,7 +20,6 @@ output="/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations"
 # --non-funct \
 for i in $FILES
 do	
-	
 	ld=$(echo $i | cut -d'.' -f 1 )
 	filename=$(echo $i | cut -d'/' -f 10 |cut -d'.' -f1)
 	start=$(echo $filename| cut -d'_' -f 2)
@@ -34,6 +33,7 @@ do
 		--n 63926 \
 	  	--chr $chr --start $start --end $end \
 	  	--method susie \
+		--non-funct \
 		--max-num-causal $max_num_snp \
 	  	--allow-missing \
 		--out $output/$anno/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz 
@@ -44,6 +44,7 @@ do
                 --n 63926 \
                 --chr $chr --start $start --end $end \
                 --method susie \
+		--non-funct \
                 --max-num-causal $max_num_snp \
                 --allow-missing \
 		--out $output/$anno/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz 
