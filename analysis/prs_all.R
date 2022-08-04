@@ -268,6 +268,7 @@ roc_result_boot <-function(df, title=' ',column_for_roc=col_roc_E5, boot_num=50,
   for (i in 1:length(column_for_roc)){
     col = column_for_roc[[i]]
     roc_formula <- roc(df[["Diagnosis"]],df[[col]], quiet=T)
+    #set.seed(10)
     ci = ci.auc(roc_formula, conf.level = 0.95, method='bootstrap', boot.n = boot_num)
     CI_roc[nrow(CI_roc) + 1,] = c(col,ci)
   }
@@ -386,47 +387,34 @@ plot_ethnic_roc_facut_add <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',Q
   all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
   all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
   
-  if (class(APOE) != "logical"){
-    roc_formula= roc(APOE[["Diagnosis"]],APOE[["PRS"]],quiet=TRUE)
-    if(boot==TRUE){
-      APOE_CI = ci.auc(roc_formula, conf.level = 0.95, method='bootstrap', boot.n = boot_num )[1:3]
-      #print(APOE_CI)
-    } else{ ## no bootstrapping
-      APOE_roc = roc_formula$auc
-      print(roc_formula$auc)
-    } 
-  }
-  
   plot <- ggplot(data = all, aes(x=auc, y = PRS, color = qc_status))+
-    geom_point(size=3,alpha=0.8)+
+    geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
     xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+
     theme_bw()
  
-  if (boot == TRUE){  ## plot error bar or not
-    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), width=.2,alpha=0.5) 
-  }
+  if (boot == TRUE){  
+    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5) 
+  }## plot error bar or not
   if(legendname != FALSE){ 
     plot = plot +guides(col=guide_legend(legendname))
-  }
+  } ## change legend name or not (depends on usage)
   if(class(APOE) != "logical"){
-    if(boot == TRUE){
-      plot = plot + geom_vline(xintercept=APOE_CI[2],lwd=0.8,colour="black") + 
-        geom_vline(xintercept=APOE_CI[1],lwd=0.5,colour="grey") +
-        geom_vline(xintercept=APOE_CI[3],lwd=0.5,colour="grey")
-    }else
-      plot = plot + geom_vline(xintercept=APOE_roc,lwd=0.8,colour="black")
-  }
-  return(plot)
+    APOE_ci = plot_ethnic_roc(APOE, col="PRS", plot='F',boot=boot, boot_num=boot_num)
+    #print(APOE_ci)
+    plot = plot +  geom_vline(data = APOE_ci, aes(xintercept = auc,color='only APOE'),color="black",lwd=0.5, alpha=0.7,linetype="dashed")  ## move color into aes will generate legend automatically.
+  } ## if we want to plot APOE (line) ## should do bootstrap automatically if it is specified 
+  print(plot)
+  return(all)
 }
 
+check = plot_ethnic_roc_facut_add(kunkle_adsp_qc, kunkle_withoutAPOE_qc, FALSE, title= 'kunkle(QC)',
+                          QC1name = 'with APOE',QC2name = 'without APOE',legendname = 'APOE status',
+                          boot_num=2, APOE=kunkle_APOE)
 
 
-plot_ethnic_roc_facut_add(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,boot_num=2, APOE=kunkle_APOE)
 
-
-
-## R2 functions ----
+ ## R2 functions ----
 ## calcualte pseudo rsquare 
 rsq <- function(formula, data, indices=FALSE) {    
   if (indices !=FALSE){
@@ -440,7 +428,7 @@ rsq <- function(formula, data, indices=FALSE) {
 
 ##resample
 log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
-  set.seed(10)
+  set.seed(50)
   mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a formula only using covariates
   mod1_R2 <- RsqGLM(mod1, plot=FALSE)$Nagelkerke
   for (i in 1:length(prs)){
