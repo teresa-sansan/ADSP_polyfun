@@ -45,6 +45,7 @@ kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/f
 kunkle_new_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/new_beta_noqc.tsv')
 
 
+
 ### bellenguez ----- 
 bellenguez_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_no_qc.tsv')
 bellenguez_qc_all <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
@@ -72,7 +73,11 @@ wightman_susie_max10_polypred<- pre_process('/gpfs/commons/home/tlin/output/prs/
 
 
 ###  polyfun-Pred ----
-kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/kunkle_polypred.tsv')
+kunkle_polypred_old <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/kunkle_polypred.tsv')
+kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_polypred.tsv')
+kunkle_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_bl_polypred.tsv')
+kunkle_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/kunkle/susie.prs.tsv")
+
 bellenguez_polypred_new <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/fixed_0224_polypred.prs')
 wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv')
 
@@ -90,7 +95,7 @@ bellenguez_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/
 wightman_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_UKBB_qc.tsv')
 
 ### susie -----
-kunkle_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/kunkle/susie.prs.tsv")
+
 susie <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
 
 ## Others
@@ -215,7 +220,10 @@ extract_amr <- function (df){
 
 col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
-col_APOE <- list("PRS")
+
+col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
+col_roc_polypred3 <- list("PRS1","PRS5","PRS10")
+
 ## AUC function ------
 plot_roc <- function(roclist, roccol,title = FALSE){
   legendname = list()
@@ -317,38 +325,6 @@ plot_ethnic_roc <- function(df, title, col,boot=TRUE,boot_num=5, plot=TRUE){
     
   }
 }
-plot_ethnic_roc_facut <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50, legendname=FALSE){
-  QC1 = plot_ethnic_roc(QC1, '', col, plot="F",boot=boot,boot_num=boot_num)
-  QC1$qc_status = QC1name
-  QC2 = plot_ethnic_roc(QC2, '', col, plot="F",boot=boot,boot_num=boot_num)
-  QC2$qc_status = QC2name
-  if(QC3 != FALSE){
-    QC3 = plot_ethnic_roc(QC3, '', col, plot="F",boot=boot,boot_num=boot_num)
-    QC3$qc_status = QC3name
-    all = rbind(QC1,QC2, QC3)
-  }else
-    all  = rbind(QC1,QC2)
- 
-  all %>% 
-    filter(PRS !="PRS-001" & PRS != "PRS_1") 
-  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
-  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
-  plot <- ggplot(data = all, aes(x=auc, y = PRS, color = qc_status))+
-    geom_point(size=3,alpha=0.8)+
-    facet_wrap(~ethnicity, ncol=1)+
-    xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+
-    theme_bw()
-  
-  if (boot == TRUE){  ## plot error bar or not
-    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), width=.2,alpha=0.5) 
-  }
-  if(legendname != FALSE){ 
-    plot = plot +guides(col=guide_legend(legendname))
-  }
-  return(plot)
-}
-
-
 
 plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=5){
   a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
@@ -369,7 +345,7 @@ plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2
 
 ## every race should have diff APOE value
 ## fixed legend
-plot_ethnic_roc_facut_add <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50, legendname=FALSE, APOE=FALSE){
+plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50, legendname=FALSE, APOE=FALSE){
   
   QC1 = plot_ethnic_roc(QC1, '', col, plot="F",boot=boot,boot_num=boot_num)
   QC1$qc_status = QC1name
@@ -394,7 +370,7 @@ plot_ethnic_roc_facut_add <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',Q
     theme_bw()
  
   if (boot == TRUE){  
-    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5) 
+    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,show.legend = FALSE) 
   }## plot error bar or not
   if(legendname != FALSE){ 
     plot = plot +guides(col=guide_legend(legendname))
@@ -408,13 +384,14 @@ plot_ethnic_roc_facut_add <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',Q
   return(all)
 }
 
-check = plot_ethnic_roc_facut_add(kunkle_adsp_qc, kunkle_withoutAPOE_qc, FALSE, title= 'kunkle(QC)',
+check = plot_ethnic_roc_facut(kunkle_adsp_qc, kunkle_withoutAPOE_qc, FALSE, title= 'kunkle(QC)',
                           QC1name = 'with APOE',QC2name = 'without APOE',legendname = 'APOE status',
-                          boot_num=2, APOE=kunkle_APOE)
+                          boot_num=50, APOE=kunkle_APOE)
 
 
 
- ## R2 functions ----
+
+## R2 functions ----
 ## calcualte pseudo rsquare 
 rsq <- function(formula, data, indices=FALSE) {    
   if (indices !=FALSE){
@@ -556,11 +533,12 @@ plot_ethnic_R2_facut <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=5
     filter(PRS !="PRS-001" & PRS != "PRS_1") 
   
   all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
-  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
+  if ("PRS_e5" %in% col)
+    all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
   all$boot_mean = all$boot_mean * 100
   plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, color = qc_status))+
-    geom_point(size=3, alpha=0.75)+
-    geom_pointrange(aes(xmin=boot_CI_lower*100, xmax=boot_CI_upper*100), linetype="dotted") +
+    geom_point(size=3, alpha=0.75,position = position_dodge(width = 0.7))+
+    geom_pointrange(aes(xmin=boot_CI_lower*100, xmax=boot_CI_upper*100), linetype="dotted",position=position_dodge(width=0.7),show.legend = FALSE) +
     facet_wrap(~ethnicity, ncol=1)+
     xlab('R squared (%)')+ ggtitle(title)+xlim(-1, 25)+
     theme_bw()
@@ -644,7 +622,7 @@ plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_maf,ncol = 2, nrow = 2)
 
 ##cros group 
 par(mfrow=c(3,1))
-col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
+
 plot_ethnic_roc (kunkle_cT, 'kunkle', col_roc_E5)
 plot_ethnic_roc(kunkle_qc_variant_sumstat, "kunkle_qc_sumstat_variant", col_roc_E5)
 plot_ethnic_roc (kunkle_polypred, 'kunkle', col_roc_polypred)
@@ -690,12 +668,27 @@ colnames(wightman_new_beta)[which(names(wightman_new_beta) == 'PRS_new_beta')] <
 PRS_new_beta
 
 
-## polyfun----
+## polyfun_AUC----
+##kunkle
+plot_ethnic_roc_facut(kunkle_bl, kunkle_polypred,FALSE,col =col_roc_polypred3, title= 'kunkle (new_plink)',
+                      QC1name = 'Baseline annotations', QC2name = 'All annotations',
+                      legendname = 'Annotation'
+)
 
-##susie
-susie_roc = plot_roc(roc_list,col_roc, legend = 'PRS', replace = 'Max SNP = ', title="bellenguez(SuSiE)")
-plot_grid(bellenguez_roc,susie_roc,ncol = 2, nrow = 1)
-plot_grid(bellenguez_roc,pt_plot,ncol= 2, nrow = 1)
+
+
+plot_ethnic_roc_facut(kunkle_susie, kunkle_polypred_old, FALSE,col =col_roc_polypred3, title= 'kunkle (old plink)',
+                      QC1name = 'SuSiE', QC2name = 'All annotations',
+                      legendname = 'Annotation'
+)
+
+
+plot_ethnic_R2_facut(kunkle_bl, kunkle_polypred,FALSE,col =col_roc_polypred3, title= 'kunkle (new_plink)',
+                      QC1name = 'Baseline annotations', QC2name = 'All annotations',
+                      legendname = 'Annotation'
+)
+
+
 
 ## all
 par(mfrow=c(1,1))
@@ -843,6 +836,8 @@ plot_density <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, Pthr
 }
 
 
+
+
 PRS_density(wightman_qc_variant_sumstat, "Wightman, QC on variant_sumstat","PRS_5")
 PRS_density(extract_eur(wightman_qc_variant_sumstat), "Wightman, EUR, QC on variant_sumstat","PRS_05")
 
@@ -894,5 +889,55 @@ legend(-0.3,170, inset=.02, title="AD diagnosis",
        c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
 
 
+### plot density/age/case-----
+DATA = kunkle_withoutAPOE_qc %>%
+  subset(final_population != "SAS",) %>%
+  subset(final_population != "EAS",) %>%
+  subset(final_population != "UNKNOWN",)
 
+DATA$Diagnosis = as.factor(DATA$Diagnosis)
+DATA$Diagnosis_state=ifelse(DATA$Diagnosis == 0, "control","case") 
+
+
+
+## function provide by https://stackoverflow.com/questions/35717353/split-violin-plot-with-ggplot2 
+GeomSplitViolin <- ggproto("GeomSplitViolin", GeomViolin, 
+                           draw_group = function(self, data, ..., draw_quantiles = NULL) {
+                             data <- transform(data, xminv = x - violinwidth * (x - xmin), xmaxv = x + violinwidth * (xmax - x))
+                             grp <- data[1, "group"]
+                             newdata <- plyr::arrange(transform(data, x = if (grp %% 2 == 1) xminv else xmaxv), if (grp %% 2 == 1) y else -y)
+                             newdata <- rbind(newdata[1, ], newdata, newdata[nrow(newdata), ], newdata[1, ])
+                             newdata[c(1, nrow(newdata) - 1, nrow(newdata)), "x"] <- round(newdata[1, "x"])
+                             
+                             if (length(draw_quantiles) > 0 & !scales::zero_range(range(data$y))) {
+                               stopifnot(all(draw_quantiles >= 0), all(draw_quantiles <=
+                                                                         1))
+                               quantiles <- ggplot2:::create_quantile_segment_frame(data, draw_quantiles)
+                               aesthetics <- data[rep(1, nrow(quantiles)), setdiff(names(data), c("x", "y")), drop = FALSE]
+                               aesthetics$alpha <- rep(1, nrow(quantiles))
+                               both <- cbind(quantiles, aesthetics)
+                               quantile_grob <- GeomPath$draw_panel(both, ...)
+                               ggplot2:::ggname("geom_split_violin", grid::grobTree(GeomPolygon$draw_panel(newdata, ...), quantile_grob))
+                             }
+                             else {
+                               ggplot2:::ggname("geom_split_violin", GeomPolygon$draw_panel(newdata, ...))
+                             }
+                           })
+
+geom_split_violin <- function(mapping = NULL, data = NULL, stat = "ydensity", position = "identity", ..., 
+                              draw_quantiles = NULL, trim = TRUE, scale = "area", na.rm = FALSE, 
+                              show.legend = NA, inherit.aes = TRUE) {
+  layer(data = data, mapping = mapping, stat = stat, geom = GeomSplitViolin, 
+        position = position, show.legend = show.legend, inherit.aes = inherit.aes, 
+        params = list(trim = trim, scale = scale, draw_quantiles = draw_quantiles, na.rm = na.rm, ...))
+}
+
+ggplot(data=DATA, aes(x=factor(final_population, level = c('EUR','AFR','AMR')), y=Age, fill=Diagnosis_state))+
+  geom_split_violin(alpha = 0.3)+geom_boxplot(width=0.4, alpha=0.8,show.legend = FALSE)+ xlab('Ethnicity')+  scale_fill_discrete(name ="AD diagnosis")+
+  theme_bw()
+    
+
+
+
+#scale_fill_brewer(name = "Diagnosis")+#geom_density(adjust=1.5, alpha=.4) +
 
