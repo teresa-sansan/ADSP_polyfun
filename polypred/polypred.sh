@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=50G
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl_dl_annotations/polypred/%x_%j.log 
+#SBATCH --output=/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/polypred_new_plink/%x_%j.log 
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate 
@@ -20,11 +20,11 @@ conda activate polyfun
 ##kunkle
 ##susie
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap'
-#path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap'
+path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap'
 #output='	--output-prefix /gpfs/commons/home/tlin/output/bellen'
 #	--betas $path/max_snp_${max_snp}/agg_kunkle_extract_1e-3.tsv \
 
-path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl_dl_annotations'
+#path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl_brain_atac'
 
 
 ##wightman
@@ -40,7 +40,7 @@ path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl_dl_
 python polypred.py \
 	--predict \
 	--betas $path/max_snp_${max_snp}/aggregate.all.txt.gz \
-	--output-prefix $path/polypred/max_snp_${max_snp}_polypred.tsv \
+	--output-prefix $path/polypred_new_plink/max_snp_${max_snp}_polypred.tsv \
 	--plink-exe ~/plink \
 	/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_qc_all/*.bed
 

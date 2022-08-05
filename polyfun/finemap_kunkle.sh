@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=susie_kunkle
+#SBATCH --job-name=kunkle
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
@@ -11,10 +11,10 @@ cd ~/polyfun_omer_repo
 #--job-name-assertion_error_fix
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
-anno="bl_brain_atac"
+anno="bl_dl_annotations"
 #anno='susie'
-FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${chr}*.npz" 
-summary_stat="/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl_brain_atac/bl_brain_atac.${chr}.snpvar_constrained.gz"
+FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${chr}_*.npz" 
+summary_stat="/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl_dl_annotations/bl_dl_annotations.${chr}.snpvar_constrained.gz"
 output="/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations"
 
 # --non-funct \
@@ -33,7 +33,6 @@ do
 		--n 63926 \
 	  	--chr $chr --start $start --end $end \
 	  	--method susie \
-		--non-funct \
 		--max-num-causal $max_num_snp \
 	  	--allow-missing \
 		--out $output/$anno/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz 
@@ -44,7 +43,6 @@ do
                 --n 63926 \
                 --chr $chr --start $start --end $end \
                 --method susie \
-		--non-funct \
                 --max-num-causal $max_num_snp \
                 --allow-missing \
 		--out $output/$anno/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz 
