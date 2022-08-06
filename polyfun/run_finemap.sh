@@ -1,6 +1,7 @@
 #!/bin/bash
-####8-13	
-for i in {1..7}
+#### run wightman w anno
+## submitted 0806 	
+for i in {10..21}
 do
 	for max_snp in 1 5 10
 	do	
@@ -19,19 +20,15 @@ do
 		done
         	fi
 
-	        if true; then 
+	        if false; then 
 		echo run kunkle
         	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap_kunkle.sh 
 		
 		fi
 
-		if false; then
+		if true; then
         	echo run wightman
-        	sbatch --export=chr=$i finemap_max_snp_1.sh
-        	sbatch --export=chr=$i,max_num_snp=3 finemap_multi.sh
-        	sbatch --export=chr=$i,max_num_snp=5 finemap_multi.sh
-        	sbatch --export=chr=$i,max_num_snp=7 finemap_multi.sh
-        	sbatch --export=chr=$i,max_num_snp=10 finemap_multi.sh
+        	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap.sh
         	fi
 	done
 		
