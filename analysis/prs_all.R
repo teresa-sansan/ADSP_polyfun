@@ -44,8 +44,6 @@ kunkle_qc_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_02
 kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_target_maf01.tsv')
 kunkle_new_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/new_beta_noqc.tsv')
 
-
-
 ### bellenguez ----- 
 bellenguez_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_no_qc.tsv')
 bellenguez_qc_all <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
@@ -68,12 +66,9 @@ wightman_qc_variant_sumstat <- pre_process('/gpfs/commons/home/tlin/output/prs/w
 ## wightman new beta
 wightman_beta <- pre_process("/gpfs/commons/home/tlin/output/prs/wightman/new_beta_max_snp_10_noclump_pT.tsv")
 wightman_beta_cT <- pre_process("/gpfs/commons/home/tlin/output/prs/wightman/new_beta_max_snp_10_clump_pT.tsv")
-#wightman_beta_polypred <- pre_process("/gpfs/commons/home/tlin/output/prs/wightman/susie_new_beta_max_snp_10_polypred.tsv")  ## only the last step is using polypred
 wightman_susie_max10_polypred<- pre_process('/gpfs/commons/home/tlin/output/prs/wightman/susie_new_beta_max_snp_10_polypred.tsv')
 
-
 ###  polyfun-Pred ----
-kunkle_polypred_old <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/kunkle_polypred.tsv')
 kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_polypred.tsv')
 kunkle_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_bl_polypred.tsv')
 kunkle_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/kunkle/susie.prs.tsv")
@@ -82,10 +77,8 @@ bellenguez_polypred_new <- pre_process('/gpfs/commons/home/tlin/output/prs/polyp
 wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv')
 
 ## new plink ------
-
 bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP.tsv')
 wightman_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP.tsv')
-
 
 bellenguez_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
 wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_qc_all.tsv')
@@ -95,7 +88,6 @@ bellenguez_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/
 wightman_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_UKBB_qc.tsv')
 
 ### susie -----
-
 susie <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
 
 ## Others
@@ -148,7 +140,7 @@ pivot_df<- function(df){
 
 ## draw facet dist plot (by method) 
 ## can be apply to different methods (polyfunpred or pT)
-##W here method = how many causal SNPs are assumed in the LD block/ pT threshold.
+## Where method = how many causal SNPs are assumed in the LD block/ pT threshold.
 plot_facet_dist <- function(df, title){
   ggplot(pivot_df(df), aes(x =PRS, group=Diagnosis_state,fill = Diagnosis_state, color = Diagnosis_state))+
     geom_density(alpha = 0.01) +
@@ -199,10 +191,8 @@ abline(v = mean(PRSice$PRS), col = "cadetblue1")
 
 text(mean(PRSice$PRS),2200,"PRSice", col = 'deepskyblue')
 text(mean(PRSice$PRS),1000,round(mean(PRSice$PRS),6), col = 'deepskyblue')
-
 text(mean(sbayesR$PRS),20000,"SBayesR", col = 'darkcyan')
 text(mean(sbayesR$PRS),19000,round(mean(sbayesR$PRS),6), col = 'darkcyan')
-
   
 ## Extract specific race 
 extract_eur <-function (df){
@@ -218,9 +208,9 @@ extract_amr <- function (df){
   return(AMR)
 }
 
+## Set column name ------
 col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
-
 col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
 col_roc_polypred3 <- list("PRS1","PRS5","PRS10")
 
@@ -289,8 +279,7 @@ roc_result_boot <-function(df, title=' ',column_for_roc=col_roc_E5, boot_num=50,
     return(roclist)
   }
   return(CI_roc)
-}
-
+} 
 
 # A function to plot result of diff race all at once. 
 plot_ethnic_roc <- function(df, title, col,boot=TRUE,boot_num=5, plot=TRUE){
@@ -326,7 +315,7 @@ plot_ethnic_roc <- function(df, title, col,boot=TRUE,boot_num=5, plot=TRUE){
   }
 }
 
-plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=5){
+plot_auc_facet_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=5){
   a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
   b = plot_ethnic_roc_facut(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
   c = plot_ethnic_roc_facut(s3_qc1, s3_qc2, s3_qc3, col,'Wightman',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
@@ -342,11 +331,10 @@ plot_auc_facut_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2
   plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
 }
 
-
-## every race should have diff APOE value
 ## fixed legend
-plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=50, legendname=FALSE, APOE=FALSE){
-  
+## The boolean APOE operator is to see whether you want to plot the effect of only using 5(6, depending on QC or not) APOE allele to make prediction.  
+plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, 
+                                  boot_num=50, legendname=FALSE, APOE=FALSE){
   QC1 = plot_ethnic_roc(QC1, '', col, plot="F",boot=boot,boot_num=boot_num)
   QC1$qc_status = QC1name
   QC2 = plot_ethnic_roc(QC2, '', col, plot="F",boot=boot,boot_num=boot_num)
@@ -383,13 +371,6 @@ plot_ethnic_roc_facut <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
   print(plot)
   return(all)
 }
-
-check = plot_ethnic_roc_facut(kunkle_adsp_qc, kunkle_withoutAPOE_qc, FALSE, title= 'kunkle(QC)',
-                          QC1name = 'with APOE',QC2name = 'without APOE',legendname = 'APOE status',
-                          boot_num=50, APOE=kunkle_APOE)
-
-
-
 
 ## R2 functions ----
 ## calcualte pseudo rsquare 
@@ -518,7 +499,7 @@ plot_ethnic_R2 <- function(df, col, title, boot_num, replace='', plot= TRUE){
 
 ## plot facet 
 ## plot ethnic facut plot for one sumstat
-plot_ethnic_R2_facut <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=50, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc", legendname=FALSE){
+plot_ethnic_R2_facet <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=50, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc", legendname=FALSE){
   QC1 = plot_ethnic_R2(QC1, col, '', boot_num, plot="F")
   QC2 = plot_ethnic_R2(QC2, col, '', boot_num, plot="F")
   QC1$qc_status = QC1name
@@ -548,10 +529,8 @@ plot_ethnic_R2_facut <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=5
   return(plot)
 }
 
-
-
 ## plot ethnic facut plot for multiple sumstat
-plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot_num=50){
+plot_R2_facet_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot_num=50){
   a = plot_ethnic_R2_facut(s1_qc1, s1_qc2, s1_qc3, col, boot_num, 'Kunkle', QC1name, QC2name,QC3name)
   b = plot_ethnic_R2_facut(s2_qc1, s2_qc2, s2_qc3, col, boot_num, 'Bellenguez',QC1name, QC2name,QC3name)
   c = plot_ethnic_R2_facut(s3_qc1, s3_qc2, s3_qc3, col, boot_num,'Wightman', QC1name, QC2name,QC3name)
@@ -566,7 +545,6 @@ plot_R2_facut_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc
   plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
   
 }
-
 
 ## Regression (plot beta and pvalue)
 p_beta_plot <- function(mod, prs_pos, title){
@@ -604,38 +582,21 @@ for (i in df_list){
   print(auc(roc(Diagnosis~PRS, data = i, quiet=T))[1])
 }
 
-
 ## kunkle------
-
 ## Kunkle Qced
 
-plot_ethnic_roc_facut(kunkle_qc_all, kunkle_withoutAPOE_qc,title='kunkle (QC)',
+plot_ethnic_roc_facet(kunkle_qc_all, kunkle_withoutAPOE_qc,title='kunkle (QC)',
                       QC1name = "kunkle", QC2name = "kunkle_no_APOE", 
                       legendname = "APOE status", boot_num=2)
-
 
 kunkle_pt_qc_plot_maf=roc_result(kunkle_qc_maf,title="QC, MAF >0 0.1%", column_for_roc = col_roc_E5)
 ##kunkle_pt_qc_plot_base=roc_result(kunkle_qc_base, title="kunkle_qc_summary_stats",column_for_roc = col_roc_E5)
 plot_grid(kunkle_pt_qc_plot,kunkle_pt_qc_plot_maf,ncol = 2, nrow = 2)
 
 
-
-##cros group 
-par(mfrow=c(3,1))
-
-plot_ethnic_roc (kunkle_cT, 'kunkle', col_roc_E5)
-plot_ethnic_roc(kunkle_qc_variant_sumstat, "kunkle_qc_sumstat_variant", col_roc_E5)
-plot_ethnic_roc (kunkle_polypred, 'kunkle', col_roc_polypred)
-plot_ethnic_roc (bellenguez_fixed_0224,'bellenguez', col_roc_polypred)
-plot_ethnic_roc(kunkle_new_beta, 'kunkle, (effectsize * pip) ',col_roc_E5)
-plot_ethnic_roc(kunkle_susie, "kunkle(susie)", col_roc_polypred)
-plot_ethnic_roc(susie, "bellenguez(susie)", col_roc_polypred)
-
-
 ## APOE
 plot_ethnic_roc(kunkle_withoutAPOE, "kunkle remove APOE region", col_roc_E5)
 col_roc <- list("only2SNP","no2SNP","no2SNP_qc")
-
 
 kunkle_APOE_roc <- roc(Diagnosis ~ only2SNP+no2SNP+no2SNP_qc, data = kunkle_APOE)
 auc(roc(Diagnosis~only2SNP, data = kunkle_APOE)) ##0.621
@@ -645,8 +606,6 @@ for (i in list(extract_eur(kunkle_APOE),extract_afr(kunkle_APOE),extract_amr(kun
   print(auc(roc(Diagnosis~no2SNP, data = i, quiet=T))[1])
 }
 
-plot_ethnic_roc_facut(kunkle_cT,kunkle_withoutAPOE,kunkle_withoutAPOE_qc,col_roc_E5, title='kunkle',
-                      QC1name= "with APOE", QC2name= "without APOE", QC3name="without APOE, QC")
 
 ### wightman 
 plot_ethnic_roc (wightman_polypred, 'wightman', col_roc_polypred)
@@ -670,20 +629,20 @@ PRS_new_beta
 
 ## polyfun_AUC----
 ##kunkle
-plot_ethnic_roc_facut(kunkle_bl, kunkle_polypred,FALSE,col =col_roc_polypred3, title= 'kunkle (new_plink)',
+plot_ethnic_roc_facet(kunkle_bl, kunkle_polypred,FALSE,col =col_roc_polypred3, title= 'kunkle (new_plink)',
                       QC1name = 'Baseline annotations', QC2name = 'All annotations',
                       legendname = 'Annotation'
 )
 
 
 
-plot_ethnic_roc_facut(kunkle_susie, kunkle_polypred_old, FALSE,col =col_roc_polypred3, title= 'kunkle (old plink)',
+plot_ethnic_roc_facet(kunkle_susie, kunkle_polypred_old, FALSE,col =col_roc_polypred3, title= 'kunkle (old plink)',
                       QC1name = 'SuSiE', QC2name = 'All annotations',
                       legendname = 'Annotation'
 )
 
 
-plot_ethnic_R2_facut(kunkle_bl, kunkle_polypred,FALSE,col =col_roc_polypred3, title= 'kunkle (new_plink)',
+plot_ethnic_R2_facet(kunkle_bl, kunkle_polypred,FALSE,col =col_roc_polypred3, title= 'kunkle (new_plink)',
                       QC1name = 'Baseline annotations', QC2name = 'All annotations',
                       legendname = 'Annotation'
 )
@@ -712,52 +671,37 @@ legend("bottom", legend=c(paste("SbayesR, auc = ",round(roc(sbayesR$Diagnosis~sb
 
 ## this will take awhile. ------
 
-plot_auc_facut_all_sumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,bellenguez_qc_on_base, bellenguez_qc_on_variant_sumstat,bellenguez_cT0224, 
+plot_ethnic_roc_facut(kunkle_cT,kunkle_withoutAPOE,kunkle_withoutAPOE_qc,col_roc_E5, title='kunkle',
+                      QC1name= "with APOE", QC2name= "without APOE", QC3name="without APOE, QC")
+
+plot_auc_facet_all_sumstat(kunkle_qc_base, kunkle_qc_variant_sumstat, kunkle_cT,bellenguez_qc_on_base, bellenguez_qc_on_variant_sumstat,bellenguez_cT0224, 
                       wightman_qc_base, wightman_qc_variant_sumstat, wightman_cT) 
 
 #plot_auc_facut_all_sumstat(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, bellenguez_adsp,  bellenguez_qc_on_variant_sumstat,bellenguez_adsp_qc, wightman_adsp,wightman_qc_variant_sumstat, wightman_adsp_qc)
-plot_R2_facut_allsumstat(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, bellenguez_adsp,  bellenguez_qc_on_variant_sumstat,bellenguez_adsp_qc, wightman_adsp,wightman_qc_variant_sumstat, wightman_adsp_qc,
+plot_R2_facet_allsumstat(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, bellenguez_adsp,  bellenguez_qc_on_variant_sumstat,bellenguez_adsp_qc, wightman_adsp,wightman_qc_variant_sumstat, wightman_adsp_qc,
                          QC1name="No QC", QC2name="QC on variant and sumstat", QC3name="QC on all", boot_num=50)
 
 ##UKBB
-plot_R2_facut_allsumstat(kunkle_adsp,kunkle_adsp_qc,kunkle_UKBB_qc, bellenguez_adsp,bellenguez_adsp_qc, bellenguez_UKBB_qc, wightman_adsp, wightman_adsp_qc,wightman_UKBB_qc,
+plot_R2_facet_allsumstat(kunkle_adsp,kunkle_adsp_qc,kunkle_UKBB_qc, bellenguez_adsp,bellenguez_adsp_qc, bellenguez_UKBB_qc, wightman_adsp, wightman_adsp_qc,wightman_UKBB_qc,
                          QC1name="No QC",  QC2name="QC on all", QC3name="QC, UKBB variants only",boot_num=50)
 
 
-plot_auc_facut_all_sumstat(kunkle_adsp,kunkle_adsp_qc,kunkle_UKBB_qc, bellenguez_adsp,bellenguez_adsp_qc, bellenguez_UKBB_qc, wightman_adsp, wightman_adsp_qc,wightman_UKBB_qc,
+plot_auc_facet_all_sumstat(kunkle_adsp,kunkle_adsp_qc,kunkle_UKBB_qc, bellenguez_adsp,bellenguez_adsp_qc, bellenguez_UKBB_qc, wightman_adsp, wightman_adsp_qc,wightman_UKBB_qc,
                          QC1name="No QC",  QC2name="QC on all", QC3name="QC, UKBB variants only")
 
 
-plot_auc_facut_all_sumstat(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, bellenguez_adsp,  bellenguez_qc_on_variant_sumstat,bellenguez_adsp_qc, wightman_adsp,wightman_qc_variant_sumstat, wightman_adsp_qc,
+plot_auc_facet_all_sumstat(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, bellenguez_adsp,  bellenguez_qc_on_variant_sumstat,bellenguez_adsp_qc, wightman_adsp,wightman_qc_variant_sumstat, wightman_adsp_qc,
                            QC1name="No QC", QC2name="QC on variant and sumstat", QC3name="QC on all")
 
 
 ## R2
 ## polyfun ------
-mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= extract_afr(bellenguez_polypred_new), family=binomial)
-RsqGLM(mod1, plot=FALSE)$Nagelkerke
-
-#RsqGLM(glm(Diagnosis~PRS1+Sex+Age,family = 'binomial', data = bellenguez_polypred_new), plot=FALSE)$Nagelkerke
-RsqGLM(glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = bellenguez_polypred_new), plot=FALSE)$Nagelkerke
-
-
-plot_ethnic_R2(kunkle_polypred, "kunkle_polypred",  polypred_col, 50, "max_snp_per LD = ")
-plot_ethnic_R2(wightman_polypred, "wightman_polypred",  polypred_col, 50, "max_snp_per LD = ")
-plot_ethnic_R2(bellenguez_fixed_0224, "bellenguez_polypred",  polypred_col, 50, "max_snp_per LD = ")
 
 ## bellenguez----
 #df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."
 plot_ethnic_R2(bellenguez_updateRSID, title, col, boot_num, replace)
 plot_R2_cT(bellenguez_cT, bellenguez_qc, bellenguez_qc_on_base, bellenguez_qc_on_target, 'bellenguez_updateRSID', col_roc, plot=TRUE, boot_num = 50)
 plot_R2_cT(bellenguez_cT0224, bellenguez_qc0224, bellenguez_qc_on_base0224, bellenguez_qc_on_target0224, 'bellenguez_fixed0224', col_roc_E5, boot_num=50 )
-
-## plot beta and pvalue
-p_beta_plot(bell_cT,c(4,8,12),'bellenguez_c+pT')
-p_beta_plot(bell_log,c(4,8,12,16),'bellenguez_updated_polyfunPred')
-p_beta_plot(bell_log_eur,c(4,8,12,16),'bellenguez_updated (EUR only)')
-p_beta_plot(bell_susie_log,c(4,8,12,16),'bellenguez_susie')
-p_beta_plot(bell_qc_log,c(4,8,12),'bellenguez_c+pT, QC')
-p_beta_plot(bell_qc_EUR_log,c(4,8,12),'bellenguez_c+pT, QC, EUR')
 
 ## interested SNP
 mod1 <- glm(Diagnosis ~ Sex + Age + PRS, data= bellenguez_interested, family=binomial)
@@ -778,18 +722,6 @@ kunkle_cT_qc_log_eur<-log_reg(extract_eur(kunkle_APOE), col_roc_APOE, "kunkle QC
 kunkle_cT_qc_log_afr<-log_reg(extract_afr(kunkle_APOE), col_roc_APOE, "kunkle QC", plot=FALSE)
 kunkle_cT_qc_log_amr<-log_reg(kunkle_APOE[kunkle_APOE$final_population == "AMR",], col_roc_APOE, "kunkle QC", plot=FALSE)
 
-##all population
-plot_ethnic_R2(kunkle_cT, col_roc_E5, 'Kunkle', 50)
-plot_ethnic_R2(kunkle_qc, col_roc_E5, 'Kunkle_QC, MAF 1%', 50)
-plot_ethnic_R2(kunkle_qc_maf, col_roc_E5, 'Kunkle_QC, MAF 0.1%', 50)
-
-
-##plot beta and p value
-p_beta_plot(kunkle_cT_log,c(4,8,12),'kunkle')
-p_beta_plot(kunkle_cT_qc_log,c(4,8,12),'kunkle_c+pT, QC')
-p_beta_plot(kunkle_cT_qc_EUR_log,c(4,8,12),'kunkle_c+pT, QC, EUR')
-
-
 ## wightman ------
 plot_ethnic_R2(wightman_cT, col_roc_E5, 'Wightman', 50)
 
@@ -798,16 +730,14 @@ plot_ethnic_R2(wightman_cT, col_roc_E5, 'Wightman', 50)
 plot_ethnic_R2(susie, col_roc_polypred, "bellenguez_susie",50)
 plot_ethnic_R2(kunkle_susie, col_roc_polypred, "kunkle_susie",50)
 
-RsqGLM(glm(Diagnosis~PRS10+Sex+Age,family = 'binomial', data = kunkle_susie), plot=FALSE)$Nagelkerke ## 0.14%
+RsqGLM(glm(Diagnosis~PRS10+Sex+Age,family = 'binomial', data = kunkle_susie), plot=FALSE)$Nagelkerke ## 0.14
 RsqGLM(glm(Diagnosis~PRS1+Sex+Age,family = 'binomial', data = kunkle_susie), plot=FALSE)$Nagelkerke ##0.139
-
 
 ##others -----
 sbayesr_log <-  glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = sbayesR)
 prsice_log <- glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = PRSice)
 
-
-# Density
+# PRS_dist density
 PRS_density <- function(df, name, Pthreshold){
   if(Pthreshold == 'PRS_e5'){
     pvalue=str_replace(Pthreshold,"PRS_e5",', p = 1e-5')
@@ -815,79 +745,34 @@ PRS_density <- function(df, name, Pthreshold){
   else{
     pvalue=str_replace(Pthreshold,"PRS_",', p = 0.')
   }
-
   ylimit = max(max(density(df[df$Diagnosis == 1,Pthreshold])$y), max(density(df[df$Diagnosis == 0,Pthreshold])$y))
   plot(density(df[df$Diagnosis == 0,Pthreshold]), main = paste(name,pvalue), col = "black", xlab = "PRS", ylim = c(0,ylimit*1.02))
   lines(density(df[df$Diagnosis == 1,Pthreshold]), col = "red")
 }
 
-plot_density <- function(df, df_qc, df_qc_base, df_qc_target, sumstat_name, Pthreshold , eur=FALSE){
+plot_density <- function(df1, df2, df3, df4, sumstat_name, Pthreshold, df1_name = '', df2_name = '', df3_name = '', df4_name = '', eur=FALSE){
+  #par(mfrow=c(2,2),xpd="NA")
   if(eur==TRUE){
     print("plot EUR subset")
-    df = extract_eur(df)
-    df_qc = extract_eur(df_qc)
-    df_qc_base = extract_eur(df_qc_base)
-    df_qc_target = extract_eur(df_qc_target)
+    df = extract_eur(df1)
+    df_qc = extract_eur(df2)
+    df_qc_base = extract_eur(df3)
+    df_qc_target = extract_eur(df4)
   }
-  PRS_density(df,  paste(sumstat_name, ", c+pT"), Pthreshold)
-  PRS_density(df_qc,  paste(sumstat_name, ", QC"), Pthreshold)
-  PRS_density(df_qc_base,  paste(sumstat_name, ", QC on summary stat"),Pthreshold)
-  PRS_density(df_qc_target, paste(sumstat_name, ", QC on target"),Pthreshold)
+  PRS_density(df1,  paste(sumstat_name, ", ",  df1_name), Pthreshold)
+  PRS_density(df2,  paste(sumstat_name, ", ", df2_name), Pthreshold)
+  PRS_density(df3,  paste(sumstat_name, ", ", df3_name),Pthreshold)
+  PRS_density(df4, paste(sumstat_name, ", ", df4_name),Pthreshold)
 }
 
-
-
-
-PRS_density(wightman_qc_variant_sumstat, "Wightman, QC on variant_sumstat","PRS_5")
-PRS_density(extract_eur(wightman_qc_variant_sumstat), "Wightman, EUR, QC on variant_sumstat","PRS_05")
-
-plot_density(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle", "PRS_5", eur=FALSE)
 plot_density(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle_eur", "PRS_05", eur=TRUE)
 legend(-0.32,69, inset=.02, title="AD diagnosis",
        c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
+plot_density(wightman_qc,wightman_qc_target,wightman_qc_variant,wightman_qc_individual, 'wightman','PRS_5',
+             df1_name = 'qc',df2_name = 'qc target',df3_name = 'qc variant',df4_name = 'qc individual')
 
-plot_density(kunkle_cT, kunkle_qc, kunkle_qc_base, kunkle_qc_target, "kunkle_eur", "PRS_5", eur=TRUE)
-legend(-0.12,179, inset=.02, title="AD diagnosis",
-       c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
-
-par(mfrow=c(2,2),xpd=FALSE)
-
-PRS_density(extract_eur(kunkle_cT),"Kunkle, EUR","PRS_5")
-PRS_density(extract_eur(kunkle_qc),"Kunkle, EUR, QC both","PRS_5")
-#PRS_density(extract_eur(kunkle_qc_target_maf),"qc on target, MAF=0.1%,","PRS_5")
-PRS_density(extract_eur(kunkle_qc_variant_sumstat), "Kunkle, EUR, QC on variant_sumstat","PRS_5")
-PRS_density(extract_eur(kunkle_qc_variant), "QC on variants only, EUR,  MAF=0.1%", "PRS_5")
-PRS_density(extract_eur(kunkle_qc_individual), "QC on individual only, EUR, MAF=0.1%", "PRS_5")
-legend(-0.2,179, inset=.02, title="AD diagnosis",
-       c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
-
-
-plot_density(bellenguez_cT, bellenguez_qc, bellenguez_qc_on_base, bellenguez_qc_on_target, "bellenguez, EUR", "PRS_001", eur=TRUE)
-PRS_density(extract_eur(bellenguez_cT), "bellenguez_EUR", "PRS_001")
-PRS_density(extract_eur(bellenguez_qc_on_target), "EUR, qc on variant & individual","PRS_001")
-PRS_density(extract_eur(bellenguez_qc_variant), "EUR, qc on variant", "PRS_001")
-PRS_density(extract_eur(bellenguez_qc_individual), "EUR, qc on individual","PRS_001")
-
-plot_density(wightman_cT, wightman_qc,wightman_qc_base,wightman_qc_target, "wightman", "PRS_e5")
-legend(-2,1.1, inset=.02, title="AD diagnosis",
-       c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
-
-plot_density(wightman_cT, wightman_qc,wightman_qc_base,wightman_qc_target, "wightman", "PRS_e5", eur=TRUE)
-
-PRS_density(extract_eur(wightman_qc), "wightman_EUR", "PRS_e5")
-PRS_density(extract_eur(wightman_qc_target), "EUR, qc on variant & individual","PRS_e5")
-PRS_density(extract_eur(wightman_qc_variant), "EUR, qc on variant", "PRS_e5")
-PRS_density(extract_eur(wightman_qc_individual), "EUR, qc on individual","PRS_e5")
-
-
-PRS_density(wightman_qc, "wightman, qc")
-PRS_density(wightman_qc_target, "wightman, qc on target, p=0.5")
-PRS_density(wightman_qc_variant, "wightman, qc on variant, p=0.5")
-PRS_density(wightman_qc_individual, "wightman, qc on individual, p=0.5")
-
-legend(-0.3,170, inset=.02, title="AD diagnosis",
-       c("Case","Control"), fill=c("red","black"), horiz=TRUE, cex=0.8,xpd="NA")
-
+legend("topleft", inset = c(- 0.4),                  
+       legend = c("Case","Control"), col = 1:2,fill=c("red","black"), horiz=TRUE, cex=0.8, title= 'AD diagnosis')
 
 ### plot density/age/case-----
 DATA = kunkle_withoutAPOE_qc %>%
@@ -897,8 +782,6 @@ DATA = kunkle_withoutAPOE_qc %>%
 
 DATA$Diagnosis = as.factor(DATA$Diagnosis)
 DATA$Diagnosis_state=ifelse(DATA$Diagnosis == 0, "control","case") 
-
-
 
 ## function provide by https://stackoverflow.com/questions/35717353/split-violin-plot-with-ggplot2 
 GeomSplitViolin <- ggproto("GeomSplitViolin", GeomViolin, 
@@ -913,7 +796,7 @@ GeomSplitViolin <- ggproto("GeomSplitViolin", GeomViolin,
                                stopifnot(all(draw_quantiles >= 0), all(draw_quantiles <=
                                                                          1))
                                quantiles <- ggplot2:::create_quantile_segment_frame(data, draw_quantiles)
-                               aesthetics <- data[rep(1, nrow(quantiles)), setdiff(names(data), c("x", "y")), drop = FALSE]
+                               aesthetics <- data[rep(1, nrow(quantiles)), setdiff(names(data), c("x", "y")), drop = FALSE]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
                                aesthetics$alpha <- rep(1, nrow(quantiles))
                                both <- cbind(quantiles, aesthetics)
                                quantile_grob <- GeomPath$draw_panel(both, ...)
@@ -935,9 +818,4 @@ geom_split_violin <- function(mapping = NULL, data = NULL, stat = "ydensity", po
 ggplot(data=DATA, aes(x=factor(final_population, level = c('EUR','AFR','AMR')), y=Age, fill=Diagnosis_state))+
   geom_split_violin(alpha = 0.3)+geom_boxplot(width=0.4, alpha=0.8,show.legend = FALSE)+ xlab('Ethnicity')+  scale_fill_discrete(name ="AD diagnosis")+
   theme_bw()
-    
-
-
-
-#scale_fill_brewer(name = "Diagnosis")+#geom_density(adjust=1.5, alpha=.4) +
-
+  
