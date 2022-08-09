@@ -1,4 +1,4 @@
-=library(ggplot2)
+library(ggplot2)
 library(lattice)
 library(dplyr)
 library(stringr)
@@ -11,6 +11,7 @@ library(cowplot)
 library(pROC)
 library(modEvA)  # psuedo rsquare
 library(boot)
+library(MESS)
 library("gridGraphics")
 
 ## load PRS data ----
@@ -371,53 +372,6 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
   print(plot)
   return(all)
 }
-
-
-plot_ethnic_roc_facet_APOE <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, 
-                                       boot_num=50, legendname=FALSE, APOE=FALSE){
-  QC1 = plot_ethnic_roc(QC1, '', col, plot="F",boot=boot,boot_num=boot_num)
-  QC1$qc_status = QC1name
-  QC2 = plot_ethnic_roc(QC2, '', col, plot="F",boot=boot,boot_num=boot_num)
-  QC2$qc_status = QC2name
-  if(class(QC3) != "logical"){
-    QC3 = plot_ethnic_roc(QC3, '', col, plot="F",boot=boot,boot_num=boot_num)
-    QC3$qc_status = QC3name
-    all = rbind(QC1,QC2, QC3)
-  }else
-    all  = rbind(QC1,QC2)
-  
-  print(colnames(all))
-  
-  all %>% 
-    filter(PRS !="PRS-001" & PRS != "PRS_1") 
-  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
-  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
-  
-  plot <- ggplot(data = all, aes(x=auc, y = PRS, color = qc_status))+
-    geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
-    facet_wrap(~ethnicity, ncol=1)+
-    xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+
-    theme_bw()
-  
-  if (boot == TRUE){  
-    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,show.legend = FALSE) 
-  }## plot error bar or not
-  if(legendname != FALSE){ 
-    plot = plot +guides(col=guide_legend(legendname))
-  } ## change legend name or not (depends on usage)
-  if(class(APOE) != "logical"){
-    APOE_ci = plot_ethnic_roc(APOE, col="PRS", plot='F',boot=boot, boot_num=boot_num)
-    #print(APOE_ci)
-    plot = plot +  geom_vline(data = APOE_ci, aes(xintercept = auc,color='only APOE'),color="black",lwd=0.5, alpha=0.7,linetype="dashed")  ## move color into aes will generate legend automatically.
-  } ## if we want to plot APOE (line) ## should do bootstrap automatically if it is specified 
-  print(plot)
-  return(all)
-}
-
-plot_ethnic_roc_facet_APOE(kunkle_qc_all, kunkle_withoutAPOE_qc,FALSE, title='kunkle (QC)',
-                           QC1name = "kunkle", QC2name = "kunkle_no_APOE", 
-                           legendname = "APOE status", boot_num=2)
-
 
 ## R2 functions ----
 ## calcualte pseudo rsquare 
@@ -863,5 +817,34 @@ geom_split_violin <- function(mapping = NULL, data = NULL, stat = "ydensity", po
 }
 
 ggplot(data=DATA, aes(x=factor(final_population, level = c('EUR','AFR','AMR')), y=Age, fill=Diagnosis_state))+
-  geom_split_violin(alpha = 0.3)+geom_boxplot(width=0.4, alpha=0.8,show.legend = FALSE)+ xlab('Ethnicity')+  scale_fill_discrete(name ="AD diagnosis")+
+  geom_split_violin(alpha = 0.3)+geom_boxplot(width=0.4, alpha=0.8,show.legend = FALSE)+ xlab('Ethnicity')+  scale_fill_discrete(name ="AD diagnosis")+coord_flip()+
   theme_bw()
+
+
+## draw APOE analysis (target file) -----
+
+roc(kunkle_APOE[["Diagnosis"]],kunkle_APOE$PRS, quiet=T)
+
+## AUC = as.numeric(auc(Diagnosis~PRS))
+
+APOE_subtype = function(df){
+  new_df = df %>% 
+    subset(final_population != 'SAS' & final_population != 'EAS' & final_population != 'UNKNOWN') %>% 
+    group_by(APOE,Diagnosis, final_population) %>%
+    summarise(PRS_mean = mean(PRS), PRS_std =sd(PRS), Age_mean = mean(Age))
+  new_df$Diagnosis = as.factor(new_df$Diagnosis)
+  levels(new_df$Diagnosis) <- c("Control", "Case") 
+  return(new_df)}
+
+APOE = APOE_subtype(kunkle_withoutAPOE_qc)
+
+
+ggplot(data = APOE, aes(y  = PRS_mean, x = Age_mean, color = APOE, shape = Diagnosis)) + 
+  geom_point(size=3, alpha = 0.8) + facet_wrap(~factor(final_population, levels = c("EUR","AFR","AMR")), ncol=1)+
+  theme_bw()+ggtitle("QCed file")
+
+ggplot(data = APOE, aes(y  = PRS_mean, x = APOE, fill=Diagnosis)) + 
+  geom_bar(stat="identity", position=position_dodge(), alpha=0.8) + facet_wrap(~factor(final_population, levels = c("EUR","AFR","AMR")), ncol=1)+
+  scale_fill_brewer(palette="Blues")+
+  theme_bw()
+
