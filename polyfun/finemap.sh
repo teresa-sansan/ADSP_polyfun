@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=finemap
-#SBATCH --mail-type=FAIL,END
+#SBATCH --job-name=susie
+#SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
-#SBATCH --time=35:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/%x_%j.log
+#SBATCH --time=15:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/susie/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -46,8 +46,9 @@ do
 	start=$(echo $filename| cut -d '_' -f 2)
 	end=$(echo $filename| cut -d '_' -f 3)
 	
-	for anno in bl bl_dl_annotations bl_brain_atac
-	do
+	#for anno in bl bl_dl_annotations bl_brain_atac
+	#do
+	anno='bl'
 	if [ $max_num_snp -eq 1 ] 
 	then
 	python finemapper.py \
@@ -55,9 +56,10 @@ do
                 --n $n \
                 --chr ${chr} --start $start --end $end \
                 --method susie \
+		--non-funct \
                 --max-num-causal $max_num_snp \
                 --allow-missing \
-                --out $sumstat/$anno/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz
+                --out $sumstat/susie/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz
 	else
 	python finemapper.py \
 		--ld $ld \
@@ -65,9 +67,10 @@ do
 		--n $n \
 	  	--chr ${chr} --start $start --end $end \
 	  	--method susie \
+		--non-funct \
      	  	--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out $sumstat/$anno/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz 
+		--out $sumstat/susie/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz 
 	fi
-	done
+	#done
 done

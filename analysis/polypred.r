@@ -13,12 +13,13 @@ pre_process <- function(df, FILE=FALSE){
   if(FILE==FALSE){
     df<- read.table(df,header=T,fill = T)
   }
-  df$Age <- as.numeric(as.character(df$Age))
-  print(paste("original=",  dim(df)[1], "rows"))
-  df <- df %>%
-    filter(Diagnosis != -1 & Age >= 65)
-  print(paste("filtered=",  dim(df)[1], "rows"))
-  return(df)
+  #df$Age <- as.numeric(as.character(df$Age))
+  df$Age <- as.numeric(df$Age))
+print(paste("original=",  dim(df)[1], "rows"))
+df <- df %>%
+  filter(Diagnosis != -1 & Age >= 65)
+print(paste("filtered=",  dim(df)[1], "rows"))
+return(df)
 }
 
 
@@ -46,7 +47,7 @@ bind_filt <- function(df1, df2, df3, df4, df5, preprocess = FALSE){
     df$SNP = rep(snp,each=dim(df1)[1])
   if(preprocess ==TRUE){
     df = pre_process(df, FILE = TRUE)
-  return(df)
+    return(df)
   }
   
 }
@@ -111,7 +112,7 @@ densityplot(~ polypred$PRS, polypred[polypred$diagnosis == 0,], main = "Control"
 ggplot(polypred[polypred$diagnosis == 0,]) +
   geom_histogram(aes(x = PRS,y=..density..),
                  fill = "grey", color="black", bins=30)
-  #geom_line(data =  aes(x = x, y = y), color = "red"))
+#geom_line(data =  aes(x = x, y = y), color = "red"))
 
 
 snp.f <- factor(polypred$SNP, levels= c(1,3,5,7,10),
@@ -123,7 +124,7 @@ legend('topright', levels(snp.f),fill=colfill)
 
 
 diagnosis.f <- factor(polypred$Diagnosis, levels= c(1,0),
-                labels = c("case", "control"))
+                      labels = c("case", "control"))
 
 sm.density.compare(polypred1$PRS, diagnosis.f)
 colfill<-c(2:(2+length(levels(diagnosis.f))))
@@ -210,12 +211,12 @@ plot_corr <- function (df1, df2, col, title) {
          main = c("max SNP:",i), cex.main=1)
     abline(a=0, b=1,col = "red")
   }
-        
+  
   mtext(title,                   # Add main title
         side = 3,
         line = -1.5,
         outer = TRUE)
-
+  
 }
 
 
@@ -254,7 +255,7 @@ plot_corr(polypred_no_NA_Diagnosis, susie_polypred_no_NA_Diagnosis, PRS)
 
 par(mfrow=c(1,1))
 plot(sort_polypred1$PRS, sort_susie_polypred1$PRS,col = factor(sort_susie_polypred1$Diagnosis), cex = 0.3, xlab = "functional finemapping", ylab = "SuSiE", main  = "max SNP = 1")
- 
+
 abline(a=0, b=1,col = "red")
 
 
@@ -271,7 +272,7 @@ plot_correlation <- function (df,main){
   plot(df[df$SNP == 1,]$PRS,  df[df$SNP == 10,]$PRS, col= ifelse(df$Diagnosis == 1, "red","black"), cex = 0.15,xlab = "max SNP = 1", ylab = "max SNP = 10", main = main)
   legend("right", legend=c("Case", "Control"),col=c("red", "black"), cex=0.8,text.font=4,inset=c(0.04,-0.0003),fill=c("red",'black'))
 }
-  
+
 
 plot_correlation(polypred, "PolyFun")
 plot_correlation(polypred_susie, "SuSiE")
@@ -343,7 +344,7 @@ regress_anova <- function(df){
   
   print(anova(polypred_lm_confounder, polypred_lm_all))
 }
-  
+
 regress_anova(polypred1)
 regress_anova(polypred10)
 
@@ -459,7 +460,7 @@ p <- ggplot(polypred, aes(x=SNP, y=PRS)) +
 
 
 credible10 <- 
-aggregrate10[c("SNP","POS",'CREDIBLE_SET')]
+  aggregrate10[c("SNP","POS",'CREDIBLE_SET')]
 
 
 p + geom_boxplot(width=0.1, color="#8B4C26")+theme_bw() + labs(title = "Bellenguez + all_annotations")+
@@ -474,7 +475,7 @@ p <- ggplot(polypred, aes(x=SNP, y=PRS, fill=Diagnosis_type))+
   theme(
     plot.title = element_text(hjust = 0.5, size = 14))+ xlab("Max SNP per locus")
 
- 
+
 par(mfrow=c(1,1))
 
 polypred1_sd = polypred1[abs(scale(polypred1$PRS))>2,]
@@ -509,7 +510,7 @@ p <- ggplot(polypred_sd, aes(x=SNP, y=PRS, fill=Diagnosis_type))+
 
 p<-ggplot(polypred_sd, aes(x=SNP, y=PRS, color=Diagnosis_type)) +
   geom_jitter(position=position_jitter(0.35))+theme_bw()
-  labs(title = "Bellenguez + all_annotations (> 2 SD)")+
+labs(title = "Bellenguez + all_annotations (> 2 SD)")+
   theme(
     plot.title = element_text(hjust = 0.5, size = 14))+ xlab("Max SNP per locus")
 
