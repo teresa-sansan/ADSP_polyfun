@@ -1,8 +1,11 @@
 #!/bin/bash
 
-
-for i in  1 5 10
+#for anno in bl_dl_annotations bl_brain_atac bl
+for anno in susie
 do
-	sbatch --export=max_snp=$i polypred.sh
+	for i in  10
+	do
+		sbatch --export=max_snp=$i,anno=$anno polypred.sh
+	done
 done
 

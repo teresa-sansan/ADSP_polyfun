@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in {11..21}
+for i in {1..21}
 do
   echo "start calculating PRS for chr $i"
   sbatch --export=chr=$i plink_pT.sh   

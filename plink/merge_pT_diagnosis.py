@@ -9,8 +9,9 @@ import pandas as pd
 ##kunkle_no_apoe
 #path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/subsets/qc_on_variant_sumstat/'
 #save_name='kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv'
-path='/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle/ADSP_no_apoe/'
-save_name='/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_no_apoe_qc'
+#path='/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle/ADSP_no_apoe/'
+#save_name='/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_no_apoe_qc'
+
 
 #path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
 #save_name='kunkle/fixed_0224/qc_on_variant_maf01'
@@ -25,16 +26,16 @@ save_name='/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_no_apoe_qc
 #save_name='kunkle/fixed_0224/new_beta_noqc'
 
 
-#sumstat=["bellenguez","kunkle","wightman"]
+sumstat=["bellenguez","kunkle","wightman"]
 #plink=["ADSP","ADSP_qc_all","ADSP_qc_variant","ADSP_UKBB","ADSP_UKBB_qc"]
-sumstat=["kunkle"]
+#sumstat=["kunkle"]
 plink=["ADSP_no_apoe"]
 
 for x in sumstat:
- for y in plink:
-  path = '/gpfs/commons/home/tlin/output/cT/genomewide_plink/'+ x + '/' + y + '/'
-  
-  save_name = x + '/' + x + "_" + y 
+  #for y in plink:
+  #path = '/gpfs/commons/home/tlin/output/cT/genomewide_plink/'+ x + '/' + y + '/'
+  path = '/gpfs/commons/home/tlin/output/cT/new_plink/' + x + '/fixed_0224/polyfun_beta/'
+  save_name = 'new_plink/' + x + '/' + x + "_" + 'polyfun_beta' 
   prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
   prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
   prs_005 = pd.read_csv(path+"pT_0.005.prs", sep = ' ', names = ["IID","PRS"])   

@@ -11,7 +11,7 @@ library(cowplot)
 library(pROC)
 library(modEvA)  # psuedo rsquare
 library(boot)
-library(MESS)
+#library(MESS)
 library("gridGraphics")
 
 ## load PRS data ----
@@ -71,10 +71,11 @@ wightman_susie_max10_polypred<- pre_process('/gpfs/commons/home/tlin/output/prs/
 
 ###  polyfun-Pred ----
 kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_polypred.tsv')
+kunkle_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_susie.tsv') ## 0811 add
 kunkle_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_bl_polypred.tsv')
 kunkle_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/kunkle/susie.prs.tsv")
 
-bellenguez_polypred_new <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/fixed_0224_polypred.prs')
+bellenguez_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/old_plink_polypred.tsv')
 wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv')
 
 ## new plink ------
@@ -89,7 +90,13 @@ bellenguez_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/
 wightman_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_UKBB_qc.tsv')
 
 ### susie -----
-susie <- pre_process("/gpfs/commons/home/tlin/output/prs/bellenguez_susie/bellenguez_susie_prs_PC.tsv")
+bellenguez_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/susie_max_snp_10_polypred.tsv")
+
+
+## polyfun_beta_pt -----
+kunkle_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_polyfun_beta.tsv')
+bellenguez_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_polyfun_beta.tsv')
+wightman_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_polyfun_beta.tsv')
 
 ## Others
 PRSice <- pre_process("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
@@ -316,20 +323,23 @@ plot_ethnic_roc <- function(df, title, col,boot=TRUE,boot_num=5, plot=FALSE){
 }
 
 
-plot_auc_facet_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=5){
-  a = plot_ethnic_roc_facut(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
-  b = plot_ethnic_roc_facut(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
-  c = plot_ethnic_roc_facut(s3_qc1, s3_qc2, s3_qc3, col,'Wightman',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num)
+plot_auc_facet_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=5, legendname = FALSE){
+  a = plot_ethnic_roc_facet(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num,legendname =legendname)
+  b = plot_ethnic_roc_facet(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num,legendname =legendname)
+  c = plot_ethnic_roc_facet(s3_qc1, s3_qc2, s3_qc3, col,'Wightman',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num,legendname =legendname)
   
+  print(a)
   prow <- plot_grid(a+ theme(legend.position="none"), 
                     b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
                     c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
                     ncol = 3, nrow = 1)
-  legend_b <- get_legend(
-    c+ guides(color = guide_legend(nrow = 1)) +
-      theme(legend.position = "bottom")
-  )
-  plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
+   legend <- get_legend(
+     #c+ guides(legendname,color = guide_legend(nrow = 1)) +
+     c +guides(col=guide_legend(legendname, nrow=1))+
+       theme(legend.position = "bottom")
+   )
+   plot_grid(prow, legend, ncol=1,rel_heights=c(3,.4))
+   
 }
 
 ## fixed legend
@@ -346,11 +356,18 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
     all = rbind(QC1,QC2, QC3)
   }else
     all  = rbind(QC1,QC2)
-  
-  all %>% 
-    filter(PRS !="PRS-001" & PRS != "PRS_1") 
-  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
-  all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
+  print(all)
+  #all %>% 
+  #  filter(PRS !="PRS-001" & PRS != "PRS_1") 
+  if ('PRS_5' %in% col){
+    all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
+    all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
+    
+  }
+  if ('PRS10' %in% col){
+    all$PRS = str_replace(all$PRS, 'PRS', 'max snp ')
+    
+  }
   
   plot <- ggplot(data = all, aes(x=auc, y = PRS, color = qc_status))+
     geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
@@ -369,8 +386,8 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
     #print(APOE_ci)
     plot = plot +  geom_vline(data = APOE_ci, aes(xintercept = auc,color='only APOE'),color="black",lwd=0.5, alpha=0.7,linetype="dashed")  ## move color into aes will generate legend automatically.
   } ## if we want to plot APOE (line) ## should do bootstrap automatically if it is specified 
-  print(plot)
-  return(all)
+  return(plot)
+  #return(all)
 }
 
 ## R2 functions ----
@@ -511,12 +528,17 @@ plot_ethnic_R2_facet <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=5
     all = rbind(QC1,QC2, QC3)
   }else
     all = rbind(QC1, QC2)
-  all %>% 
-    filter(PRS !="PRS-001" & PRS != "PRS_1") 
-  
-  all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
-  if ("PRS_e5" %in% col)
+  #all %>% 
+  #  filter(PRS !="PRS-001" & PRS != "PRS_1") 
+  if ('PRS_5' %in% col){
+    all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
     all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
+    
+  }
+  if ('PRS10' %in% col){
+    all$PRS = str_replace(all$PRS, 'PRS', 'max snp ')
+    
+  }
   all$boot_mean = all$boot_mean * 100
   plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, color = qc_status))+
     geom_point(size=3, alpha=0.75,position = position_dodge(width = 0.7))+
@@ -531,16 +553,16 @@ plot_ethnic_R2_facet <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=5
 }
 
 ## plot ethnic facut plot for multiple sumstat
-plot_R2_facet_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot_num=50){
-  a = plot_ethnic_R2_facut(s1_qc1, s1_qc2, s1_qc3, col, boot_num, 'Kunkle', QC1name, QC2name,QC3name)
-  b = plot_ethnic_R2_facut(s2_qc1, s2_qc2, s2_qc3, col, boot_num, 'Bellenguez',QC1name, QC2name,QC3name)
-  c = plot_ethnic_R2_facut(s3_qc1, s3_qc2, s3_qc3, col, boot_num,'Wightman', QC1name, QC2name,QC3name)
+plot_R2_facet_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot_num=50, legendname=legendname){
+  a = plot_ethnic_R2_facut(s1_qc1, s1_qc2, s1_qc3, col, boot_num, 'Kunkle', QC1name, QC2name,QC3name,legendname=legendname)
+  b = plot_ethnic_R2_facut(s2_qc1, s2_qc2, s2_qc3, col, boot_num, 'Bellenguez',QC1name, QC2name,QC3name,legendname=legendname)
+  c = plot_ethnic_R2_facut(s3_qc1, s3_qc2, s3_qc3, col, boot_num,'Wightman', QC1name, QC2name,QC3name,legendname=legendname)
   prow <- plot_grid(a+ theme(legend.position="none"), 
                     b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
                     c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
                     ncol = 3, nrow = 1)
   legend_b <- get_legend(
-    c+ guides(color = guide_legend(nrow = 1)) +
+    c+ guides(color = guide_legend(legendname, nrow = 1)) +
       theme(legend.position = "bottom")
   )
   plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
@@ -607,6 +629,9 @@ for (i in list(extract_eur(kunkle_APOE),extract_afr(kunkle_APOE),extract_amr(kun
   print(auc(roc(Diagnosis~no2SNP, data = i, quiet=T))[1])
 }
 
+plot_ethnic_R2_facet(kunkle_adsp_qc, kunkle_withoutAPOE_qc, FALSE, boot_num = 50,title='Kunkle (QC)',
+                     QC1name='withAPOE', QC2name='without APOE', legendname='APOE status')
+
 
 ### wightman 
 plot_ethnic_roc (wightman_polypred, 'wightman', col_roc_polypred)
@@ -636,19 +661,46 @@ plot_ethnic_roc_facet(kunkle_bl, kunkle_polypred,FALSE,col =col_roc_polypred3, t
 )
 
 
-
-plot_ethnic_roc_facet(kunkle_susie, kunkle_polypred_old, FALSE,col =col_roc_polypred3, title= 'kunkle (old plink)',
-                      QC1name = 'SuSiE', QC2name = 'All annotations',
+plot_ethnic_roc_facet(kunkle_susie, kunkle_bl, kunkle_polypred, col = col_roc_polypred3, title= 'kunkle',
+                      QC1name = 'SuSiE', QC2name = 'PolyFun (BL)',QC3name='PolyFun (All anno)',
                       legendname = 'Annotation'
 )
 
 
-plot_ethnic_R2_facet(kunkle_bl, kunkle_polypred,FALSE,col =col_roc_polypred3, title= 'kunkle (new_plink)',
-                     QC1name = 'Baseline annotations', QC2name = 'All annotations',
+plot_ethnic_R2_facet(kunkle_susie, kunkle_bl, kunkle_polypred, col =col_roc_polypred3, title= 'kunkle (new_plink)',
+                     QC1name = 'no annotations(SuSiE)', QC2name = 'Baseline annotations', QC3name = 'All annotations',
                      legendname = 'Annotation'
 )
 
+plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred,FALSE,col =col_roc_polypred3, title= 'bellenguez (old_plink)',
+                      QC1name = 'SuSiE', QC2name = 'Polyfun',
+                      legendname = 'Annotation'
+)
 
+
+plot_ethnic_R2_facet(bellenguez_susie, bellenguez_polypred,FALSE, col =col_roc_polypred3, title= 'bellenguez (old_plink)',
+                     QC1name = 'SuSiE', QC2name = 'Polyfun',
+                     legendname = 'Annotation'
+)
+
+plot_ethnic_roc_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num = 50, col='PRS',
+                      title='bellenguez', QC1name = 'PolyFun', QC2name = 'SuSiE', legendname = 'Tools')
+
+plot_ethnic_R2_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num = 50, col='PRS',
+                      title='bellenguez', QC1name = 'PolyFun', QC2name = 'SuSiE', legendname = 'Tools')
+
+## polyfun beta vs sumstat beta ---
+plot_auc_facet_all_sumstat(kunkle_adsp_qc, kunkle_polyfun_pT, FALSE, 
+                           bellenguez_adsp_qc, bellenguez_polyfun_pT,FALSE,
+                           wightman_adsp_qc, wightman_polyfun_pT, FALSE,
+                           QC1name = 'Summary Stat', QC2name = 'PolyFun', legendname = 'Effect size', boot_num=50
+                           )
+
+plot_R2_facet_allsumstat(kunkle_adsp_qc, kunkle_polyfun_pT, FALSE, 
+                           bellenguez_adsp_qc, bellenguez_polyfun_pT,FALSE,
+                           wightman_adsp_qc, wightman_polyfun_pT, FALSE,
+                           QC1name = 'Summary Stat', QC2name = 'PolyFun', legendname = 'Effect size', boot_num=50
+)
 
 ## all
 par(mfrow=c(1,1))
@@ -694,7 +746,6 @@ plot_auc_facet_all_sumstat(kunkle_adsp,kunkle_adsp_qc,kunkle_UKBB_qc, bellenguez
 plot_auc_facet_all_sumstat(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, bellenguez_adsp,  bellenguez_qc_on_variant_sumstat,bellenguez_adsp_qc, wightman_adsp,wightman_qc_variant_sumstat, wightman_adsp_qc,
                            QC1name="No QC", QC2name="QC on variant and sumstat", QC3name="QC on all")
 
-print("3")
 ## R2
 ## polyfun ------
 
@@ -780,6 +831,13 @@ DATA = kunkle_withoutAPOE_qc %>%
   subset(final_population != "EAS",) %>%
   subset(final_population != "UNKNOWN",)
 
+
+DATA = kunkle_adsp_qc %>%
+  subset(final_population != "SAS",) %>%
+  subset(final_population != "EAS",) %>%
+  subset(final_population != "UNKNOWN",)
+
+
 DATA$Diagnosis = as.factor(DATA$Diagnosis)
 DATA$Diagnosis_state=ifelse(DATA$Diagnosis == 0, "control","case") 
 
@@ -837,14 +895,15 @@ APOE_subtype = function(df){
   return(new_df)}
 
 APOE = APOE_subtype(kunkle_withoutAPOE_qc)
-
+APOE = APOE_subtype(kunkle_adsp_qc)
 
 ggplot(data = APOE, aes(y  = PRS_mean, x = Age_mean, color = APOE, shape = Diagnosis)) + 
   geom_point(size=3, alpha = 0.8) + facet_wrap(~factor(final_population, levels = c("EUR","AFR","AMR")), ncol=1)+
-  theme_bw()+ggtitle("QCed file")
+  theme_bw()+ggtitle("kunkle without APOE (QC)")
 
 ggplot(data = APOE, aes(y  = PRS_mean, x = APOE, fill=Diagnosis)) + 
   geom_bar(stat="identity", position=position_dodge(), alpha=0.8) + facet_wrap(~factor(final_population, levels = c("EUR","AFR","AMR")), ncol=1)+
   scale_fill_brewer(palette="Blues")+
   theme_bw()
+
 

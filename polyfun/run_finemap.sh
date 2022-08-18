@@ -4,9 +4,9 @@
 
 ## run chr19-22
 
-for i in {3..22}
+for i in {4..22}
 do
-	for max_snp in 10
+	for max_snp in 10  
 	do	
 		echo "run_max_snp_$max_snp"
         	echo "run chr$i"
@@ -15,7 +15,7 @@ do
 		sbatch --export=chr=$i,max_num_snp=$max_snp polyfun_finemap_susie.sh 
 		fi
 
-		if true; then
+		if false; then
 		echo run bellenguez
         	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap.sh
         	fi
@@ -25,9 +25,9 @@ do
         	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap_kunkle.sh 
 		fi
 
-		if false; then
+		if true; then
         	echo run wightman
-        	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap.sh
+        	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap_wightmansusie.sh
         fi
 	done
 		

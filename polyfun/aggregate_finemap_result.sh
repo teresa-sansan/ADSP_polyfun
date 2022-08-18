@@ -38,6 +38,8 @@ kunkle='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzhei
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations'
 
+anno='susie'
+max_snp=10
 ## set true if you want to calculate normal PolyFun finemap result
 if true; then
 for chr in {1..22}
@@ -45,7 +47,7 @@ do
 	echo 'start aggregating chr' $chr
 	#python aggregate_finemapper_results_min.py \ 
 	python aggregate_finemapper_results_modified.py \
-		--out-prefix $path/$anno/max_snp_${max_snp}/finemap_bellenguez \
+		--out-prefix $path/$anno/max_snp_${max_snp}/susie \
 		--sumstats $bellenguez \
 		--out $path/$anno/max_snp_${max_snp}/chr${chr}.aggregate.all.txt.gz \
 		--allow-missing \
@@ -61,7 +63,7 @@ fi
 prefix_converge='finemap_max_snp_3'                                                
 
 ## bellenguez_fixed_convergence
-path_converge='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_10'
+path_converge='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_10'
 
 ## wightman fixed convergence ##070622
 #path_converge='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/try_rescue_not_converge'

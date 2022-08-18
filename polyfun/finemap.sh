@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/susie/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/susie/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -13,6 +13,7 @@ conda activate polyfun
 
 echo chr $chr
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${chr}_*.npz"
+
 ##kunkle
 if false; then
 echo run kunkle
@@ -23,15 +24,15 @@ fi
 
 
 ##bellenguez
-if false; then
+if true; then
 echo run bellenguez
-sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/bellenguez.${chr}.snpvar_constrained.gz"
+sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/bl"
 n=487511
-output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/finemap/'
+output='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/susie/'
 fi
 
 ## wightman
-if true; then
+if false; then
 echo run wightman
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_all.${chr}.snpvar_constrained.gz"
 sumstat="/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations"
@@ -48,29 +49,30 @@ do
 	
 	#for anno in bl bl_dl_annotations bl_brain_atac
 	#do
-	anno='bl'
+	anno='anno'
+    	## --sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
 	if [ $max_num_snp -eq 1 ] 
 	then
 	python finemapper.py \
-                --sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
+                --sumstats ${sumstat}.${chr}.snpvar_constrained.gz \
                 --n $n \
                 --chr ${chr} --start $start --end $end \
                 --method susie \
-		--non-funct \
+                --non-funct \
                 --max-num-causal $max_num_snp \
                 --allow-missing \
-                --out $sumstat/susie/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz
+                --out  $output/max_snp_${max_num_snp}/susie_chr${chr}.$start.$end.gz
 	else
 	python finemapper.py \
 		--ld $ld \
-		--sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
+		--sumstats ${sumstat}.${chr}.snpvar_constrained.gz \
 		--n $n \
 	  	--chr ${chr} --start $start --end $end \
 	  	--method susie \
 		--non-funct \
      	  	--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out $sumstat/susie/max_snp_${max_num_snp}/chr${chr}.$start.$end.gz 
+		--out $output/max_snp_${max_num_snp}/susie_chr${chr}.$start.$end.gz 
 	fi
 	#done
 done

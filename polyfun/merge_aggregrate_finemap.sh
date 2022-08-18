@@ -7,10 +7,11 @@
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/susie/finemap_fixed_assertion_susie_iter/'
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/new_susie/'
-#path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/bl_dl_annotations/'
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_brain_atac'
-summary_stat='bellenguez'
-#summary_stat='wightman'
+#path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/susie/'
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/susie'
+
+#summary_stat='bellenguez'
+summary_stat='wightman'
 #summary_stat='kunkle'
 
 for max_snp in 10
