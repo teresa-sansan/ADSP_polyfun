@@ -7,12 +7,13 @@
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/susie/finemap_fixed_assertion_susie_iter/'
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/new_susie/'
-path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/bl/'
-#summarystat='bellenguez'
+#path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/bl_dl_annotations/'
+path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl_brain_atac'
+summary_stat='bellenguez'
 #summary_stat='wightman'
-summary_stat='kunkle'
+#summary_stat='kunkle'
 
-for max_snp in 1 5 10
+for max_snp in 10
 do 
   echo max_snp${max_snp}
   cd ${path}/max_snp_${max_snp}
@@ -21,13 +22,13 @@ do
   for i in {1..22}
   do
      echo merging chr $i
-     zcat chr${i}.aggregate.all.txt.gz |tail -n+2 |cut -f 1-15 >> aggregate.all.txt 
+     zcat chr${i}.aggregate.all.txt.gz |tail -n+2  >> aggregate.all.txt 
      #zcat chr${i}.aggregate.all.txt.gz |tail -n+2|awk '{if($9 <= 0.001) print$0}' >> aggregate.all.txt
      
   done
   echo
-  echo zipping the file....
-  gzip aggregate.all.txt
+  #echo zipping the file....
+  #gzip aggregate.all.txt
 
   #echo finished, total line = $( zcat aggregate.all.txt.gz | wc -l )
   

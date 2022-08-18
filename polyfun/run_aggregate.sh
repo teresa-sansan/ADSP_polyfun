@@ -1,7 +1,9 @@
 #!/bin/bash
-for anno in  bl bl_brain_atac bl_dl_annotations susie
+#bl_brain_atac bl_dl_annotations
+for anno in  bl
 do
 for i in  1 5 
+
 do
         echo "max_snp = $i" 
         #sbatch --export=max_snp=$i aggregate_finemap_result.sh 

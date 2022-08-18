@@ -1,8 +1,12 @@
 #!/bin/bash
 #### rerun wightman_susie
-for i in {4..18}
+## run bellenguez susie 0817
+
+## run chr19-22
+
+for i in {3..22}
 do
-	for max_snp in 1 5 10
+	for max_snp in 10
 	do	
 		echo "run_max_snp_$max_snp"
         	echo "run chr$i"
@@ -11,23 +15,20 @@ do
 		sbatch --export=chr=$i,max_num_snp=$max_snp polyfun_finemap_susie.sh 
 		fi
 
-		if false; then
+		if true; then
 		echo run bellenguez
-		for anno in bl bl_dl_annotations bl_brain_atac
-		do
-        		sbatch --export=chr=$i,max_num_snp=${max_snp},anno=${anno} finemap_bellenguez.sh
-		done
+        	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap.sh
         	fi
 
-	        if false; then 
+	       if false; then 
 		echo run kunkle
         	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap_kunkle.sh 
 		fi
 
-		if true; then
+		if false; then
         	echo run wightman
         	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap.sh
-        	fi
+        fi
 	done
 		
 done
