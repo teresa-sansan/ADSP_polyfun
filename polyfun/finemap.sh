@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=susie
+#SBATCH --job-name=jansen
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/susie/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/finemap/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
@@ -24,7 +24,7 @@ fi
 
 
 ##bellenguez
-if true; then
+if false; then
 echo run bellenguez
 sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/bl"
 n=487511
@@ -39,6 +39,16 @@ sumstat="/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations"
 n=74004
 #output="/gpfs/commons/home/tlin/output/wightman/fixed_0224"
 fi
+
+## jansen
+if true; then
+echo run jansen
+sumstat='/gpfs/commons/home/tlin/output/jansen/jansen'
+n=450734
+output='/gpfs/commons/home/tlin/output/jansen/finemap'
+
+fi
+
 
 for i in $FILES
 do	
@@ -58,21 +68,19 @@ do
                 --n $n \
                 --chr ${chr} --start $start --end $end \
                 --method susie \
-                --non-funct \
                 --max-num-causal $max_num_snp \
                 --allow-missing \
-                --out  $output/max_snp_${max_num_snp}/susie_chr${chr}.$start.$end.gz
+                --out  $output/max_snp_${max_num_snp}/jansen.chr${chr}.$start.$end.gz
 	else
 	python finemapper.py \
 		--ld $ld \
 		--sumstats ${sumstat}.${chr}.snpvar_constrained.gz \
 		--n $n \
 	  	--chr ${chr} --start $start --end $end \
-	  	--method susie \
-		--non-funct \
+		--method susie \
      	  	--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out $output/max_snp_${max_num_snp}/susie_chr${chr}.$start.$end.gz 
+		--out $output/max_snp_${max_num_snp}/jansen.chr${chr}.$start.$end.gz 
 	fi
 	#done
 done
