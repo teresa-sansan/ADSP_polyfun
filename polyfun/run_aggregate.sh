@@ -2,7 +2,7 @@
 #bl_brain_atac bl_dl_annotations
 for anno in susie
 do
-for i in  10  
+for i in  5	
 
 do
         echo "max_snp = $i" 
