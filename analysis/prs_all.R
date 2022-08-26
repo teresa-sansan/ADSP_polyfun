@@ -83,7 +83,8 @@ bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bel
 wightman_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP.tsv')
 
 bellenguez_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
-wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_qc_all.tsv')
+#wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_qc_all.tsv')
+wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/fixed_beta/wightman_ADSP_qc.tsv')
 
 kunkle_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_UKBB_qc.tsv')
 bellenguez_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_UKBB_qc.tsv')
@@ -97,6 +98,10 @@ bellenguez_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/bel
 kunkle_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_polyfun_beta.tsv')
 bellenguez_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_polyfun_beta.tsv')
 wightman_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_polyfun_beta.tsv')
+
+kunkle_polyfun_plink_no_cpT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_polyfun_beta_noclump.tsv')
+bellenguez_polyfun_plink_no_cpT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_polyfun_beta_noclump.tsv')
+wightman_polyfun_plink_no_cpT= pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_polyfun_beta_noclump.tsv')
 
 ## Others
 PRSice <- pre_process("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
@@ -690,16 +695,16 @@ plot_ethnic_R2_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num 
                       title='bellenguez', QC1name = 'PolyFun', QC2name = 'SuSiE', legendname = 'Tools')
 
 ## polyfun beta vs sumstat beta ---
-plot_auc_facet_all_sumstat(kunkle_adsp_qc, kunkle_polyfun_pT, FALSE, 
-                           bellenguez_adsp_qc, bellenguez_polyfun_pT,FALSE,
-                           wightman_adsp_qc, wightman_polyfun_pT, FALSE,
-                           QC1name = 'Summary Stat', QC2name = 'PolyFun', legendname = 'Effect size', boot_num=50
+plot_auc_facet_all_sumstat(kunkle_adsp_qc, kunkle_polyfun_pT, kunkle_polyfun_plink_no_cpT, 
+                           bellenguez_adsp_qc, bellenguez_polyfun_pT,bellenguez_polyfun_plink_no_cpT,
+                           wightman_adsp_qc, wightman_polyfun_pT, wightman_polyfun_plink_no_cpT,
+                           QC1name = 'Summary Stat', QC2name = 'PolyFun (c+pT)', QC3name = 'PolyFun', legendname = 'Effect size', boot_num=50
                            )
 
-plot_R2_facet_allsumstat(kunkle_adsp_qc, kunkle_polyfun_pT, FALSE, 
-                           bellenguez_adsp_qc, bellenguez_polyfun_pT,FALSE,
-                           wightman_adsp_qc, wightman_polyfun_pT, FALSE,
-                           QC1name = 'Summary Stat', QC2name = 'PolyFun', legendname = 'Effect size', boot_num=50
+plot_R2_facet_allsumstat(kunkle_adsp_qc, kunkle_polyfun_pT, kunkle_polyfun_plink_no_cpT, 
+                           bellenguez_adsp_qc, bellenguez_polyfun_pT,bellenguez_polyfun_plink_no_cpT,
+                           wightman_adsp_qc, wightman_polyfun_pT, wightman_polyfun_plink_no_cpT,
+                           QC1name = 'Summary Stat', QC2name = 'PolyFun (c+pT)', QC3name = 'PolyFun',legendname = 'Effect size', boot_num=50
 )
 
 ## all
