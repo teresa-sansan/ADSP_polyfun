@@ -1,4 +1,5 @@
 import pandas as pd
+from functools import reduce  
 
 #path='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/qc_on_variant/'
 #save_name='bellenguez/fixed_0224/bellenguez_qc_on_variant'
@@ -26,27 +27,32 @@ import pandas as pd
 #save_name='kunkle/fixed_0224/new_beta_noqc'
 
 
+# new beta for wightman
+
 sumstat=["bellenguez","kunkle","wightman"]
+#sumstat=['wightman']
 #plink=["ADSP","ADSP_qc_all","ADSP_qc_variant","ADSP_UKBB","ADSP_UKBB_qc"]
 #sumstat=["kunkle"]
-plink=["ADSP_no_apoe"]
+#plink=["ADSP_no_apoe"]
 
 for x in sumstat:
   #for y in plink:
-  #path = '/gpfs/commons/home/tlin/output/cT/genomewide_plink/'+ x + '/' + y + '/'
-  path = '/gpfs/commons/home/tlin/output/cT/new_plink/' + x + '/fixed_0224/polyfun_beta/'
-  save_name = 'new_plink/' + x + '/' + x + "_" + 'polyfun_beta' 
-  prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
-  prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
-  prs_005 = pd.read_csv(path+"pT_0.005.prs", sep = ' ', names = ["IID","PRS"])   
-  prs_01 = pd.read_csv(path+"pT_0.01.prs", sep = ' ', names = ["IID","PRS"]) 
-  prs_05 = pd.read_csv(path+"pT_0.05.prs", sep = ' ', names = ["IID","PRS"])
-  prs_1 = pd.read_csv(path+"pT_0.1.prs", sep = ' ', names = ["IID","PRS"]) 
-  prs_5 = pd.read_csv(path+"pT_0.5.prs", sep = ' ', names = ["IID","PRS"]) 
-
+  #path = '/gpfs/commons/home/tlin/output/cT/old_plink_chr_sep/'+ x + '/' + y + '/'
+  print("start" + x)
+  path = '/gpfs/commons/home/tlin/output/cT/old_plink_chr_sep/' + x + '/fixed_0224/polyfun_beta_no_clump/'
+  #path = '/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_beta/ADSP_qc_all/'
+  #save_name = 'new_plink/wightman/fixed_beta/wightman_ADSP_all' 
+  save_name = 'new_plink/' + x + '/' + x + "_" + 'polyfun_beta_noclump' 
+  prs_e5 = pd.read_csv(path+"pT_noclump_e-5.prs", sep = ' ', names = ["IID","PRS"])
+  prs_001 = pd.read_csv(path+"pT_noclump_0.001.prs", sep = ' ', names = ["IID","PRS"])
+  prs_005 = pd.read_csv(path+"pT_noclump_0.005.prs", sep = ' ', names = ["IID","PRS"])   
+  prs_01 = pd.read_csv(path+"pT_noclump_0.01.prs", sep = ' ', names = ["IID","PRS"]) 
+  prs_05 = pd.read_csv(path+"pT_noclump_0.05.prs", sep = ' ', names = ["IID","PRS"])
+  prs_1 = pd.read_csv(path+"pT_noclump_0.1.prs", sep = ' ', names = ["IID","PRS"]) 
+  prs_5 = pd.read_csv(path+"pT_noclump_0.5.prs", sep = ' ', names = ["IID","PRS"]) 
+  
   pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
   prs = [prs_e5, prs_001, prs_005, prs_01, prs_05, prs_1, prs_5]  
-  from functools import reduce  
   prs_merge = reduce(lambda left, right:pd.merge(left,right,on=["IID"]),prs)
 
   prs_merge = prs_merge.set_axis( ["IID","PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5"], axis='columns')

@@ -37,7 +37,7 @@ echo wightman
 --clump $sumstats_path \
 --clump-snp-field SNP \
 --clump-field P \
---out /gpfs/commons/home/tlin/output/cT/new_plink/$sumstats/fixed_beta/$ADSP/$sumstats
+--out /gpfs/commons/home/tlin/output/cT/new_plink/$sumstats/fixed_beta/$ADSP/$sumstats_${ADSP}_${chr}
 
 
 fi
@@ -61,7 +61,7 @@ echo "not wightman"
 --clump $sumstats_path \
 --clump-snp-field SNP \
 --clump-field P \
---out /gpfs/commons/home/tlin/output/cT/new_plink/$sumstats/$ADSP/$sumstats
+--out /gpfs/commons/home/tlin/output/cT/new_plink/$sumstats/$ADSP/$sumstats/${ADSP}_${chr} 
 
 else
 
@@ -74,7 +74,7 @@ echo wightman
 --clump $sumstats_path \
 --clump-snp-field SNP \
 --clump-field P \
---out /gpfs/commons/home/tlin/output/cT/new_plink/$sumstats/fixed_beta/$ADSP/$sumstats
+--out /gpfs/commons/home/tlin/output/cT/new_plink/$sumstats/fixed_beta/$ADSP/$sumstats_${ADSP}_${chr}
 
 
 fi

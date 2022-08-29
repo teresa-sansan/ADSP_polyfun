@@ -8,11 +8,14 @@
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/susie/finemap_fixed_assertion_susie_iter/'
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/new_susie/'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/susie/'
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/susie'
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/susie'
+path='/gpfs/commons/home/tlin/output/jansen/finemap/'
+
 
 #summary_stat='bellenguez'
-summary_stat='wightman'
+#summary_stat='wightman'
 #summary_stat='kunkle'
+summary_stat='jansen'
 
 for max_snp in 10
 do 
@@ -39,7 +42,8 @@ do
   for chr in {1..22}
   do
   echo start aggregate chr $chr
-### kunke & wightman p value are in 9th column, while bellengueez is in 10th
+
+### kunke & wightman p value are in 9th column, while bellenguez is in 10th
   echo 'start extracting pvalue < 0.001'
   zcat aggregate.all.txt.gz| tail -n+2| awk '{if($9 <= 0.001) print$0}' >> agg_extract_1e-3.tsv
   done

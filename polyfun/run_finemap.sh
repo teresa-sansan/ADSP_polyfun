@@ -2,11 +2,11 @@
 #### rerun wightman_susie
 ## run bellenguez susie 0817
 
-## run chr19-22
+## run jansen
 
 for i in {1..22}
 do
-	for max_snp in 10
+	for max_snp in 1 5 
 	do	
 		echo "run_max_snp_$max_snp"
         	echo "run chr$i"
