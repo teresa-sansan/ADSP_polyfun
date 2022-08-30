@@ -4,13 +4,13 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=30G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink/wightman/fixed_beta/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_beta/ADSP/%x_%j.log
 
 
 ## no qc
 plink_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink'
 
-if false; then
+if true; then
 for ADSP in ADSP
 do
 if [[ $sumstats != "wightman" ]]; then
@@ -24,10 +24,9 @@ echo "not wightman"
 --clump $sumstats_path \
 --clump-snp-field SNP \
 --clump-field P \
---out /gpfs/commons/home/tlin/output/cT/new_plink/$sumstats/$ADSP/$sumstats
+--out /gpfs/commons/home/tlin/output/cT/new_plink_genomewide/$sumstats/$ADSP/$sumstats_${ADSP}_${chr}
 
 else
-
 echo wightman
 ~/plink \
 --bfile $plink_path/$ADSP/${ADSP}_all_${chr} \
@@ -37,7 +36,7 @@ echo wightman
 --clump $sumstats_path \
 --clump-snp-field SNP \
 --clump-field P \
---out /gpfs/commons/home/tlin/output/cT/new_plink/$sumstats/fixed_beta/$ADSP/$sumstats_${ADSP}_${chr}
+--out /gpfs/commons/home/tlin/output/cT/new_plink_genomewide/$sumstats/fixed_beta/$ADSP/$sumstats_${ADSP}_${chr}
 
 
 fi
@@ -48,7 +47,7 @@ fi
 ##qc
 
 if true; then
-for ADSP in ADSP_qc_all 
+for ADSP in ADSP
 do
 if [[ $sumstats != "wightman" ]]; then
 echo "not wightman"

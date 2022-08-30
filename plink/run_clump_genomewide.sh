@@ -15,16 +15,10 @@
 for i in {1..22}
 do
 #sbatch --export=chr=$i,sumstats=kunkle,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Kunkle_remove_APOE_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump.sh
-#sbatch --export=chr=$i,sumstats=wightman,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta.tsv' /gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
-sbatch --export=chr=$i,sumstats=wightman,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
-
+## no qc
+sbatch --export=chr=$i,sumstats=wightman,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta.tsv' /gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
+## qc
+#sbatch --export=chr=$i,sumstats=wightman,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
 done
 
-#for i in 2 4 5 6 7 8 9 10 16 ##for wightman
-#for i in 17
-#for i in 2 4 6 10   ## for bellenguez
-#do
-#sbatch --export=chr=$i,sumstats=kunkle,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Kunkle_et_al_2019_hg37_ldsc_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump.sh
-#sbatch --export=chr=$i,sumstats=bellenguez,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Bellenguez_et_al_2021_hg37_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump.sh
-#sbatch --export=chr=$i,sumstats=wightman,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump.sh
-#done  
+
