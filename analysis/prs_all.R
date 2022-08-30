@@ -11,6 +11,7 @@ library(cowplot)
 library(pROC)
 library(modEvA)  # psuedo rsquare
 library(boot)
+library(rsq)
 #library(MESS)
 library("gridGraphics")
 
@@ -397,6 +398,8 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
 
 ## R2 functions ----
 ## calcualte pseudo rsquare 
+
+
 rsq <- function(formula, data, indices=FALSE) {    
   if (indices !=FALSE){
     d <- data[indices,] # allows boot to select sample
@@ -404,10 +407,84 @@ rsq <- function(formula, data, indices=FALSE) {
   else 
     d = data 
   fit <- glm(formula = formula,family = 'binomial', data = d)
-  return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
-}
+  #return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
+  return(fit)
+} ## this is for boostrapping
+
+
 
 ##resample
+log_reg_try_partial <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
+  set.seed(50)
+  mod <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a formula only using covariates
+  mod_R2 <- RsqGLM(mod, plot=FALSE)$Nagelkerke
+  
+  for (i in 1:length(prs)){
+    frm <- as.formula(paste("Diagnosis ~ Sex + Age+", prs[[i]])) ## add the PRS you wanted
+    reduced <- as.formula(paste("Diagnosis ~ ", prs[[i]]))
+    if(boot_num != FALSE){              
+      mod <- boot(data=df, statistic = rsq.partial(rsq, mod, type='n'),
+                  R=boot_num, formula=frm)
+      #CI  <- boot.ci(boot.out=mod,type='norm')$normal[c(2,3)]
+      sd = sd(mod$t)
+      mean =  mean(mod$t)
+      CI = c(mean-2*sd, mean+2*sd)
+      ##table
+      if(i ==1){
+        R2 <- data.frame (
+          'PRS' = prs[[i]],
+          'boot_mean'  = mean,
+          'boot_CI_upper' = CI[2],
+          'boot_CI_lower' = CI[1],
+          'SD' = sd,
+          "null_R2" = mod1_R2)
+      }
+      else{
+        R2_else <- data.frame ('PRS' = prs[[i]],
+                               'boot_mean'  = mean,
+                               'boot_CI_upper' = CI[2],
+                               'boot_CI_lower' = CI[1],
+                               'SD' = sd,
+                               "null_R2" = mod1_R2)
+        R2 <- rbind(R2, R2_else)
+        if(dim(R2)[1]==length(prs)){
+          if(plot == TRUE)
+            plotR2_boot(R2,main_title, prs,boot_num)
+          return (R2)
+        }
+      }
+    }  ##if don't do boostrap
+    else{
+      mod_reduced <- glm(formula = reduced,family = 'binomial', data = df)  ## only PRS
+      mod <- glm(formula = frm,family = 'binomial', data = df) ## whole model
+      partial_R2 <- rsq.partial(mod,mod_reduced, type='n')
+      print(partial_R2)
+      ## table
+      if(i ==1){  ## if theres only one threshold
+        cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
+        cof['covariate_R2'] = round(mod_R2,5)
+        cof['partial_R2'] = round(partial_R2,5)
+        cof['PRS'] = prs[i]
+      }
+      else{
+        cof2 <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
+        cof2['covariate_R2'] = round(mod_R2,5)
+        cof2['partial_R2'] = round(partial_R2,5)
+        cof2['PRS'] =prs[i]
+        cof <- rbind(cof, cof2)
+        if(dim(cof)[1]/4==length(prs) ){
+          if (plot == TRUE)
+            plotR2_boot(cof,main_title, prs,boot_num)
+          return (cof)
+        }
+      }
+    }
+  }
+}
+
+
+log_reg_try_partial(kunkle_cT, col_roc_E5, main_title='test', plot=FALSE)
+
 log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
   set.seed(50)
   mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a formula only using covariates
@@ -520,6 +597,15 @@ plot_ethnic_R2 <- function(df, col, title, boot_num, replace='', plot= TRUE){
   }
 }
 
+
+
+test <- glm(Diagnosis ~ Sex + Age+ PRS10,family=binomial,data = bellenguez_fixed_0224)
+test_reduced <- glm(Diagnosis ~ PRS10,family=binomial,data = bellenguez_fixed_0224)
+
+la <- rsq.partial(test,test_reduced, type='n')
+
+print(la$partial.rsq)
+
 ## plot facet 
 ## plot ethnic facut plot for one sumstat
 plot_ethnic_R2_facet <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=50, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc", legendname=FALSE){
@@ -573,6 +659,10 @@ plot_R2_facet_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc
   plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
   
 }
+
+## try out partial R2 ----
+
+
 
 ## Regression (plot beta and pvalue)
 p_beta_plot <- function(mod, prs_pos, title){
@@ -683,7 +773,13 @@ plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred,FALSE,col =col_roc_p
 )
 
 
-plot_ethnic_R2_facet(bellenguez_susie, bellenguez_polypred,FALSE, col =col_roc_polypred3, title= 'bellenguez (old_plink)',
+plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred,FALSE,col =col_roc_polypred3, title= 'bellenguez (old_plink)',
+                      QC1name = 'SuSiE', QC2name = 'Polyfun',
+                      legendname = 'Annotation'
+)
+wightman_polypred['PRS']= wightman_polypred['PRS10']
+
+plot_ethnic_R2_facet(wightman_susie_max10, wightman_polypred,FALSE, col ='PRS', title= 'wightman',
                      QC1name = 'SuSiE', QC2name = 'Polyfun',
                      legendname = 'Annotation'
 )
