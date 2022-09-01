@@ -400,7 +400,7 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
 ## calcualte pseudo rsquare 
 
 
-rsq <- function(formula, data, indices=FALSE) {    
+rsq_formula <- function(formula, data, indices=FALSE) {    
   if (indices !=FALSE){
     d <- data[indices,] # allows boot to select sample
   }
@@ -412,78 +412,17 @@ rsq <- function(formula, data, indices=FALSE) {
 } ## this is for boostrapping
 
 
-
-##resample
-log_reg_try_partial <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
-  set.seed(50)
-  mod <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a formula only using covariates
-  mod_R2 <- RsqGLM(mod, plot=FALSE)$Nagelkerke
+log_reg_try_partial <- function(df,prs, boot_num = FALSE){
+  mod_full <- glm(Diagnosis ~ Sex + Age + PRS5, family = 'binomial', data = bellenguez_fixed_0224) ## whole model
+  mod_reduced <- glm(Diagnosis ~ PRS5, family = 'binomial', data = bellenguez_fixed_0224)  ## only PRS
+  print(rsq.partial(mod_full, mod_reduced, type='n'))
   
-  for (i in 1:length(prs)){
-    frm <- as.formula(paste("Diagnosis ~ Sex + Age+", prs[[i]])) ## add the PRS you wanted
-    reduced <- as.formula(paste("Diagnosis ~ ", prs[[i]]))
-    if(boot_num != FALSE){              
-      mod <- boot(data=df, statistic = rsq.partial(rsq, mod, type='n'),
-                  R=boot_num, formula=frm)
-      #CI  <- boot.ci(boot.out=mod,type='norm')$normal[c(2,3)]
-      sd = sd(mod$t)
-      mean =  mean(mod$t)
-      CI = c(mean-2*sd, mean+2*sd)
-      ##table
-      if(i ==1){
-        R2 <- data.frame (
-          'PRS' = prs[[i]],
-          'boot_mean'  = mean,
-          'boot_CI_upper' = CI[2],
-          'boot_CI_lower' = CI[1],
-          'SD' = sd,
-          "null_R2" = mod1_R2)
-      }
-      else{
-        R2_else <- data.frame ('PRS' = prs[[i]],
-                               'boot_mean'  = mean,
-                               'boot_CI_upper' = CI[2],
-                               'boot_CI_lower' = CI[1],
-                               'SD' = sd,
-                               "null_R2" = mod1_R2)
-        R2 <- rbind(R2, R2_else)
-        if(dim(R2)[1]==length(prs)){
-          if(plot == TRUE)
-            plotR2_boot(R2,main_title, prs,boot_num)
-          return (R2)
-        }
-      }
-    }  ##if don't do boostrap
-    else{
-      mod_reduced <- glm(formula = reduced,family = 'binomial', data = df)  ## only PRS
-      mod <- glm(formula = frm,family = 'binomial', data = df) ## whole model
-      partial_R2 <- rsq.partial(mod,mod_reduced, type='n')
-      print(partial_R2)
-      ## table
-      if(i ==1){  ## if theres only one threshold
-        cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
-        cof['covariate_R2'] = round(mod_R2,5)
-        cof['partial_R2'] = round(partial_R2,5)
-        cof['PRS'] = prs[i]
-      }
-      else{
-        cof2 <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))
-        cof2['covariate_R2'] = round(mod_R2,5)
-        cof2['partial_R2'] = round(partial_R2,5)
-        cof2['PRS'] =prs[i]
-        cof <- rbind(cof, cof2)
-        if(dim(cof)[1]/4==length(prs) ){
-          if (plot == TRUE)
-            plotR2_boot(cof,main_title, prs,boot_num)
-          return (cof)
-        }
-      }
-    }
-  }
 }
 
+log_reg_try_partial(bellenguez_fixed_0224, col_roc_polypred)
 
-log_reg_try_partial(kunkle_cT, col_roc_E5, main_title='test', plot=FALSE)
+
+
 
 log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
   set.seed(50)
@@ -599,10 +538,7 @@ plot_ethnic_R2 <- function(df, col, title, boot_num, replace='', plot= TRUE){
 
 
 
-test <- glm(Diagnosis ~ Sex + Age+ PRS10,family=binomial,data = bellenguez_fixed_0224)
-test_reduced <- glm(Diagnosis ~ PRS10,family=binomial,data = bellenguez_fixed_0224)
 
-la <- rsq.partial(test,test_reduced, type='n')
 
 print(la$partial.rsq)
 
