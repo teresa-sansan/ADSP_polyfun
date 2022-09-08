@@ -17,7 +17,7 @@ FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
 
 anno='bl_dl_annotations'
 ##bellenguez
-if true; then
+if false; then
 echo run bellenguez
 #sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/bellenguez"
 sumstat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/'
@@ -43,6 +43,7 @@ echo "run not converge regions in /gpfs/commons/home/tlin/output/wightman/fixed_
 #			--sumstats $sumstat/wightman_all.${chr}.snpvar_constrained.gz \
 
 fi
+
 
 
 

@@ -42,7 +42,6 @@ prefix="jansen"
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations'
 
 #anno='susie'
-max_snp=10
 ## set true if you want to calculate normal PolyFun finemap result
 if true; then
 for chr in {1..22}

@@ -17,7 +17,7 @@ kunkle_max_10 <- read.table("/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_
 bellenguez_max_10_updateRSID <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_bellenguez_extract_1e-3.tsv", header = T)
 bellenguez_min_pip <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_min_extract_1e-3.tsv", header = T)
 bellenguez_max_pip <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_max_extract_1e-3.tsv", header = T)
-
+bellenguez_fixed_0224_pip <- read.table('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/aggregate_extr_1e-3.tsv', header=T)
 kunkle_pip = read.table("/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_10/agg_kunkle_extract_1e-3.tsv", header =T)
 wightman_pip = read.table("/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/agg_extract_1e-3.tsv", header= T)
 new_bellenguez_pip = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge/finemap_genomewide_1e-3.tsv", header = T)
@@ -493,13 +493,13 @@ create_lollipop <- function(df, upperthres, lowerthres, title){
   lower$group <- paste("PIP <", lowerthres)
   upper$group <- paste("PIP >", upperthres)
   overlap <- rbind(upper,  subset(lower, lower$POS %in% upper$POS))
-
   
   ##drawplot
   lollipop <- ggplot(overlap, aes(x=POS, y = n), group(group)) + geom_linerange(aes(x = POS, ymin = 0, ymax = n, colour = group), position = "stack")+
     geom_point(aes(x = POS, y = n, colour = group),position = "stack")+
     theme_light() + theme_bw()+coord_flip()+
     scale_y_continuous(breaks = round(seq(min(1), max(50), by = 1),1))+
+    #scale_y_continuous(breaks = round(seq(min(1), max(100), by = 5),1))+
     xlab("LD block")+ ylab("number of SNP(s)")+ggtitle(title)+
     scale_color_manual(breaks = c(paste("PIP >",upperthres),paste("PIP <", lowerthres)),
                        values=c("firebrick2", "darkblue"))+
@@ -508,8 +508,12 @@ create_lollipop <- function(df, upperthres, lowerthres, title){
   return(overlap)
 }
 
+
 PIP_0.95 <- create_lollipop(old_test, 0.95,0.5,"Max SNP per locus = 10, fixed_0224")
 PIP_0.5 <-create_lollipop(test, 0.5,0.5,"Max SNP per locus = 10, fixed_0224")
+
+
+
 
 PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
 PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
@@ -517,7 +521,7 @@ PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
 PIP_0.95 <- create_lollipop(kunkle_max_10, 0.95,0.5,"Max SNP per locus = 10, kunkle")
 PIP_0.5 <-create_lollipop(kunkle_max_10, 0.5,0.5,"Max SNP per locus = 10, kunkle")
 
-bellenguez_min_10
+#bellenguez_min_10
 
 PIP_0.95 <- create_lollipop(bellenguez_max_pip, 0.95,0.5,"bellenguez_updateRSID, aggregate by max PIP")
 PIP_0.5 <-create_lollipop(bellenguez_max_pip, 0.5,0.5,"bellenguez_updateRSID, aggregate by max PIP")
@@ -525,6 +529,13 @@ PIP_0.5 <-create_lollipop(bellenguez_max_pip, 0.5,0.5,"bellenguez_updateRSID, ag
 PIP_0.95 <- create_lollipop(bellenguez_min_pip, 0.95,0.5,"bellenguez_updateRSID, aggregate by min PIP")
 PIP_0.5 <-create_lollipop(bellenguez_min_pip, 0.5,0.5,"bellenguez_updateRSID, aggregate by min PIP")
 
+
+# newly integrate bellenguez 
+
+PIP_0.95 <- create_lollipop(new_bellenguez_pip, 0.95,0.5,"bellenguez_fixed0224_aggregated")
+PIP_0.5 <-create_lollipop(new_bellenguez_pip, 0.5,0.5,"bellenguez_fixed0224_aggregated")
+
+PIP_0.95 <- create_lollipop(bellenguez_fixed_0224_pip, 0.95,0.5,"bellenguez_fixed_0224")
 
 ## bar plot that David asked for ---
 plot_credible_bar <- function(df, title){
@@ -570,6 +581,13 @@ plot_credible_bar(kunkle_max_10,"kunkle_fixed_0224")
 plot_credible_bar(bellenguez_max_10_updateRSID, "bellenguez, updateRSID")
 plot_credible_bar(bellenguez_max_pip, "bellenguez, updateRSID, aggregate by max PIP")
 plot_credible_bar(bellenguez_min_pip, "bellenguez, updateRSID, aggregate by min PIP")
+
+
+plot_credible_bar(bellenguez_max_10_updateRSID, "bellenguez, updateRSID")
+plot_credible_bar(bellenguez_fixed_0224, "bellenguez, fixed_0224")
+plot_credible_bar(new_bellenguez_pip, "bellenguez, fixed_0224, fixed convergence")
+
+
 extract_SNP <- function(df){
   df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_",df$end)
   df$unique = str_c(df$POS,'_' ,df$CREDIBLE_SET)
@@ -608,17 +626,22 @@ text(as.numeric(unlist(lowpip[,'CHR'])), as.numeric(unlist(lowpip[,'PIP'])),labe
 interested_SNP <- bellenguez_updateRSID_snp %>%
   filter(PIP > 0.5) 
 
+interested_SNP_threshold <- bellenguez_max_10_updateRSID %>%
+  filter(CREDIBLE_SET != 0) %>%
+  filter(PIP > 0.5)
 
 interested_SNP_kunkle <- kunkle_pip %>%
-  filter(CREDIBLE_SET != 0) %>%
   filter(PIP > 0.5)
 
 interested_SNP_wightman <- wightman_pip %>%
-  filter(CREDIBLE_SET != 0) %>%
-  filter(PIP > 0.5)
+  filter(PIP > 0.95)
 
 
 interested_SNP_bellenguez_new <- new_bellenguez_pip %>%
+  filter(PIP > 0.5)
+
+
+interested_SNP_bellenguez_notfixconvergence <- bellenguez_fixed_0224_pip %>%
   filter(CREDIBLE_SET != 0) %>%
   filter(PIP > 0.5)
 

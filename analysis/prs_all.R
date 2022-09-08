@@ -734,8 +734,8 @@ plot_ethnic_R2_facet(kunkle_susie, kunkle_bl, kunkle_polypred, col =col_roc_poly
 )
 
 
-plot_ethnic_R2_facet(kunkle_susie, kunkle_bl, kunkle_polypred, col =col_roc_polypred3, title= 'kunkle (new_plink)',
-                     QC1name = 'no annotations(SuSiE)', QC2name = 'Baseline annotations', QC3name = 'All annotations',
+plot_ethnic_R2_facet(kunkle_susie,kunkle_polypred, FALSE, col =col_roc_polypred3, title= 'kunkle (new_plink)',
+                     QC1name = 'SuSiE', QC2name = 'Polyfun', 
                      legendname ='Annotation',boot_num = FALSE)
 
 
@@ -768,7 +768,7 @@ plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred,FALSE,col =col_roc_p
 
 plot_ethnic_R2_facet(wightman_susie_max10, wightman_polypred,FALSE, col ='PRS', title= 'wightman',
                      QC1name = 'SuSiE', QC2name = 'Polyfun',
-                     legendname = 'Annotation'
+                     legendname = 'Annotation',boot_num=FALSE
 )
 
 plot_ethnic_roc_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num = 50, col='PRS',
