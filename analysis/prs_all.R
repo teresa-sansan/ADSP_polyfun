@@ -280,7 +280,7 @@ roc_result_boot <-function(df, title=' ',column_for_roc=col_roc_E5, boot_num=50,
   for (i in 1:length(column_for_roc)){
     col = column_for_roc[[i]]
     roc_formula <- roc(df[["Diagnosis"]],df[[col]], quiet=T)
-    #set.seed(10)
+    set.seed(10)
     ci = ci.auc(roc_formula, conf.level = 0.95, method='bootstrap', boot.n = boot_num)
     CI_roc[nrow(CI_roc) + 1,] = c(col,ci)
   }
@@ -411,19 +411,29 @@ rsq_formula <- function(formula, data, indices=FALSE) {
   return(fit)
 } ## this is for boostrapping
 
+## partial R2 -----
+## check if I can fixed the error in 'numeric 'envir' arg not of length one ' when using not specified df in rsq function.
+## code is from https://github.com/cran/rsq/blob/master/R/rsq.R
+## directly apply function will be faster
+## Gave up on bootstrap for partial R2
 
-log_reg_try_partial <- function(df,prs, boot_num = FALSE){
-  mod_full <- glm(Diagnosis ~ Sex + Age + PRS5, family = 'binomial', data = bellenguez_fixed_0224) ## whole model
-  mod_reduced <- glm(Diagnosis ~ PRS5, family = 'binomial', data = bellenguez_fixed_0224)  ## only PRS
-  print(rsq.partial(mod_full, mod_reduced, type='n'))
+log_reg_partial <- function(df,prs){
+  set.seed(50)
+  modR <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a reduced model only using covariates
+  modR_R2 <- RsqGLM(modR, plot=FALSE)$Nagelkerke
+  partial_R2_list=rep(NA, length(prs))
+  for (i in 1:length(prs)){
+    frm <- as.formula(paste("Diagnosis ~ Sex + Age + ", prs[[i]])) ## add the PRS you wanted
+    modF <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
+    modF_R2 <-  RsqGLM(modF, plot=FALSE)$Nagelkerke 
+    partial_R2 <-  1- ((1-modF_R2 ) / (1-modR_R2))
+    partial_R2_list[i] = partial_R2
+  }
+  return(partial_R2_list)
   
 }
 
-log_reg_try_partial(bellenguez_fixed_0224, col_roc_polypred)
-
-
-
-
+## relative R2 w. bootstrap -----
 log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
   set.seed(50)
   mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a formula only using covariates
@@ -535,12 +545,6 @@ plot_ethnic_R2 <- function(df, col, title, boot_num, replace='', plot= TRUE){
     return(df)
   }
 }
-
-
-
-
-
-print(la$partial.rsq)
 
 ## plot facet 
 ## plot ethnic facut plot for one sumstat
