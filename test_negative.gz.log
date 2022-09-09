@@ -1,8 +1,0 @@
-[INFO]  Loading sumstats file...
-[INFO]  Loaded sumstats for 1139046 SNPs in 10.94 seconds
-[INFO]  Loading LD file /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr2_160000001_163000001
-[INFO]  Done in 13.12 seconds
-[INFO]  Starting functionally-informed SuSiE fine-mapping for chromosome 2 BP 160000001-161000001 (5320 SNPs)
-[WARNING]  R[write to console]: Error in susie_ss(XtX = XtX, Xty = Xty, yty = var_y * (n - 1), n = n,  : 
-  Estimating residual variance failed: the estimated value is negative
-
