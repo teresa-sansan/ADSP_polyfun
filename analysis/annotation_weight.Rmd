@@ -1,0 +1,70 @@
+---
+title: "annotation_weight"
+author: "Teresa Lin"
+date: "9/12/2022"
+output: html_document
+---
+
+
+```{r}
+library(ggplot2)
+library(lattice)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggstance)
+library(jtools)
+library(tibble)
+library(tidyverse)
+
+kunkle_22 = read.csv('/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/kunkle.annot_coeff_ridge.22.txt', sep = '\t', col.names = c('annotations', 'Kunkle'))
+bellenguez_22 = read.csv('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/bellenguez.annot_coeff_ridge.22.txt', sep = '\t',col.names = c('annotations', 'Bellenguez'))
+wightman_22 = read.csv('/gpfs/commons/home/tlin/output/wightman/wightman_fixed_0224/wightman_all.annot_coeff_ridge.22.txt', sep = '\t',col.names = c('annotations', 'Wightman'))
+jansen_22 = read.csv('/gpfs/commons/home/tlin/output/jansen/jansen.annot_coeff_ridge.22.txt', sep = '\t',col.names = c('annotations', 'Jansen'))
+```
+
+```{r, include = FALSE}
+df_list <- list(kunkle_22, bellenguez_22, wightman_22, jansen_22)
+annotation <- df_list %>% reduce(full_join, by='annotations')
+annotation = pivot_longer(annotation, cols=c('Kunkle','Bellenguez', 'Wightman','Jansen'), names_to='sumstat')
+annotation$sumstat = factor(annotation$sumstat,levels = c("Kunkle","Bellenguez","Wightman","Jansen"))
+
+dl_anno <- c(colnames(read.csv2(gzfile("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/combined_AD_annotations_polyfun/combined_AD_annotations_polyfun_22.annot.gz"), sep = '\t')),
+    colnames(read.csv2(gzfile("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/brain_H3K4me3/merged_annotations_ukb/brain_H3K4me3_seq_chr22.annot.gz"), sep = '\t')),
+    colnames(read.csv2(gzfile("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/brain_H3K27ac/merged_annotations_ukb/brain_H3K27ac_seq_chr3.annot.gz"), sep = '\t')))
+
+remove = c('CHR','SNP','BP','A1','A2')
+dl_anno = setdiff(dl_anno, remove).str_replace(dl_anno, "X", "")
+
+```
+
+
+
+```{r}
+bellenguez_sort_anno =  annotation %>% 
+    subset(sumstat == 'Bellenguez') %>%
+    arrange(value) %>%
+    pull(annotations)
+```
+```{r,fig.align="center", echo = FALSE,fig.width = 12}
+
+ggplot(annotation[which(annotation$annotations %in% (bellenguez_sort_anno[1:10])),], aes(value, annotations, fill = sumstat))+
+  geom_bar(stat = "identity", position = 'dodge', alpha = 0.6) +
+  theme_bw()+ggtitle("top annotations in Bellenguez, chr22") 
+
+ggplot(annotation[which(annotation$annotations %in% (tail(bellenguez_sort_anno)),10),], aes(value, annotations, fill = sumstat))+
+  geom_bar(stat = "identity", position = 'dodge', alpha = 0.6) +
+  theme_bw()+ggtitle("tail annotations in Bellenguez, chr22") 
+```
+
+```{r,fig.align="center", echo = FALSE,fig.width = 13}
+ggplot(annotation[which(annotation$annotations %in% dl_anno),], aes(annotations, value, fill = sumstat))+
+  geom_bar(stat = "identity", position = 'dodge', alpha = 0.6) + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+ggtitle("DL annotation in chr22") +labs(y= "weights")
+
+
+ggplot(subset(annotation[which(annotation$annotations %in% dl_anno),], sumstat!='Kunkle'), aes(annotations, value, fill = sumstat))+
+  geom_bar(stat = "identity", position = 'dodge', alpha = 0.6) + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+ggtitle("DL annotation in chr22")  +labs(y= "weights")
+
+```
