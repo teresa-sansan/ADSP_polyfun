@@ -1,6 +1,7 @@
-analysis/
+analysis/:/
 polyfun/.ipynb_checkpoints/
 plink/.ipynb_checkpoints/
 data_processing/.ipynb_checkpoints/
 data_processing/:/
 polyfun/:/
+analysis/.ipynb_checkpoints
