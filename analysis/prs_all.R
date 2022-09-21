@@ -250,6 +250,7 @@ plot_roc <- function(roclist, roccol,title = FALSE){
 ## If plot = T(default), will return a plot with AUC using different method/threshold, if false, will return a list for 
 ## other purpose. 
 
+##fix this one
 roc_result <-function(df, title=' ',column_for_roc = col_roc_E5, plot = TRUE){
   if('PRS_e5' %in% column_for_roc){
     roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df, quiet=T)
@@ -995,3 +996,25 @@ ggplot(data = APOE, aes(y  = PRS_mean, x = APOE, fill=Diagnosis)) +
   theme_bw()
 
 
+
+
+## analysis JK instead of bootstrap
+kunkle_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/kunkle.tsv')
+bellenguez_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/bellenguez.tsv')
+wightman_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/wightman.tsv')
+jansen_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/jansen.tsv')
+
+single_roc = function(df){
+  eur = roc(Diagnosis~prs_mean, data = extract_eur(df))$auc
+  afr = roc(Diagnosis~prs_mean, data = extract_afr(df))$auc
+  amr = roc(Diagnosis~prs_mean, data = extract_amr(df))$auc
+  ethnics = c('eur','afr','amr')
+  prs_jk = c(eur,afr,amr)
+  df = tibble(ethnics, prs_jk)
+  return(df)
+}
+
+jk = rbind(single_roc (kunkle_jk),single_roc (bellenguez_jk),single_roc (wightman_jk),single_roc (jansen_jk)) %>%
+  add_column('sumstat' = rep(c('kunkle','bellenguez','wightman','jansen'),each = 3))
+
+ggplot(data = jk, aes(prs_jk, ethnics, group=sumstat, color=sumstat)) +geom_point()+xlab('AUC')+ylab('ethnicity')+ggtitle('polypred_jackknife')+ theme_minimal()
