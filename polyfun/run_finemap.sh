@@ -2,11 +2,11 @@
 #### rerun wightman_susie
 ## run bellenguez susie 0817
 
-## run jansen
+## run bellenguez 0921
 
 for i in {1..22}
 do
-	for max_snp in 1 5 
+	for max_snp in 10
 	do	
 		echo "run_max_snp_$max_snp"
         	echo "run chr$i"
@@ -16,11 +16,10 @@ do
 		fi
 
 		if true; then
-		echo run jansen
         	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap.sh
-        	fi
+        fi
 
-	        if false; then 
+	    if false; then 
 		echo run kunkle
         	sbatch --export=chr=$i,max_num_snp=${max_snp} finemap_kunkle.sh 
 		fi
