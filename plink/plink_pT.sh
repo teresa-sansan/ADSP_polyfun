@@ -4,21 +4,21 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=50G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle/ADSP_no_apoe/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe/%x_%j.log
 
 #clump_path='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224'
-clump_path='/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle'
+clump_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/'
 processed='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed'
 ##qc on both
 if true; then
 #qc='qc'
 #qc='qc_on_variant_sumstat'
 qc='ADSP_no_apoe'
-for chr in {1..21}
+for chr in {1..22}
 do
-awk 'NR!=1{print $3}' $clump_path/$qc/ADSP_no_apoe_qc_all_${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
+awk 'NR!=1{print $3}' $clump_path/$qc/kunkle_noAPOE_qc_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 ~/plink \
---bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_qc_all/ADSP_qc_all_${chr} \
+--bfile  /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_qc_all/ADSP_qc_all_${chr} \
 --score $processed/Kunkle_remove_APOE_qc.tsv 1 4 6 header \
 --q-score-range range_list.txt $processed/Kunkle_remove_APOE_qc.pvalue \
 --extract $clump_path/$qc/chr${chr}.valid.snp \

@@ -9,8 +9,10 @@ import os
 #file_name='/gpfs/commons/home/tlin/output/cT/chr_sep_plink/wightman/new_beta/new_beta_max_snp_10_clump_pT.prs'
 #save_name='/gpfs/commons/home/tlin/output/prs/wightman/new_beta_max_snp_10_clump_pT.tsv'
 
-file_name='/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle/APOE_qc/kunkle_APOE_qc_chr19.profile'
-save_name='/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/APOE_SNP_qc.tsv'
+#file_name='/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle/APOE_qc/kunkle_APOE_qc_chr19.profile'
+#save_name='/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/APOE_SNP_qc.tsv'
+
+file_name=''
 
 os.system("echo Trimming duplicated spaces...")
 no_dup=file_name+"_no_dup_space.prs"

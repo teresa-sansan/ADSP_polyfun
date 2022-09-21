@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=30G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle/ADSP_no_apoe/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe/%x_%j.log
 
 
 ## no qc
@@ -28,7 +28,7 @@ if true; then
 --clump $sumstats_path \
 --clump-snp-field SNP \
 --clump-field P \
---out /gpfs/commons/home/tlin/output/cT/genomewide_plink/$sumstats/$bfile/${bfile}_qc_all_${chr} 
+--out /gpfs/commons/home/tlin/output/cT/new_plink_genomewide/sumstats/$bfile/${bfile}_qc_all_${chr} 
 
 fi
 

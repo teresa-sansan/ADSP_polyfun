@@ -30,10 +30,10 @@ from functools import reduce
 # new beta for wightman
 
 #sumstat=["bellenguez","kunkle","wightman"]
-sumstat=['wightman']
+#sumstat=['wightman']
 
 #plink=["ADSP","ADSP_qc_all","ADSP_qc_variant","ADSP_UKBB","ADSP_UKBB_qc"]
-#sumstat=["kunkle"]
+sumstat=["kunkle"]
 #plink=["ADSP_no_apoe"]
 
 for x in sumstat:
@@ -41,8 +41,8 @@ for x in sumstat:
   #path = '/gpfs/commons/home/tlin/output/cT/old_plink_chr_sep/'+ x + '/' + y + '/'
   print("start" + x)
   #path = '/gpfs/commons/home/tlin/output/cT/old_plink_chr_sep/' + x + '/fixed_0224/polyfun_beta_no_clump/'
-  path = '/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_beta/ADSP/'
-  save_name = 'new_plink/wightman/fixed_beta/wightman_ADSP' 
+  path = '/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe/'
+  save_name = 'kunkle/fixed_0224/remove_APOE_qc_all' 
   #save_name = 'new_plink/' + x + '/' + x + "_" + 'polyfun_beta_noclump' 
   prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
   prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
