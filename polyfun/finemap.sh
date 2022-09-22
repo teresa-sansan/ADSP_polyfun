@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=bellenguez_new
-#SBATCH --mail-type=FAIL
+#SBATCH --mail-type=FAILl,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
-#SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/%x_%j.log
+#SBATCH --time=25:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/finemap/%x_%j.log
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
@@ -22,11 +22,12 @@ output='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl'
 fi
 
 ##bellenguez
-if true; then
+if false; then
 sumstat_name='bellenguez'
 sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/all_anno"
 n=487511
-output='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap'
+#output='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap'
+output='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie'
 fi
 
 ## wightman
@@ -39,7 +40,7 @@ n=74004
 fi
 
 ## jansen
-if false; then
+if true; then
 sumstat_name='jansen'
 sumstat='/gpfs/commons/home/tlin/output/jansen/jansen'
 n=450734

@@ -15,7 +15,6 @@ library(boot)
 #library(MESS)
 library("gridGraphics")
 
-## load PRS data ----
 pre_process <- function(df, FILE=FALSE){
   if(FILE==FALSE){
     df<- read.csv(df,sep = '\t', header=T,fill = T)
@@ -27,14 +26,15 @@ pre_process <- function(df, FILE=FALSE){
     colnames(df)[which(names(df) == 'AD_status_final')] <- 'Diagnosis'
   }
   df$Age <- as.numeric(as.character(df$Age))
-  #df$Age <- as.numeric(df$Age)
   print(paste("original=",  dim(df)[1], "rows"))
   
   df <- df %>%
     filter(Diagnosis != -1 & Age >= 65)
   print(paste("filtered=",  dim(df)[1], "rows"))
   return(df)
-}
+} ## remove the sample younger than 65 || have no diagnosis
+## load PRS data ----
+### pT -----
 ### kunkle ----
 kunkle_APOE <- pre_process("/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/APOE_SNP_qc.tsv")
 kunkle_withoutAPOE_qc <- pre_process("/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_no_apoe.tsv")
@@ -42,7 +42,6 @@ kunkle_withoutAPOE_qc <- pre_process("/gpfs/commons/home/tlin/output/prs/new_pli
 kunkle_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP.tsv')
 kunkle_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
 kunkle_qc_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_all_maf01.tsv')
-
 kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_target_maf01.tsv')
 kunkle_new_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/new_beta_noqc.tsv')
 
@@ -55,7 +54,6 @@ bellenguez_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/belleng
 bellenguez_qc_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_qc_interested_SNP.tsv')
 bellenguez_interest_max <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/maxPIP/merged_updateRSID_qc_interested_SNP.tsv')
 bellenguez_interest_min <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/minPIP/merged_updateRSID_qc_interested_SNP.tsv')
-
 bellenguez_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_variant.tsv')
 
 ### wightman ----
@@ -249,8 +247,6 @@ plot_roc <- function(roclist, roccol,title = FALSE){
 ## A function that can calculate AUC with different method/threshold
 ## If plot = T(default), will return a plot with AUC using different method/threshold, if false, will return a list for 
 ## other purpose. 
-
-##fix this one
 roc_result <-function(df, title=' ',column_for_roc = col_roc_E5, plot = TRUE){
   if('PRS_e5' %in% column_for_roc){
     roc_list <- roc(Diagnosis ~ PRS_e5+PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df, quiet=T)
@@ -816,7 +812,6 @@ legend("bottom", legend=c(paste("SbayesR, auc = ",round(roc(sbayesR$Diagnosis~sb
 
 ## auc ------------
 
-
 ## this will take awhile. ------
 plot_ethnic_roc_facet(kunkle_cT,kunkle_withoutAPOE,kunkle_withoutAPOE_qc,col_roc_E5, title='kunkle',
                       QC1name= "with APOE", QC2name= "without APOE", QC3name="without APOE, QC")
@@ -994,9 +989,6 @@ ggplot(data = APOE, aes(y  = PRS_mean, x = APOE, fill=Diagnosis)) +
   geom_bar(stat="identity", position=position_dodge(), alpha=0.8) + facet_wrap(~factor(final_population, levels = c("EUR","AFR","AMR")), ncol=1)+
   scale_fill_brewer(palette="Blues")+
   theme_bw()
-
-
-
 
 ## analysis JK instead of bootstrap
 kunkle_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/kunkle.tsv')
