@@ -1,11 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=bellenguez_new
+#SBATCH --job-name=jansen_susie
 #SBATCH --mail-type=FAILl,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=25:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/susie/%x_%j.log
 
+
+## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
@@ -44,7 +46,8 @@ if true; then
 sumstat_name='jansen'
 sumstat='/gpfs/commons/home/tlin/output/jansen/jansen'
 n=450734
-output='/gpfs/commons/home/tlin/output/jansen/finemap'
+#output='/gpfs/commons/home/tlin/output/jansen/finemap'
+output='/gpfs/commons/home/tlin/output/jansen/susie'
 
 fi
 
@@ -70,6 +73,7 @@ do
                 --n $n \
                 --chr ${chr} --start $start --end $end \
                 --method susie \
+                --non-funct \
                 --max-num-causal $max_num_snp \
                 --allow-missing \
                 --out  $output/max_snp_${max_num_snp}/${sumstat_name}.chr${chr}.$start.$end.gz
@@ -80,6 +84,7 @@ do
 		--n $n \
 	  	--chr ${chr} --start $start --end $end \
 		--method susie \
+        --non-funct \
      	--max-num-causal $max_num_snp \
 	  	--allow-missing \
 		--out $output/max_snp_${max_num_snp}/${sumstat_name}.chr${chr}.$start.$end.gz 
