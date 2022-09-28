@@ -12,8 +12,8 @@ calculate_se_mean_core <- function(polypred_path){
 } # this is just the core. Can't be applied directly
 
 
-calculate_se_mean <- function(polypred_path, replace=FALSE){
-  if (replace != FALSE){
+calculate_se_mean <- function(polypred_path, multi_max_snp=FALSE){
+  if (multi_max_snp != FALSE){
     for (max_snp in c("max_snp_1","max_snp_5","max_snp_10")){
       print(max_snp)
       polypred_path = paste(unlist(str_split(polypred_path, "max_snp"))[1], max_snp,'_polypred.tsv.prs_jk', sep="")
@@ -42,7 +42,7 @@ all_polypred_path = c('/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/f
 
 
 for (polypred_path in all_polypred_path){
-  calculate_se_mean(polypred_path, replace=TRUE)
+  calculate_se_mean(polypred_path, multi_max_snp=TRUE)
 }
 
 

@@ -9,12 +9,10 @@ path = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/polypred/PLIN
 #path = '/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/polypred/'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/polypred/'
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/polypred/'
-
 #path = '/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/new_susie/polypred/'
-
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/polypred_new_plink/'
-
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl/polypred/'
+
 
 #save = '/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv'
 #save = '/gpfs/commons/home/tlin/output/prs/polypred/kunkle/susie.prs.tsv'
