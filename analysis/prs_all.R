@@ -70,21 +70,21 @@ wightman_susie_max10_polypred<- pre_process('/gpfs/commons/home/tlin/output/prs/
 
 ###  polyfun-Pred ----
 kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_polypred.tsv')
-kunkle_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_susie.tsv') ## 0811 add
+kunkle_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_susie.tsv') 
 kunkle_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_bl_polypred.tsv')
-kunkle_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/kunkle/susie.prs.tsv")
+
 
 bellenguez_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/old_plink_polypred.tsv')
 wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/fixed_0224.prs.tsv')
 
 ## new plink ------
-bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP.tsv')
-wightman_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP.tsv')
-
 bellenguez_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
-#wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_qc_all.tsv')
 wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/fixed_beta/wightman_ADSP_qc.tsv')
+kunkle_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
+jansen_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/jansen/ADSP_qc_all.tsv')
+kunkle_adsp_qc_no_apoe <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/remove_APOE_qc_all_check.tsv')
 
+bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP.tsv')
 kunkle_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_UKBB_qc.tsv')
 bellenguez_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_UKBB_qc.tsv')
 wightman_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_UKBB_qc.tsv')
@@ -256,7 +256,9 @@ roc_result <-function(df, title=' ',column_for_roc = col_roc_E5, plot = TRUE){
     roc_list <- roc(Diagnosis ~ PRS1+PRS5+PRS10, data = df, quiet=T)
   }else if ('new_beta' %in% column_for_roc){
     roc_list <- roc(Diagnosis ~ new_beta + new_beta_cT +new_beta_susie, data=df, quiet=T)
-  }else 
+  }else if ('PRS10_mean' %in% column_for_roc){
+    roc_list <- roc(Diagnosis ~ PRS1_mean + PRS5_mean +PRS10_mean, data=df, quiet=T)
+  }else
     roc_list <- roc(Diagnosis ~ PRS_001+PRS_005+PRS_01+PRS_05+PRS_1+PRS_5, data = df, quiet = T)
   
   if(plot == TRUE){
@@ -293,7 +295,7 @@ roc_result_boot <-function(df, title=' ',column_for_roc=col_roc_E5, boot_num=50,
 } 
 
 # A function to plot result of diff race all at once. 
-plot_ethnic_roc <- function(df, title, col,boot_num=50, plot=FALSE){
+plot_ethnic_roc <- function(df, title, col,boot_num=50, boot=TRUE, plot=FALSE){
   if (boot != TRUE){ ## no bootstraping, use the original roc_result
     EUR = roc_result(extract_eur(df), title = paste(title, ", EUR") , column_for_roc = col, plot=plot)
     AFR = roc_result(extract_afr(df), title = paste(title, ", AFR") , column_for_roc = col, plot=plot)
@@ -425,6 +427,16 @@ log_reg_partial <- function(df,prs){
 }
 
 log_reg_partial(bellenguez_fixed_0224, col_roc_polypred)
+
+for ( i in list(kunkle_adsp_qc_no_apoe, bellenguez_adsp_qc, wightman_adsp_qc, jansen_adsp_qc)){
+  print(log_reg_partial(extract_eur(i), col_roc_E5))
+}
+
+
+for ( i in list(kunkle_jk, bellenguez_jk, wightman_jk, jansen_jk)){
+  print(log_reg_partial(extract_eur(i), col_jk))
+}
+
 
 
 ## relative R2 w. bootstrap -----
@@ -713,27 +725,22 @@ PRS_new_beta
 
 ## polyfun_AUC----
 ##kunkle
-plot_ethnic_roc_facet(kunkle_bl, kunkle_polypred,FALSE,col =col_roc_polypred3, title= 'kunkle (new_plink)',
-                      QC1name = 'Baseline annotations', QC2name = 'All annotations',
-                      legendname = 'Annotation'
-)
-
 
 plot_ethnic_roc_facet(kunkle_susie, kunkle_bl, kunkle_polypred, col = col_roc_polypred3, title= 'kunkle',
                       QC1name = 'SuSiE', QC2name = 'PolyFun (BL)',QC3name='PolyFun (All anno)',
                       legendname = 'Annotation'
 )
 
-
+##new plink
 plot_ethnic_R2_facet(kunkle_susie, kunkle_bl, kunkle_polypred, col =col_roc_polypred3, title= 'kunkle (new_plink)',
                      QC1name = 'no annotations(SuSiE)', QC2name = 'Baseline annotations', QC3name = 'All annotations',
                      legendname = 'Annotation'
 )
 
-
-plot_ethnic_R2_facet(kunkle_susie,kunkle_polypred, FALSE, col =col_roc_polypred3, title= 'kunkle (new_plink)',
-                     QC1name = 'SuSiE', QC2name = 'Polyfun', 
-                     legendname ='Annotation',boot_num = FALSE)
+plot_ethnic_R2_facet(kunkle_susie, kunkle_polypred,FALSE,  col =col_roc_polypred3, title= 'kunkle (new_plink)',
+                     QC1name = 'no annotations(SuSiE)', QC2name = 'Baseline annotations', QC3name = 'All annotations',
+                     legendname = 'Annotation'
+)
 
 
 wightman_polypred$PRS = wightman_polypred$PRS10
@@ -758,21 +765,25 @@ plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred,FALSE,col ='PRS', ti
 
 
 plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred,FALSE,col =col_roc_polypred3, title= 'bellenguez (old_plink)',
-                      QC1name = 'SuSiE', QC2name = 'Polyfun',
+                      QC1name = 'SuSiE', QC2name = 'Polyfun_pred',
                       legendname = 'Annotation'
 )
 
 
+plot_ethnic_roc_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num = 50, col='PRS',
+                      title='bellenguez', QC1name = 'PolyFun_Pred', QC2name = 'SuSiE', legendname = 'Tools')
+
+
+plot_ethnic_roc_facet(wightman_susie_max10, wightman_polypred, FALSE, boot_num = 50, col='PRS',
+                      title='wightman', QC1name = 'PolyFun_Pred', QC2name = 'SuSiE', legendname = 'Tools')
+
 plot_ethnic_R2_facet(wightman_susie_max10, wightman_polypred,FALSE, col ='PRS', title= 'wightman',
-                     QC1name = 'SuSiE', QC2name = 'Polyfun',
+                     QC1name = 'SuSiE', QC2name = 'Polyfun_pred',
                      legendname = 'Annotation',boot_num=FALSE
 )
 
-plot_ethnic_roc_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num = 50, col='PRS',
-                      title='bellenguez', QC1name = 'PolyFun', QC2name = 'SuSiE', legendname = 'Tools')
-
 plot_ethnic_R2_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num = FALSE, col='PRS',
-                      title='bellenguez', QC1name = 'PolyFun', QC2name = 'SuSiE', legendname = 'Tools')
+                      title='bellenguez', QC1name = 'PolyFun_Pred', QC2name = 'SuSiE', legendname = 'Tools')
 
 ## polyfun beta vs sumstat beta ---
 plot_auc_facet_all_sumstat(kunkle_adsp_qc, kunkle_polyfun_pT, kunkle_polyfun_plink_no_cpT, 
@@ -991,10 +1002,10 @@ ggplot(data = APOE, aes(y  = PRS_mean, x = APOE, fill=Diagnosis)) +
   theme_bw()
 
 ## analysis JK instead of bootstrap
-kunkle_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/kunkle.tsv')
-bellenguez_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/bellenguez.tsv')
-wightman_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/wightman.tsv')
-jansen_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/jansen.tsv')
+kunkle_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/kunkle_new_plink_jk.tsv')
+bellenguez_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/bellenguez_new_plink_jk.tsv')
+wightman_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/wightman_new_plink_jk.tsv')
+jansen_jk = pre_process('/gpfs/commons/home/tlin/output/prs/sumstat_jk/jansen_new_plink_jk.tsv')
 
 single_roc = function(df){
   eur = roc(Diagnosis~prs_mean, data = extract_eur(df))$auc
@@ -1010,3 +1021,10 @@ jk = rbind(single_roc (kunkle_jk),single_roc (bellenguez_jk),single_roc (wightma
   add_column('sumstat' = rep(c('kunkle','bellenguez','wightman','jansen'),each = 3))
 
 ggplot(data = jk, aes(prs_jk, ethnics, group=sumstat, color=sumstat)) +geom_point()+xlab('AUC')+ylab('ethnicity')+ggtitle('polypred_jackknife')+ theme_minimal()
+
+
+col_jk = list("PRS1_mean","PRS5_mean","PRS10_mean")
+plot_ethnic_roc(kunkle_jk, title='Jansen, qc_all',col_jk, boot=FALSE)
+plot_ethnic_roc(bellenguez_jk, title='Jansen, qc_all',col_jk, boot=FALSE)
+plot_ethnic_roc(wightman_jk, title='Jansen, qc_all',col_jk, boot=FALSE)
+plot_ethnic_roc(jansen_jk, title='Jansen, qc_all',col_jk, boot=FALSE)
