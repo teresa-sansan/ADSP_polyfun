@@ -1,28 +1,37 @@
 #!/bin/bash
-#SBATCH --job-name=pT_kunkle_noapoe
+#SBATCH --job-name=pT_JANSEN
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=50G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP_qc_all/%x_%j.log
 
 #clump_path='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224'
-clump_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/'
+#clump_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/'
+
+##1 4 6
+#sumstat_file='Kunkle_remove_APOE_qc.tsv'
+
+## 1 4 13
+sumstat_file='Jansen_qc.tsv'
+clump_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/'
+
 processed='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed'
 ##qc on both
 if true; then
 #qc='qc'
 #qc='qc_on_variant_sumstat'
-qc='ADSP_no_apoe'
+#qc='ADSP_no_apoe'
+qc='ADSP_qc_all'
 for chr in {1..22}
 do
-awk 'NR!=1{print $3}' $clump_path/$qc/kunkle_noAPOE_qc_chr${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
+awk 'NR!=1{print $3}' $clump_path/$qc/ADSP_qc_plink_${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 ~/plink \
 --bfile  /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_qc_all/ADSP_qc_all_${chr} \
---score $processed/Kunkle_remove_APOE_qc.tsv 1 4 6 header \
---q-score-range range_list.txt $processed/Kunkle_remove_APOE_qc.pvalue \
+--score $processed/$sumstat_file 1 4 13 header \
+--q-score-range range_list.txt $processed/${sumstat_file}.pvalue \
 --extract $clump_path/$qc/chr${chr}.valid.snp \
---out $clump_path/$qc/${qc}_qc_all_chr${chr}
+--out $clump_path/$qc/${qc}_chr${chr}
 
 done
 fi

@@ -33,16 +33,19 @@ from functools import reduce
 #sumstat=['wightman']
 
 #plink=["ADSP","ADSP_qc_all","ADSP_qc_variant","ADSP_UKBB","ADSP_UKBB_qc"]
-sumstat=["kunkle"]
 #plink=["ADSP_no_apoe"]
+#path = '/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe/'
+
+sumstat=["jansen"]
+plink=["ADSP_qc_all"]
+save_name='jansen/ADSP_qc_all'
 
 for x in sumstat:
   #for y in plink:
   #path = '/gpfs/commons/home/tlin/output/cT/old_plink_chr_sep/'+ x + '/' + y + '/'
-  print("start" + x)
+  print("start " + x)
   #path = '/gpfs/commons/home/tlin/output/cT/old_plink_chr_sep/' + x + '/fixed_0224/polyfun_beta_no_clump/'
-  path = '/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe/'
-  save_name = 'kunkle/fixed_0224/remove_APOE_qc_all' 
+  path = '/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP_qc_all/'
   #save_name = 'new_plink/' + x + '/' + x + "_" + 'polyfun_beta_noclump' 
   prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
   prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
@@ -59,6 +62,6 @@ for x in sumstat:
   prs_merge = prs_merge.set_axis( ["IID","PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5"], axis='columns')
   all_merge = pd.merge(pheno,prs_merge, left_on ="SampleID", right_on='IID')
   all_merge.fillna('-1', inplace=True) # Race and Ethniciity
-  save="/gpfs/commons/home/tlin/output/prs/"+ save_name+'.tsv'
+  save="/gpfs/commons/home/tlin/output/prs/new_plink/"+ save_name+'.tsv'
   all_merge.to_csv(save,index = False, sep='\t')
   print("save prs to " + save)

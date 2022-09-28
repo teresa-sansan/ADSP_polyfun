@@ -1,7 +1,9 @@
 
-file_name='ADSP_no_apoe_qc_all'
-dir_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe'
+#file_name='ADSP_no_apoe_qc_all'
+#dir_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe'
 
+dir_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP_qc_all/'
+file_name='ADSP_qc_all'
 
 #for dir in bellenguez kunkle wightman
 #do

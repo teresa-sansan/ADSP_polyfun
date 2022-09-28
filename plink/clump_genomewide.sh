@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=new_wightman_clump_genomewide
+#SBATCH --job-name=jansen_clump_genomewide
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=30G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_beta/ADSP/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP_qc_all/%x_%j.log
 
 
 ## no qc
