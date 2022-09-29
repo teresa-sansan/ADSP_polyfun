@@ -12,8 +12,13 @@ cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/
 #file='processed/Wightman_2021_hg37_withbeta.tsv'
 
 file='processed/wightman_fixed_beta.tsv'
-sumstat="processed/Wightman"
+sumstat="processed/wightman"
 qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta_qc'
+
+#file='processed/Jansen_et_al_2019_hg37_ldsc.tsv'
+#sumstat='processed/Jansen'
+#qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Jansen_qc'
+
 ori=$(cat $file | wc -l)
 echo There are $(expr $ori - 1) lines of SNPs in $file | tee ${sumstat}_process.txt
 
@@ -21,25 +26,21 @@ echo There are $(expr $ori - 1) lines of SNPs in $file | tee ${sumstat}_process.
 if true; then
 echo 'filtering out MAF < 0.01...'
 #zcat $file | awk 'NR==1 || ($6>=0.01) {print}' > $qc_file_name.tsv ## bellenguez
-cat $file | awk 'NR==1 || ($8>=0.01) {print}' > $qc_file_name.tsv ## wightman
+cat $file | awk 'NR==1 || ($9>=0.01) {print}' > $qc_file_name.tsv ## wightman
 remove_maf=$(cat $qc_file_name.tsv| wc -l)
-echo $(expr $ori - $remove_maf) 'of SNPs that MAF < 0.01 were removed, ' $(expr $remove_maf - 1) 'of SNPs remain.'
+echo $(expr $ori - $remove_maf) 'of SNPs that MAF < 0.01 were removed, ' $(expr $remove_maf - 1) 'of SNPs remain.'|tee -a ${sumstat}_process.txt
 echo
 fi
 
-
 ## duplicated SNPs   ##remember to change input
-
-if true;then
 echo "removing duplicated SNPs..."|tee -a ${sumstat}_process.txt
 #cat $file | awk '{seen[$1]++; if(seen[$1]==1){print}}' > ${qc_file_name}_nodup.tsv
-cat $qc_file_name.tsv | awk '{seen[$1]++; if(seen[$1]==1){print}}' > ${qc_file_name}_nodup.tsv
+#cat $qc_file_name.tsv | awk '{seen[$1]++; if(seen[$1]==1){print}}' > ${qc_file_name}_nodup.tsv
+cat $qc_file_name.tsv | awk '!seen[$1]++' > ${qc_file_name}_nodup.tsv
 nodup=$(cat ${qc_file_name}_nodup.tsv| wc -l)
 #echo $(expr $ori - $nodup) duplicated SNPs were removed,  $(expr $nodup - 1) of SNPs remain. | tee -a ${sumstat}_process.txt
 echo $(expr $remove_maf - $nodup) duplicated SNPs were removed,  $(expr $nodup - 1) of SNPs remain.  ##if ran the first step, use this line
 
-echo 
-fi
 
 ## Ambiguous SNPs
 
@@ -50,5 +51,5 @@ echo $(expr $nodup - $no_ambiguous) 'ambiguous SNPs were removed'|tee -a  ${sums
 echo total number of SNPs = $(expr $no_ambiguous - 1)|tee -a ${sumstat}_process.txt
 
 
-#gzip $qc_file_name.tsv 
-rm $qc_file_name_nodup.tsv
+#gzip ${qc_file_name}.tsv 
+#rm ${qc_file_name}_nodup.tsv
