@@ -11,3 +11,5 @@ for chr in range(22):
 
 f.close()
 
+## to clear out those that dont follow the rsid rules
+!cat UKB_rsid.txt | awk '$2 ~/rs/' > UKB_rsid_clean.txt
