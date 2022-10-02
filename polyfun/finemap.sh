@@ -1,11 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=jansen_susie
-#SBATCH --mail-type=FAILl,END
+#SBATCH --job-name=finemap_diff_anno
+#SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=25:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/susie/%x_%j.log
-
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_sep22/bl/%x_%j.log
 
 ## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
@@ -15,6 +14,7 @@ conda activate polyfun
 echo chr $chr
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${chr}_*.npz"
 
+## choose the sum stat you are running
 ##kunkle
 if false; then
 sumstat_name='kunkle'
@@ -24,12 +24,19 @@ output='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl'
 fi
 
 ##bellenguez
-if false; then
+if true; then
 sumstat_name='bellenguez'
-sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/all_anno"
 n=487511
-#output='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap'
-output='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie'
+
+## other_anno_combination
+anno_path="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/"
+
+## all_anno 
+sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/all_anno"
+output="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap"
+
+##susie
+#output="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie/finemap"
 fi
 
 ## wightman
@@ -42,16 +49,13 @@ n=74004
 fi
 
 ## jansen
-if true; then
+if false; then
 sumstat_name='jansen'
 sumstat='/gpfs/commons/home/tlin/output/jansen/jansen'
 n=450734
 #output='/gpfs/commons/home/tlin/output/jansen/finemap'
 output='/gpfs/commons/home/tlin/output/jansen/susie'
-
 fi
-
-
 
 echo run ${sumstat_name}
 
@@ -62,32 +66,30 @@ do
 	start=$(echo $filename| cut -d '_' -f 2)
 	end=$(echo $filename| cut -d '_' -f 3)
 	
-	#for anno in bl bl_dl_annotations bl_brain_atac
-	#do
-	anno='anno'
-    	## --sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
+	for anno in bl bl_dl_annotations bl_brain_atac
+	do	
+		## --sumstats ${sumstat}.${chr}.snpvar_constrained.gz
+    	## $output/max_snp_${max_num_snp}/${sumstat_name}.chr${chr}.$start.$end.gz
 	if [ $max_num_snp -eq 1 ] 
 	then
 	python finemapper.py \
-                --sumstats ${sumstat}.${chr}.snpvar_constrained.gz \
+                --sumstats $anno_path/$anno/${anno}.${chr}.snpvar_constrained.gz \
                 --n $n \
                 --chr ${chr} --start $start --end $end \
                 --method susie \
-                --non-funct \
                 --max-num-causal $max_num_snp \
                 --allow-missing \
-                --out  $output/max_snp_${max_num_snp}/${sumstat_name}.chr${chr}.$start.$end.gz
+                --out $anno_path/$anno/finemap/max_snp_${max_num_snp}/${anno}.chr${chr}.$start.$end.gz
 	else
 	python finemapper.py \
 		--ld $ld \
-		--sumstats ${sumstat}.${chr}.snpvar_constrained.gz \
+		--sumstats $anno_path/$anno/${anno}.${chr}.snpvar_constrained.gz \
 		--n $n \
 	  	--chr ${chr} --start $start --end $end \
 		--method susie \
-        --non-funct \
      	--max-num-causal $max_num_snp \
 	  	--allow-missing \
-		--out $output/max_snp_${max_num_snp}/${sumstat_name}.chr${chr}.$start.$end.gz 
+		--out $anno_path/$anno/finemap/max_snp_${max_num_snp}/${anno}.chr${chr}.$start.$end.gz
 	fi
-	#done
+	done
 done

@@ -3,7 +3,7 @@
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
-#SBATCH --time=08:00:00
+#SBATCH --time=10:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_sep22/%x_%j.log
 
 
