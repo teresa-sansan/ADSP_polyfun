@@ -1,10 +1,11 @@
 #!/bin/bash 
 
-#sbatch finemap_rescue_snp1_all_2.sh  
-sbatch --export=max_snp=3 finemap_rescue.sh 
-sbatch --export=max_snp=5 finemap_rescue.sh 
-sbatch --export=max_snp=7 finemap_rescue.sh 
-sbatch --export=max_snp=10 finemap_rescue.sh 
+for anno in bl bl_brain_atac bl_dl_annotations
+do
+    sbatch --export=max_snp=5,anno=${anno} finemap_rescue.sh 
+    sbatch --export=max_snp=10,anno=${anno} finemap_rescue.sh 
+done
+
 
 
 

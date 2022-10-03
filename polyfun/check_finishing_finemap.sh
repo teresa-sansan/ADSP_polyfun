@@ -1,10 +1,12 @@
 #path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_susie"
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations'
-prefix=finemap_bellenguez.
-#prefix=finemap_bellenguez_all2_susie
-#path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_bl/finemap_susie"
-#prefix=finemap_bellenguez_susie
-for anno in bl bl_brain_atac bl_dl_annotations
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations'
+path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/'
+
+prefix='bl.chr'
+
+#for anno in bl bl_brain_atac bl_dl_annotations
+
+for anno in bl
 do
 if [ -f $path/$anno/check_finemap.txt ]; then rm $path/$anno/check_finemap.txt; fi #remove pre-exist file
 touch $path/$anno/check_finemap.txt   ##create file
@@ -28,12 +30,14 @@ do
 done
 echo
 }
+
 ## test in diff_MAX SNP per locus
-for anno in bl bl_brain_atac bl_dl_annotations
+#for anno in bl bl_brain_atac bl_dl_annotations
+for anno in bl
 do
- for i in 1 3 5 7 10
+ for i in 1 5 10
  do 
-	cd ${path}/$anno/max_snp_$i
+	cd ${path}/$anno/finemap/max_snp_$i
         pwd
        	echo $prefix/max_snp_${i}| tee -a $path/$anno/check_finemap.txt 
 	check $prefix| tee -a $path/$anno/check_finemap.txt 
