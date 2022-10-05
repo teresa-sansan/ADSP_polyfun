@@ -1,7 +1,7 @@
 #!/bin/bash 
 ## run bellenguez 0922 
 
-for i in {6..22}
+for i in {1..5}
 do
 	for max_snp in 1 5 10
 	do	

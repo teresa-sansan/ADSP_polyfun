@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=finemap_diff_anno
+#SBATCH --job-name=finemap_wightman
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=25:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_sep22/bl/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/%x_%j.log
 
 ## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
@@ -24,7 +24,7 @@ output='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl'
 fi
 
 ##bellenguez
-if true; then
+if false; then
 sumstat_name='bellenguez'
 n=487511
 
@@ -34,18 +34,18 @@ anno_path="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/"
 ## all_anno 
 sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/all_anno"
 output="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap"
-
 ##susie
 #output="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie/finemap"
 fi
 
 ## wightman
-if false; then
+if true; then
 sumstat_name='wightman'
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_all.${chr}.snpvar_constrained.gz"
-sumstat="/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations"
+sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/all_anno.${chr}.snpvar_constrained.gz"
+anno_path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/'
 n=74004
-#output="/gpfs/commons/home/tlin/output/wightman/fixed_0224"
+output="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap"
 fi
 
 ## jansen
@@ -66,7 +66,8 @@ do
 	start=$(echo $filename| cut -d '_' -f 2)
 	end=$(echo $filename| cut -d '_' -f 3)
 	
-	for anno in bl bl_dl_annotations bl_brain_atac
+	#for anno in bl bl_dl_annotations bl_brain_atac
+	for anno in all_anno
 	do	
 		## --sumstats ${sumstat}.${chr}.snpvar_constrained.gz
     	## $output/max_snp_${max_num_snp}/${sumstat_name}.chr${chr}.$start.$end.gz
