@@ -12,14 +12,8 @@
 #sbatch --export=sumstats=wightman,sumstats_path_qc='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
 
 
-for i in {1..22}
+for i in 1
 do
-#sbatch --export=chr=$i,sumstats=kunkle,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Kunkle_remove_APOE_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump.sh
-## no qc
-#sbatch --export=chr=$i,sumstats=wightman,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta.tsv' #/gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
-## qc
-#sbatch --export=chr=$i,sumstats=wightman,sumstats_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
-
 sbatch --export=chr=$i /gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
 
 done
