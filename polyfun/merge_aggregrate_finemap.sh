@@ -11,9 +11,10 @@
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/susie'
 #path='/gpfs/commons/home/tlin/output/jansen/finemap/'
 #path='/gpfs/commons/home/tlin/output/jansen/susie/'
-path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/'
-summary_stat='bellenguez'
-#summary_stat='wightman'
+#path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/'
+path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/'
+#summary_stat='bellenguez'
+summary_stat='wightman'
 #summary_stat='kunkle'
 #summary_stat='jansen'
 
@@ -29,24 +30,23 @@ do
      zcat chr${i}.aggregate.all.txt.gz |tail -n+2  >> aggregate.all.txt 
      #zcat chr${i}.aggregate.all.txt.gz |tail -n+2|awk '{if($9 <= 0.001) print$0}' >> aggregate.all.txt
      
-  done
-  echo
-  #echo zipping the file....
-  #gzip aggregate.all.txt
 
-  #echo finished, total line = $( zcat aggregate.all.txt.gz | wc -l )
-  
-  ## see if want to create a smaller agg file.
-  if false; then
-  zcat chr11.aggregate.all.txt.gz| head -n 1 > agg_extract_1e-3.tsv
-  for chr in {1..22}
-  do
-  echo start aggregate chr $chr
+    echo
+    #echo zipping the file....
+    #gzip aggregate.all.txt
 
-### kunke & wightman p value are in 9th column, while bellenguez is in 10th
-  echo 'start extracting pvalue < 0.001'
-  zcat aggregate.all.txt.gz| tail -n+2| awk '{if($9 <= 0.001) print$0}' >> agg_extract_1e-3.tsv
-  done
-  echo finished, total line = $( cat agg_extract_1e-3.tsv| wc -l )
+    #echo finished, total line = $( zcat aggregate.all.txt.gz | wc -l )
+    
+    ## see if want to create a smaller agg file.
+    if true; then
+    zcat chr11.aggregate.all.txt.gz| head -n 1 > agg_extract_1e-3.tsv
+    echo "start extracting SNP with p < 1e-3 "
+
+  ### kunke  p value is in 9th column, while bellenguez and wightman are in 10th
+    echo 'start extracting pvalue < 0.001'
+    zcat chr${i}.aggregate.all.txt.gz|tail -n+2|awk '{if($10 <= 0.001) print$0}' >> agg_extract_1e-3.tsv
+    #zcat aggregate.all.txt.gz| tail -n+2| awk '{if($10 <= 0.001) print$0}' >> agg_extract_1e-3.tsv
+    echo finished, total line = $( cat agg_extract_1e-3.tsv| wc -l )
   fi
+  done
 done

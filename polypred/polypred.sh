@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=Polypred_jansen
+#SBATCH --job-name=Polypred_new_wightman
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=50G
 #SBATCH --time=5:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/finemap/polypred/%x_%j.log 
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/polypred/%x_%j.log 
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate 
@@ -29,7 +29,7 @@ conda activate polyfun
 ## bellenguez
 ## susie
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations'
-path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224'
+#path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224'
 
 ##wightman
 
@@ -41,10 +41,8 @@ path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations'
 
 #path='/gpfs/commons/home/tlin/output/wightman/wightman_fixed_0224/finemap'
-## max_snp_10 need to be handle seperatly because i did try to "rescue" finemap result for those that didnt converge. 
-## so it has a different file name. (agg_fixed_converge.tsv.gz instead of aggregate.all.txt.gz)
-
 #python ~/polyfun_omer_repo/polypred_new_beta.py \
+path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/'
 
 
 ## jansen
