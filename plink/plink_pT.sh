@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=pT_wightman
+#SBATCH --job-name=pT_bellenguez
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=50G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_rsid_1002/ADSP_qc_all/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/bellenguez/new_sep22/%x_%j.log
 
 #clump_path='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224'
 #clump_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/'
@@ -17,37 +17,38 @@
 #clump_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/'
 
 ## 1 4 10 new wightman
-clump_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_rsid_1002/'
-sumstat_file='wightman_chr_sep/wightman_fixed_beta_qc_chr'
-processed='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed'
+# clump_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_rsid_1002/'
+# sumstat_qc_file='wightman_chr_sep/wightman_fixed_beta_qc_chr'
+# sumstat_file='wightman_chr_sep/wightman_fixed_beta_chr'
+# processed='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed'
 
-for chr in {5..22}
+## new bellenguez
+clump_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/bellenguez/new_sep22/'
+sumstat_file='Bellenguez_et_al_2021_hg37_new_sep20'
+sumstats_qc_file='Bellenguez_et_al_2021_hg37_new_sep20_qc'
+
+for chr in {1..22}
 do
 ##qc on both
 if true; then
-#qc='qc'
-#qc='qc_on_variant_sumstat'
-#qc='ADSP_no_apoe'
 qc='ADSP_qc_all'
 awk 'NR!=1{print $3}' $clump_path/$qc/ADSP_qc_all_${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
 ~/plink \
 --bfile  /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_qc_all/ADSP_qc_all_${chr} \
---score $processed/${sumstat_file}${chr}.tsv 1 4 10 header \
---q-score-range range_list.txt $processed/${sumstat_file}${chr}.pvalue \
+--score $processed/${sumstat_qc_file}.tsv 1 4 11 header \
+--q-score-range range_list.txt $processed/${sumstat_qc_file}.pvalue \
 --extract $clump_path/$qc/chr${chr}.valid.snp \
 --out $clump_path/$qc/${qc}_pT_chr${chr}
 fi
 
 #no qc
-if false; then
-sumstat_file='wightman_chr_sep/wightman_fixed_beta_chr'
+if true; then
 qc='ADSP'
 awk 'NR!=1{print $3}' $clump_path/$qc/ADSP_${chr}.clumped > $clump_path/$qc/chr${chr}.valid.snp
-
 ~/plink \
 --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP/ADSP_${chr} \
---score $processed/${sumstat_file}${chr}.tsv 1 4 10 header \
---q-score-range range_list.txt $processed/${sumstat_file}${chr}.pvalue  \
+--score $processed/${sumstat_file}.tsv 1 4 11 header \
+--q-score-range range_list.txt $processed/${sumstat_file}.pvalue  \
 --extract $clump_path/$qc/chr${chr}.valid.snp \
 --out $clump_path/$qc/${qc}_pT_chr${chr}
 fi

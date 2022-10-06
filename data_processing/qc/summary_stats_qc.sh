@@ -11,13 +11,17 @@ cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/
 #file='Wightman_et_al_2021_hg37_ldsc.tsv.gz'
 #file='processed/Wightman_2021_hg37_withbeta.tsv'
 
-file='processed/wightman_fixed_beta.tsv'
-sumstat="processed/wightman"
-qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta_qc'
+#file='processed/wightman_fixed_beta.tsv'
+#sumstat="processed/wightman"
+#qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta_qc'
 
 #file='processed/Jansen_et_al_2019_hg37_ldsc.tsv'
 #sumstat='processed/Jansen'
 #qc_file_name='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Jansen_qc'
+
+file='processed/Bellenguez_et_al_2021_hg37_new_sep20.tsv.gz'
+sumstat='processed/Bellenguez'
+qc_file_name='processed/Bellenguez_et_al_2021_hg37_new_sep20_qc'
 
 ori=$(cat $file | wc -l)
 echo There are $(expr $ori - 1) lines of SNPs in $file | tee ${sumstat}_process.txt
@@ -25,8 +29,8 @@ echo There are $(expr $ori - 1) lines of SNPs in $file | tee ${sumstat}_process.
 ## remove SNPs MAF < 0.01   ##kunkle doesnt have MAF, so skip this step for kunkle
 if true; then
 echo 'filtering out MAF < 0.01...'
-#zcat $file | awk 'NR==1 || ($6>=0.01) {print}' > $qc_file_name.tsv ## bellenguez
-cat $file | awk 'NR==1 || ($9>=0.01) {print}' > $qc_file_name.tsv ## wightman
+zcat $file | awk 'NR==1 || ($6>=0.01) {print}' > $qc_file_name.tsv ## bellenguez
+#cat $file | awk 'NR==1 || ($9>=0.01) {print}' > $qc_file_name.tsv ## wightman
 remove_maf=$(cat $qc_file_name.tsv| wc -l)
 echo $(expr $ori - $remove_maf) 'of SNPs that MAF < 0.01 were removed, ' $(expr $remove_maf - 1) 'of SNPs remain.'|tee -a ${sumstat}_process.txt
 echo
