@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=3:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/%x_%j.log
 
 ## Note:
 ## There are two parts of this script. 
@@ -18,11 +18,11 @@ source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
 ##bellenguez_fixed_0224
-#bellenguez='/gpfs/commons/home/tlin/data/bellenguez_munged.parquet'
-
-bellenguez='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Bellenguez_et_al_2021_hg37_ldsc.munged.parquet'
-prefix='finemap_bellenguez'
-path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations'
+#bellenguez='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Bellenguez_et_al_2021_hg37_ldsc.munged.parquet'
+bellenguez='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/sep22_new_bellenguez_et_al_2021_hg37_ldsc.munged.parquet'
+prefix='bellenguez'
+#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations'
+path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap'
 
 ##wightman
 wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Wightman_et_al_2021_hg37_ldsc.tsv.gz'
@@ -34,8 +34,11 @@ wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzh
 #kunkle='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/kunkle_2019/AD_Kunkle_etal_Stage1.parquet'
 kunkle='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Kunkle_et_al_2019_hg37_ldsc.tsv.gz'
 
+
+## jansen
 jansen='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Jansen_et_al_2019_hg37_ldsc.tsv.gz'
 path='/gpfs/commons/home/tlin/output/jansen/finemap/'
+#path='/gpfs/commons/home/tlin/output/jansen/susie/'
 
 prefix="jansen"
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations'
@@ -50,10 +53,10 @@ do
 	#python aggregate_finemapper_results_min.py \ 
 	python aggregate_finemapper_results_modified.py \
 		--out-prefix $path/$anno/max_snp_${max_snp}/$prefix \
-		--sumstats $jansen \
+		--sumstats $bellenguez \
 		--out $path/$anno/max_snp_${max_snp}/chr${chr}.aggregate.all.txt.gz \
 		--allow-missing \
-       		--chr $chr
+       	--chr $chr
 
 done
 fi

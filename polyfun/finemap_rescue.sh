@@ -15,6 +15,8 @@ FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
 sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/$anno/"
 missing="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/bl/finemap/max_snp_${max_snp}/missing_window.txt"
 
+#sed -i s/'chr'/''/g /gpfs/commons/home/tlin/output/bellenguez/new_sep22/bl/finemap/max_snp_10/missing_window.txt
+#sed -i s/'chr'/''/g /gpfs/commons/home/tlin/output/bellenguez/new_sep22/bl/finemap/max_snp_5/missing_window.txt
 ## polyfun, not susie
 ## remember to change output name
 
