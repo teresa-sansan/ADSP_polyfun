@@ -6,13 +6,13 @@ import pandas as pd
 import numpy as np
 
 ## set PATH before start
-#fix_convergence_path = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_10/try_rescue_not_converge/aggregate_rescue.all.txt.gz'
-#agg_file_before_convergence_fix = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_10/'
-#save_file = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/bl/max_snp_10/agg_fixed_converge.tsv.gz'
+fix_convergence_path = '/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_10/try_rescue_not_converge/aggregate_rescue.all.txt.gz'
+agg_file_before_convergence_fix = '/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_10/'
+save_file = '/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_10/agg_fixed_converge.tsv.gz'
 
-fix_convergence_path = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/try_rescue_not_converge/aggregate.all.txt.gz'
-agg_file_before_convergence_fix = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/'
-save_file = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/agg_fixed_converge.tsv.gz'
+#fix_convergence_path = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/try_rescue_not_converge/aggregate.all.txt.gz'
+#agg_file_before_convergence_fix = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/'
+#save_file = '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/agg_fixed_converge.tsv.gz'
 
 
 ## Read file
@@ -22,7 +22,7 @@ converge_genomewide=pd.DataFrame()  ## create an empty df so it can be merged la
 ## loop over chr1-22
 for i in range(1, 23):  
     print("start chr %s"%(i))
-    ori_filename = agg_file_before_convergence_fix + 'chr%s.aggregrate.all.txt.gz'%(i) 
+    ori_filename = agg_file_before_convergence_fix + 'chr%s.aggregate.all.txt.gz'%(i) 
     ori = pd.read_csv(ori_filename.format(i), sep = '\t')
     converge_chr=ori[~ori.SNP.isin(fix_convergence.SNP)]
     converge_genomewide = pd.concat([converge_genomewide, converge_chr])

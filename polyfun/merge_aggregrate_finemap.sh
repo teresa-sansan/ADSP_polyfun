@@ -15,12 +15,14 @@ path='/gpfs/commons/home/tlin/output/jansen/finemap/'
 #path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/'
 
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/'
-#summary_stat='bellenguez'
+#path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/bl/'
+path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224/finemap/'
+summary_stat='bellenguez'
 #summary_stat='wightman'
-summary_stat='kunkle'
-summary_stat='jansen'
+#summary_stat='kunkle'
+#summary_stat='jansen'
 
-for max_snp in 1 10
+for max_snp in 10
 do 
   echo max_snp${max_snp}
   cd ${path}/max_snp_${max_snp}
@@ -28,19 +30,20 @@ do
   zcat chr11.aggregate.all.txt.gz| head -n 1 > aggregate.all.txt
   for i in {1..22}
   do
+     echo
+     
      echo merging chr $i
      zcat chr${i}.aggregate.all.txt.gz |tail -n+2  >> aggregate.all.txt 
      #zcat chr${i}.aggregate.all.txt.gz |tail -n+2|awk '{if($9 <= 0.001) print$0}' >> aggregate.all.txt
      
 
-    echo
     #echo zipping the file....
     #gzip aggregate.all.txt
 
     #echo finished, total line = $( zcat aggregate.all.txt.gz | wc -l )
     
     ## see if want to create a smaller agg file.
-    if true; then
+    if false; then
     zcat chr11.aggregate.all.txt.gz| head -n 1 > agg_extract_1e-3.tsv
     echo "start extracting SNP with p < 1e-3 "
 
