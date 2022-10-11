@@ -9,16 +9,18 @@
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/new_susie/'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/susie/'
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/susie'
-#path='/gpfs/commons/home/tlin/output/jansen/finemap/'
+path='/gpfs/commons/home/tlin/output/jansen/finemap/'
 #path='/gpfs/commons/home/tlin/output/jansen/susie/'
 #path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/'
-path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/'
-#summary_stat='bellenguez'
-summary_stat='wightman'
-#summary_stat='kunkle'
-#summary_stat='jansen'
+#path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/'
 
-for max_snp in 1 5 10
+#path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/'
+#summary_stat='bellenguez'
+#summary_stat='wightman'
+summary_stat='kunkle'
+summary_stat='jansen'
+
+for max_snp in 1 10
 do 
   echo max_snp${max_snp}
   cd ${path}/max_snp_${max_snp}

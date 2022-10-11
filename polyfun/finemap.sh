@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=finemap_wightman
+#SBATCH --job-name=finemap_wightman_susie
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=25:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/%x_%j.log
 
 ## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
@@ -45,7 +45,10 @@ sumstat_name='wightman'
 sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/all_anno.${chr}.snpvar_constrained.gz"
 anno_path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/'
 n=74004
-output="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap"
+#output="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap"
+#susie
+output='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap'
+#--out $anno_path/$anno/finemap/max_snp_${max_num_snp}/${anno}.chr${chr}.$start.$end.gz
 fi
 
 ## jansen
@@ -79,8 +82,9 @@ do
                 --chr ${chr} --start $start --end $end \
                 --method susie \
                 --max-num-causal $max_num_snp \
+				--non-funct \
                 --allow-missing \
-                --out $anno_path/$anno/finemap/max_snp_${max_num_snp}/${anno}.chr${chr}.$start.$end.gz
+                --out $anno_path/susie/finemap/max_snp_${max_num_snp}/susie.chr${chr}.$start.$end.gz
 	else
 	python finemapper.py \
 		--ld $ld \
@@ -89,8 +93,9 @@ do
 	  	--chr ${chr} --start $start --end $end \
 		--method susie \
      	--max-num-causal $max_num_snp \
+		--non-funct \
 	  	--allow-missing \
-		--out $anno_path/$anno/finemap/max_snp_${max_num_snp}/${anno}.chr${chr}.$start.$end.gz
+		--out $anno_path/susie/finemap/max_snp_${max_num_snp}/susie.chr${chr}.$start.$end.gz
 	fi
 	done
 done

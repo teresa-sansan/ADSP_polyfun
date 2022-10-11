@@ -1,0 +1,1238 @@
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 21
+.chr21.*.gz.gz
+
+chr 22
+.chr22.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 3
+.chr3.*.gz.gz
+
+chr 4
+.chr4.*.gz.gz
+
+chr 5
+.chr5.*.gz.gz
+
+chr 6
+.chr6.*.gz.gz
+
+chr 7
+.chr7.*.gz.gz
+
+chr 8
+.chr8.*.gz.gz
+
+chr 9
+.chr9.*.gz.gz
+
+chr 10
+.chr10.*.gz.gz
+
+chr 11
+.chr11.*.gz.gz
+
+chr 12
+.chr12.*.gz.gz
+
+chr 13
+.chr13.*.gz.gz
+
+chr 14
+.chr14.*.gz.gz
+
+chr 15
+.chr15.*.gz.gz
+
+chr 16
+.chr16.*.gz.gz
+
+chr 17
+.chr17.*.gz.gz
+
+chr 18
+.chr18.*.gz.gz
+
+chr 19
+.chr19.*.gz.gz
+
+chr 20
+.chr20.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz
+
+chr 1
+.chr1.*.gz.gz
+
+chr 2
+.chr2.*.gz.gz

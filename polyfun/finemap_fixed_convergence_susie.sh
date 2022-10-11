@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=100:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/max_snp_10/try_rescue_not_converge/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie/finemap/max_snp_10/try_rescue_not_converge/%x_%j.log
 
 
 ## change #56 and add the revision in #57.
@@ -20,10 +20,9 @@ anno='all_anno'
 if true; then
 echo run bellenguez
 #sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/bellenguez"
-sumstat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/'
 sumstat='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/'
 n=487511
-output='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/max_snp_10/rescue_not_convergence/'
+output='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie/finemap/max_snp_10/rescue_not_convergence/'
 echo "run not converge regions in" ${path} ${anno}'/max_snp_10/IBSS_not_converge_list.txt'
 
 #			--sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
@@ -73,13 +72,14 @@ do
 			--sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
 			--n $n 	--chr $chr --start $start --end $end \
 	  		--method susie \
+			--non-funct \
     	  	--max-num-causal ${max_num_snp} \
 	  		--allow-missing \
-			--out $sumstat/$anno/finemap/max_snp_10/try_rescue_not_converge/finemap_max_snp_${max_num_snp}.chr${chr}.${start}.${end}.gz 
+			--out $sumstat/susie/finemap/max_snp_10/try_rescue_not_converge/finemap_max_snp_${max_num_snp}.chr${chr}.${start}.${end}.gz 
 
 		fi
 	
 	done
-done < $sumstat/$anno/finemap/max_snp_10/run_IBSS_not_converge_list.txt
+done < $sumstat/susie/finemap/max_snp_10/run_IBSS_not_converge_list.txt
 
 #/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/run_IBSS_not_converge_list.txt

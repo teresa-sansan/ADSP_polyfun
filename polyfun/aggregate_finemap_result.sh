@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=aggregate_finemap_anno
+#SBATCH --job-name=aggregate_finemap_jansen
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=3:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/finemap/%x_%j.log
 
 ## Note:
 ## There are two parts of this script. 
@@ -27,9 +27,9 @@ fi
 
 
 ##wightman
-if true;then
+if false;then
 wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta.munged.parquet'
-prefix='all_anno'
+#prefix='all_anno'
 path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/'
 #path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap'
 #path='/gpfs/commons/home/tlin/output/wightman/finemap'
@@ -42,9 +42,9 @@ kunkle='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzhei
 fi
 
 ## jansen
-if false;then
+if true;then
 jansen='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Jansen_et_al_2019_hg37_ldsc.tsv.gz'
-#path='/gpfs/commons/home/tlin/output/jansen/finemap/'
+path='/gpfs/commons/home/tlin/output/jansen'
 #path='/gpfs/commons/home/tlin/output/jansen/susie/'
 #prefix="jansen"
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations'
@@ -59,7 +59,7 @@ do
 	#python aggregate_finemapper_results_min.py \ 
 	python aggregate_finemapper_results_modified.py \
 		--out-prefix $path/$anno/finemap/max_snp_${max_snp}/${anno} \
-		--sumstats $wightman \
+		--sumstats $jansen \
 		--out $path/$anno/finemap/max_snp_${max_snp}/chr${chr}.aggregate.all.txt.gz \
 		--allow-missing \
        	--chr $chr
