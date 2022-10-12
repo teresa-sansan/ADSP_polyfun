@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=70G
 #SBATCH --time=21:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/bellenguez/new_sep22/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/bellenguez/new_sep22/ADSP/%x_%j.log
 
 
 ## no qc
@@ -25,7 +25,7 @@ sumstats_qc_file='Bellenguez_et_al_2021_hg37_new_sep20_qc.tsv'
 output_repo='new_sep22'
 fi
 
-if false; then
+if true; then
 for ADSP in ADSP
 do
 ~/plink \
@@ -43,7 +43,7 @@ fi
 
 ##qc_all
 
-if true; then
+if false; then
 for ADSP in ADSP_qc_all
 do
 ~/plink \

@@ -12,7 +12,7 @@
 #sbatch --export=sumstats=wightman,sumstats_path_qc='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_qc.tsv' /gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
 
 
-for i in {1..22}
+for i in {1..6}
 do
 sbatch --export=chr=$i /gpfs/commons/home/tlin/script/plink/clump_genomewide.sh
 
