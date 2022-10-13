@@ -34,22 +34,33 @@ pre_process <- function(df, file=FALSE){
 
 ## load PRS data ----
 ### pT -----
-## og beta 
+## new plink 
 kunkle_APOE <- pre_process("/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/APOE_SNP_qc.tsv")
-kunkle_withoutAPOE_qc <- pre_process("/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_no_apoe.tsv")
 kunkle_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP.tsv')
+kunkle_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_check.tsv')
+kunkle_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_UKBB_qc.tsv')
+kunkle_adsp_qc_no_apoe <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/remove_APOE_qc_all_check.tsv')
+
+bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP.tsv')
+bellenguez_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
+bellenguez_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_UKBB_qc.tsv')
+new_bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/new_sep22/ADSP.tsv')
+
+wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/fixed_beta/wightman_ADSP_qc.tsv')
+wightman_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_UKBB_qc.tsv')
+
+jansen_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/jansen/ADSP_qc_all.tsv')
+
+## og beta 
+
 kunkle_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
-kunkle_qc_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_all_maf01.tsv')
-kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_target_maf01.tsv')
+#kunkle_qc_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_all_maf01.tsv')
+#kunkle_qc_target_maf <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/kunkle_qc_target_maf01.tsv')
 kunkle_new_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/kunkle/fixed_0224/new_beta_noqc.tsv')
 
 bellenguez_cT <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_no_qc.tsv')
 bellenguez_qc_all <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
 bellenguez_qc_on_base <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_base.tsv')
-bellenguez_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_interested_SNP.tsv') 
-bellenguez_qc_interested <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/merged_updateRSID_qc_interested_SNP.tsv')
-bellenguez_interest_max <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/maxPIP/merged_updateRSID_qc_interested_SNP.tsv')
-bellenguez_interest_min <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/updateRSID/interested_SNP/minPIP/merged_updateRSID_qc_interested_SNP.tsv')
 bellenguez_qc_variant <- pre_process('/gpfs/commons/home/tlin/output/prs/bellenguez/fixed_0224/bellenguez_qc_on_variant.tsv')
 
 wightman_beta <- pre_process("/gpfs/commons/home/tlin/output/prs/wightman/new_beta_max_snp_10_noclump_pT.tsv")
@@ -67,19 +78,6 @@ wightman_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/
 wightman_polyfun_plink_no_cpT= pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_polyfun_beta_noclump.tsv')
 
 
-## new plink 
-kunkle_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_qc_all.tsv')
-kunkle_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_ADSP_UKBB_qc.tsv')
-kunkle_adsp_qc_no_apoe <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/remove_APOE_qc_all_check.tsv')
-
-bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP.tsv')
-bellenguez_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_qc_all.tsv')
-bellenguez_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_ADSP_UKBB_qc.tsv')
-
-wightman_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/fixed_beta/wightman_ADSP_qc.tsv')
-wightman_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_ADSP_UKBB_qc.tsv')
-
-jansen_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/jansen/ADSP_qc_all.tsv')
 
 ###  polyfun-Pred ----
 kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_polypred.tsv')
@@ -128,11 +126,8 @@ segregate_control_by_age <- function(df, age, balanced = TRUE){
   control = df %>%
     filter(Diagnosis == 0) %>%
     filter(Age >= age)
-  
   control_num = dim(control)[1]
- 
   printf("Have %d cases and %d controls. \n",case_num,control_num)
-  
   if(balanced == TRUE){
     printf("Balancing number of case and control ...\n")
     if(case_num > control_num){
@@ -156,6 +151,24 @@ col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
 col_roc_polypred3 <- list("PRS1","PRS5","PRS10")
+
+
+## process PRS name
+process_prs_col_name <- function(df){
+  if ('PRS10' %in% df$PRS){
+    df$PRS = str_replace(df$PRS, 'PRS', 'max snp ')
+    if ('PRS3' %in% df$PRS){
+      df$PRS = factor(df$PRS, level = c('max snp 10','max snp 7','max snp 5','max snp 3','max snp 1'))
+    }else{
+      df$PRS = factor(df$PRS, level = c('max snp 10','max snp 5','max snp 1'))
+    }
+  }else{
+    df$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
+    df[df$PRS=='p = 0.e5',]$PRS ="p = 1e-5"
+    df$PRS = factor(df$PRS, level = c('p = 1e-5','p = 0.001','p = 0.005','p = 0.01','p = 0.05','p = 0.1','p = 0.5'))
+  }
+  return(df)
+}
 
 ## Case/Control PRS dist ----
 ## create a race-separated pivot df for different PRS method  (which is easier for plotting). 
@@ -184,22 +197,6 @@ plot_facet_dist <- function(df, title){
   facet_grid(method~final_population)+theme_bw()+ggtitle(title)
 } 
 
-## process PRS name
-process_prs_col_name <- function(df){
-  if ('PRS10' %in% df$PRS){
-    if ('PRS3' %in% df$PRS){
-      df$PRS = factor(df$PRS, level = c('PRS10','PRS7','PRS5','PRS3','PRS1'))
-    }else{
-      df$PRS = factor(df$PRS, level = c('PRS10','PRS5','PRS1'))
-    }
-    df$PRS = str_replace(df$PRS, 'PRS', 'max snp ')
-  }else{
-    df$PRS = factor(df$PRS, level = c('PRS_e5','PRS_001','PRS_005','PRS_01','PRS_05','PRS_1','PRS_5'))
-    df$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
-    df[df$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
-  }
-  return(df)
-}
 
 ## plot race/method separated dist plots
 plot_facet_dist(kunkle_polypred, "kunkle_polypred")
@@ -243,8 +240,7 @@ plot_roc <- function(roclist, roccol,title = FALSE){
 }   
 
 ## A function that can calculate AUC with different method/threshold
-## If plot = T(default), will return a plot with AUC using different method/threshold, if false, will return a list for 
-## other purpose. 
+## If plot = T(default), will return a plot with AUC using different method/threshold, if false, will return a list for other purpose. 
 
 roc_result <-function(df, column_for_roc = col_roc_E5){
   auc_list=list()
@@ -307,7 +303,6 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
   
   if(plot != FALSE){
     output_df = process_prs_col_name(output_df)
-   
     plot <- ggplot(data = output_df, aes(x=auc, y = PRS))+
       geom_point(size=3,alpha=0.9,position = position_dodge(width = 0.7), color='darkblue')+
       facet_wrap(~ethnicity, ncol=1)+
@@ -319,9 +314,6 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
   }
   return(output_df)
 }
-
-
-## The boolean APOE operator is to see whether you want to plot the effect of only using 5(6, depending on QC or not) APOE allele to make prediction.  
 
 ## fixed legend
 ## The boolean APOE operator is to see whether you want to plot the effect of only using 5(6, depending on QC or not) APOE allele to make prediction.  
@@ -343,6 +335,7 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
     all$qc_status <- factor(all$qc_status, levels = c(QC1name, QC2name))
   }
   all = process_prs_col_name(all)
+ 
   plot <- ggplot(data = all, aes(x=auc, y = PRS, color = qc_status))+
     geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
@@ -397,8 +390,6 @@ plot_auc_facet_all_sumstat <- function(a,b,c,d,legendname = FALSE){
 }
 
 
-
-
 ## R2 functions ----
 ## calcualte pseudo rsquare 
 rsq_formula <- function(formula, data, indices=FALSE) {    
@@ -406,39 +397,6 @@ rsq_formula <- function(formula, data, indices=FALSE) {
   fit <- glm(formula = formula,family = 'binomial', data = d)
   return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
 }## this is for boostrapping
-
-## partial R2 -----
-## check if I can fixed the error in 'numeric 'envir' arg not of length one ' when using not specified df in rsq function.
-## code is from https://github.com/cran/rsq/blob/master/R/rsq.R
-## directly apply function will be faster
-## Gave up on bootstrap for partial R2
-
-log_reg_partial <- function(df,prs){
-  modR <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a reduced model only using covariates
-  modR_R2 <- RsqGLM(modR, plot=FALSE)$Nagelkerke
-  partial_R2 = rep(NA, length(prs))
-  for (i in 1:length(prs)){
-    frm <- as.formula(paste("Diagnosis ~ Sex + Age + ", prs[[i]])) ## add the PRS you wanted
-    modF <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
-    modF_R2 <-  RsqGLM(modF, plot=FALSE)$Nagelkerke 
-    partialR2 <-  1- ((1-modF_R2 ) / (1-modR_R2))
-    partial_R2[i] = partialR2
-  }
-  PRS =  array(unlist(prs))
-  return(data.frame(PRS,partial_R2))
-}
-
-log_reg_partial(bellenguez_fixed_0224, col_roc_polypred)
-
-for ( i in list(kunkle_adsp_qc_no_apoe, bellenguez_adsp_qc, wightman_adsp_qc, jansen_adsp_qc)){
-  print(log_reg_partial(extract_eur(i), col_roc_E5))
-}
-
-for ( i in list(kunkle_jk, bellenguez_jk, wightman_jk, jansen_jk)){
-  print(log_reg_partial(extract_eur(i), col_jk))
-}
-
-
 
 ## relative R2 w. bootstrap -----
 ##resample
@@ -555,8 +513,7 @@ plot_ethnic_R2 <- function(df, col, boot_num, title=' ',replace='', plot= FALSE)
   AMR$ethnicity="AMR"
   
   df = rbind(EUR, AFR, AMR)
-  df$ethnicity <- factor(df$ethnicity,      # Reordering group factor levels
-                         levels = c("EUR","AFR","AMR"))
+  df$ethnicity <- factor(df$ethnicity, levels = c("EUR","AFR","AMR"))
   if(plot == FALSE){
     return(df)
   }
@@ -575,16 +532,7 @@ plot_ethnic_R2_facet <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=5
     all = rbind(QC1,QC2, QC3)
   }else
     all = rbind(QC1, QC2)
-  #all %>% 
-  #  filter(PRS !="PRS-001" & PRS != "PRS_1") 
-  if ('PRS_5' %in% col){
-    all$PRS = str_replace(all$PRS, 'PRS_', 'p = 0.')
-    all[all$PRS=='p = 0.e5',]$PRS =" p = 1e-5"
-    
-  }
-  if ('PRS10' %in% col){
-    all$PRS = str_replace(all$PRS, 'PRS', 'max snp ')
-  }
+  all = process_prs_col_name(all)
   add_xlegend = '' 
   if("partial_R2" %in% colnames(all)){
     print('R2 here is partial R2')
@@ -624,19 +572,6 @@ plot_R2_facet_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc
   plot_grid(prow, legend_b, ncol=1,rel_heights=c(3,.4))
 }
 
-
-plot_R2_facet_allsumstat(kunkle_adsp_qc,  kunkle_susie, FALSE,
-                         bellenguez_polypred, bellenguez_susie,FALSE,
-                         wightman_polypred, wightman_polyfun_plink_no_cpT,FALSE,
-                         QC1name = 'Summary Stat', QC2name = 'PolyFun',legendname = 'Effect size', boot_num=FALSE)
-
-plot_R2_facet_allsumstat(kunkle_polypred,  kunkle_polyfun_plink_no_cpT, FALSE,
-                         bellenguez_adsp_qc, bellenguez_polyfun_plink_no_cpT,FALSE,
-                         wightman_adsp_qc, wightman_polyfun_plink_no_cpT,FALSE,
-                         QC1name = 'Summary Stat', QC2name = 'PolyFun',legendname = 'Effect size', boot_num=FALSE)
-
-
-
 ## Regression (plot beta and pvalue)
 p_beta_plot <- function(mod, prs_pos, title){
   pvalue = ggplot(mod[prs_pos,], aes(x =rownames(mod[prs_pos,]), y =  Pr...z..)) + ylab('P value')+xlab(' ')+
@@ -655,9 +590,39 @@ p_beta_plot <- function(mod, prs_pos, title){
   plot_grid(pvalue, beta)
 }
 
+
+## partial R2 -----
+## check if I can fixed the error in 'numeric 'envir' arg not of length one ' when using not specified df in rsq function.
+## code is from https://github.com/cran/rsq/blob/master/R/rsq.R
+## directly apply function will be faster
+## Gave up on bootstrap for partial R2
+
+log_reg_partial <- function(df,prs){
+  modR <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a reduced model only using covariates
+  modR_R2 <- RsqGLM(modR, plot=FALSE)$Nagelkerke
+  partial_R2 = rep(NA, length(prs))
+  for (i in 1:length(prs)){
+    frm <- as.formula(paste("Diagnosis ~ Sex + Age + ", prs[[i]])) ## add the PRS you wanted
+    modF <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
+    modF_R2 <-  RsqGLM(modF, plot=FALSE)$Nagelkerke 
+    partialR2 <-  1- ((1-modF_R2 ) / (1-modR_R2))
+    partial_R2[i] = partialR2
+  }
+  PRS =  array(unlist(prs))
+  return(data.frame(PRS,partial_R2))
+}
+
+
 ##result ----
 # c+T (before and after qc)-----
-## bellenguez
+## all
+plot_R2_facet_allsumstat(kunkle_adsp_qc,  kunkle_susie, FALSE,
+                         bellenguez_polypred, bellenguez_susie,FALSE,
+                         wightman_polypred, wightman_polyfun_plink_no_cpT,FALSE,
+                         QC1name = 'Summary Stat', QC2name = 'PolyFun',legendname = 'Effect size', boot_num=FALSE)
+## new bellenguez 0922
+
+plot_ethnic_roc_facet(bellenguez_adsp,new_bellenguez_adsp, FALSE, QC1name = 'old bellenugez',QC2name = 'bellenguez 0922', boot_num = 50, legendname = 'bellenguez version')
 
 ## bellenguez_ethnics 
 plot_ethnic_roc_facet(bellenguez_cT0224,bellenguez_adsp,bellenguez_adsp_qc,col_roc_E5,title='bellenguez',
@@ -838,7 +803,23 @@ plot_auc_facet_all_sumstat(kunkle_adsp,kunkle_adsp_qc,kunkle_UKBB_qc, bellenguez
 plot_auc_facet_all_sumstat(kunkle_adsp,kunkle_qc_variant_sumstat,kunkle_adsp_qc, bellenguez_adsp,  bellenguez_qc_on_variant_sumstat,bellenguez_adsp_qc, wightman_adsp,wightman_qc_variant_sumstat, wightman_adsp_qc,
                            QC1name="No QC", QC2name="QC on variant and sumstat", QC3name="QC on all")
 
+
+for ( i in list(kunkle_adsp_qc_no_apoe, bellenguez_adsp_qc, wightman_adsp_qc, jansen_adsp_qc)){
+  print(log_reg_partial(extract_eur(i), col_roc_E5))
+}
+
+for ( i in list(kunkle_jk, bellenguez_jk, wightman_jk, jansen_jk)){
+  print(log_reg_partial(extract_eur(i), col_jk))
+}
+
+
+
 ## polyfun ------
+## all
+plot_R2_facet_allsumstat(kunkle_polypred,  kunkle_polyfun_plink_no_cpT, FALSE,
+                         bellenguez_adsp_qc, bellenguez_polyfun_plink_no_cpT,FALSE,
+                         wightman_adsp_qc, wightman_polyfun_plink_no_cpT,FALSE,
+                         QC1name = 'Summary Stat', QC2name = 'PolyFun',legendname = 'Effect size', boot_num=FALSE)
 
 ## bellenguez
 #df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."
@@ -853,7 +834,6 @@ RsqGLM(mod1, plot=FALSE)$Nagelkerke
 ## remove all APOE
 plot_ethnic_R2(kunkle_withoutAPOE, col_roc_E5,"Kunkle without APOE", 5)
 plot_ethnic_R2(kunkle_withoutAPOE_qc, col_roc_E5,"Kunkle without APOE, QC on sumstat_variant", 50)
-
 plot_ethnic_roc_facet(kunkle_cT,kunkle_withoutAPOE_qc,FALSE,title='kunkle',
                       QC1name= "with APOE", QC2name="without APOE, QC")
 
@@ -866,7 +846,6 @@ kunkle_cT_qc_log_amr<-log_reg(kunkle_APOE[kunkle_APOE$final_population == "AMR",
 
 ## wightman
 plot_ethnic_R2(wightman_cT, col_roc_E5, 'Wightman', 50)
-
 
 ##susie 
 plot_ethnic_R2(susie, col_roc_polypred, "bellenguez_susie",50)
@@ -884,11 +863,41 @@ plot_ethnic_roc_facet(kunkle_polypred,segregate_control_by_age(kunkle_polypred,7
 )
 
 
+
 plot_ethnic_roc_facet(kunkle_adsp_qc,segregate_control_by_age(kunkle_adsp_qc,75), segregate_control_by_age(kunkle_adsp_qc,85), title= 'kunkle(c+pT,QC)',
                       QC1name='None',QC2name = '75', QC3name = '85',
                       legendname = 'Control Age segregation'
 )
 
+
+plot_ethnic_roc_facet(bellenguez_polypred,segregate_control_by_age(bellenguez_polypred,75), segregate_control_by_age(bellenguez_polypred,85), col = col_roc_polypred3, title= 'bellenguez(polypred)',
+                      QC1name='None',QC2name = '75', QC3name = '85',
+                      legendname = 'Control Age segregation', boot_num = 50
+)
+
+plot_ethnic_roc_facet(bellenguez_adsp_qc,segregate_control_by_age(bellenguez_adsp_qc,75), segregate_control_by_age(bellenguez_adsp_qc,85), title= 'bellenguez(c+pT)',
+                      QC1name='None',QC2name = '75', QC3name = '85',
+                      legendname = 'Control Age segregation', boot_num = 50)
+
+
+plot_ethnic_roc_facet(wightman_adsp_qc,segregate_control_by_age(wightman_adsp_qc,75), segregate_control_by_age(wightman_adsp_qc,85), title= 'wightman(c+pT)',
+                      QC1name='None',QC2name = '75', QC3name = '85',
+                      legendname = 'Control Age segregation', boot_num = 50)
+
+plot_ethnic_roc_facet(wightman_polypred,segregate_control_by_age(wightman_polypred,75), segregate_control_by_age(wightman_polypred,85), col = col_roc_polypred, title= 'wightman(polypred)',
+                      QC1name='None',QC2name = '75', QC3name = '85',
+                      legendname = 'Control Age segregation'
+)
+
+
+plot_ethnic_roc_facet(jansen_adsp_qc,segregate_control_by_age(jansen_adsp_qc,75), segregate_control_by_age(jansen_adsp_qc,85), title= 'jansen(c+pT)',
+                      QC1name='None',QC2name = '75', QC3name = '85',
+                      legendname = 'Control Age segregation', boot_num = 50)
+
+plot_ethnic_roc_facet(jansen_polypred,segregate_control_by_age(jansen_polypred,75), segregate_control_by_age(jansen_polypred,85), col = col_roc_polypred3, title= 'jansen(polypred)',
+                      QC1name='None',QC2name = '75', QC3name = '85',
+                      legendname = 'Control Age segregation'
+)
 
 ##others -----
 sbayesr_log <-  glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = sbayesR)
