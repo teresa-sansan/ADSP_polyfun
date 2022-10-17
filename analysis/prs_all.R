@@ -487,7 +487,7 @@ plotR2_boot <- function(log_output, header, prs_col, boot){
   }
   else
   {
-    plot(log_output$boot_mean, ylim  = c(min(log_output$null_R2[1], min(log_output$boot_mean))*0.1, max(log_output$boot_mean[1], max(log_output$boot_mean)*1.5)),
+    plot(log_output$boot_mean, ylim  = c(min(log_output$null_R2[1], min(log_output$boot_CI_lower))*0.1, max(log_output$boot_mean[1], max(log_output$boot_CT_upper)*1.5)),
          ylab='R-squared', xlab = "different PRS",pch=4,col="darkgreen", main=header,xaxt = "n")
     arrows(1:7, log_output$boot_CI_upper, 1:7, log_output$boot_CI_lower, length=0.05, angle=90, code=3, col='grey58') 
     text(seq(from=1,to=length(prs_col)),log_output$boot_mean , 
@@ -520,7 +520,6 @@ plot_ethnic_R2 <- function(df, col, boot_num, title=' ',replace='', plot= FALSE)
   EUR$ethnicity="EUR"
   AFR$ethnicity="AFR"
   AMR$ethnicity="AMR"
-  
   df = rbind(EUR, AFR, AMR)
   df$ethnicity <- factor(df$ethnicity, levels = c("EUR","AFR","AMR"))
   if(plot == FALSE){
@@ -530,7 +529,8 @@ plot_ethnic_R2 <- function(df, col, boot_num, title=' ',replace='', plot= FALSE)
 
 ## plot facet 
 ## plot ethnic facut plot for one sumstat
-plot_ethnic_R2_facet <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=50, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc", legendname=FALSE){
+
+plot_ethnic_R2_facet <- function(QC1, QC2, QC3, col=col_roc_E5, boot_num=50, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc", legendname=FALSE){
   QC1 = plot_ethnic_R2(QC1, col, boot_num)
   QC2 = plot_ethnic_R2(QC2, col, boot_num)
   QC1$qc_status = QC1name
@@ -538,7 +538,7 @@ plot_ethnic_R2_facet <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=5
   if(class(QC3) != 'logical'){
     QC3 = plot_ethnic_R2(QC3, col, boot_num)
     QC3$qc_status = QC3name
-    all = rbind(QC1,QC2, QC3)
+    all = rbind(QC1,QC2,QC3)
   }else
     all = rbind(QC1, QC2)
   all = process_prs_col_name(all)
@@ -551,15 +551,18 @@ plot_ethnic_R2_facet <- function(QC1, QC2, QC3=FALSE, col=col_roc_E5, boot_num=5
     add_xlegend = 'Partial ' 
   }
   all$boot_mean = all$boot_mean * 100
+  all$boot_CI_upper = all$boot_CI_upper * 100
+  all$boot_CI_lower = all$boot_CI_lower * 100
   plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, color = qc_status))+
     geom_point(size=2, alpha=0.7,position = position_dodge(width = 0.7))+
-    geom_pointrange(aes(xmin=boot_CI_lower*100, xmax=boot_CI_upper*100), linetype="dotted",position=position_dodge(width=0.7),show.legend = FALSE) +
+    geom_pointrange(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), linetype="dotted",position=position_dodge(width=0.7),show.legend = FALSE) +
     facet_wrap(~ethnicity, ncol=1)+
-    xlab(paste(add_xlegend,'R squared (%)'))+ ggtitle(title)+xlim(-0.5, max(all$boot_mean)+max(all$boot_CI_upper))+
+    xlab(paste(add_xlegend,'R squared (%)'))+ ggtitle(title)+xlim(min(all$boot_CI_lower), max(all$boot_CI_upper)) +
     theme_bw()
   if(legendname != FALSE){  ## testout new legend title
     plot = plot +guides(col=guide_legend(legendname))
   }
+  print(all)
   return(plot)
 }
 
@@ -683,6 +686,8 @@ plot_ethnic_roc_facet(kunkle_susie, kunkle_polypred, kunkle_bl, QC1name = "none"
 plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred, bellenguez_bl, QC1name = "none",
                       QC2name = "all",QC3name='baseline', col = col_roc_polypred3,boot_num = 50, title='bellenguez', legendname = 'annotation')
 
+
+plot_ethnic_R2_facet(wightman_susie, wightman_polypred, FALSE, col = col_roc_polypred3, QC1name='none', QC2name = 'all', title = 'wightman', legendname = 'annotations' )
 
 ## all, polyfun vs susie
 
@@ -921,47 +926,91 @@ RsqGLM(glm(Diagnosis~PRS1+Sex+Age,family = 'binomial', data = kunkle_susie), plo
 
 
 ## test age threshold -----
-plot_ethnic_roc_facet(kunkle_polypred,segregate_control_by_age(kunkle_polypred,75), segregate_control_by_age(kunkle_polypred,85), col = col_roc_polypred3, title= 'kunkle(polypred)',
-                      QC1name='None',QC2name = '75', QC3name = '85',
-                      legendname = 'Control Age segregation'
-)
+
+control_age_roc <- function(df, age, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALSE, title=''){
+  output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*3))
+  output_df$PRS =  rep(unlist(col),1)
+  output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)))
+  output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR"))
+  print('age segregation')
+  EUR = roc_result_boot(segregate_control_by_age(extract_eur(df),age), column_for_roc = col, boot_num = boot_num)
+  AFR = roc_result_boot(segregate_control_by_age(extract_afr(df),age), column_for_roc = col, boot_num = boot_num)
+  AMR = roc_result_boot(segregate_control_by_age(extract_amr(df),age), column_for_roc = col, boot_num = boot_num)
+  output_df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
+  output_df$boot_CI_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
+  output_df$boot_CI_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
+  output_df[c("auc","boot_CI_lower","boot_CI_upper")] <- sapply(output_df[c("auc","boot_CI_lower","boot_CI_upper")],as.numeric)
+  output_df$age = age
+  
+  if(plot != FALSE){
+    output_df = process_prs_col_name(output_df)
+    plot <- ggplot(data = output_df, aes(x=auc, y = PRS))+
+      geom_point(size=3,alpha=0.9,position = position_dodge(width = 0.7), color='darkblue')+
+      facet_wrap(~ethnicity, ncol=1)+
+      xlab('AUC')+ ggtitle(paste(title, "age = ", as.character(age)))+xlim(0.45, max(output_df$boot_CI_upper)*1.1)+theme_bw()
+    if (boot == TRUE){  
+      plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,color='darkblue',show.legend = FALSE) 
+    }## plot error bar or not
+    print(plot)
+  }
+  return(output_df)}
+
+
+plot_control_age_roc <- function(df, col=col_roc_E5, title=' ',age1="65", age2="75",age3="85", legendname=FALSE, APOE=FALSE){
+  QC1 = control_age_roc(df,as.integer(age1),col=col)
+  QC2 = control_age_roc(df,as.integer(age2),col=col)
+  QC3 = control_age_roc(df,as.integer(age3),col=col)
+  all = rbind(QC1, QC2, QC3) 
+  all$age <- factor(all$age, levels = c(age1, age2, age3))
+  all = process_prs_col_name(all)
+
+  plot <- ggplot(data = all, aes(x=auc, y = PRS, color = age))+
+    geom_point(size=3,alpha=0.4,position = position_dodge(width = 0.7))+
+    facet_wrap(~ethnicity, ncol=1)+ guides(col=guide_legend('control_age_thres'))+
+    xlab('AUC')+ ggtitle(title)+xlim(min(min(all$boot_CI_lower),0.45),max(max(all$boot_CI_upper),0.75))+
+    theme_bw() 
+  print(all)
+  plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,show.legend = FALSE) 
+  
+  return(plot)
+}
+
+plot_control_age_roc2 <- function(df, col=col_roc_E5, title=' ',age1="65", age2="75",age3="85", legendname=FALSE, APOE=FALSE){
+  QC1 = control_age_roc(df,as.integer(age1),col=col)
+  QC2 = control_age_roc(df,as.integer(age2),col=col)
+  QC3 = control_age_roc(df,as.integer(age3),col=col)
+  all = rbind(QC1, QC2, QC3) 
+  all$age <- factor(all$age, levels = c(age1, age2, age3))
+  all = process_prs_col_name(all)
+  
+  plot <- ggplot(data = all, aes(x=auc, y = PRS, color = age))+
+    geom_point(size=3,alpha=0.7,shape=2,position = position_dodge(width = 0.7))+
+    facet_wrap(~ethnicity, ncol=1)+ guides(col=guide_legend('control_age_thres'))+
+    xlab('AUC')+ ggtitle(title)+xlim(min(min(all$boot_CI_lower),0.45),max(max(all$boot_CI_upper),0.75))+
+    theme_bw() 
+  print(all)
+  plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,show.legend = FALSE) 
+  
+  return(plot)
+}
+
+
+plot_control_age_roc(wightman_adsp)
+wightman_polypred_control_age = plot_control_age_roc(wightman_polypred, col=col_roc_polypred3, title='All annotations')
+wightman_susie_control_age = plot_control_age_roc2(wightman_susie, col=col_roc_polypred3, title='no annotations')
+
+prow <- plot_grid(wightman_polypred_control_age+ theme(legend.position="none"), 
+                   wightman_susie_control_age+ theme(legend.position="none",axis.text.y = element_blank()),
+                   ncol = 2, nrow = 1)
+legend <- get_legend(
+    wightman_susie_control_age +
+    theme(legend.position = "bottom")
+  )
+plot_grid(prow, legend, ncol=1,rel_heights=c(3,.4))
+  
 
 
 
-plot_ethnic_roc_facet(kunkle_adsp_qc,segregate_control_by_age(kunkle_adsp_qc,75), segregate_control_by_age(kunkle_adsp_qc,85), title= 'kunkle(c+pT,QC)',
-                      QC1name='None',QC2name = '75', QC3name = '85',
-                      legendname = 'Control Age segregation'
-)
-
-
-plot_ethnic_roc_facet(bellenguez_polypred,segregate_control_by_age(bellenguez_polypred,75), segregate_control_by_age(bellenguez_polypred,85), col = col_roc_polypred3, title= 'bellenguez(polypred)',
-                      QC1name='None',QC2name = '75', QC3name = '85',
-                      legendname = 'Control Age segregation', boot_num = 50
-)
-
-plot_ethnic_roc_facet(bellenguez_adsp_qc,segregate_control_by_age(bellenguez_adsp_qc,75), segregate_control_by_age(bellenguez_adsp_qc,85), title= 'bellenguez(c+pT)',
-                      QC1name='None',QC2name = '75', QC3name = '85',
-                      legendname = 'Control Age segregation', boot_num = 50)
-
-
-plot_ethnic_roc_facet(wightman_adsp_qc,segregate_control_by_age(wightman_adsp_qc,75), segregate_control_by_age(wightman_adsp_qc,85), title= 'wightman(c+pT)',
-                      QC1name='None',QC2name = '75', QC3name = '85',
-                      legendname = 'Control Age segregation', boot_num = 50)
-
-plot_ethnic_roc_facet(wightman_polypred,segregate_control_by_age(wightman_polypred,75), segregate_control_by_age(wightman_polypred,85), col = col_roc_polypred, title= 'wightman(polypred)',
-                      QC1name='None',QC2name = '75', QC3name = '85',
-                      legendname = 'Control Age segregation'
-)
-
-
-plot_ethnic_roc_facet(jansen_adsp_qc,segregate_control_by_age(jansen_adsp_qc,75), segregate_control_by_age(jansen_adsp_qc,85), title= 'jansen(c+pT)',
-                      QC1name='None',QC2name = '75', QC3name = '85',
-                      legendname = 'Control Age segregation', boot_num = 50)
-
-plot_ethnic_roc_facet(jansen_polypred,segregate_control_by_age(jansen_polypred,75), segregate_control_by_age(jansen_polypred,85), col = col_roc_polypred3, title= 'jansen(polypred)',
-                      QC1name='None',QC2name = '75', QC3name = '85',
-                      legendname = 'Control Age segregation'
-)
 
 ##others -----
 sbayesr_log <-  glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = sbayesR)
