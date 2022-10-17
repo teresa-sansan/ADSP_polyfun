@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=bellenguez_cT
+#SBATCH --job-name=jansen_cT
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=70G
 #SBATCH --time=21:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/bellenguez/new_sep22/ADSP/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP/%x_%j.log
 
 
 ## no qc
@@ -18,11 +18,17 @@ sumstats_qc_file='wightman_chr_sep/wightman_fixed_beta_qc_chr'
 output_repo='fixed_rsid_1002'
 fi
 
-if true; then
+if false; then
 sumstats='bellenguez'
 sumstats_file='Bellenguez_et_al_2021_hg37_new_sep20.tsv'
 sumstats_qc_file='Bellenguez_et_al_2021_hg37_new_sep20_qc.tsv'
 output_repo='new_sep22'
+fi
+
+if true; then
+sumstats='jansen'
+sumstats_file='Jansen_et_al_2019_hg37_ldsc.tsv'
+sumstats_qc_file='Jansen_qc.tsv'
 fi
 
 if true; then

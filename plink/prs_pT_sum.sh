@@ -2,8 +2,14 @@
 #file_name='ADSP_no_apoe_qc_all'
 #dir_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe'
 
-dir_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP_qc_all/'
-file_name='ADSP_qc_all'
+dir_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP/'
+
+
+#dir_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/bellenguez/new_sep22/ADSP'
+#dir_path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_rsid_1002/ADSP_qc_all'
+
+file_name='ADSP_pT'
+#file_name='ADSP_qc_all_pT'
 
 #for dir in bellenguez kunkle wightman
 #do

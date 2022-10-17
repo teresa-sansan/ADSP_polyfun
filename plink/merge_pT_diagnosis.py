@@ -12,7 +12,9 @@ from functools import reduce
 #save_name='kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv'
 #path='/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle/ADSP_no_apoe/'
 #save_name='/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_no_apoe_qc'
-
+#
+#path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe_qc/'
+#save_name='kunkle/kunkle_no_apoe_qc_check'
 
 #path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
 #save_name='kunkle/fixed_0224/qc_on_variant_maf01'
@@ -27,6 +29,10 @@ from functools import reduce
 #save_name='kunkle/fixed_0224/new_beta_noqc'
 
 
+
+#path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_rsid_1002/ADSP_qc_all/'
+#save_name='wightman/fixed_rsid1002/ADSP_qc_all'
+
 # new beta for wightman
 
 #sumstat=["bellenguez","kunkle","wightman"]
@@ -36,17 +42,23 @@ from functools import reduce
 #plink=["ADSP_no_apoe"]
 #path = '/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe/'
 
-sumstat=["jansen"]
-plink=["ADSP_qc_all"]
-save_name='jansen/ADSP_qc_all'
+
+#path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/bellenguez/new_sep22/ADSP/'
+#save_name='bellenguez/new_sep22/ADSP'
+
+
+path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP/'
+save_name='jansen/ADSP'
+
+
+#sumstat=["jansen"]
+#plink=["ADSP_qc_all"]
+sumstat=['kunkle']
 
 for x in sumstat:
   #for y in plink:
   #path = '/gpfs/commons/home/tlin/output/cT/old_plink_chr_sep/'+ x + '/' + y + '/'
   print("start " + x)
-  #path = '/gpfs/commons/home/tlin/output/cT/old_plink_chr_sep/' + x + '/fixed_0224/polyfun_beta_no_clump/'
-  path = '/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP_qc_all/'
-  #save_name = 'new_plink/' + x + '/' + x + "_" + 'polyfun_beta_noclump' 
   prs_e5 = pd.read_csv(path+"pT_e-5.prs", sep = ' ', names = ["IID","PRS"])
   prs_001 = pd.read_csv(path+"pT_0.001.prs", sep = ' ', names = ["IID","PRS"])
   prs_005 = pd.read_csv(path+"pT_0.005.prs", sep = ' ', names = ["IID","PRS"])   
