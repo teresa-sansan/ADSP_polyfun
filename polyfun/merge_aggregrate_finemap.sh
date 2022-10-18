@@ -9,7 +9,7 @@
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/new_susie/'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/susie/'
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/susie'
-path='/gpfs/commons/home/tlin/output/jansen/finemap/'
+#path='/gpfs/commons/home/tlin/output/jansen/finemap/'
 #path='/gpfs/commons/home/tlin/output/jansen/susie/'
 #path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/'
 #path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/'

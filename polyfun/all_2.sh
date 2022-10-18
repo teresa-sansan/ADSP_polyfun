@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=180G
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/%x_%j.log
 
 sumstat_name='wightman'
 
@@ -26,7 +26,8 @@ sumstat_name='wightman'
 #output='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/all_anno'
 
 summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/wightman_fixed_beta.tsv.gz'
-output='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/all_anno'
+#output='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/all_anno'
+output='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/bl'
 
 bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
 all_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/combined_AD_annotations_polyfun/combined_AD_annotations_polyfun_'
@@ -55,12 +56,12 @@ summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats
 ##1-2
 if false; then
 echo $summary_stats
-
+#,$all_anno,$brain_H3K4me3,$brain_H3K27ac
 python polyfun.py \
   --compute-h2-L2 \
   --output-prefix $output \
   --sumstats $summary_stats \
-  --ref-ld-chr $bl/baselineLF2.2.UKB.,$all_anno,$brain_H3K4me3,$brain_H3K27ac \
+  --ref-ld-chr $bl/baselineLF2.2.UKB. \
   --w-ld-chr $bl/weights.UKB. \
   --allow-missing
 echo finish polyfun1_2
