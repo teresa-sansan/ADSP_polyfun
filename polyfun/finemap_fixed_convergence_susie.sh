@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=100:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/max_snp_10/try_rescue_not_converge/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/susie/max_snp_10/try_rescue_not_converge/%x_%j.log
 
 
 ## change #56 and add the revision in #57.
@@ -15,7 +15,6 @@ conda activate polyfun
 
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
 
-anno='all_anno'
 ##bellenguez
 if false; then
 echo run bellenguez
@@ -32,11 +31,20 @@ fi
 
 
 #wightman
-if true; then
+if false; then
 echo run wightman
 sumstat='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/'
 n=74004
 output='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/'
+fi
+
+## jansen
+if true; then
+echo run jansen
+sumstat='/gpfs/commons/home/tlin/output/'
+output='/gpfs/commons/home/tlin/output/jansen/susie'
+n=450734
+anno='jansen'
 fi
 
 ## run it using 1 MB window sliding window, with 0.5 MB overlap.
@@ -61,7 +69,7 @@ do
 	for start in  $block_1 $block_head $block_2   ## do finemap in each chunk. 
 	do
 	end=$(expr $start + 1000000)
-		if [ $start > 0 -a ! -f $output/$anno/finemap/max_snp_10/try_rescue_not_converge/bellenguez_max_snp_${max_num_snp}.chr${chr}.${start}.${end}.log ]; then
+		if [ $start > 0  ]; then
 			python finemapper_max_iter_1000.py \
 			--ld $FILES/chr${chr}_${LD_start}_${LD_end} \
 			--sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
@@ -70,11 +78,11 @@ do
 			--non-funct \
     	  	--max-num-causal ${max_num_snp} \
 	  		--allow-missing \
-			--out $sumstat/susie/finemap/max_snp_10/try_rescue_not_converge/finemap_max_snp_${max_num_snp}.chr${chr}.${start}.${end}.gz 
+			--out $output/max_snp_10/try_rescue_not_converge/finemap_max_snp_${max_num_snp}.chr${chr}.${start}.${end}.gz 
 
 		fi
 	
 	done
-done < $sumstat/susie/finemap/max_snp_10/run_IBSS_not_converge_list.txt
+done < $output/max_snp_10/run_IBSS_not_converge_list.txt
 
 #/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/run_IBSS_not_converge_list.txt

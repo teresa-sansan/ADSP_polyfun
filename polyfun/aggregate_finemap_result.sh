@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=aggregate_finemap_wightman_bl
+#SBATCH --job-name=aggregate_finemap_jansen
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=3:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/jansen/finemap/max_snp_10/%x_%j.log
 
 ## Note:
 ## There are two parts of this script. 
@@ -43,7 +43,7 @@ kunkle='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzhei
 fi
 
 ## jansen
-if false;then
+if true;then
 jansen='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Jansen_et_al_2019_hg37_ldsc.tsv.gz'
 path='/gpfs/commons/home/tlin/output/jansen'
 #path='/gpfs/commons/home/tlin/output/jansen/susie/'
@@ -52,14 +52,14 @@ path='/gpfs/commons/home/tlin/output/jansen'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations'
 fi
 #anno='susie'
-
+max_snp=10
 ## set true if you want to calculate normal PolyFun finemap result
-if false; then
+if true; then
 for chr in {1..22}
 do
 	echo 'start aggregating chr' $chr
 	python aggregate_finemapper_results_modified.py \
-		--out-prefix $path/$anno/finemap/max_snp_${max_snp}/${anno} \
+		--out-prefix $path/$anno/finemap/max_snp_${max_snp}/jansen \
 		--sumstats $wightman \
 		--out $path/$anno/finemap/max_snp_${max_snp}/chr${chr}.aggregate.all.txt.gz \
 		--allow-missing \
@@ -79,12 +79,13 @@ path_converge='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/fine
 ## wightman fixed convergence ##070622
 #path_converge='/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/try_rescue_not_converge'
 
-anno='all_anno'
-if true; then
+#anno='all_anno'
+anno='susie'
+if false; then
 python aggregate_finemapper_results_fixed_convergence.py \
-                --out-prefix $path/$anno/finemap/max_snp_10/try_rescue_not_converge/$prefix_converge \
-                --sumstats $wightman \
-                --regions-file $path/$anno/finemap/max_snp_10/run_IBSS_not_converge_list.txt \
+                --out-prefix $path/$anno/max_snp_10/try_rescue_not_converge/$prefix_converge \
+                --sumstats $jansen \
+                --regions-file $path/$anno/max_snp_10/run_IBSS_not_converge_list.txt \
                 --allow-missing \
-                --out $path/$anno/finemap/max_snp_10/try_rescue_not_converge/aggregate_rescue.all.txt.gz
+                --out $path/$anno/max_snp_10/try_rescue_not_converge/aggregate_rescue.all.txt.gz
 fi

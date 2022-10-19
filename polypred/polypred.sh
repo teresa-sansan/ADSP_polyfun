@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=Polypred_susie
+#SBATCH --job-name=Polypred
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=50G
 #SBATCH --time=5:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/polypred/%x_%j.log 
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/finemap/polypred/%x_%j.log 
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate 
@@ -26,8 +26,8 @@ fi
 
 ##wightman
 if true; then
-path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/'
-#path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/finemap/'
+#path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/'
+path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/finemap/'
 
 fi
 
@@ -43,8 +43,8 @@ converge_file='agg_fixed_converge.tsv.gz'
 
 python polypred.py \
 	--predict \
-	--betas $path/max_snp_${max_snp}/$converge_file \
-	--output-prefix $path/polypred/fixed_max_snp_${max_snp}_polypred.tsv \
+	--betas $path/max_snp_${max_snp}/$ori_file \
+	--output-prefix $path/polypred/max_snp_${max_snp}_polypred.tsv \
 	--plink-exe ~/plink \
 	/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_qc_all/ADSP_qc_all_*.bed
 

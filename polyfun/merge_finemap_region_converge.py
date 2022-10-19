@@ -11,8 +11,11 @@ if False:
     agg_file_before_convergence_fix = '/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_10/'
     save_file = '/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/bl_brain_atac/max_snp_10/agg_fixed_converge.tsv.gz'
 
+if False:
+    path = '/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/finemap/max_snp_10/'
+
 if True:
-    path = '/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/max_snp_10/'
+    path='/gpfs/commons/home/tlin/output/jansen/finemap/max_snp_10/'
 
 ## Read file
 fix_convergence = pd.read_csv((path+'try_rescue_not_converge/aggregate_rescue.all.txt.gz'), compression = 'gzip', sep = '\t')

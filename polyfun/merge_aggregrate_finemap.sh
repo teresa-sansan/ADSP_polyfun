@@ -16,13 +16,14 @@
 
 #path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/'
 #path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/bl/'
-path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224/finemap/'
-summary_stat='bellenguez'
-#summary_stat='wightman'
+#path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224/finemap/'
+path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/finemap/'
+#summary_stat='bellenguez'
+summary_stat='wightman'
 #summary_stat='kunkle'
 #summary_stat='jansen'
 
-for max_snp in 10
+for max_snp in 1 5 10
 do 
   echo max_snp${max_snp}
   cd ${path}/max_snp_${max_snp}
