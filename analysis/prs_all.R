@@ -94,9 +94,12 @@ bellenguez_no_rescue <- pre_process('/gpfs/commons/home/tlin/output/bellenguez/o
 
 wightman_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_susie.prs.tsv')
 wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003.prs.tsv')
+wightman_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_bl.prs.tsv')
+wightman_fix_convergence <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_fixed_convergence.tsv')
 
 jansen_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/susie.prs.tsv')
 jansen_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/new_plink_polypred.tsv')
+jansen_fix_convergence <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/fixed_convergence.tsv')
 
 ### Other PRS method -----
 PRSice <- pre_process("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
@@ -164,7 +167,7 @@ process_prs_col_name <- function(df){
     }else{
       df$PRS = factor(df$PRS, level = c('max snp 10','max snp 5','max snp 1'))
     }
-  }else{
+  }else if('PRS' %in% df$PRS){
     df$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
     df[df$PRS=='p = 0.e5',]$PRS ="p = 1e-5"
     df$PRS = factor(df$PRS, level = c('p = 1e-5','p = 0.001','p = 0.005','p = 0.01','p = 0.05','p = 0.1','p = 0.5'))
@@ -687,7 +690,7 @@ plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred, bellenguez_bl, QC1n
                       QC2name = "all",QC3name='baseline', col = col_roc_polypred3,boot_num = 50, title='bellenguez', legendname = 'annotation')
 
 
-plot_ethnic_R2_facet(wightman_susie, wightman_polypred, FALSE, col = col_roc_polypred3, QC1name='none', QC2name = 'all', title = 'wightman', legendname = 'annotations' )
+plot_ethnic_R2_facet(wightman_susie_converged, wightman_bl_converged, wightman_polypred_converged, col = col_roc_polypred3, QC1name='none', QC2name = 'baseline', QC3name = 'all', title = 'wightman', legendname = 'annotations' )
 
 ## all, polyfun vs susie
 
@@ -982,37 +985,54 @@ plot_control_age_roc <- function(df, col=col_roc_E5, title=' ',age1="65", age2="
 plot_control_age_roc(wightman_adsp)
 
 
-plot_control_age_roc_multi <- function(df1, df2, df1_name, df2_name, title){
+plot_control_age_roc_multi <- function(df1, df2, df3, df1_name, df2_name, df3_name, title, legendname=FALSE){
   df1$method =df1_name 
   df2$method =df2_name 
   df=rbind(df1,df2)
-  df$method = factor(df$method, level=c(df1_name, df2_name))
-  plot <- ggplot(data = df, aes(x=auc, y = PRS, shape = age, color=method))+
-    geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
+  if(class(df3) != "logical"){
+    df3$method=df3_name
+    df=rbind(df, df3)
+    df$method = factor(df$method, level=c(df1_name, df2_name, df3_name))
+  }else{
+    df$method = factor(df$method, level=c(df1_name, df2_name))
+  }
+      plot <- ggplot(data = df, aes(x=auc, y = PRS, shape = age, color=method))+
+    geom_point(size=2,alpha=0.7,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
-    xlab('AUC')+ xlim(0.42,0.72)+ggtitle(title)+
+    xlab('AUC')+ xlim(0.42,0.72)+ggtitle(title)+guides(col=guide_legend("annotations"), shape=guide_legend('age threshold for controls'))+
     theme_bw() 
   plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.2,alpha=0.3,show.legend = FALSE) 
+  if(legendname!=FALSE){
+    plot=plot +
+      guides(col=guide_legend(legendname))
+  }
   return(plot)
 }
 
 
-wightman_polypred_control_age = plot_control_age_roc(wightman_polypred, col=col_roc_polypred3, title='All annotations', plot=FALSE)
+wightman_polypred_control_age = plot_control_age_roc(wightman_polypred, col=col_roc_polypred3, title='All annotations')
 wightman_susie_control_age = plot_control_age_roc(wightman_susie, col=col_roc_polypred3, title='no annotations', plot=FALSE)
-plot_control_age_roc_multi(wightman_polypred_control_age, wightman_susie_control_age, 'susie','polyfun', 'wightman')
 
-prow <- plot_grid(wightman_polypred_control_age+ theme(legend.position="none"), 
-                   wightman_susie_control_age+ theme(legend.position="none",axis.text.y = element_blank()),
-                   ncol = 2, nrow = 1)
-legend <- get_legend(
-    wightman_susie_control_age +
-    theme(legend.position = "bottom")
-  )
-plot_grid(prow, legend, ncol=1,rel_heights=c(3,.4))
+plot_control_age_roc_multi(plot_control_age_roc(wightman_polypred_converged, col=col_roc_polypred3, plot=FALSE),
+                           plot_control_age_roc(wightman_bl_converged, col=col_roc_polypred3, plot=FALSE),
+                           plot_control_age_roc(wightman_susie_converged, col=col_roc_polypred3, plot=FALSE),
+                           'all annotations', 'baseline','none', title='Wightman')
 
 plot_control_age_roc_multi(plot_control_age_roc(kunkle_polypred, col=col_roc_polypred3, plot=FALSE),
+                           plot_control_age_roc(kunkle_bl, col=col_roc_polypred3, plot=FALSE),
                            plot_control_age_roc(kunkle_susie, col=col_roc_polypred3, plot=FALSE),
-                           'susie','polyfun', 'kunkle')
+                           'all','baseline','none','Kunkle')
+
+plot_control_age_roc_multi(plot_control_age_roc(bellenguez_polypred, col=col_roc_polypred3, plot=FALSE),
+                           plot_control_age_roc(bellenguez_bl, col=col_roc_polypred3, plot=FALSE),
+                           plot_control_age_roc(bellenguez_susie, col=col_roc_polypred3, plot=FALSE),
+                           'all','baseline','none','bellenguez')
+
+
+plot_control_age_roc_multi(plot_control_age_roc(jansen_polypred, col=col_roc_polypred3, plot=FALSE),
+                           plot_control_age_roc(jansen_susie, col=col_roc_polypred3, plot=FALSE),
+                           FALSE,
+                           'all','none',FALSE, 'jansen')
 
 
 
@@ -1162,3 +1182,29 @@ plot_ethnic_roc(kunkle_jk, title='Jansen, qc_all',col_jk, boot=FALSE)
 plot_ethnic_roc(bellenguez_jk, title='Jansen, qc_all',col_jk, boot=FALSE)
 plot_ethnic_roc(wightman_jk, title='Jansen, qc_all',col_jk, boot=FALSE)
 plot_ethnic_roc(jansen_jk, title='Jansen, qc_all',col_jk, boot=FALSE)
+
+
+
+## check if fixing convergence is helpful ------
+## wightman
+summary(wightman_polypred$PRS10)
+summary(wightman_fix_convergence$all_anno)
+col_anno <- list("all_anno","bl","susie")
+wightman_polypred$all_anno = wightman_polypred$PRS10
+wightman_polypred$bl = wightman_bl$PRS10
+wightman_polypred$susie = wightman_susie$PRS10
+plot_ethnic_roc_facet(wightman_polypred,wightman_fix_convergence,FALSE, col=col_anno,title='wightman polypred', QC1name = 'no',QC2name = 'yes', legendname = 'fix_convergence')
+plot_ethnic_roc(wightman_fix_convergence, title='wightman polypred, fix convergence', 'all_anno', plot=TRUE)
+
+wightman_polypred_converged = wightman_polypred
+wightman_polypred_converged$PRS10 = wightman_fix_convergence$all_anno
+wightman_bl_converged = wightman_bl
+wightman_bl_converged$PRS10 = wightman_fix_convergence$bl
+wightman_susie_converged = wightman_susie
+wightman_susie_converged$PRS10 = wightman_fix_convergence$susie
+## jansen
+
+jansen_polypred$all_anno = jansen_polypred$PRS10
+jansen_polypred$susie = jansen_susie$PRS10
+plot_ethnic_roc_facet(jansen_polypred,jansen_fix_convergence,FALSE, col= list("all_anno",'susie'),title='jansen polypred', QC1name = 'no',QC2name = 'yes', legendname = 'fix_convergence')
+
