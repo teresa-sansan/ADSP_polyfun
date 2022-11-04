@@ -1,6 +1,7 @@
 #!/bin/bash 
+## run  wightman n fixed 
 
-for i in {1..22}
+for i in {5..15}
 do
 	for max_snp in  1 5 10
 	do	

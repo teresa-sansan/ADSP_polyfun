@@ -6,3 +6,4 @@ do
   sbatch --export=chr=$i plink_pT.sh   
 
 done
+pl
