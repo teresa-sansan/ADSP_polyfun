@@ -38,3 +38,7 @@ Duplicates
 - No SUBJID were found in "SUBJ_drop"
 
 
+4. Adding SAMPLEID
+- SampleID and SUBJID are not 1-1 match
+- ! Some SUBJID have up to 13 SampleID (which all of them are WGS)
+
