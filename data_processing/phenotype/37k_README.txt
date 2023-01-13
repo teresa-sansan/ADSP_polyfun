@@ -25,4 +25,16 @@ PCPCBD
 2. Merging phenotype file
 Duplicates
 - in Family-based and case-control
-- # 112 SUBJID are duplicates, # 16 SUBJID are not just duplicates
+- # 112 SUBJID duplicates, # 32 SUBJID of them differs
+    -- they are all cases
+    -- there is only one pair that the age of onset is younger in family based study (A-LOAD-LD007980, 58 yrs vs 65 yrs).
+       --- there is one pair that the age of onset in case control is 18 yrs younger than the family based study (A-LOAD-LD011716, 84 yrs vs 18 yrs)
+    -- 7 pairs that dont have age_baseline for case_control -> use the age of onset as age_baseline
+ 
+ 
+3. Final check (total rows: #38163)
+- NAN in Age_baseline: replace it with current Age (They are all cases)
+- dtype: change all numeric data into int
+- No SUBJID were found in "SUBJ_drop"
+
+
