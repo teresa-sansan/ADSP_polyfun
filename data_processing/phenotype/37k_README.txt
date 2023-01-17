@@ -1,3 +1,5 @@
+code is in /gpfs/commons/home/tlin/script/data_processing/phenotype/merge_pheno_37k.ipynb
+
 1. Preprocess
 ADNI (#1,565): 
 - AD diagnosis is defined as AD_last_visit
@@ -38,7 +40,15 @@ Duplicates
 - No SUBJID were found in "SUBJ_drop"
 
 
-4. Adding SAMPLEID
+4. Adding sampleID
+- Remove the 2 rows that appear in the SUBJ_drop file 
 - SampleID and SUBJID are not 1-1 match
 - ! Some SUBJID have up to 13 SampleID (which all of them are WGS)
+- Extraction: 
+    1. If there are both WGS and WES, take the WGS one
+    2. Take either the first WGS row (#599) or the first WES row (#183).
+- Some SUBJID are missing in the Manifest file. (1,917 rows)
+- Ends up with 36,246 rows ('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_merge_sampleID.tsv')
+  where there are 21,590 WGS and 14,656 WES samples
+  
 
