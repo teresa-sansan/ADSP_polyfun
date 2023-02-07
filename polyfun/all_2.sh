@@ -65,7 +65,7 @@ echo finish polyfun1_2
 fi
 
 #1-3
-if true; then
+if false; then
 for i in {1..21}
 do
 sbatch --export=chr=$i,output=$output /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
@@ -73,9 +73,9 @@ done
 fi
 
 #1-4
-if false; then
+if true; then
 python polyfun_assertion_error.py \
- 	--compute-h2-bins \
+ --compute-h2-bins \
   --output-prefix $output \
   --sumstats $summary_stats \
   --w-ld-chr $bl/weights.UKB. \
