@@ -1,9 +1,9 @@
-cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37
+cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/
 
-for i in {1..22}
+for i in 1 2 3 5 7 8 9 20
 do
 echo running chr $i
-sbatch --mem=90G -c 5 --wrap="~/plink --vcf correct/ADSP_annotated_chr${i}.correct.vcf.gz --make-bed --double-id -allow-extra-chr --out plink/ADSP_annotated_chr$i"
+sbatch --mem=90G -c 5 --wrap="~/plink --vcf correct_chr_vcf/ADSP_annotated_chr${i}.correct.vcf --make-bed --double-id -allow-extra-chr --out plink/ADSP_annotated_chr$i"
 done
 
 
