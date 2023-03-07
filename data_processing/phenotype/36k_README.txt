@@ -1,4 +1,4 @@
-code is in /gpfs/commons/home/tlin/script/data_processing/phenotype/merge_pheno_37k.ipynb
+code is in /gpfs/commons/home/tlin/script/data_processing/phenotype/merge_pheno_36k.ipynb
 
 1. Preprocess
 ADNI (#1,565): 
