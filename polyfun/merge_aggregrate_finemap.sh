@@ -1,9 +1,4 @@
-
-#path='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/susie_finemap/'
-#path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/bl/'
-#path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224/finemap/'
-#path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/finemap/'
-path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/finemap/'
+path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/'
 #summary_stat='bellenguez'
 summary_stat='wightman'
 #summary_stat='kunkle'
@@ -25,18 +20,17 @@ do
     #gzip aggregate.all.txt
 
     #echo finished, total line = $( zcat aggregate.all.txt.gz | wc -l )
-    
-    ## see if want to create a smaller agg file.
-    if false; then
+  done
+
+  ## see if want to create a smaller agg file.
+    if true; then
     zcat chr11.aggregate.all.txt.gz| head -n 1 > agg_extract_1e-3.tsv
     echo "start extracting SNP with p < 1e-3 "
-
   ### kunke  p value is in 9th column, while bellenguez and wightman are in 10th
-    echo 'start extracting pvalue < 0.001'
-    zcat chr${i}.aggregate.all.txt.gz|tail -n+2|awk '{if($10 <= 0.001) print$0}' >> agg_extract_1e-3.tsv
-    #zcat aggregate.all.txt.gz| tail -n+2| awk '{if($10 <= 0.001) print$0}' >> agg_extract_1e-3.tsv
+    #zcat chr${i}.aggregate.all.txt.gz|tail -n+2|awk '{if($10 <= 0.001) print$0}' >> agg_extract_1e-3.tsv
+    cat aggregate.all.txt| tail -n+2| awk '{if($10 <= 0.001) print$0}' >> agg_extract_1e-3.tsv
     echo finished, total line = $( cat agg_extract_1e-3.tsv| wc -l )
   fi
-  done
   echo
 done
+

@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=5:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/%x_%j.log
 
 ## Note:
 ## There are two parts of this script. 
@@ -32,7 +32,7 @@ if true;then
 wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta.munged.parquet'
 sumstat_name='wightman'
 #prefix='all_anno'
-path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203'
+path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer'
 #path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap'
 #path='/gpfs/commons/home/tlin/output/wightman/finemap'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/susie/finemap_fixed_assertion_susie_iter'
@@ -57,7 +57,7 @@ fi
 #anno='susie'
 ## set true if you want to calculate normal PolyFun finemap result
 if true; then
-for chr in {1..22}
+for chr in {17..22}
 do
 	echo 'start aggregating chr' $chr
 	python aggregate_finemapper_results_modified.py \

@@ -4,14 +4,14 @@
 if true; then
 #for anno in bl
 #do
-for i in 1 5 10
+for i in 5 10
 do
         echo "max_snp = $i" 
         #sbatch --export=max_snp=$i,anno=$anno  aggregate_finemap_result.sh 
         sbatch --export=max_snp=$i aggregate_finemap_result.sh 
 done
 #done
-fi
+fin
 
 
 ## run converge

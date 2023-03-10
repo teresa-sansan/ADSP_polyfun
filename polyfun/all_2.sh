@@ -4,11 +4,9 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=280G
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/new%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/new%x%j.log
 
 sumstat_name='wightman'
-
-
 
 #SBATCH --partition bigmem
 

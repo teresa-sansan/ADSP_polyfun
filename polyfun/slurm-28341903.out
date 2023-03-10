@@ -1,9 +1,0 @@
-max_snp = 1
-sbatch: unrecognized option '--/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/max_snp_10/%x_%j.log'
-Try "sbatch --help" for more information
-max_snp = 5
-sbatch: unrecognized option '--/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/max_snp_10/%x_%j.log'
-Try "sbatch --help" for more information
-max_snp = 10
-sbatch: unrecognized option '--/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/max_snp_10/%x_%j.log'
-Try "sbatch --help" for more information
