@@ -4,16 +4,16 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=280G
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/new%x%j.log
+#SBATCH --partition bigmem
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/%x%j.log
 
 sumstat_name='wightman'
 
-#SBATCH --partition bigmem
-
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_ldsc.tsv.gz'
 ##create munge
-output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/update_all+enformer' 
+#output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/update_all+enformer' 
 
+output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/all_except_enformer' 
 bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
 all_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/combined_AD_annotations_polyfun/combined_AD_annotations_polyfun_'
 
@@ -37,7 +37,6 @@ python munge_polyfun_sumstats.py \
 fi
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/Bellenguez_et_al_2021_hg37_ldsc.munged.parquet'
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/kunkle_et_al_2021_hg37_ldsc.munged.parquet'
-
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/jansen_et_al_2021_hg37_ldsc.munged.parquet'
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/sep22_new_bellenguez_et_al_2021_hg37_ldsc.munged.parquet'
 summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta.munged.parquet'
@@ -50,7 +49,7 @@ python polyfun.py \
   --compute-h2-L2 \
   --output-prefix $output \
   --sumstats $summary_stats \
-  --ref-ld-chr $bl/baselineLF2.2.UKB.,$deepsea,$roadmap,$glass_lab,$enformer,$glass_lab_enformer \
+  --ref-ld-chr $bl/baselineLF2.2.UKB.,$deepsea,$roadmap,$glass_lab \
   --w-ld-chr $bl/weights.UKB. \
   --allow-missing
 echo finish polyfun1_2
@@ -58,7 +57,7 @@ fi
 
 #1-3
 if false; then
-for i in {1..10}  ##1-10  
+for i in {1..22}   
 do
 sbatch --export=chr=$i,output=$output /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
 done

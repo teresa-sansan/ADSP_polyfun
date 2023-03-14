@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=25:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/finemap/%x%j.log
 
 ## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
@@ -42,13 +42,14 @@ fi
 if true; then
 sumstat_name='wightman'
 n=762971
+
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_all.${chr}.snpvar_constrained.gz"
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/bl.${chr}.snpvar_constrained.gz"
-sumstat="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/update_all+enformer.${chr}.snpvar_ridge_constrained.gz"
-anno_path='/gpfs/commons/home/tlin/output/wightman/update_all+enformer/'
+sumstat="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/all_except_enformer.${chr}.snpvar_ridge_constrained.gz"
+anno_path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/'
 
 #output="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap"
-output="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap"
+output="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/finemap"
 
 #n=74004
 

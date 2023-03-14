@@ -5,8 +5,9 @@
 #do
 	for i in 1 5 10
 	do
-		#sbatch --export=max_snp=$i,anno=$anno polypred.sh
+		#sbatch --export=max_snp=$i,anno=$anno polypred.s sh
 		sbatch --export=max_snp=$i polypred.sh
 	done
 #done
 
+    
