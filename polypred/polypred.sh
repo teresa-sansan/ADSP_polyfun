@@ -43,5 +43,5 @@ python polypred.py \
 	--betas $path/max_snp_${max_snp}/$agg_file \
 	--output-prefix $path/polypred/max_snp_${max_snp}_polypred.tsv \
 	--plink-exe ~/plink \
-	/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/remove_triallelic/chr*.uni.bed
+	/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/remove_triallelic/chr*_no_dups.bed
 
