@@ -4,28 +4,28 @@ library("heatmaply")
 library("pheatmap")
 library("ggplot2")
 library("RColorBrewer")
+library("qqman")
 library("dplyr")
+
 col_name = c("CHR","SNP","BP","A1","A2","SNPVAR","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
-par(mfrow=c(1,2)) 
+par(mfrow=c(1,1)) 
 
 # load data ---------------------------------------------------------------
-test= read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/test.tsv", header=TRUE)
-#bellenguez_max_10 <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/test.tsv", header = T)
+bellenguez_max_10 <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/test.tsv", header = T)
 bellenguez_max_7 <- read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_7/agg_bellenguez.extract_1e-3.tsv.gz"), header = T, fill = T)
-old_test = read.table(gzfile("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/max_snp_10/finemap_bellenguez_all_2.extract_1e-3.csv.gz"), header = T)
 kunkle_max_10 <- read.table("/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_10/agg_kunkle_extract_1e-3.tsv", header = T)
 bellenguez_max_10_updateRSID <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_bellenguez_extract_1e-3.tsv", header = T)
 bellenguez_min_pip <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_min_extract_1e-3.tsv", header = T)
 bellenguez_max_pip <- read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap/max_snp_10/agg_max_extract_1e-3.tsv", header = T)
 bellenguez_fixed_0224_pip <- read.table('/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/aggregate_extr_1e-3.tsv', header=T)
 kunkle_pip = read.table("/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/max_snp_10/agg_kunkle_extract_1e-3.tsv", header =T)
-wightman_pip = read.table("/gpfs/commons/home/tlin/output/wightman/fixed_0224/finemap/max_snp_10/agg_extract_1e-3.tsv", header= T)
-new_bellenguez_pip = read.table("/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/try_rescue_not_converge/finemap_genomewide_1e-3.tsv", header = T)
-#col_name_bellenguez =  c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
-# bellenguez = read.table(gzfile('/gpfs/commons/home/tlin/polyfun/output/bellenguez/bellenguez/finemap/finemap_bellenguez.extract_e-01.csv.gz'))
-#colnames(bellenguez)<- c("CHR","SNP","BP","A1","A2","SNPVAR","MAF","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
-#bellenguez = bellenguez[,-7]
 
+wightman_old = read.table("/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap/max_snp_10/agg_extract_1e-3_fix_converge.tsv", header=F)
+wightman_update_enformer_max10 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_10/agg_extract_1e-3.tsv', header = T)
+wightman_update_enformer_max5 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_5/agg_extract_1e-3.tsv', header = T)
+wightman_update_enformer_max1 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_1/agg_extract_1e-3.tsv', header = T)
+wightman_old = wightman_old[-17]
+colnames(wightman_old) = colnames(wightman_update_enformer_max1)
 
 
 #tau = read.csv('/gpfs/commons/home/tlin/polyfun/data/bl_annotation_tau.tsv', header=T, sep='\t')
@@ -35,28 +35,21 @@ new_bellenguez_pip = read.table("/gpfs/commons/home/tlin/output/bellenguez/belle
 # visualization -----------------------------------------------------------
 
 # *draw manhatten plot ---------
-gwas_man <- function(data, title, color=c("blue4", "firebrick1"), ylim = c(0,10),  highlight = FALSE){
+gwas_man <- function(data, title, color=c("blue4", "firebrick1"), ylim = c(5,25),  highlight = FALSE){
     qq(data$P, main =title)
     if(highlight == FALSE){
       manhattan(data, chr = "CHR", bp = "BP", snp = "SNP", p = "P", ylim = ylim, col = color , main = title, annotatePval = 1e-8,annotateTop = TRUE)
     }
    else{
-     manhattan(data, chr = "CHR", bp = "BP", snp = "SNP", p = "P", ylim = ylim, col = c("grey39","grey79") , main = title,annotatePval = 1e-8,annotateTop = FALSE, highlight = highlight)
+     manhattan(data, chr = "CHR", bp = "BP", snp = "SNP", p = "P", ylim = ylim, col = c("grey39","grey79") , main = title,annotatePval = 1e-10,annotateTop = FALSE, highlight = highlight)
    }
-  }
+}
+
+manhattan(wightman_update_enformer_max10, annotatePval = 0.01, chr = "CHR", bp = "BP", snp = "SNP", p = "P", ylim = c(5,30), main='Wightman, 2022')
 
 
- 
-gwas_man(brain_atac,"brain_atac")
-gwas_man(microglia, "microglia")
-gwas_man(data = kunkle, title = "kunkle")
-gwas_man(microglia, "microglia")
+gwas_man(wightman_update_enformer_max10, "Wightman, 2022") 
 
-
-
-qq(kunkle_gwas$P)
-tail(kunkle_gwas[order(kunkle_gwas["P"]),], decreasing = FALSE)
-kunkle_gwas_omit <- kunkle_gwas[!duplicated("SNP",)]
 
 
 # *GWAS significant ---------
@@ -74,13 +67,11 @@ gwas_data <- function(data, pvalue=FALSE, p=TRUE){
   }
 }
 
-
 kunkle_gwas = subset(kunkle, P<1e-8)
 jansen_gwas = subset(jansen, P<1e-8)
-brain_atac_gwas = gwas_data(brain_atac)
-microglia_gwas = gwas_data(microglia)
-bl_kunkle_5 <- subset(baseline_kunkle, P<1e-8)
-bl_kunkle_1 <- subset(baseline_kunkle1, P<1e-8)
+wightman_gwas = subset(wightman_update_enformer_max10, P < 1e-8)
+gwas_man(wightman_gwas)
+
 roadmap_gwas = gwas_data(roadmap)
 
 kunkle_SNPreport = c("rs4844610","rs6733839","rs10933431","rs9271058","rs75932628","rs9473117",
@@ -96,7 +87,6 @@ gwas_man(microglia_gwas,"microglia_gwas")
 kunkle_gwas_sort <- kunkle_gwas[with(kunkle_gwas,order(P)),]
 
 manhattan(kunkle, highlight =kunkle_SNPreport, annotatePval = 0.0005,annotateTop = FALSE, main = ("Kunkle Baseline, highlighted"))
-
 
 
 head(baseline_kunkle[with(baseline_kunkle,order(PIP)),],n=50)[1:10]
@@ -130,14 +120,14 @@ manhattan(subset(bl_max5, PIP>0.05), p="PIP", logp = FALSE,ylim = c(0,1.1), ylab
 
 
 
-# *bar plot (SNPs count in different categories) ------
+
+
+# *bar plot (SNPs count in different PIP threshold) ------
 
 count_SNP <-function(df){
   return(c(dim(subset(df,P<1e-5))[1],dim(subset(df,PIP >=0.8))[1],dim(subset(df, PIP>=0.5))[1],
           dim(subset(df,PIP>=0.3))[1]))
 }
-
-
 create_bar_plot <- function(df,title){
   count <- data.frame(
     name=c("PIP >= 0.8","PIP >= 0.5","PIP >= 0.3"),
@@ -152,16 +142,11 @@ create_bar_plot(bellenguez_max_10, title="bellenguez_fixed_0224")
 create_bar_plot(old_test, title="bellenguez_all_2")
 create_bar_plot(bellenguez_max_10_updateRSID, title="bellenguez_updateRSID")
 create_bar_plot(kunkle_max_10, title="kunkle_fixed_0224")  
-  #colnames(count) <- c("P<1e-05","PIP >= 0.8","PIP >= 0.5","PIP >= 0.3")
-  #barplot(count, beside=T, width=.2, col=terrain.colors(3), ylim = c(0,max(count)*0.35*dim(count)[1]))
-  
-  #legend("topleft",rownames(count), fill=terrain.colors(dim(count)[1]),bty='n')
-  #if(line != F)
-  #  abline(h = c(max(count[,1]),max(count[,2]),max(count[,3])), lty=3, col = "red")
+create_bar_plot(wightman_update_enformer_max10, title = 'wightman, all enformer, max10')
 
-
+create_bar_plot(wightman_update_enformer_max5, title = 'wightman, all enformer, max5')
+create_bar_plot(wightman_update_enformer_max1, title = 'wightman, all enformer, max1')
 create_bar_plot(kunkle_max_10, line=T)
-create_bar_plot_legend(kunkle_max_10)
 
 create_bar_plot_legend <- function(df,remove=T,main=F){
   plot.new()
@@ -171,21 +156,20 @@ create_bar_plot_legend <- function(df,remove=T,main=F){
   if(main != F)
     barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1), main=main, ylab = "SNP count")
   else
-  barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1), ylab = "SNP count")
-  #barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1))
-  
-  legend(0.3,35,legend = rownames(df), fill=terrain.colors(dim(only_pip)[1]),cex =1.3,
+  barplot(only_pip, beside=T, width=.2, col=terrain.colors(dim(only_pip)[1]), ylim = c(0,max(only_pip)*1.1), ylab = "# of SNP")
+  legend("topleft",legend = c("all_enformer_max1","all_enformer_max5","all_enformer_max10"), fill=terrain.colors(dim(only_pip)[1]),cex =1.3,
          bty='n',xpd=TRUE)
-  
-  par(opar)
   print(only_pip)
-    
 }
   
-
-
-
 # ** different annotations ----
+
+
+
+SNP_num <-data.matrix(data.frame(count_SNP(wightman_update_enformer_max1),count_SNP(wightman_update_enformer_max5),count_SNP(wightman_update_enformer_max10), count_SNP(wightman_old)))
+#row.names(SNP_num) = c('Wightman_all(max_1)','Wightman_all(max_5)','Wightman_all(max_10)','Wightman_wo_enformer(max_10)')
+
+create_bar_plot_legend(SNP_num)
 
 SNP_num <- setNames(data.frame(
   t(data.frame(count_SNP(bl_max1),count_SNP(bl_max3),count_SNP(bl_max5),
@@ -196,8 +180,7 @@ SNP_num <- setNames(data.frame(
                              'baseline_brain_atac(max1)', 'baseline_brain_atac(max3)','baseline_brain_atac(max5)',
                              'baseline_microglia','baseline_roadmap(all)','baselin_roadmap(specific col)',
                              'baseline_roadmap_brain_atac','baseline_roadmap_microglia')),
-               c("P<1e-08","PIP>=0.8","PIP>=0.5","PIP>=0.3")
-               )
+               c("P<1e-08","PIP>=0.8","PIP>=0.5","PIP>=0.3"))
 
 
 SNP_main <- data.matrix(t(data.frame(count_SNP(bl_max1),count_SNP(bl_brainatac_max1),
@@ -206,9 +189,18 @@ SNP_main <- data.matrix(t(data.frame(count_SNP(bl_max1),count_SNP(bl_brainatac_m
                   count_SNP(bl_deepsea), count_SNP(bl_deepsea_microglia),count_SNP(kunkle_all))))
 
 
+
 rownames(SNP_main) <- c('bl','bl_brain_atac','bl_microglia', 'bl_roadmap',
                         'bl_roadmap_brain_atac','bl_roadmap_microglia','bl_deepsea',
                         'bl_deepsea_microglia','bl_all')
+
+
+
+
+SNP_num <- data.matrix(t(data.frame(count_SNP(wightman_update_enformer_max1),count_SNP(wightman_update_enformer_max5),count_SNP(wightman_update_enformer_max10), count_SNP(wightman_old))))
+create_bar_plot_legend(SNP_num)
+
+
 create_bar_plot(SNP_main)
 create_bar_plot(SNP_main, line = T)
 create_bar_plot_legend(SNP_main)
@@ -217,7 +209,7 @@ create_bar_plot_legend(SNP_main)
 SNP_main_new <- data.matrix(t(data.frame(count_SNP(bl_max1),count_SNP(bl_brainatac_max1),
                                      count_SNP(bl_microglia),count_SNP(bl_roadmap_specific_col),
                                      count_SNP(bl_deepsea),count_SNP(bl_roadmap_deepsea),count_SNP(kunkle_all))))
-create_bar_plot_legend(SNP_main_new)
+create_bar_plot_legend(SNP_num)
 rownames(SNP_main_new) <- c('baseline','baseline+brain_atac','baseline+microglia', 'baseline+roadmap',
                         'baseline+deepsea','baseline+roadmap+deepsea',"baseline+all annotations")
 create_bar_plot(SNP_main_new)
@@ -413,6 +405,10 @@ count_credibleset <- function(df){
 credible_matrix <- cbind(count_credibleset(credible_3),count_credibleset(credible_5),
                          count_credibleset(credible_7),count_credibleset(credible_10))
 
+credible_matrix <- cbind(count_credibleset(wightman_pip), count_credibleset(wightman_update_enformer_max10), count_credibleset(wightman_update_enformer_max5), count_credibleset(wightman_update_enformer_max1))
+credible_matrix
+
+
 
 colnames(credible_matrix) <- c(3,5,7,10)
 
@@ -465,7 +461,7 @@ test$POS = str_c("Chr",test$CHR,'_' ,test$start, "_",test$end)
 old_test$POS = str_c("Chr",old_test$CHR,'_' ,old_test$start, "_",old_test$end)
 # functions
 create_PIP_subset <- function(df, thres, upperthres=TRUE){
-  df <- subset(df, df$CREDIBLE_SET > 0) ## first, extract those rows that have credibleset != 0
+  df <- subset(df, df$CREDIBLE_SET > 0) ## first, extract those rows that have credible set != 0
   print(names(df))
   print(str_c("Chr",df$CHR,'_' ,df$start, "_", df$end))
   df$POS = str_c("Chr",df$CHR,'_' ,df$start, "_", df$end) ## creat a new column thats easier to match in later stage
@@ -509,17 +505,8 @@ create_lollipop <- function(df, upperthres, lowerthres, title){
 }
 
 
-PIP_0.95 <- create_lollipop(old_test, 0.95,0.5,"Max SNP per locus = 10, fixed_0224")
-PIP_0.5 <-create_lollipop(test, 0.5,0.5,"Max SNP per locus = 10, fixed_0224")
-
-
-
-
-PIP_0.95 <- create_lollipop(aggregrate10, 0.95,0.5,"Max SNP per locus = 10")
-PIP_0.5 <-create_lollipop(aggregrate10, 0.5,0.5,"Max SNP per locus = 10")
-
-PIP_0.95 <- create_lollipop(kunkle_max_10, 0.95,0.5,"Max SNP per locus = 10, kunkle")
-PIP_0.5 <-create_lollipop(kunkle_max_10, 0.5,0.5,"Max SNP per locus = 10, kunkle")
+PIP_0.95 <- create_lollipop(wightman_update_enformer_max10, 0.5,0.5,"Max SNP per locus = 10, kunkle")
+PIP_0.5 <-create_lollipop(wightman_update_enformer_max5, 0.5,0.5,"Max SNP per locus = 5, kunkle")
 
 #bellenguez_min_10
 
@@ -671,5 +658,4 @@ bellenguez_max_10_updateRSID %>% group_by(pos) %>% filter(n()==1) %>% ungroup() 
 check_ld = bellenguez_max_10_updateRSID[bellenguez_max_10_updateRSID$pos == 'Chr17_43000001_46000001_1',]
 
 write.table(check_ld,"/gpfs/commons/home/tlin/data/check_bellenguez_ld.tsv", row.names = FALSE, sep = '\t',quote=F)
-
 write.table(check_ld$SNP,"/gpfs/commons/home/tlin/data/check_bellenguez_ld_snp_only.tsv", row.names = FALSE, sep = '\t',quote=F)
