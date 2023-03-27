@@ -6,6 +6,16 @@ library("ggplot2")
 library("RColorBrewer")
 library("qqman")
 library("dplyr")
+library(UpSetR)
+library(tidyverse)
+
+install.packages('dplyr')
+install.packages("tidyverse")
+install.packages(c('haven','readr'))
+install.packages("UpSetR")
+
+install.packages("gridExtra")
+#install.packages('tidyr', dependencies=TRUE)
 
 col_name = c("CHR","SNP","BP","A1","A2","SNPVAR","N","Z","P","PIP","BETA_MEAN","BETA_SD","DISTANCE_FROM_CENTER","CREDIBLE_SET")
 par(mfrow=c(1,1)) 
@@ -27,6 +37,7 @@ wightman_update_enformer_max1 = read.table('/gpfs/commons/home/tlin/output/wight
 wightman_old = wightman_old[-17]
 colnames(wightman_old) = colnames(wightman_update_enformer_max1)
 
+wightman_snp = read.table('/gpfs/commons/home/tlin/data/snp_wightman_opentarget.tsv', header = T, sep = '\t')
 
 #tau = read.csv('/gpfs/commons/home/tlin/polyfun/data/bl_annotation_tau.tsv', header=T, sep='\t')
 
@@ -659,3 +670,12 @@ check_ld = bellenguez_max_10_updateRSID[bellenguez_max_10_updateRSID$pos == 'Chr
 
 write.table(check_ld,"/gpfs/commons/home/tlin/data/check_bellenguez_ld.tsv", row.names = FALSE, sep = '\t',quote=F)
 write.table(check_ld$SNP,"/gpfs/commons/home/tlin/data/check_bellenguez_ld_snp_only.tsv", row.names = FALSE, sep = '\t',quote=F)
+
+
+
+
+## COUNT SNP------
+library('dplyr')
+
+wightman_update_enformer_max1 %>%
+  dplyr::filter(PIP > 0.9)
