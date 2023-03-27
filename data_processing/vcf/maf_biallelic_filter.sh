@@ -3,7 +3,7 @@
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=70G
-#SBATCH --time=5:00:00
+#SBATCH --time=35:00:00
 #SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/correct_chr_vcf/filt/%x_%j.log 
 
 
