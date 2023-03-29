@@ -9,6 +9,9 @@ library("dplyr")
 library(UpSetR)
 library(tidyverse)
 
+library(mltools)
+library(data.table)
+
 install.packages('dplyr')
 install.packages("tidyverse")
 install.packages(c('haven','readr'))
@@ -35,6 +38,13 @@ wightman_update_enformer_max10 = read.table('/gpfs/commons/home/tlin/output/wigh
 wightman_update_enformer_max5 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_5/agg_extract_1e-3.tsv', header = T)
 wightman_update_enformer_max1 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_1/agg_extract_1e-3.tsv', header = T)
 wightman_old = wightman_old[-17]
+
+wightman_bl_max10 = read.table('/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/bl/max_snp_10/agg_extract_1e-3.tsv', header = T)
+wightman_noml_max10 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml/finemap/max_snp_10/agg_extract_1e-3.tsv', header = T)
+wightman_no_enformer_max10 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/finemap/max_snp_10//agg_extract_1e-3.tsv', header=T)
+wightman_update_enformer_max10 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_10/agg_extract_1e-3.tsv', header = T)
+wightman_enformer_max10=read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/enformer/finemap/max_snp_10/agg_extract_1e-3.tsv', header=T)
+
 colnames(wightman_old) = colnames(wightman_update_enformer_max1)
 
 wightman_snp = read.table('/gpfs/commons/home/tlin/data/snp_wightman_opentarget.tsv', header = T, sep = '\t')
@@ -679,3 +689,53 @@ library('dplyr')
 
 wightman_update_enformer_max1 %>%
   dplyr::filter(PIP > 0.9)
+
+wightman_update_enformer_max1[wightman_update_enformer_max1$PIP > 0.9,]
+upset_SNP <- function(df, filter){
+  PIP8 <- df[df$PIP > 0.8,]
+  PIP8$PIP_FILT = 0.8
+  PIP5 <- df[df$PIP > 0.5,]
+  PIP5$PIP_FILT = 0.5
+  PIP3 <- df[df$PIP > 0.3,]
+  PIP3$PIP_FILT = 0.3
+  return(c(PIP8, PIP5, PIP3))
+  
+}
+
+
+
+SNP_filter <- function(df, pip_filter){
+  df<- df[df$PIP > pip_filter,]
+  df$PIP_FILT = pip_filter
+  return(df)
+}
+
+
+Upset_SNP <- function(df,anno_name,filt){
+  ## create the dataset
+  PIP <- SNP_filter(df, filt)
+  new_df = PIP
+  new_df["ANNO"] = anno_name
+  new_df = new_df[,c("CHR","SNP","BP","SNPVAR","P","PIP","BETA_MEAN","BETA_SD","PIP_FILT","ANNO")]
+  return(new_df)
+}
+
+Upset_SNP_plot <- function(filt){
+  all <- Upset_SNP(wightman_update_enformer_max10,"all_anno",filt)
+  bl  <- Upset_SNP(wightman_bl_max10,'baseline',filt) 
+  all_except_enformer <- Upset_SNP(wightman_no_enformer_max10,'no_enformer',filt)
+  wightman_no_ml <- Upset_SNP(wightman_no_ml_10,"no_ml",filt)
+  enformer <- Upset_SNP(wightman_enformer_max10, "enformer",filt)
+  
+  try = rbind(all, bl,all_except_enformer,wightman_no_ml, enformer)
+  
+  try['bl'] = 1
+  try  <- mutate(try , roadmap_deepsea = ifelse(ANNO=="all_anno" | ANNO == 'no_enformer',1,0))
+  try  <- mutate(try , enformer = ifelse(ANNO=="all_anno"|ANNO == 'enformer',1,0))
+  try  <- mutate(try ,  glass_lab = ifelse(ANNO=="all_anno" | ANNO== 'no_enformer' | ANNO== 'no_ml' ,1,0))
+  
+  upset(try, sets = c("bl", "roadmap_deepsea", "glass_lab", "enformer"), sets.bar.color = "#56B4E9",order.by = "freq",keep.order = TRUE)
+}
+
+Upset_SNP_plot(0.5)
+Upset_SNP_plot(0.3)
