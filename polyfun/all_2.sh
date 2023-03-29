@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=wightman_no_ml
+#SBATCH --job-name=wightman_old_ml
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=180G
+#SBATCH --mem=150G 
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml/%x%j.log
 
-##### --partition bigmem
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/old_ml/%x%j.log
 
+## --partition bigmem
 sumstat_name='wightman'
 
 #summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_ldsc.tsv.gz'
@@ -15,7 +15,8 @@ sumstat_name='wightman'
 #output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/update_all+enformer' 
 
 #output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/all_except_enformer' 
-output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml/no_ml' 
+
+output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/old_ml/old_ml' 
 bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
 all_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/combined_AD_annotations_polyfun/combined_AD_annotations_polyfun_'
 
@@ -51,14 +52,14 @@ python polyfun.py \
   --compute-h2-L2 \
   --output-prefix $output \
   --sumstats $summary_stats \
-  --ref-ld-chr $bl/baselineLF2.2.UKB.,$glass_lab \
+  --ref-ld-chr $bl/baselineLF2.2.UKB.,$glass_lab,$roadmap,$deepsea \
   --w-ld-chr $bl/weights.UKB. \
   --allow-missing
 echo finish polyfun1_2
 fi
 
 #1-3
-if true; then
+if false; then
 for i in {1..22}   
 do
 sbatch --export=chr=$i,output=$output /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
@@ -66,7 +67,7 @@ done
 fi
 
 #1-4
-if false; then
+if true; then
 python polyfun_assertion_error.py \
  --compute-h2-bins \
   --output-prefix $output \

@@ -1,4 +1,4 @@
-path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/'
+path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml/finemap/'
 #summary_stat='bellenguez'
 summary_stat='wightman'
 #summary_stat='kunkle'

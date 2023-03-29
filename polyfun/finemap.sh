@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=25:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/finemap/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml/finemap/%x%j.log
 
 ## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
@@ -42,20 +42,12 @@ fi
 if true; then
 sumstat_name='wightman'
 n=762971
-
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_all.${chr}.snpvar_constrained.gz"
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/bl.${chr}.snpvar_constrained.gz"
-sumstat="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/all_except_enformer.${chr}.snpvar_ridge_constrained.gz"
-anno_path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/'
-
-#output="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap"
-output="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/finemap"
-
-#n=74004
-
-#susie
-#output='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/finemap_n_fixed/'
-#--out $anno_path/$anno/finemap/max_snp_${max_num_snp}/${anno}.chr${chr}.$start.$end.gz
+#anno='no_ml'
+anno_path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/'
+sumstat="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/${anno}.${chr}.snpvar_ridge_constrained.gz"
+output="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/finemap"
 fi
 
 ## jansen
@@ -124,7 +116,7 @@ do
 			--method susie \
 			--max-num-causal $max_num_snp \
 			--allow-missing \
-			--out $output/${anno}/max_snp_${max_num_snp}/${sumstat_name}.${chr}.$start.$end.gz
+			--out $output/max_snp_${max_num_snp}/${sumstat_name}.${chr}.$start.$end.gz
 		fi
 	fi
 
