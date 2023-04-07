@@ -1,9 +1,9 @@
 path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/'
 
-for i in {1..22}  
+for i in {20..22}  
 do
 echo running chr $i
-sbatch --mem=90G -c 5 --wrap="~/plink --vcf $path/correct_chr_vcf/filt/ADSP_annotated_no_dot_chr${i}.genofilt.vcf.gz --biallelic-only strict --make-bed --double-id -allow-extra-chr --out $path/plink/vcf_filt/ADSP_annotated_chr${i}"
+sbatch --mem=90G -c 5 --wrap="~/plink --vcf $path/correct_chr_vcf/filt/nodot/ADSP_annotated_no_dot_chr${i}.genofilt.vcf --biallelic-only strict --make-bed --double-id -allow-extra-chr --out $path/plink/vcf_filt/ADSP_annotated_chr${i}"
 done
 
 
