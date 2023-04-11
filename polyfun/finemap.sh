@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=25:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml/finemap/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/glasslab/finemap/%x%j.log
 
 ## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo

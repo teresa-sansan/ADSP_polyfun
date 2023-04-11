@@ -1,4 +1,4 @@
-path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml/finemap/'
+path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203//glasslab/finemap/'
 #summary_stat='bellenguez'
 summary_stat='wightman'
 #summary_stat='kunkle'
