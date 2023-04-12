@@ -7,6 +7,7 @@ library("RColorBrewer")
 library("qqman")
 library("dplyr")
 library(UpSetR)
+library(grid)
 library(tidyverse)
 
 library(mltools)
@@ -44,6 +45,7 @@ wightman_noml_max10 = read.table('/gpfs/commons/home/tlin/output/wightman/new_an
 wightman_no_enformer_max10 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/finemap/max_snp_10//agg_extract_1e-3.tsv', header=T)
 wightman_update_enformer_max10 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_10/agg_extract_1e-3.tsv', header = T)
 wightman_enformer_max10=read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/enformer/finemap/max_snp_10/agg_extract_1e-3.tsv', header=T)
+wightman_glasslab_max10=read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/glasslab/finemap/max_snp_10/agg_extract_1e-3.tsv', header=T)
 
 colnames(wightman_old) = colnames(wightman_update_enformer_max1)
 
@@ -724,18 +726,25 @@ Upset_SNP_plot <- function(filt){
   all <- Upset_SNP(wightman_update_enformer_max10,"all_anno",filt)
   bl  <- Upset_SNP(wightman_bl_max10,'baseline',filt) 
   all_except_enformer <- Upset_SNP(wightman_no_enformer_max10,'no_enformer',filt)
-  wightman_no_ml <- Upset_SNP(wightman_no_ml_10,"no_ml",filt)
+  no_ml <- Upset_SNP(wightman_no_ml_10,"no_ml",filt)
   enformer <- Upset_SNP(wightman_enformer_max10, "enformer",filt)
-  
-  try = rbind(all, bl,all_except_enformer,wightman_no_ml, enformer)
-  
-  try['bl'] = 1
+  glasslab <- Upset_SNP(wightman_glasslab_max10, "glasslab",filt)
+  try = rbind(all, bl, all_except_enformer, no_ml, enformer, glasslab)
+ 
+  try['bl'] = 1 ## bc every anno has bl
   try  <- mutate(try , roadmap_deepsea = ifelse(ANNO=="all_anno" | ANNO == 'no_enformer',1,0))
   try  <- mutate(try , enformer = ifelse(ANNO=="all_anno"|ANNO == 'enformer',1,0))
-  try  <- mutate(try ,  glass_lab = ifelse(ANNO=="all_anno" | ANNO== 'no_enformer' | ANNO== 'no_ml' ,1,0))
-  
-  upset(try, sets = c("bl", "roadmap_deepsea", "glass_lab", "enformer"), sets.bar.color = "#56B4E9",order.by = "freq",keep.order = TRUE)
+  try  <- mutate(try ,  glass_lab = ifelse(ANNO=="all_anno" | ANNO== 'no_enformer' | ANNO== 'no_ml'|ANNO =='glasslab' ,1,0))
+  try  <- mutate(try , glasslab_enformer = ifelse(ANNO=="all_anno" |ANNO =='glasslab' |ANNO == 'enformer',1,0))
+
+  upset(try, sets = c("bl", "roadmap_deepsea", "glass_lab", "enformer","glasslab_enformer"), sets.bar.color = "#56B4E9",order.by = "freq",keep.order = TRUE)
+
 }
 
+Upset_SNP_plot(0.8)
+grid.text("PIP>0.8",x = 0.65, y=0.95, gp=gpar(fontsize=15))
+
 Upset_SNP_plot(0.5)
+grid.text("PIP>0.5",x = 0.65, y=0.95, gp=gpar(fontsize=15))
 Upset_SNP_plot(0.3)
+grid.text("PIP>0.3",x = 0.65, y=0.95, gp=gpar(fontsize=15))
