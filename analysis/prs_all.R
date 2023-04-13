@@ -9,9 +9,15 @@ library(tibble)
 library(readr)
 library(cowplot)
 library(pROC)
+install_github("rspatial/terra")
+library(devtools)
+
+install.packages('terra')
+install.packages('modEvA')
 library(modEvA)  # psuedo rsquare
 library(boot)
-library("gridGraphics")
+library(gridGraphics)
+library(UpSetR)
 
 pre_process <- function(df, file=FALSE){
   if(file==FALSE){
@@ -25,9 +31,9 @@ pre_process <- function(df, file=FALSE){
   }
   df$Age <- as.numeric(as.character(df$Age))
   print(paste("original=",  dim(df)[1], "rows"))
-  
-  df <- df %>%
-    filter(Diagnosis != -1 & Age >= 65)
+  #df <- df %>%
+  #  filter(Diagnosis != -1 & Age >= 65)
+  df <- df[df$Age >= 65,]
   print(paste("filtered=",  dim(df)[1], "rows"))
   return(df)
 } ## remove the sample younger than 65 || have no diagnosis
@@ -97,29 +103,26 @@ wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wi
 wightman_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_bl.prs.tsv')
 wightman_fix_convergence <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_fixed_convergence.tsv')
 
+wightman_no_ml <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/no_ml.tsv')
+wightman_update_all <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/update_all+enformer.tsv')
+wightman_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/enformer.tsv')
+wightman_all_except_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/all_except_enformer.tsv')
+wightman_glasslab <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/glasslab.tsv')
+
 jansen_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/susie.prs.tsv')
 jansen_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/new_plink_polypred.tsv')
 jansen_fix_convergence <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/fixed_convergence.tsv')
+
+
 
 ### Other PRS method -----
 PRSice <- pre_process("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 sbayesR = pre_process("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
 
-## Density plot 
-
-
 ## Extract specific race ----- 
-extract_eur <-function (df){
-  EUR = df[df$final_population == "EUR",]
-  return(EUR)
-}
-extract_afr <- function (df){
-  AFR = df[df$final_population == "AFR",]
-  return(AFR)
-}
-extract_amr <- function (df){
-  AMR = df[df$final_population == "AMR",]
-  return(AMR)
+extract_race <-function (df,race){
+  one_race = df[df$final_population == race,]
+  return(one_race)
 }
 
 ##Extract diff age of controls -----
@@ -301,16 +304,16 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
   output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)))
   output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR"))
   if (boot != TRUE){ ## no bootstraping, use the original roc_result
-    EUR = roc_result(extract_eur(df) , column_for_roc = col)
-    AFR = roc_result(extract_afr(df) , column_for_roc = col)
-    AMR = roc_result(extract_amr(df) , column_for_roc = col)
+    EUR = roc_result(extract_race(df,'EUR') , column_for_roc = col)
+    AFR = roc_result(extract_race(df,'AFR') , column_for_roc = col)
+    AMR = roc_result(extract_race(df,'AMR') , column_for_roc = col)
     output_df$auc = append(append(EUR$auc,AFR$auc),AMR$auc)
     
   } else {
     print(paste("boot time = ",boot_num))
-    EUR = roc_result_boot(extract_eur(df), column_for_roc = col, boot_num = boot_num)
-    AFR = roc_result_boot(extract_afr(df), column_for_roc = col, boot_num = boot_num)
-    AMR = roc_result_boot(extract_amr(df), column_for_roc = col, boot_num = boot_num)
+    EUR = roc_result_boot(extract_race(df,'EUR'), column_for_roc = col, boot_num = boot_num)
+    AFR = roc_result_boot(extract_race(df,'AFR'), column_for_roc = col, boot_num = boot_num)
+    AMR = roc_result_boot(extract_race(df,'AMR'), column_for_roc = col, boot_num = boot_num)
     output_df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
     output_df$boot_CI_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
     output_df$boot_CI_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
@@ -331,20 +334,35 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
   return(output_df)
 }
 
+
 ## fixed legend
 ## The boolean APOE operator is to see whether you want to plot the effect of only using 5(6, depending on QC or not) APOE allele to make prediction.  
-plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, 
+plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=wightman_all_except_enformer,QC5=wightman_glasslab,QC6=wightman_update_all, col=col_roc_E5, title=' ',
+                                  QC1name="bl", QC2name="roadmap/deepsea",QC3name="no_ml",QC4name='no_enformer',QC5name='glasslab',QC6name='all',boot=TRUE, 
                                   boot_num=50, legendname=FALSE, APOE=FALSE){
-  QC1 = plot_ethnic_roc(QC1, col=col,boot=boot,boot_num=boot_num)
-  QC1$qc_status = QC1name
-  QC2 = plot_ethnic_roc(QC2, col=col,boot=boot,boot_num=boot_num)
-  QC2$qc_status = QC2name
+  
+  roc_add_anno <- function(df, col, boot, bootnum, anno_name){
+    df = plot_ethnic_roc(df, col=col,boot=boot,boot_num=boot_num)
+    df$qc_status = anno_name
+    return(df)
+  } 
+  
+  QC1 = roc_add_anno(QC1, col,boot,boot_num, QC1name)
+  QC2 = roc_add_anno(QC2, col,boot,boot_num, QC2name)
   
   if(class(QC3) != "logical"){
-    QC3 = plot_ethnic_roc(QC3, col=col,boot=boot,boot_num=boot_num)
-    QC3$qc_status = QC3name
-    all = rbind(QC1, QC2, QC3)
-    all$qc_status <- factor(all$qc_status, levels = c(QC1name, QC2name, QC3name))
+    QC3 = roc_add_anno(QC3, col,boot,boot_num, QC3name)
+     if(class(QC4) != "logical"){
+        QC4 = roc_add_anno(QC4, col,boot,boot_num, QC4name)
+        QC5 = roc_add_anno(QC5, col,boot,boot_num, QC5name)
+        QC6 = roc_add_anno(QC6, col,boot,boot_num, QC6name)
+        all = rbind(QC1, QC2, QC3, QC4, QC5, QC6)
+        all$qc_status <- factor(all$qc_status, levels = c(QC1name, QC2name, QC3name,QC4name, QC5name, QC6name))
+     }else{
+       all = rbind(QC1, QC2, QC3)
+       all$qc_status <- factor(all$qc_status, levels = c(QC1name, QC2name, QC3name))
+      }
+    
   }
   else{
     all  = rbind(QC1,QC2)  
@@ -355,7 +373,7 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
   plot <- ggplot(data = all, aes(x=auc, y = PRS, color = qc_status))+
     geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
-    xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+
+    xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.7)+
     theme_bw()
   print(all)
   
@@ -373,32 +391,7 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3, col=col_roc_E5, title=' ',QC1na
   return(plot)
 }
 
-plot_auc_facet_all_sumstat <- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,s4_qc1, s4_qc2, s4_qc3, col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot=TRUE, boot_num=5, legendname = FALSE){
-  a = plot_ethnic_roc_facet(s1_qc1, s1_qc2, s1_qc3, col,'Kunkle',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num,legendname =legendname)
-  c = plot_ethnic_roc_facet(s3_qc1, s3_qc2, s3_qc3, col,'Wightman',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num,legendname =legendname)
-  d = plot_ethnic_roc_facet(s4_qc1, s4_qc2, s4_qc3, col,'Jansen',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num,legendname =legendname)
-  if(class(s2_qc1) != "logical"){
-    b = plot_ethnic_roc_facet(s2_qc1, s2_qc2, s2_qc3, col,'Bellenguez',QC1name, QC2name,QC3name,boot=boot,boot_num=boot_num,legendname =legendname)
-    prow <- plot_grid(a+ theme(legend.position="none"), 
-                    b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
-                    c+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
-                    d+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
-                    ncol = 4, nrow = 1)
-  }else{
-    prow <- plot_grid(a+ theme(legend.position="none"), 
-                      c+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
-                      d+ theme(legend.position="none",axis.text.y = element_blank())+ylab(NULL),
-                      ncol = 3, nrow = 1)}
-  
-
-   legend <- get_legend(
-     a +guides(col=guide_legend(legendname, nrow=1))+
-       theme(legend.position = "bottom")
-   )
-   plot_grid(prow, legend, ncol=1,rel_heights=c(3,.4))
-   
-}
-
+plot_ethnic_roc_facet(wightman_bl, wightman_polypred, wightman_no_ml, col = col_roc_polypred3, title = 'wightman', legendname = 'annotations' )
 plot_auc_facet_all_sumstat <- function(a,b,c,d,legendname = FALSE){
   prow <- plot_grid(a+ theme(legend.position="none"), 
                     b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
@@ -415,12 +408,12 @@ plot_auc_facet_all_sumstat <- function(a,b,c,d,legendname = FALSE){
 
 
 ## R2 functions ----
-## calcualte pseudo rsquare 
+## calculate pseudo rsquare 
 rsq_formula <- function(formula, data, indices=FALSE) {    
   d <- data[indices,] # allows boot to select sample
   fit <- glm(formula = formula,family = 'binomial', data = d)
   return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
-}## this is for boostrapping
+}## this is for bootstrapping
 
 ## relative R2 w. bootstrap -----
 ##resample
@@ -486,6 +479,7 @@ log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FA
     }
   }
 }
+
 plotR2_boot <- function(log_output, header, prs_col, boot){
   par(xpd = FALSE)
   if(boot == FALSE){   ## no bootstrapping
@@ -518,16 +512,16 @@ plotR2_boot <- function(log_output, header, prs_col, boot){
 plot_ethnic_R2 <- function(df, col, boot_num, title=' ',replace='', plot= FALSE){
   if(class(boot_num) == 'numeric'){
     print(paste("running EUR with bootstrapping ", boot_num, ' times'))
-    EUR = log_reg(extract_eur(df), col,  paste(title, ", EUR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
+    EUR = log_reg(extract_race(df,'EUR'), col,  paste(title, ", EUR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
     print(paste("running AFR with bootstrapping ", boot_num, ' times'))
-    AFR = log_reg(extract_afr(df), col, paste(title, ", AFR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
+    AFR = log_reg(extract_race(df,'AFR'), col, paste(title, ", AFR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
     print(paste("running AMR with bootstrapping ", boot_num, ' times'))
-    AMR = log_reg(extract_amr(df), col,  paste(title, ", AMR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
+    AMR = log_reg(extract_race(df,'AMR'), col,  paste(title, ", AMR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
   } ## do bootstrapping
   else{
-    EUR = log_reg_partial(extract_eur(df), col)
-    AFR = log_reg_partial(extract_afr(df), col)
-    AMR = log_reg_partial(extract_amr(df), col)
+    EUR = log_reg_partial(extract_race(df,'EUR'), col)
+    AFR = log_reg_partial(extract_race(df,'AFR'), col)
+    AMR = log_reg_partial(extract_race(df,'AMR'), col)
      ## calculate partial R2
   }
   EUR$ethnicity="EUR"
@@ -704,7 +698,7 @@ for ( i in list(kunkle_adsp_qc,kunkle_adsp_no_apoe_qc, bellenguez_adsp_qc,wightm
   print("")
 }
 
-for ( i in list(wightman_UKBB_qc)){
+for ( i in list(wightman_bl, wightman_polypred, wightman_no_ml, wightman_all_except_enformer, wightman_glasslab, wightman_update_all)){
   print("EUR")
   print(log_reg_partial(extract_eur(i), col_roc_E5))
   print("AFR")
@@ -733,7 +727,6 @@ plot_ethnic_roc_facet(wightman_susie, wightman_bl, wightman_polypred, col = col_
 
 
 ## all, polyfun vs susie
-
 plot_auc_facet_all_sumstat(kunkle_susie, kunkle_polypred, FALSE, 
                            bellenguez_susie, bellenguez_polypred, FALSE,
                            wightman_susie, wightman_polypred, FALSE, 
