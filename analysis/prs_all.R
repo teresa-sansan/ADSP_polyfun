@@ -549,6 +549,7 @@ plotR2_boot <- function(log_output, header, prs_col, boot){
   
 }
 
+## if not doing bootstraping here, we are calculating partial R2
 plot_ethnic_R2 <- function(df, col, boot_num, title=' ',replace='', plot= FALSE){
   if(class(boot_num) == 'numeric'){
     print(paste("running EUR with bootstrapping ", boot_num, ' times'))
@@ -559,9 +560,9 @@ plot_ethnic_R2 <- function(df, col, boot_num, title=' ',replace='', plot= FALSE)
     AMR = log_reg(extract_race(df,'AMR'), col,  paste(title, ", AMR"), plot = plot, legend="PRS",boot_num = boot_num, replace=replace)
   } ## do bootstrapping
   else{
-    EUR = log_reg_partial(extract_race(df,'EUR'), col)
-    AFR = log_reg_partial(extract_race(df,'AFR'), col)
-    AMR = log_reg_partial(extract_race(df,'AMR'), col)
+    EUR = log_reg_partial_cov(extract_race(df,'EUR'), col)
+    AFR = log_reg_partial_cov(extract_race(df,'AFR'), col)
+    AMR = log_reg_partial_cov(extract_race(df,'AMR'), col)
      ## calculate partial R2
   }
   EUR$ethnicity="EUR"
@@ -612,6 +613,45 @@ plot_ethnic_R2_facet <- function(QC1, QC2, QC3, col=col_roc_E5, boot_num=50, tit
   print(all)
   return(plot)
 }
+
+
+
+
+plot_ethnic_R2_facet_race <- function(QC1, QC2, QC3, col=col_roc_polypred3, boot_num=FALSE, title=' ',QC1name="bl", QC2name="bl+enformer",QC3name="all", legendname=FALSE){
+  QC1 = plot_ethnic_R2(QC1, col, boot_num)
+  QC2 = plot_ethnic_R2(QC2, col, boot_num)
+  QC1$qc_status = QC1name
+  QC2$qc_status = QC2name
+  if(class(QC3) != 'logical'){
+    QC3 = plot_ethnic_R2(QC3, col, boot_num)
+    QC3$qc_status = QC3name
+    all = rbind(QC1,QC2,QC3)
+  }else
+    all = rbind(QC1, QC2)
+  all=all[all$PRS!="PRS5",]
+  all = process_prs_col_name(all)
+  
+  add_xlegend = '' 
+  if("partial_R2" %in% colnames(all)){
+    print('R2 here is partial R2')
+    all$sex_age = all$partial_R2
+    all$sex_age_pc = all$partial_R2_pc
+    all$sex_pc = all$partial_R2_noage
+    add_xlegend = 'Partial ' 
+  }
+  plot <- ggplot(data = all, aes(x= sex_age_pc, y = PRS, color = qc_status))+
+    geom_point(size=2, alpha=0.7,position = position_dodge(width = 0.7))+
+    facet_wrap(~ethnicity, ncol=1)+guides(color = guide_legend(title = "Annotations"))+
+    xlab(paste(add_xlegend,'R squared (%), + 5PCs'))+ ggtitle(title)+
+    theme_bw()
+  if(legendname != FALSE){  ## testout new legend title
+    plot = plot +guides(col=guide_legend(legendname))
+  }
+  print(all)
+  return(plot)
+}
+
+plot_ethnic_R2_facet_race(wightman_bl, wightman_enformer, wightman_update_all)
 
 ## plot ethnic facut plot for multiple sumstat
 plot_R2_facet_allsumstat<- function(s1_qc1, s1_qc2, s1_qc3,s2_qc1, s2_qc2, s2_qc3,s3_qc1, s3_qc2, s3_qc3,col = col_roc_E5, QC1name="QC_on_base", QC2name="QC_on_base+variants",QC3name="no_qc",boot_num=50, legendname=legendname){
@@ -672,7 +712,7 @@ log_reg_partial <- function(df,col){
 }
 
 
-
+## need to re-write to make it more efficient
 log_reg_partial_cov <- function(df,col){
   modR <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a reduced model only using covariates
   modR_R2 <- RsqGLM(modR, plot=FALSE)$Nagelkerke
@@ -680,8 +720,8 @@ log_reg_partial_cov <- function(df,col){
   modR_pc <- glm(Diagnosis ~ Sex + Age +X1+X2+X3+X4+X5, data= df, family=binomial) ## first create a reduced model only using covariates
   modR_R2_pc <- RsqGLM(modR_pc, plot=FALSE)$Nagelkerke
   
-  #modR_noage <- glm(Diagnosis ~ Sex +X1+X2+X3+X4+X5, data= df, family=binomial) ## first create a reduced model only using covariates
-  #modR_R2_noage <- RsqGLM(modR_noage, plot=FALSE)$Nagelkerke
+  modR_noage <- glm(Diagnosis ~ Sex +X1+X2+X3+X4+X5, data= df, family=binomial) ## first create a reduced model only using covariates
+  modR_R2_noage <- RsqGLM(modR_noage, plot=FALSE)$Nagelkerke
   
   partial_R2 = rep(NA, length(col))
   partial_R2_pc = rep(NA, length(col))
@@ -693,13 +733,23 @@ log_reg_partial_cov <- function(df,col){
     modF_R2 <-  RsqGLM(modF, plot=FALSE)$Nagelkerke 
     partialR2 <-  1- ((1-modF_R2 ) / (1-modR_R2))
     partial_R2[i] = partialR2*100
+  
+    frm <- as.formula(paste("Diagnosis ~ Sex + Age + X1 + X2 + X3 + X4 + X5 + ", col[[i]])) ## add the PRS you wanted
+    modF <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
+    modF_R2 <-  RsqGLM(modF, plot=FALSE)$Nagelkerke 
+    partialR2_pc <-  1- ((1-modF_R2 ) / (1-modR_R2_pc))
+    partial_R2_pc[i] = partialR2_pc*100
+  
+    frm <- as.formula(paste("Diagnosis ~ Sex  + X1 + X2 + X3 + X4 + X5 + ", col[[i]])) ## add the PRS you wanted
+    modF <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
+    modF_R2 <-  RsqGLM(modF, plot=FALSE)$Nagelkerke 
+    partialR2_noage <-  1- ((1-modF_R2 ) / (1-modR_R2_noage))
+    partial_R2_noage[i] = partialR2_noage*100
   }
   
-  
   PRS =  array(unlist(col))
-  return(data.frame(PRS,partial_R2))
+  return(data.frame(PRS,partial_R2,partial_R2_pc, partial_R2_noage))
 }
-
 
 
 ##result ----
@@ -788,13 +838,13 @@ plot_ethnic_roc_facet(kunkle_susie, kunkle_polypred, kunkle_bl, QC1name = "none"
 plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred, bellenguez_bl, QC1name = "none",
                       QC2name = "all",QC3name='baseline', col = col_roc_polypred3,boot_num = 50, title='bellenguez', legendname = 'annotation')
 
-
 plot_ethnic_R2_facet(wightman_susie_converged, wightman_bl_converged, wightman_polypred_converged, col = col_roc_polypred3, QC1name='none', QC2name = 'baseline', QC3name = 'all', title = 'wightman', legendname = 'annotations' )
 
 plot_ethnic_roc_facet(wightman_polypred_converged, wightman_bl_converged, wightman_susie_converged, col = col_roc_polypred3, QC1name='all', QC2name = 'baseline', QC3name = 'none', title = 'wightman', legendname = 'annotations' )
 
 plot_ethnic_roc_facet(wightman_susie, wightman_bl, wightman_polypred, col = col_roc_polypred3, QC1name='none', QC2name = 'baseline', QC3name = 'all', title = 'wightman', legendname = 'annotations' )
 
+plot_ethnic_R2(wightman_glasslab, boot_num=FALSE, col=col_roc_polypred3)
 
 
 ## all, polyfun vs susie
@@ -821,29 +871,6 @@ plot_auc_facet_all_sumstat(kunkle_susie, kunkle_polypred, FALSE,
 
 ## partial r2
 for ( i in list(kunkle_polypred,bellenguez_polypred, wightman_polypred,jansen_polypred)){
-  print("EUR")
-  print(log_reg_partial(extract_eur(i), col_roc_polypred3))
-  print("AFR")
-  print(log_reg_partial(extract_afr(i), col_roc_polypred3))
-  print("AMR")
-  print(log_reg_partial(extract_amr(i), col_roc_polypred3))
-  print("")
-}
-
-
-
-for ( i in list(wightman_polypred)){
-  print("EUR")
-  print(log_reg_partial(extract_eur(i), col_roc_polypred3))
-  print("AFR")
-  print(log_reg_partial(extract_afr(i), col_roc_polypred3))
-  print("AMR")
-  print(log_reg_partial(extract_amr(i), col_roc_polypred3))
-  print("")
-}
-
-
-for ( i in list(kunkle_susie,bellenguez_susie, wightman_susie,jansen_susie)){
   print("EUR")
   print(log_reg_partial(extract_eur(i), col_roc_polypred3))
   print("AFR")
@@ -944,8 +971,6 @@ plot_ethnic_R2_facet(wightman_susie_max10, wightman_polypred,FALSE, col ='PRS', 
                      legendname = 'Annotation',boot_num=FALSE
 )
 
-plot_ethnic_R2_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num = FALSE, col='PRS',
-                      title='bellenguez', QC1name = 'PolyFun_Pred', QC2name = 'SuSiE', legendname = 'Tools')
 
 ## polyfun beta vs sumstat beta ---
 plot_auc_facet_all_sumstat(kunkle_adsp_qc, kunkle_polyfun_pT, kunkle_polyfun_plink_no_cpT, 
@@ -1098,7 +1123,7 @@ plot_control_age_roc <- function(df, col=col_roc_E5, title=' ',age1="65", age2="
 }
 
 
-plot_control_age_roc(wightman_adsp)
+plot_control_age_roc(wightman_update_all)
 
 
 plot_control_age_roc_multi <- function(df1, df2, df3, df1_name, df2_name, df3_name, title, legendname=FALSE){
