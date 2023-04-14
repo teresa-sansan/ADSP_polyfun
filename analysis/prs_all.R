@@ -14,6 +14,7 @@ library(devtools)
 
 install.packages('terra')
 install.packages('modEvA')
+library(terra)
 library(modEvA)  # psuedo rsquare
 library(boot)
 library(gridGraphics)
@@ -407,6 +408,45 @@ plot_auc_facet_all_sumstat <- function(a,b,c,d,legendname = FALSE){
 }
 
 
+### line plot ------
+test1 = plot_ethnic_roc(wightman_bl, col=col_roc_polypred3)
+test2 = plot_ethnic_roc(wightman_no_ml, col=col_roc_polypred3)
+test3 = plot_ethnic_roc(wightman_glasslab, col=col_roc_polypred3)
+test4 = plot_ethnic_roc(wightman_update_all, col=col_roc_polypred3)
+
+test1$anno = 'bl'
+test2$anno = '+glasslab'
+test3$anno = '+glasslab_enformer'
+test4$anno = '+deepsea & roadmap & enformer'
+
+test = rbind(test1,test2, test3,test4)
+
+test$inter = interaction(test$PRS, test$ethnicity)
+
+ggplot(data=test[test$PRS=="PRS10",], aes(x=factor(anno, level= c('bl','+glasslab','+glasslab_enformer','+deepsea & roadmap & enformer')), y=auc, group=inter)) +
+  geom_line(aes(color=ethnicity),position = position_dodge(width = 0.3),alpha=0.3,linetype='dashed')+ 
+  geom_errorbar(aes(ymin=boot_CI_lower, ymax=boot_CI_upper,color=ethnicity), alpha=0.5, width=0.1,position = position_dodge(width = 0.3))+
+  geom_point(aes(color=ethnicity),position=position_dodge(0.3))+ylim(c(0.45,0.65))+
+  xlab("")+ theme_bw()+ggtitle("wightman")+ scale_x_discrete(guide = guide_axis(n.dodge = 2)) 
+
+
+ggplot(data=test[test$PRS!="PRS5",], aes(x=factor(anno, level= c('bl','+glasslab','+glasslab_enformer','+deepsea & roadmap & enformer')), y=auc, group=inter)) +
+  geom_line(aes(color=ethnicity, linetype=PRS),position = position_dodge(width = 0.3),alpha=0.5)+ 
+  geom_errorbar(aes(ymin=boot_CI_lower, ymax=boot_CI_upper,color=ethnicity), alpha=0.5, width=0.1,position = position_dodge(width = 0.3))+  
+  geom_point(aes(color=ethnicity),position=position_dodge(0.3))+
+  xlab("")+ theme_bw()+ggtitle("wightman")+ scale_x_discrete(guide = guide_axis(n.dodge = 2)) 
+
+
+## with error bar
+ggplot(data=test[test$PRS!="PRS5",], aes(x=factor(anno, level= c('bl','+glasslab','+glasslab_enformer')), y=auc, group=ethnicity)) +
+  geom_line(aes(color=ethnicity))+
+  geom_errorbar(aes(ymin=boot_CI_lower, ymax=boot_CI_upper,color=ethnicity), width=.1,position=position_dodge(0.05))+
+  geom_point(aes(color=ethnicity))+
+  xlab("")+ theme_bw()
+
+## other things to try
+## bl, +deepsea+roadmap, +two_enformer
+
 ## R2 functions ----
 ## calculate pseudo rsquare 
 rsq_formula <- function(formula, data, indices=FALSE) {    
@@ -630,6 +670,37 @@ log_reg_partial <- function(df,col){
   PRS =  array(unlist(col))
   return(data.frame(PRS,partial_R2))
 }
+
+
+
+log_reg_partial_cov <- function(df,col){
+  modR <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a reduced model only using covariates
+  modR_R2 <- RsqGLM(modR, plot=FALSE)$Nagelkerke
+  
+  modR_pc <- glm(Diagnosis ~ Sex + Age +X1+X2+X3+X4+X5, data= df, family=binomial) ## first create a reduced model only using covariates
+  modR_R2_pc <- RsqGLM(modR_pc, plot=FALSE)$Nagelkerke
+  
+  #modR_noage <- glm(Diagnosis ~ Sex +X1+X2+X3+X4+X5, data= df, family=binomial) ## first create a reduced model only using covariates
+  #modR_R2_noage <- RsqGLM(modR_noage, plot=FALSE)$Nagelkerke
+  
+  partial_R2 = rep(NA, length(col))
+  partial_R2_pc = rep(NA, length(col))
+  partial_R2_noage = rep(NA, length(col))
+  
+  for (i in 1:length(col)){
+    frm <- as.formula(paste("Diagnosis ~ Sex + Age + ", col[[i]])) ## add the PRS you wanted
+    modF <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
+    modF_R2 <-  RsqGLM(modF, plot=FALSE)$Nagelkerke 
+    partialR2 <-  1- ((1-modF_R2 ) / (1-modR_R2))
+    partial_R2[i] = partialR2*100
+  }
+  
+  
+  PRS =  array(unlist(col))
+  return(data.frame(PRS,partial_R2))
+}
+
+
 
 ##result ----
 # c+T (before and after qc)-----
