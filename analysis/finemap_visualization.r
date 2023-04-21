@@ -737,14 +737,26 @@ Upset_SNP_plot <- function(filt){
   try  <- mutate(try ,  glass_lab = ifelse(ANNO=="all_anno" | ANNO== 'no_enformer' | ANNO== 'no_ml'|ANNO =='glasslab' ,1,0))
   try  <- mutate(try , glasslab_enformer = ifelse(ANNO=="all_anno" |ANNO =='glasslab' |ANNO == 'enformer',1,0))
 
-  upset(try, sets = c("bl", "roadmap_deepsea", "glass_lab", "enformer","glasslab_enformer"), sets.bar.color = "#56B4E9",order.by = "freq",keep.order = TRUE)
-
+  print(upset(try, sets = c("bl", "roadmap_deepsea", "glass_lab", "enformer","glasslab_enformer"), sets.bar.color = "#56B4E9",order.by = "freq",keep.order = TRUE,set_size.show = FALSE))
+  return(try)
 }
 
-Upset_SNP_plot(0.8)
+pip_0.8 <- Upset_SNP_plot(0.8)
 grid.text("PIP>0.8",x = 0.65, y=0.95, gp=gpar(fontsize=15))
 
-Upset_SNP_plot(0.5)
+pip_0.5 <- Upset_SNP_plot(0.5)
 grid.text("PIP>0.5",x = 0.65, y=0.95, gp=gpar(fontsize=15))
-Upset_SNP_plot(0.3)
+
+pip_0.3 <- Upset_SNP_plot(0.3)
 grid.text("PIP>0.3",x = 0.65, y=0.95, gp=gpar(fontsize=15))
+
+df = rbind(pip_0.8, pip_0.5, pip_0.3)
+df$PIP_FILT <- as.factor(df$PIP_FILT)
+barplot(rbind(pip_0.8, pip_0.5, pip_0.3), beside=T, 
+        col=c("aquamarine3","coral"), 
+        names.arg=LETTERS[1:2])
+
+
+ggplot(rbind(pip_0.8, pip_0.5, pip_0.3), aes(factor(ANNO, level=c('all_anno', 'enformer', 'no_ml','glasslab','no_enformer','baseline')), fill=factor(PIP_FILT))) + 
+  geom_bar(position="dodge") + theme_bw()+ scale_fill_discrete(name = "PIP FILTER")+xlab('') + ylab('SNP count')+ coord_flip()+theme(legend.position="bottom")
+

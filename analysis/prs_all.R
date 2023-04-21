@@ -1115,15 +1115,19 @@ plot_control_age_roc <- function(df, col=col_roc_E5, title=' ',age1="65", age2="
       xlab('AUC')+ ggtitle(title)+xlim(min(min(all$boot_CI_lower),0.45),max(max(all$boot_CI_upper),0.75))+
       theme_bw() 
     plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.2,show.legend = FALSE) 
-
-    return(plot)  
-  }else
+    print(plot)
+    
+  }
     return(all)
   
 }
 
 
-plot_control_age_roc(wightman_update_all)
+
+
+
+
+
 
 
 plot_control_age_roc_multi <- function(df1, df2, df3, df1_name, df2_name, df3_name, title, legendname=FALSE){
@@ -1137,7 +1141,7 @@ plot_control_age_roc_multi <- function(df1, df2, df3, df1_name, df2_name, df3_na
   }else{
     df$method = factor(df$method, level=c(df1_name, df2_name))
   }
-      plot <- ggplot(data = df, aes(x=auc, y = PRS, shape = age, color=method))+
+  plot <- ggplot(data = df, aes(x=auc, y = PRS, shape = age, color=method))+
     geom_point(size=2,alpha=0.7,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
     xlab('AUC')+ xlim(0.42,0.72)+ggtitle(title)+guides(col=guide_legend("annotations"), shape=guide_legend('age threshold for controls'))+
@@ -1150,7 +1154,12 @@ plot_control_age_roc_multi <- function(df1, df2, df3, df1_name, df2_name, df3_na
   return(plot)
 }
 
-plot_control_age_roc(wightman_adsp_qc)
+
+plot_control_age_roc_multi(plot_control_age_roc(wightman_bl[-34], col=col_roc_polypred3, plot=FALSE),
+                           plot_control_age_roc(wightman_enformer, col=col_roc_polypred3, plot=FALSE),
+                           plot_control_age_roc(wightman_update_all, col=col_roc_polypred3, plot=FALSE),
+                           'baseline','bl+enformer','all annotations', title='Wightman')
+
 
 
 wightman_polypred_control_age = plot_control_age_roc(wightman_polypred, col=col_roc_polypred3, title='All annotations')
