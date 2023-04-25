@@ -1,17 +1,7 @@
-#path="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_susie"
-#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations'
-path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/'
+path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/'
+prefix='wightman.'
 
-prefix='bl.chr'
-
-#for anno in bl bl_brain_atac bl_dl_annotations
-
-for anno in bl
-do
-if [ -f $path/$anno/check_finemap.txt ]; then rm $path/$anno/check_finemap.txt; fi #remove pre-exist file
-touch $path/$anno/check_finemap.txt   ##create file
-done
-
+## create a function to check if its converged
 function check
 {
 for i in {1..22}
@@ -20,21 +10,23 @@ do
   export log=$(ls $prefix$i.*|grep .gz.log|wc -l)
   export ld=$(ls /gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${i}_*_*.gz | wc -l)
 
-#  if [ $gz -ne $log ] ;then 
+
   if [ $gz -ne $ld ] ;then 
     echo chr$i  gz=$gz log=$log ld=$ld
   fi
-  if [ $gz -eq $ld ] ;then
-   echo chr$i
-  fi
+  #if [ $gz -eq $ld ] ;then
+  # echo checked chr$i
+  #fi
 done
 echo
 }
 
 ## test in diff_MAX SNP per locus
-#for anno in bl bl_brain_atac bl_dl_annotations
-for anno in bl
+for anno in all_except_enformer enformer glasslab no_ml no_ml_new update_all+enformer 
 do
+if [ -f $path/$anno/check_finemap.txt ]; then rm $path/$anno/check_finemap.txt; fi #remove pre-exist file
+touch $path/$anno/check_finemap.txt   ##create file
+
  for i in 1 5 10
  do 
 	cd ${path}/$anno/finemap/max_snp_$i
@@ -44,9 +36,7 @@ do
  done
 done
 
-#path='/gpfs/commons/home/tlin/output/kunkle_all/finemap_overlap/finemap_max_snp_'
-#path='/gpfs/commons/home/tlin/output/kunkle_all/finemap'
-#path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained'
+
 
 
 
