@@ -1,7 +1,7 @@
 #!/bin/bash 
 ## run  wightman n fixed 
 
-for i in {6..22}
+for i in {1..22}
 do
 	for max_snp in  1 5 10
 	do	
@@ -9,7 +9,7 @@ do
         	echo "run chr$i"
 
 		if true; then
-        	sbatch --export=chr=$i,max_num_snp=${max_snp},anno='glasslab' finemap.sh
+        	sbatch --export=chr=$i,max_num_snp=${max_snp},anno='no_ml_new' finemap.sh
         fi
 	done
 done

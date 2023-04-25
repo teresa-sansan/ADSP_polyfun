@@ -5,7 +5,8 @@ name= '_polypred.tsv.prs'
 path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/'
 sumstat='wightman'
 
-anno_list = ["enformer", "no_ml","all_except_enformer", "update_all+enformer", "glasslab"]
+#anno_list = ["enformer", "no_ml","all_except_enformer", "update_all+enformer", "glasslab"]
+anno_list = ["old_ml"]
 for anno in anno_list:
     print("start running", anno )
     if True:

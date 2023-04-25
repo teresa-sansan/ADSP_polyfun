@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=25:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/glasslab/finemap/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml_new/finemap/%x%j.log
 
 ## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
@@ -44,7 +44,7 @@ sumstat_name='wightman'
 n=762971
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_all.${chr}.snpvar_constrained.gz"
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/bl.${chr}.snpvar_constrained.gz"
-#anno='no_ml'
+#anno='no_ml_new'
 anno_path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/'
 sumstat="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/${anno}.${chr}.snpvar_ridge_constrained.gz"
 output="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/finemap"

@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=100G
 #SBATCH --time=5:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/glasslab/finemap/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml_new/finemap/%x_%j.log
 
 ## Note:
 ## There are two parts of this script. 
@@ -32,7 +32,7 @@ if true;then
 wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta.munged.parquet'
 sumstat_name='wightman'
 #prefix='all_anno'
-path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/glasslab'
+path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml_new'
 #path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/all_anno/finemap'
 #path='/gpfs/commons/home/tlin/output/wightman/finemap'
 #path='/gpfs/commons/home/tlin/output/wightman/fixed_0224/susie/finemap_fixed_assertion_susie_iter'
