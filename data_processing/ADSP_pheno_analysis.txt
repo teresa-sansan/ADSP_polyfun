@@ -1,0 +1,42 @@
+
+* they have a pairwise IBD file ('data/gcad.r4.wgs.36361.2022.08.15.pairwise_IBD.txt')
+* Diagnosis (they named it DX_harmonized): 
+    1 => control
+    2 => AD
+
+Sample to subject mapping
+* also only keep WGS
+
+#Family
+* for family, we used different threshold for AD
+    us:  0, 10 -> controls (No dementia, family reported no AD)   
+        1-4 -> cases (Definite AD, Probable AD, Possible AD, Family Reported AD)
+        5,9 -> NaN 
+    them: 0: controls   
+          1:3: Cases
+
+
+# ADNI:
+* Also diff definition for diagnosis:
+  us: AD last visit
+  them: PrevAD & IncAD 
+        - either one of them = 1 => cases
+        - if they are both = 0, with no age_MCI_onset and no Age_AD_onset => controls
+
+IBD file should be the same as our kingship file
+    - only have Sample ID
+    - have 1,599 pair in total after only keeping the pairs with pi_hat> 0.95 (originally 4,816 pairs)
+    - After filtering, add SUBJID from manifest file
+
+
+
+Quick and simple update for the 37k data:
+Using their pipeline, they got 32k individuals. Number drops to 26k removing individuals that have NAs in either age or diagnosis.
+Whereas using our script, we have 21.5k, which is around 4.5k less.
+Things that are processed differently are:
+We use different columns for diagnosis in two out of three of the phenotype files (ADNI and ADSP Family Study)
+The ways of picking duplicated IDs
+They are using two additional files provided by ADSP (which are also available in our repo now)
+IBD file (‘/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/gcad.r4.wgs.36361.2022.08.15.pairwise_IBD.txt')
+sample ID QC information (‘gcad.qc.r4.wgs.allchr.36361.GATK.2022.08.15.sample.summary.ALL.txt’)
+
