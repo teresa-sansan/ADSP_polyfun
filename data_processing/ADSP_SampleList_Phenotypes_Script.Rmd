@@ -50,7 +50,7 @@ d.fs[d.fs=="#N/A"]=NA  # typo
 
 # ADNI phenotypes
 
-d.adni= read.table(adni_pheno_file, header=T, as.is=T,sep="\t",stringsAsFactors=FALSE,comment="",quote="")
+d.adni= read.tad.fsddddble(adni_pheno_file, header=T, as.is=T,sep="\t",stringsAsFactors=FALSE,comment="",quote="")
 
 
 # PSP/CBD phenotypes
@@ -123,6 +123,11 @@ d.adni$FamID = NA
 ```
 
 ```{r}
+print(c(dim(d.cc), dim(d.fs), dim(d.adni)))
+
+```
+
+```{r}
 ####################
 # 1. Identify the duplicate pairs using the threshold: PI_HAT > 0.95 from IBD file
 ## Add SUBJID o ibdpair
@@ -139,8 +144,7 @@ ibdpair.95$SUBJID2 = sample.manifest$SUBJID[match(ibdpair.95$SampleID2,sample.ma
 
 # subset to WGS
 ## only keep the one that SampleID overlaps with manifest file and sample.qc
-subj.wgs = sample.manifest$SUBJID[sample.manifest$SampleID %in% sample.qc$SampleID]
-
+subj.wgs = sample.manifest$SUBJID[sample.manifest$SampleID %in% sample.qc$SampleID] ## 36,361
 d.cc.wgs = d.cc[d.cc$SUBJID %in% subj.wgs,]
 d.fs.wgs = d.fs[d.fs$SUBJID %in% subj.wgs,]
 d.adni.wgs = d.adni[d.adni$SUBJID %in% subj.wgs,]
