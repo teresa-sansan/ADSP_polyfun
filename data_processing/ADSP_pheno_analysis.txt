@@ -47,10 +47,25 @@ Sample to subject mapping
     2. Only keep the SUBJID in merged_pheno file that overlaps with sample QC file -> 33,639 left
     
 
+
+## Deal with duplicates
+    1. For the duplciates in case control & family study, keep the ones in family study. (drop 32 in case control)
+    2. Drop all samples that has Technical Replicate == 1" from the manifest file. (drop 5 in family base, 1 in case control)
+
+## Add SampleID to merged_pheno
+    For those SampleIDs that map to several SUBJID, pick the one that has the lowest "missing" column from QC file
+        - 4,501 SampleID has more than 1 SUBJID, (9,033 rows with not 1-1 matching SampleID & SUBJID)
+        - remove 4,532 rows
+        - leave our merged_pheno back to 33,601  
+
+
 IBD file should be the same as our kingship file
     - only have Sample ID
     - have 1,599 pair in total after only keeping the pairs with pi_hat> 0.95 (originally 4,816 pairs)
-    - After filtering, add SUBJID from manifest file
+    - After filtering, add SUBJID from manifest file (map with SampleID)
+    - Filter the pair that have different SUBJID1 & SUBJID2 but with > .95 pi_hat (513 rows)
+    
+    
 
 
 
@@ -60,9 +75,7 @@ Whereas using our script, we have 21.5k, which is around 4.5k less.
 Things that are processed differently are:
 We use different columns for diagnosis in two out of three of the phenotype files (ADNI and ADSP Family Study)
 The ways of picking duplicated IDs
-They are using two additional files provided by ADSP (which are also available in our repo now)
-IBD file (‘/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/gcad.r4.wgs.36361.2022.08.15.pairwise_IBD.txt')
-sample ID QC information (‘gcad.qc.r4.wgs.allchr.36361.GATK.2022.08.15.sample.summary.ALL.txt’)
+
 
 Questions
 
