@@ -50,7 +50,7 @@ d.fs[d.fs=="#N/A"]=NA  # typo
 
 # ADNI phenotypes
 
-d.adni= read.tad.fsddddble(adni_pheno_file, header=T, as.is=T,sep="\t",stringsAsFactors=FALSE,comment="",quote="")
+d.adni= read.table(adni_pheno_file, header=T, as.is=T,sep="\t",stringsAsFactors=FALSE,comment="",quote="")
 
 
 # PSP/CBD phenotypes
@@ -174,7 +174,6 @@ d.fs.wgs.3=d.fs.wgs
 
 ```
 
-
 ```{r drop_replicates}
 ####################
 # 4. Drop replicates (genetically identical, technique replicates) from main phenotypes
@@ -273,7 +272,7 @@ resolve <- function(v1, v2) {
 
     if (is.na(v1$AGE_harmonized) & !is.na(v2$AGE_harmonized)) { select="Select1"; }
     if (!is.na(v1$AGE_harmonized) & is.na(v2$AGE_harmonized)) { select="Select2"; }
-    if (!is.na(v1$AGE_harmonized) & !is.na(v2$AGE_harmonized)) {
+    if (!is.na(v1$AGE_hd7armonized) & !is.na(v2$AGE_harmonized)) {
         if (v1$AGE_harmonized>=v2$AGE_harmonized) { select="Select1"; } else { select="Select2"; }
     }
     
