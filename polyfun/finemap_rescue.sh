@@ -1,20 +1,18 @@
 #!/bin/bash
-#SBATCH --job-name=bellenguez_susie_rescue
+#SBATCH --job-name=bellenguez_rescue
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
-#SBATCH --time=50:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie/%x_%j.log
+#SBATCH --time=80:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_anno/%x_%j.log
 
-## note: run susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
 
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
-sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/$anno/"
-#missing="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/max_snp_${max_snp}/missing_window.txt"
+sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_anno/$anno/"
 missing="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie/finemap/max_snp_${max_snp}/missing_window.txt"
 
 #sed -i s/'chr'/''/g /gpfs/commons/home/tlin/output/bellenguez/new_sep22/bl/finemap/max_snp_10/missing_window.txt
@@ -36,7 +34,6 @@ do
 			--ld $FILES/${ldfile} \
 	  		--chr ${chr} --start $start --end $end \
 	  		--method susie \
-			--non-funct \
      	  	--max-num-causal ${max_snp} \
 	  		--allow-missing \
 			--out $sumstat/finemap/max_snp_${max_snp}/bellenguez.chr${chr}.${start}.${end}.gz

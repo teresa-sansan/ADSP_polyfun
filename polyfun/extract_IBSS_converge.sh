@@ -9,13 +9,12 @@
 #finemap_path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap'
 #finemap_path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_updateRSID/finemap'
 #finemap_path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/old/finemap'
-finemap_path='/gpfs/commons/home/tlin/output/jansen/susie'
+finemap_path='/gpfs/commons/home/tlin/output/bellenguez/new_anno/all_anno/finemap'
 #finemap_path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap'
 #finemap_path='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/'
-
 # summary_stat='susie'
-#summary_stat='bellenguez'
-summary_stat='jansen'
+summary_stat='bellenguez'
+#summary_stat='jansen'
 cd $finemap_path
 echo block counts for those failed to converge > $finemap_path/IBSS_not_converge_count.txt
 
@@ -26,12 +25,12 @@ echo max_snp $max_snp | tee  $finemap_path/max_snp_$max_snp/IBSS_not_converge_li
 	for chr in {1..22} 
 	do	
 		dont_converge='F'
-		for i in $finemap_path/max_snp_$max_snp/${summary_stat}.chr${chr}.*.gz.log
+		for i in $finemap_path/max_snp_$max_snp/${summary_stat}.${chr}.*.gz.log
 		do 
 		converge=$(cat $i| grep converge| wc -l)
 		if [ $converge != 0 ]
 		then
-			ld=$( echo $i| cut -d '/' -f 10)   ## sometmes it's 12 bellenguez ## 10 for jansen ## 13 for wightman
+			ld=$( echo $i| cut -d '/' -f 12)   ## sometmes it's 12 bellenguez ## 10 for jansen ## 13 for wightman
 			pos=$( echo $ld| cut -d '.' -f 2-4)
 			echo $pos ';' $converge 'jobs fail to converge.'| tee -a $finemap_path/max_snp_$max_snp/IBSS_not_converge_list.txt
 			echo ' ' | tee -a $finemap_path/max_snp_$max_snp/IBSS_not_converge_list.txt

@@ -6,7 +6,7 @@
 #path='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_all_2/finemap_snpvar_constrained/'
 #prefix=finemap_bellenguez_all_2
 
-path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap'
+path='/gpfs/commons/home/tlin/output/bellenguez/new_anno/all_enformer/finemap'
 prefix='bellenguez'
 
 #path='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/bl/finemap'
@@ -18,14 +18,14 @@ prefix='bellenguez'
 
 ## check the log file
 if false; then
-for snp in 1 5 10
+for snp in 1 2 5 10
 do
   cd $path/max_snp_${snp}
   touch missing_window.txt
   for chr in {1..22}
     do
     missing=0
-     for i in $prefix.chr${chr}.*.gz.log
+     for i in $prefix.${chr}.*.gz.log
        do
          export file=$(echo $i|awk -F '.' '{print $1 "." $2 "." $3 "." $4 ".gz"}')
          if  [ ! -f "$file" ]; then

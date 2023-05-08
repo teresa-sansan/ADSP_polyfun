@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=bl_wightman_convergence
+#SBATCH --job-name=all_anno_bellenguez
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
 #SBATCH --time=100:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/finemap/max_snp_10/try_rescue_not_converge/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_anno/finemap/max_snp_10/try_rescue_not_converge/%x_%j.log
 
 
 ## change #56 and add the revision in #57.
@@ -15,15 +15,14 @@ conda activate polyfun
 
 FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld"
 
-anno='bl'
+anno='all_anno'
 ##bellenguez
-if false; then
+if true; then
 echo run bellenguez
-#sumstat="/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_updated/bellenguez"
-sumstat='/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224_annotations/'
-sumstat='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/'
+
+sumstat='/gpfs/commons/home/tlin/output/bellenguez/new_anno/'
 n=487511
-output='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap/max_snp_10/rescue_not_convergence/'
+output='/gpfs/commons/home/tlin/output/bellenguez/new_anno/all_anno/finemap/max_snp_10/rescue_not_convergence/'
 echo "run not converge regions in" ${path} ${anno}'/max_snp_10/IBSS_not_converge_list.txt'
 
 #			--sumstats $sumstat/$anno/${anno}.${chr}.snpvar_constrained.gz \
@@ -33,7 +32,7 @@ fi
 
 
 #wightman
-if true; then
+if false; then
 echo run wightman
 sumstat='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/'
 n=74004
