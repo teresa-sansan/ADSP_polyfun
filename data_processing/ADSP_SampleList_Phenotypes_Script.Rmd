@@ -248,8 +248,9 @@ duplist.unknown = ibdpair.95[which(ibdpair.95$SUBJID1 != ibdpair.95$SUBJID2),]
 duplist.unknown = duplist.unknown[ which(duplist.unknown$SUBJID1 %in% d7$SUBJID & duplist.unknown$SUBJID2 %in%  d7$SUBJID ),]
 
 
-#  Define the rules to remove duplicates based on the observations in non-concordant phenotypes
+#  Define the rules to remove duplicates based on the observations fin non-concordant phenotypes
 
+## WHY DONT REMOVE NAs DIRECTLY!!!!!!
 resolve <- function(v1, v2) { 
     # Assume both samples are high quality
     # If APOE and AD present and inconsistent, drop
@@ -260,7 +261,7 @@ resolve <- function(v1, v2) {
     v1apoe=v1$APOE_reported; if (is.na(v1apoe)) {v1apoe ="Missing"}
     v2apoe=v2$APOE_reported; if (is.na(v2apoe)) {v2apoe ="UNKNOWN"}
 
-    if ((v1dx!= v2dx) || (v1apoe!= v2apoe)) { return(list("Inconsistent",NA)); }
+    if ((v1dx!= v2dx) || (v1apoe!= v2apoe)) { return(list("Inconsistent",NA)); } 
 
     # Otherwise pick the one with more recent age
 
@@ -269,11 +270,11 @@ resolve <- function(v1, v2) {
     if (is.na(v1$AGE_harmonized) & is.na(v2$AGE_harmonized)) {return(list("BothAgesMissing",NA));}
 
     # If race/ethnicity/sex missing (unchanging data), fill with data from another sample
-
-    if (is.na(v1$AGE_harmonized) & !is.na(v2$AGE_harmonized)) { select="Select1"; }
+## shouldnt this be the opposite??
+    if (is.na(v1$AGE_harmonized) & !is.na(v2$AGE_harmonized)) { select="Select1"; } 
     if (!is.na(v1$AGE_harmonized) & is.na(v2$AGE_harmonized)) { select="Select2"; }
-    if (!is.na(v1$AGE_hd7armonized) & !is.na(v2$AGE_harmonized)) {
-        if (v1$AGE_harmonized>=v2$AGE_harmonized) { select="Select1"; } else { select="Select2"; }
+    if (!is.na(v1$AGE_harmonized) & !is.na(v2$AGE_harmonized)) {
+        if (v1$AGE_harmonized>=v2$AGE_harmonized) { select="Select1"; } else { select="Select2"; } ## why deal with the same age this way?? 
     }
     
     # update missing data
@@ -295,28 +296,30 @@ duplist.unknown$Choice=NA;  # track choices for each pair
 
 # Go over all the duplicate pairs, merge/prune records
 
+#nrow(duplist.unknown)
 for (i in 1:nrow(duplist.unknown)) {
     fid1  =duplist.unknown$FID1[i]
     fid2  =duplist.unknown$FID2[i]
     subj1 =duplist.unknown$SUBJID1[i]
     subj2 =duplist.unknown$SUBJID2[i]
-    rowidx1=which(d7$SUBJID==subj1)
-    rowidx2=which(d7$SUBJID==subj2)
+    rowidx1=which(d7$SUBJID==subj1) ## choice 1
+    rowidx2=which(d7$SUBJID==subj2) ## choice 2
     rec1=d7[rowidx1,]
     rec2=d7[rowidx2,]
-
+    
     if (nrow(rec1)==0) {duplist.unknown$Choice[i]="PrunedEarlier1"} else {
     if (nrow(rec2)==0) {duplist.unknown$Choice[i]="PrunedEarlier2"} else {
-    
-        r=resolve(rec1,rec2)
-
+        r=resolve(rec1,rec2) ## decide which one to choice
         duplist.unknown$Choice[i]=r[[1]]
 
         d7=d7[-c(rowidx1,rowidx2),]
         if (!(is.na(length(r[[2]]))) && !(is.na(r[[2]])))
           {
           d7=rbind(d7,r[[2]])
-    }}
+        }}
+    
+    
+    
 }}
 
 table(duplist.unknown$Choice)
@@ -325,7 +328,11 @@ table(duplist.unknown$Choice)
 #write.table(d7,"IntegratedPhenotype.wgs.txt",sep="\t",quote=F,row.names=F)
 
 ```
+```{r}
+#concordant <- read.table('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_concordant.tsv', header=T, as.is=T,sep="\t",stringsAsFactors=FALSE,comment="",quote="")
 
+#pheno_SampleID <- read.table('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_SampleID.tsv', header=T, as.is=T,sep="\t",stringsAsFactors=FALSE,comment="",quote="")
+```
 
 ```{r family_filter}
 

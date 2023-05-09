@@ -62,6 +62,8 @@ Sample to subject mapping
     
         For the pair that have different SUBJID1 & SUBJID2 but with > .95 pi_hat (#513):
             - Filter out the rows there the AD status or APOE status is inconsistant (#136)
+            - age:
+                if age_x >= age y, => choose 1 , else choose 2
             
           
     
