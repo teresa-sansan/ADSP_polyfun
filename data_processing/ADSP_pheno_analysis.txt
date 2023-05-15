@@ -10,7 +10,7 @@ Sample to subject mapping
 1. Deal with the three phenotype files
     a. Case control
     * looks the same so far, except that they includes all the NAs in diagnosis
-       Lisan: #case: 
+       Lisan: #case:16,793, #control:23,347, NA:5,235
 
     b. Family
     * for family, we used different threshold for AD
