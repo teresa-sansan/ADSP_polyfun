@@ -9,11 +9,7 @@ library(tibble)
 library(readr)
 library(cowplot)
 library(pROC)
-install_github("rspatial/terra")
 library(devtools)
-
-install.packages('terra')
-install.packages('modEvA')
 library(terra)
 library(modEvA)  # psuedo rsquare
 library(boot)
@@ -89,15 +85,23 @@ wightman_polyfun_plink_no_cpT= pre_process('/gpfs/commons/home/tlin/output/prs/n
 
 
 ###  polyfun-Pred ----
-kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_polypred.tsv')
-kunkle_susie_old <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_susie.tsv') 
-kunkle_susie <-pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_agg_susie_polypred.tsv')
-kunkle_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_bl_polypred.tsv')
+#kunkle_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_polypred.tsv')
+#kunkle_susie_old <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_plink_susie.tsv') 
+#kunkle_susie <-pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_agg_susie_polypred.tsv')
+kunkle_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_anno/bl.tsv')
+kunkle_no_ml <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_anno/no_ml.tsv')
+kunkle_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_anno/all_enformer.tsv')
+kunkle_all_anno <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_anno/all_anno.tsv')
 
-bellenguez_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/fixed_0224_polypred.prs')
-bellenguez_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/susie_polypred.tsv")
-bellenguez_bl <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/fixed_0224_bl_polypred.prs")
-bellenguez_no_rescue <- pre_process('/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224/finemap/polypred_new_plink/max_snp_10_no_rescue.tsv')
+#bellenguez_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/fixed_0224_polypred.prs')
+#bellenguez_susie <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/susie_polypred.tsv")
+#bellenguez_bl <- pre_process("/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/fixed_0224_bl_polypred.prs")
+#bellenguez_no_rescue <- pre_process('/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224/finemap/polypred_new_plink/max_snp_10_no_rescue.tsv')
+
+bellenguez_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/new_anno/bl.tsv')
+bellenguez_no_ml <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/new_anno/no_ml.tsv')
+bellenguez_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/new_anno/all_enformer.tsv')
+bellenguez_all_anno <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/bellenguez/new_anno/all_anno.tsv')
 
 wightman_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_susie.prs.tsv')
 wightman_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003.prs.tsv')
@@ -105,7 +109,7 @@ wightman_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman
 wightman_fix_convergence <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_fixed_convergence.tsv')
 
 wightman_no_ml <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/no_ml.tsv')
-wightman_update_all <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/update_all+enformer.tsv')
+wightman_all_anno <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/update_all+enformer.tsv')
 wightman_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/enformer.tsv')
 wightman_all_except_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/all_except_enformer.tsv')
 wightman_glasslab <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/glasslab.tsv')
@@ -119,6 +123,7 @@ jansen_fix_convergence <- pre_process('/gpfs/commons/home/tlin/output/prs/polypr
 ### Other PRS method -----
 PRSice <- pre_process("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 sbayesR = pre_process("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
+PRSCS <- pre_process('/gpfs/commons/home/tlin/output/wightman/prscs/prscs_17k.tsv')
 
 ## Extract specific race ----- 
 extract_race <-function (df,race){
@@ -161,7 +166,7 @@ col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
 col_roc_polypred3 <- list("PRS1","PRS5","PRS10")
-
+col_roc_polypred_125<- list("PRS1","PRS2","PRS5")
 
 ## process PRS name
 process_prs_col_name <- function(df){
@@ -169,7 +174,10 @@ process_prs_col_name <- function(df){
     df$PRS = str_replace(df$PRS, 'PRS', 'max snp ')
     if ('PRS3' %in% df$PRS){
       df$PRS = factor(df$PRS, level = c('max snp 10','max snp 7','max snp 5','max snp 3','max snp 1'))
-    }else{
+    }else if ('PRS2' %in% df$PRS){
+      df$PRS = factor(df$PRS, level = c('max snp 5','max snp 2','max snp 1'))
+    }
+    else{
       df$PRS = factor(df$PRS, level = c('max snp 10','max snp 5','max snp 1'))
     }
   }else if('PRS_5' %in% df$PRS){
@@ -182,21 +190,39 @@ process_prs_col_name <- function(df){
 
 ## Case/Control PRS dist ----
 ## create a race-separated pivot df for different PRS method  (which is easier for plotting). 
-## can be apply to different methods (polyfunpred or pT)
-pivot_df<- function(df){ 
-  df_new <- df %>%
-    subset(final_population ==  "EUR" | final_population == "AMR"| final_population =="AFR") %>%   ## only keep the race of interest
-    pivot_longer(                           
-      cols = starts_with("PRS"),
-      names_to = 'method', 
-      values_to = 'PRS') %>% 
-    as.data.frame()
-  if("PRS5" %in% df_new$method){
-    df_new$method <-factor(df_new$method, 
-                           levels =c("PRS1","PRS5","PRS10"))
+## can be apply to different methods (polypred or pT)
+
+#pivot_df<- function(df){ 
+#  df_new <- df %>%
+#    subset(final_population ==  "EUR" | final_population == "AMR"| final_population =="AFR") %>%   ## only keep the race of interest
+#    pivot_longer(                           
+#      cols = starts_with("PRS"),
+#      names_to = 'method', 
+#      values_to = 'PRS') %>% 
+#    as.data.frame()
+#  if("PRS5" %in% df_new$method){
+#    df_new$method <-factor(df_new$method, 
+#                           levels =c("PRS1","PRS5","PRS10"))
+#  }
+#  df_new$Diagnosis=ifelse(df_new$Diagnosis == 0, "control","case")  ## create a new column so that it will show case/control when plotting
+#  df_new$final_population=factor(df_new$final_population, level=c('EUR', 'AFR','AMR'))
+#  return(df_new)
+#}
+
+pivot_df <- function(df) {
+  df_new <- subset(df, final_population %in% c("EUR", "AMR", "AFR"))  ## only keep the races of interest
+  
+  prs_columns <- grep("^PRS", names(df_new), value = TRUE)  ## get the PRS columns
+  df_new <- reshape(df_new, idvar = "Diagnosis", varying = list(prs_columns), 
+                    times = prs_columns, v.names = "PRS", direction = "long")  ## pivot longer
+  
+  if ("PRS5" %in% df_new$method) {
+    df_new$method <- factor(df_new$method, levels = c("PRS1", "PRS5", "PRS10"))
   }
-  df_new$Diagnosis=ifelse(df_new$Diagnosis == 0, "control","case")  ## create a new column so that it will show case/control when plotting
-  df_new$final_population=factor(df_new$final_population, level=c('EUR', 'AFR','AMR'))
+  
+  df_new$Diagnosis <- ifelse(df_new$Diagnosis == 0, "control", "case")  ## create a new column for case/control
+  df_new$final_population <- factor(df_new$final_population, levels = c("EUR", "AFR", "AMR"))
+  
   return(df_new)
 }
 
@@ -228,17 +254,7 @@ plot_facet_dist(wightman_susie, "wightman_susie")
 plot_facet_dist(wightman_beta, "wightman_new_beta")
 plot_facet_dist(wightman_susie_max10_polypred, "wightman_susie_new_beta")
 plot_facet_dist(bellenguez_no_rescue,'max_10 no rescue')
-
-## SbayesR & PRSice
-plot(density(sbayesR$PRS), col = 'darkseagreen3', lwd =2 ,lty = 2,xlab = 'PRS', xlim=c(-1e-03,6e-05), main = ' ')
-abline(v = mean(sbayesR$PRS), col = "darkseagreen3")
-lines(density(PRSice$PRS), col = 'cadetblue1', lwd =2, lty = 2)
-abline(v = mean(PRSice$PRS), col = "cadetblue1")
-
-text(mean(PRSice$PRS),2200,"PRSice", col = 'deepskyblue')
-text(mean(PRSice$PRS),1000,round(mean(PRSice$PRS),6), col = 'deepskyblue')
-text(mean(sbayesR$PRS),20000,"SBayesR", col = 'darkcyan')
-text(mean(sbayesR$PRS),19000,round(mean(sbayesR$PRS),6), col = 'darkcyan')
+plot_facet_dist(PRSCS, 'wightman_PRSCS')
 
 ## AUC ------
 plot_roc <- function(roclist, roccol,title = FALSE){
@@ -263,7 +279,6 @@ plot_roc <- function(roclist, roccol,title = FALSE){
 
 roc_result <-function(df, column_for_roc = col_roc_E5){
   auc_list=list()
-  #roc_formula = c()
   auc_df = data.frame("PRS" = unlist(column_for_roc), "auc" = 0)
   for (i in 1:length(column_for_roc)){
     col = column_for_roc[[i]]
@@ -337,46 +352,30 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
 
 
 ## fixed legend
-## The boolean APOE operator is to see whether you want to plot the effect of only using 5(6, depending on QC or not) APOE allele to make prediction.  
-plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=wightman_all_except_enformer,QC5=wightman_glasslab,QC6=wightman_update_all, col=col_roc_E5, title=' ',
-                                  QC1name="bl", QC2name="roadmap/deepsea",QC3name="no_ml",QC4name='no_enformer',QC5name='glasslab',QC6name='all',boot=TRUE, 
+## The boolean APOE operator is to see whether you want to plot the effect of only using 5(6, depending on QC or not) APOE allele to make prediction. 
+plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(),QC6=data.frame(), col=col_roc_E5, title=' ',
+                                  QC1name="", QC2name="",QC3name="",QC4name=' ',QC5name=' ',QC6name=' ',boot=TRUE, 
                                   boot_num=50, legendname=FALSE, APOE=FALSE){
+  dfs <- list(QC1, QC2, QC3, QC4, QC5, QC6)
+  dfsname <- list(QC1name, QC2name, QC3name, QC4name, QC5name, QC6name)
   
   roc_add_anno <- function(df, col, boot, bootnum, anno_name){
     df = plot_ethnic_roc(df, col=col,boot=boot,boot_num=boot_num)
     df$qc_status = anno_name
     return(df)
   } 
+  result <- do.call(rbind, mapply(function(df, name) {
+    if (nrow(df) != 0) {
+      name <- factor(name, levels = unique(dfsname))
+      df_new <- roc_add_anno(df, col, boot, boot_num, name)
+      return(df_new)
+    }}, dfs, dfsname, SIMPLIFY = FALSE))
   
-  QC1 = roc_add_anno(QC1, col,boot,boot_num, QC1name)
-  QC2 = roc_add_anno(QC2, col,boot,boot_num, QC2name)
-  
-  if(class(QC3) != "logical"){
-    QC3 = roc_add_anno(QC3, col,boot,boot_num, QC3name)
-     if(class(QC4) != "logical"){
-        QC4 = roc_add_anno(QC4, col,boot,boot_num, QC4name)
-        QC5 = roc_add_anno(QC5, col,boot,boot_num, QC5name)
-        QC6 = roc_add_anno(QC6, col,boot,boot_num, QC6name)
-        all = rbind(QC1, QC2, QC3, QC4, QC5, QC6)
-        all$qc_status <- factor(all$qc_status, levels = c(QC1name, QC2name, QC3name,QC4name, QC5name, QC6name))
-     }else{
-       all = rbind(QC1, QC2, QC3)
-       all$qc_status <- factor(all$qc_status, levels = c(QC1name, QC2name, QC3name))
-      }
-    
-  }
-  else{
-    all  = rbind(QC1,QC2)  
-    all$qc_status <- factor(all$qc_status, levels = c(QC1name, QC2name))
-  }
-  all = process_prs_col_name(all)
- 
-  plot <- ggplot(data = all, aes(x=auc, y = PRS, color = qc_status))+
+  plot <- ggplot(data = result, aes(x=auc, y = PRS, color = qc_status))+
     geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
     xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.7)+
     theme_bw()
-  print(all)
   
   if (boot == TRUE){  
     plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,show.legend = FALSE) 
@@ -386,13 +385,21 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=wightman_all_except_enformer
   } ## change legend name or not (depends on usage)
   if(class(APOE) != "logical"){
     APOE_ci = plot_ethnic_roc(APOE, col="PRS", plot='F',boot=boot, boot_num=boot_num)
-    #print(APOE_ci)
     plot = plot +  geom_vline(data = APOE_ci, aes(xintercept = auc,color='only APOE'),color="black",lwd=0.5, alpha=0.7,linetype="dashed")  ## move color into aes will generate legend automatically.
   } ## if we want to plot APOE (line) ## should do bootstrap automatically if it is specified 
   return(plot)
 }
 
 plot_ethnic_roc_facet(wightman_bl, wightman_polypred, wightman_no_ml, col = col_roc_polypred3, title = 'wightman', legendname = 'annotations' )
+
+plot_ethnic_roc_facet(kunkle_bl, kunkle_no_ml, kunkle_enformer, kunkle_all_anno, col = col_roc_polypred_125,  
+                      QC1name='bl',QC2name = 'no_ml',QC3name = 'all enformer', QC4name = 'all_anno',
+                       title = 'kunkle', legendname = 'annotations')
+
+plot_ethnic_roc_facet(bellenguez_bl, bellenguez_no_ml, bellenguez_enformer, bellenguez_all_anno, col = col_roc_polypred_125,  
+                      QC1name='bl',QC2name = 'no_ml',QC3name = 'all enformer', QC4name = 'all_anno',
+                      title = 'bellenguez', legendname = 'annotations' )
+
 plot_auc_facet_all_sumstat <- function(a,b,c,d,legendname = FALSE){
   prow <- plot_grid(a+ theme(legend.position="none"), 
                     b+ theme(legend.position="none",axis.text.y = element_blank())+ ylab(NULL), 
@@ -407,8 +414,33 @@ plot_auc_facet_all_sumstat <- function(a,b,c,d,legendname = FALSE){
   
 }
 
-
 ### line plot ------
+line_plot <- function(df1, df2, df3, df4,  header, col = col_roc_polypred3){
+  test1 = plot_ethnic_roc(df1, col )
+  test2 = plot_ethnic_roc(df2, col )
+  test3 = plot_ethnic_roc(df3, col )
+  test4 = plot_ethnic_roc(df4, col )
+  
+  test1$anno = 'bl'
+  test2$anno = '+glasslab+roadmap'
+  test3$anno = '+deepsea +enformer & glasslab_enformer'
+  test4$anno = 'enformer only'
+  
+  test = rbind(test1,test2, test3,test4)
+  
+  test$inter = interaction(test$PRS, test$ethnicity)
+  
+  ggplot(data=test[test$PRS=="PRS2",], aes(x=factor(anno, level= c('bl','+glasslab+roadmap','+deepsea +enformer & glasslab_enformer','enformer only')), y=auc, group=inter)) +
+    geom_line(aes(color=ethnicity),position = position_dodge(width = 0.3),alpha=0.3,linetype='dashed')+ 
+    geom_errorbar(aes(ymin=boot_CI_lower, ymax=boot_CI_upper,color=ethnicity), alpha=0.5, width=0.1,position = position_dodge(width = 0.3))+
+    geom_point(aes(color=ethnicity),position=position_dodge(0.3))+ylim(c(0.45,0.65))+
+    xlab("")+ theme_bw()+ggtitle(header)+ scale_x_discrete(guide = guide_axis(n.dodge = 2)) 
+}
+
+line_plot(kunkle_bl, kunkle_no_ml, kunkle_all_anno, kunkle_enformer,'kunkle')
+
+line_plot(wightman_bl, wightman_no_ml, wightman_all_anno, wightman_enformer,'wightman')
+
 test1 = plot_ethnic_roc(wightman_bl, col=col_roc_polypred3)
 test2 = plot_ethnic_roc(wightman_no_ml, col=col_roc_polypred3)
 test3 = plot_ethnic_roc(wightman_glasslab, col=col_roc_polypred3)
