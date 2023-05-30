@@ -1,5 +1,5 @@
 #!/bin/bash
-for chr in {1..19}
+for chr in {11..22}
 do
     path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/'
     chunk_num=$(ls $path/plink_hg38| grep chr"${chr}".chunk | grep bed | wc -l)
