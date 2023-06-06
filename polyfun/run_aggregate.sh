@@ -2,15 +2,15 @@
 
 #for anno in bl_brain_atac bl_dl_annotations bl
 if true; then
-#for anno in bl
-#do
-for i in 1 5 10
+for anno in all_except_enformer bl no_ml_new 
 do
-        echo "max_snp = $i" 
-        #sbatch --export=max_snp=$i,anno=$anno  aggregate_finemap_result.sh 
-        sbatch --export=max_snp=$i aggregate_finemap_result.sh 
+        for i in 2
+        do
+                echo "max_snp = $i" 
+                sbatch --export=max_snp=$i,anno=$anno  aggregate_finemap_result.sh 
+                #sbatch --export=max_snp=$i aggregate_finemap_result.sh 
+        done
 done
-#done
 fi
 
 

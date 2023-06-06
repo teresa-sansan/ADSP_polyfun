@@ -1,35 +1,6 @@
 import pandas as pd
 from functools import reduce  
 
-#path='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/qc_on_variant/'
-#save_name='bellenguez/fixed_0224/bellenguez_qc_on_variant'
-
-#path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/qc_on_variant_sumstat/'
-#save_name='kunkle/fixed_0224/qc_on_variant_sumstat'
-
-##kunkle_no_apoe
-#path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/subsets/qc_on_variant_sumstat/'
-#save_name='kunkle/fixed_0224/remove_APOE_qc_on_variant_sumstat.tsv'
-#path='/gpfs/commons/home/tlin/output/cT/genomewide_plink/kunkle/ADSP_no_apoe/'
-#save_name='/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_no_apoe_qc'
-#
-#path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe_qc/'
-#save_name='kunkle/kunkle_no_apoe_qc_check'
-
-#path='/gpfs/commons/home/tlin/output/cT/wightman/before_qc/'
-#save_name='kunkle/fixed_0224/qc_on_variant_maf01'
-#path='/gpfs/commons/home/tlin/output/cT/wightman/qc_on_variant_sumstat/'
-#save_name='wightman/qc_on_variant_sumstat'
-
-#path='/gpfs/commons/home/tlin/output/cT/bellenguez/fixed_0224/qc_on_variant_sumstat/'
-#save_name='bellenguez/fixed_0224/bellenguez_qc_on_variant_sumstat'
-
-## new beta
-#path='/gpfs/commons/home/tlin/output/cT/kunkle/fixed_0224/new_beta/'
-#save_name='kunkle/fixed_0224/new_beta_noqc'
-
-
-
 #path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/wightman/fixed_rsid_1002/ADSP_qc_all/'
 #save_name='wightman/fixed_rsid1002/ADSP_qc_all'
 
@@ -42,18 +13,17 @@ from functools import reduce
 #plink=["ADSP_no_apoe"]
 #path = '/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/kunkle/ADSP_no_apoe/'
 
-
 #path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/bellenguez/new_sep22/ADSP/'
 #save_name='bellenguez/new_sep22/ADSP'
 
 
-path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP/'
-save_name='jansen/ADSP'
+#path='/gpfs/commons/home/tlin/output/cT/new_plink_genomewide/jansen/ADSP/'
+#save_name='jansen/ADSP'
 
 
 #sumstat=["jansen"]
 #plink=["ADSP_qc_all"]
-sumstat=['kunkle']
+#sumstat=['kunkle']
 
 for x in sumstat:
   #for y in plink:

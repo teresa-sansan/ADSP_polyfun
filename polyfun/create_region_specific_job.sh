@@ -8,9 +8,9 @@ do
 			--sumstats /gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl_dl_annotations/bl_dl_annotations.${chr}.snpvar_constrained.gz \
    	 		--n 63926 \
 			--method susie \
-    			--max-num-causal $max_snp \
+    		--max-num-causal $max_snp \
 			--out-prefix /gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl_dl_annotations/ \
-    			--jobs-file test_job.sh
+    		--jobs-file test_job.sh
 
 	done
 

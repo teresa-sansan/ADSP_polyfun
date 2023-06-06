@@ -1,5 +1,5 @@
-path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/'
-prefix='wightman.'
+path='/gpfs/commons/home/tlin/output/bellenguez/new_anno/'
+prefix='bellenguez.'
 
 ## create a function to check if its converged
 function check
@@ -22,12 +22,12 @@ echo
 }
 
 ## test in diff_MAX SNP per locus
-for anno in all_except_enformer enformer glasslab no_ml no_ml_new update_all+enformer 
+for anno in no_ml bl
 do
 if [ -f $path/$anno/check_finemap.txt ]; then rm $path/$anno/check_finemap.txt; fi #remove pre-exist file
 touch $path/$anno/check_finemap.txt   ##create file
 
- for i in 1 5 10
+ for i in 2 3
  do 
 	cd ${path}/$anno/finemap/max_snp_$i
         pwd

@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=finemap_wightman
+#SBATCH --job-name=finemap_bellenguz
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=150G
-#SBATCH --time=25:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/no_ml_new/finemap/%x%j.log
+#SBATCH --time=60:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_anno/%x_%j.log
 
 ## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
@@ -18,28 +18,25 @@ FILES="/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/ukb_ld/chr${chr}_*.npz
 ##kunkle
 if false; then
 sumstat_name='kunkle'
-sumstat="/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl/bl.${chr}.snpvar_constrained.gz"
+sumstat="/gpfs/commons/home/tlin/output/kunkle/new_anno/${anno}/${anno}.${chr}.snpvar_ridge_constrained.gz"
 n=63926
-output='/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224_annotations/bl'
+output="/gpfs/commons/home/tlin/output/kunkle/new_anno/${anno}/finemap"
 fi
 
 ##bellenguez
-if false; then
+if true; then
 sumstat_name='bellenguez'
+anno_path='/gpfs/commons/home/tlin/output/bellenguez/new_anno/${anno}/'
+sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_anno/${anno}/${anno}.${chr}.snpvar_ridge_constrained.gz"
+output="/gpfs/commons/home/tlin/output/bellenguez/new_anno/${anno}/finemap"
 n=487511
 
-## other_anno_combination
-anno_path="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/"
-
-## all_anno 
-sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/all_anno"
-output="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/all_anno/finemap"
 ##susie
 #output="/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie/finemap"
 fi
 
 ## wightman
-if true; then
+if false; then
 sumstat_name='wightman'
 n=762971
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_all.${chr}.snpvar_constrained.gz"
