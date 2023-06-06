@@ -123,7 +123,13 @@ jansen_fix_convergence <- pre_process('/gpfs/commons/home/tlin/output/prs/polypr
 ### Other PRS method -----
 PRSice <- pre_process("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 sbayesR = pre_process("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
-PRSCS <- pre_process('/gpfs/commons/home/tlin/output/wightman/prscs/prscs_17k.tsv')
+PRSCS <- pre_process('/gpfs/commons/home/tlin/output/wightman/prscs/original/prscs_17k.tsv')
+
+colnames(PRSCS) = gsub("_0\\.", "_", colnames(PRSCS))
+polypred_PRSCS = pre_process('/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/prscs_17k.tsv')
+colnames(polypred_PRSCS) = gsub("_0\\.", "_", colnames(polypred_PRSCS))
+polypred_plink = pre_process('/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/prs_plink_17k.tsv')
+colnames(polypred_plink) = gsub("_0\\.", "_", colnames(polypred_plink))
 
 ## Extract specific race ----- 
 extract_race <-function (df,race){
@@ -390,6 +396,12 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(
   return(plot)
 }
 
+
+plot_ethnic_roc_facet(PRSCS, polypred_PRSCS, polypred_plink,wightman_UKBB_qc,title='wightman',
+                      QC1name = "PRSCS", QC2name = "polyfun_PRSCS", QC3name='polyfun_plink',QC4name='genomewide_plink',
+                      legendname = "method", boot_num=50)
+
+
 plot_ethnic_roc_facet(wightman_bl, wightman_polypred, wightman_no_ml, col = col_roc_polypred3, title = 'wightman', legendname = 'annotations' )
 
 plot_ethnic_roc_facet(kunkle_bl, kunkle_no_ml, kunkle_enformer, kunkle_all_anno, col = col_roc_polypred_125,  
@@ -422,23 +434,22 @@ line_plot <- function(df1, df2, df3, df4,  header, col = col_roc_polypred3){
   test4 = plot_ethnic_roc(df4, col )
   
   test1$anno = 'bl'
-  test2$anno = '+glasslab+roadmap'
-  test3$anno = '+deepsea +enformer & glasslab_enformer'
-  test4$anno = 'enformer only'
+  test2$anno = 'no_ml'
+  test3$anno = 'enformer only'
+  test4$anno = 'all_anno'
   
   test = rbind(test1,test2, test3,test4)
   
   test$inter = interaction(test$PRS, test$ethnicity)
   
-  ggplot(data=test[test$PRS=="PRS2",], aes(x=factor(anno, level= c('bl','+glasslab+roadmap','+deepsea +enformer & glasslab_enformer','enformer only')), y=auc, group=inter)) +
+  ggplot(data=test[test$PRS=="PRS2",], aes(x=factor(anno, level= c('bl','no_ml','enformer only','all_anno')), y=auc, group=inter)) +
     geom_line(aes(color=ethnicity),position = position_dodge(width = 0.3),alpha=0.3,linetype='dashed')+ 
     geom_errorbar(aes(ymin=boot_CI_lower, ymax=boot_CI_upper,color=ethnicity), alpha=0.5, width=0.1,position = position_dodge(width = 0.3))+
     geom_point(aes(color=ethnicity),position=position_dodge(0.3))+ylim(c(0.45,0.65))+
     xlab("")+ theme_bw()+ggtitle(header)+ scale_x_discrete(guide = guide_axis(n.dodge = 2)) 
 }
 
-line_plot(kunkle_bl, kunkle_no_ml, kunkle_all_anno, kunkle_enformer,'kunkle')
-
+line_plot(kunkle_bl, kunkle_no_ml,kunkle_enformer, kunkle_all_anno ,'kunkle(max_snp_2)', col=col_roc_polypred_125)
 line_plot(wightman_bl, wightman_no_ml, wightman_all_anno, wightman_enformer,'wightman')
 
 test1 = plot_ethnic_roc(wightman_bl, col=col_roc_polypred3)
@@ -647,8 +658,6 @@ plot_ethnic_R2_facet <- function(QC1, QC2, QC3, col=col_roc_E5, boot_num=50, tit
 }
 
 
-
-
 plot_ethnic_R2_facet_race <- function(QC1, QC2, QC3, col=col_roc_polypred3, boot_num=FALSE, title=' ',QC1name="bl", QC2name="bl+enformer",QC3name="all", legendname=FALSE){
   QC1 = plot_ethnic_R2(QC1, col, boot_num)
   QC2 = plot_ethnic_R2(QC2, col, boot_num)
@@ -827,6 +836,21 @@ plot_auc_facet_all_sumstat(kunkle_adsp_no_apoe, kunkle_adsp_no_apoe_qc, FALSE,
                            QC1name = "no qc",
                            QC2name = "qc", 
                            boot_num = 50)
+
+
+
+## prscs
+
+PRSCS <- pre_process('/gpfs/commons/home/tlin/output/wightman/prscs/original/prscs_17k.tsv')
+polypred_PRSCS = pre_process('/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/prscs_17k.tsv')
+polypred_plink = pre_process('/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/prs_plink_17k.tsv')
+
+
+
+plot_ethnic_roc_facet(PRSCS, polypred_PRSCS, polypred_plink,title='wightman',
+                      QC1name = "PRSCS", QC2name = "polyfun_prscs", 
+                      legendname = "polypred_plink", boot_num=50)
+
 
 ## all partial R2
 ## no qc
@@ -1392,3 +1416,27 @@ jansen_polypred$all_anno = jansen_polypred$PRS10
 jansen_polypred$susie = jansen_susie$PRS10
 plot_ethnic_roc_facet(jansen_polypred,jansen_fix_convergence,FALSE, col= list("all_anno",'susie'),title='jansen polypred', QC1name = 'no',QC2name = 'yes', legendname = 'fix_convergence')
 
+
+## others
+SNP4prscs <- read.csv('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_5/agg_extract_0.3.tsv',sep = '\t', header=T,fill = T)
+
+ggplot(SNP4prscs, aes(x = P)) +
+  geom_histogram(aes(y = ..density..), fill = "lightblue", color = "black") +
+  labs(title = "Wightman_SNP (PIP >= 0.3)") +
+  xlab("p value") +
+  ylab("count")+ coord_flip()+  theme_bw()
+
+
+
+
+hist(SNP4prscs$P, freq = FALSE, col = "lightblue", main = "SNPs with PIP >=0.3 ", xlab = "p value", ylab = "count", ylim=c(0,10))
+
+
+# Generate random data for the distribution plot
+set.seed(123)
+data <- rnorm(1000)
+
+# Create a histogram (horizontal)
+
+# Add a density plot
+lines(density(data), col = "orange", lwd = 2)
