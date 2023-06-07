@@ -1,29 +1,22 @@
+## README
+## This script is using the output from polyfun then run prscs!
 
-path=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_5
-echo -n "#org snp:  "
+#path=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_5
+path=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/finemap/max_snp_5
+#path=/gpfs/commons/home/tlin/output/kunkle/new_anno/all_anno/finemap/max_snp_5
+#echo -n "#org snp:  "
 #cat $path/aggregate.all.txt | wc -l
 
-echo
-
-echo -n "#SNPs with PIP >= 0.3: "
-# awk '{if ($11 >= 0.3)  print $0}' aggregate.all.txt > $path/agg_extract_0.3.tsv
-cat $path/agg_extract_0.3.tsv | wc -l
+echo "check in repo" $path
+file_name="agg_extract_pip_not0.tsv"
+echo "extracting SNPs that PIP > 0..."
+awk '{if ($11 > 0)  print $0}' $path/aggregate.all.txt > $path/$file_name
+echo -n "#SNPs with PIP > 0: "
+cat $path/$file_name | wc -l
 #cat $path/agg_extract_0.3.tsv cut -f 2,4,5,12,10 > $path/agg_4prscs.tsv ## the order need to be SNP, A1, A2, BETA and P
 
-awk '{print $2, $4, $5, $12, $10}' $path/agg_extract_0.3.tsv > $path/agg_4prscs.tsv 
+echo "creating the right format for PRSCS..."
+awk '{print $2, $4, $5, $12, $10}' $path/$file_name > $path/agg_4prscs.tsv 
 sed -i '1s/BETA_MEAN/BETA/' $path/agg_4prscs.tsv 
 
-
-echo  -n "which are in the following CHR:"
-cat $path/agg_extract_0.3.tsv| tail -n+2 | cut -f 1| uniq| tr '\n' ','
-
-echo
-echo
-
-
-
-
-
-
-
-#awk '{if ($11 > 0.3)  print $0}' aggregate.all.txt > agg_extract_0.3.tsv
+echo Done! 

@@ -1,6 +1,6 @@
 ## This script is for summing the CHR-separated PRS into one PRS value for each individual.
 ## Because we cauclated thiem by chr to speed up
-## The diff between this script and tje prs_pT_sum.py is that
+## The diff between this script and the prs_pT_sum.py is that
 ## This scirpt is design for only one obervation (while the other are summing PRS based on different p value thresholds)
 
 
