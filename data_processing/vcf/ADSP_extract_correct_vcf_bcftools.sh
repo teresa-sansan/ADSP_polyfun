@@ -6,7 +6,7 @@
 #SBATCH --time=22:00:00
 #SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/correct_chr_vcf/%x%j.log
 
-
+## this script is for extracting SNPs from the correct CHR. (because liftover tends to make it mismap)
 cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37
 for i in 4 6 
 do
