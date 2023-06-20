@@ -1,11 +1,17 @@
-merge='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/vcf_filt/ADSP_merge_list.txt'
-rm $merge
-touch $merge
-for i in {2..22}
-do
-#echo /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_annotated_chr${i} >> /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/ADSP_merge_list.txt 
-#echo /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/remove_triallelic/chr${i}.uni >> $merge
-echo /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/plink/vcf_filt/ADSP_annotated_chr${i} >> $merge
-#echo /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/17K_final/annotated_filtered_hg37/correct_chr_vcf/filt/ADSP_annotated_no_dot_chr${i}.genofilt.vcf.gz >> $merge
+merge='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/plink_hg38/qc/36k_ADSP_merge_list.txt'
  
+echo /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/plink_hg38/qc/ADSP.chr1.chunk1 > $merge
+
+for chr in {1..5}
+do
+    chunk_num=$(ls /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/plink_hg38| grep chr"${chr}".chunk | grep bed | wc -l)
+
+    for ((i=1; i<=$chunk_num; i++)); 
+        do
+            echo /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/plink_hg38/qc/ADSP.chr${chr}.chunk${i} >> $merge
+        done
 done
+
+
+
+tail -n+3 "$merge" > "$merge.tmp" && mv "$merge.tmp" "$merge"
