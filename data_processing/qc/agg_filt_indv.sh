@@ -1,4 +1,4 @@
-ind_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/plink_hg38_qc'
+ind_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/plink_hg38_qc/processing_files'
 output_name='ind_removed.tsv'
 echo 'ID CHR CHUNK' > $ind_path/$output_name
 
@@ -10,15 +10,15 @@ do
      for ((i=1; i<=$chunk_num; i++)); 
      do
         if [ -f $ind_path/ADSP.mind.chr${chr}.chunk${i}.irem ]; then
-            cat $ind_path/ADSP.mind.chr${chr}.chunk${i}.irem| cut -f 2 | awk -v chr="$chr" -v chunk="$i" '{ print $0, chr, chunk }'>> $ind_path/$output_name
+            #cat $ind_path/ADSP.mind.chr${chr}.chunk${i}.irem| cut -f 2 | awk -v chr="$chr" -v chunk="$i" '{ print $0, chr, chunk }'>> $ind_path/$output_name
+            cat $ind_path/ADSP.mind.chr${chr}.chunk${i}.imiss|tr -s ' '|tr ' ' '\t'| cut -f 3,5,6  > $ind_path/var_count_chr${chr}.chunk${i}.tsv 
         fi  
      done
-
 done    
-echo Done aggregating, now counting the occurances...
+echo "Done calculating the missingness per indv per chunk, now summing up the number of total missing variants per individual..."
+awk '{ sum2[$1]+=$2;sum3[$1]+=$3 } END { for (user in sum2) print user, sum2[user], sum3[user] }' $ind_path/var_count_chr* > $ind_path/ind_missingvar_count.tsv
+echo Done counting...
 
-awk '{count[$1]++} END{for (val in count) print val, count[val]}' $ind_path/$output_name > $ind_path/ind_count.txt
-echo Done counting
 
-cat ind_count.txt| awk -F ' ' '{ if ($2 > 6) print $1}' > ind_to_remove.txt
-echo extracting the IDs to remove
+# cat ind_count.txt| awk -F ' ' '{ if ($2 > 6) print $1}' > ind_to_remove.txt
+# echo extracting the IDs to remove
