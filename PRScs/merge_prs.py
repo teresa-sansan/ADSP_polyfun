@@ -2,9 +2,10 @@ import pandas as pd
 from functools import reduce  
 
 #path='/gpfs/commons/home/tlin/output/wightman/prscs/'
-path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/PIP_not0/'
+#path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/PIP_not0/'
 #path='/gpfs/commons/home/tlin/output/wightman/prscs/all_except_enformer/'
 #path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/PRS_hg38/prscs/plink_output/'
+path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/beta_sumstat/'
 name='prscs'
 prs_e5 = pd.read_csv(path+name+"_e-5_prs.tsv", sep = ' ', usecols = ["IID","SCORE"])
 prs_001 = pd.read_csv(path+name+"_0.001_prs.tsv", sep = ' ', usecols = ["IID","SCORE"])
@@ -13,15 +14,6 @@ prs_01 = pd.read_csv(path+name+"_0.01_prs.tsv", sep = ' ', usecols = ["IID","SCO
 prs_05 = pd.read_csv(path+name+"_0.05_prs.tsv", sep = ' ', usecols= ["IID","SCORE"])
 prs_1 = pd.read_csv(path+name+"_0.1_prs.tsv", sep = ' ', usecols = ["IID","SCORE"]) 
 prs_5 = pd.read_csv(path+name+"_0.5_prs.tsv", sep = ' ', usecols = ["IID","SCORE"]) 
-
-# prs_e5 = pd.read_csv(path+name+"_e-5.tsv", sep = ' ', names = ["IID","PRS"])
-# prs_001 = pd.read_csv(path+name+"_0.001.tsv", sep = ' ', names = ["IID","PRS"])
-# prs_005 = pd.read_csv(path+name+"_0.005.tsv", sep = ' ', names = ["IID","PRS"])   
-# prs_01 = pd.read_csv(path+name+"_0.01.tsv", sep = ' ', names = ["IID","PRS"]) 
-# prs_05 = pd.read_csv(path+name+"_0.05.tsv", sep = ' ', names = ["IID","PRS"])
-# prs_1 = pd.read_csv(path+name+"_0.1.tsv", sep = ' ', names = ["IID","PRS"]) 
-# prs_5 = pd.read_csv(path+name+"_0.5.tsv", sep = ' ', names = ["IID","PRS"]) 
-
 
 
 pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
