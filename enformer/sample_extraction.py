@@ -77,7 +77,7 @@ cols = ['ENA_FILE_PATH',
         'POPULATION',
         'EXPERIMENT_ID',
         'INSTRUMENT_PLATFORM',
-        'INSTRUMENT_MODEL',
+        'INSTRUMENT_MODEL',            
         'LIBRARY_NAME',
         'RUN_NAME',
         'INSERT_SIZE',
@@ -294,7 +294,7 @@ sample_df = sample_df.merge(metadata_df, on='SAMPLE_NAME')
 sample_df = sample_df[sample_df['population_code'].isin(population)]
 ###Change
 split = 'train'
-subset = tile_all.iloc[idx_num]
+sample_df
 chr_string = subset['Chromosome']
 vals = []
 count = 0
