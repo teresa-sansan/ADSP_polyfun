@@ -5,7 +5,8 @@ from functools import reduce
 #path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/PIP_not0/'
 #path='/gpfs/commons/home/tlin/output/wightman/prscs/all_except_enformer/'
 #path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/PRS_hg38/prscs/plink_output/'
-path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/beta_sumstat/'
+#path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/beta_sumstat/'
+path='/gpfs/commons/home/tlin/output/wightman/prscs/original/subset_polyfun/'
 name='prscs'
 prs_e5 = pd.read_csv(path+name+"_e-5_prs.tsv", sep = ' ', usecols = ["IID","SCORE"])
 prs_001 = pd.read_csv(path+name+"_0.001_prs.tsv", sep = ' ', usecols = ["IID","SCORE"])
