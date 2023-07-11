@@ -1,0 +1,26 @@
+PLINK v1.90b6.26 64-bit (2 Apr 2022)
+Options in effect:
+  --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/plink_hg38_qc/ADSP_qc_chr22
+  --exclude /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/plink_hg38_qc/duplist.txt
+  --score /gpfs/commons/home/tlin/output/prs/PRSCS/36k/bellenguez/chr22_pst_eff_a1_b0.5_phi1e-02_chr22.txt 2 4 6
+
+Hostname: pe2cc3-042.c.nygenome.org
+Working directory: /gpfs/commons/home/tlin/script/PRScs
+Start time: Sat Jul  8 17:10:28 2023
+
+Random number seed: 1688850628
+257513 MB RAM detected; reserving 128756 MB for main workspace.
+375589 variants loaded from .bim file.
+20951 people (0 males, 0 females, 20951 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to plink.nosex .
+--exclude: 371271 variants remaining.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 20951 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is 0.999682.
+371271 variants and 20951 people pass filters and QC.
+Note: No phenotypes present.
+--score: 13451 valid predictors loaded.
+--score: Results written to plink.profile .
+
+End time: Sat Jul  8 17:10:30 2023
