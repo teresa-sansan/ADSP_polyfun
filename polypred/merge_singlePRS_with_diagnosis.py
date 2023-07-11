@@ -11,9 +11,10 @@ import os
 #file_name='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224/finemap/polypred_new_plink/not_fixed_max_snp_10_polypred.tsv.prs'
 #save_name='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224/finemap/polypred_new_plink/max_snp_10_no_rescue'
 
-file_name='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/polypred/fixed_max_snp_10_polypred.tsv.prs'
-save_name='/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_susie_max_snp_10_rescue'
-
+# file_name='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/polypred/fixed_max_snp_10_polypred.tsv.prs'
+# save_name='/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_susie_max_snp_10_rescue'
+file_name='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/polypred/w_prscs/polypred.predictions.prs'
+save_name='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/polypred/w_prscs/polypred.prs.wpheno'
 
 prs= pd.read_csv(file_name, sep = '\t', names = ["IID","FID","PRS"])
 pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
