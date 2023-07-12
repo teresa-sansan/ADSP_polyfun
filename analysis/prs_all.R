@@ -209,9 +209,11 @@ process_prs_col_name <- function(df){
       df$PRS = factor(df$PRS, level = c('max snp 10','max snp 5','max snp 1'))
     }
   }else if('PRS_5' %in% df$PRS){
-    df$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
-    if('PRS_e-5' %in% df$PRS){
-      df[df$PRS=='p = 0.e5',]$PRS ="p = 1e-5"
+    if('PRS_e5' %in% df$PRS){
+      df[df$PRS=='PRS_e5',]$PRS ="p = 1e-5"
+      df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
+    }else{
+      df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
     }
     df$PRS = factor(df$PRS, level = c('p = 1e-5','p = 0.001','p = 0.005','p = 0.01','p = 0.05','p = 0.1','p = 0.5'))
   }
@@ -881,8 +883,8 @@ plot_ethnic_roc_facet(polypred_PRSCS_NOT0, polyfun_PRSCS_NOT0, wightman_UKBB_qc,
                       QC1name = "polyfun_PRSCS(PIP >0)", QC2name = "polyfun_sumstat_PRSCS(PIP > 0)", QC3name='genomewide_plink',QC4name='genomewide_plink',
                       legendname = "method", boot_num=50)
 
-plot_ethnic_roc_facet(PRSCS_subset,polypred_PRSCS_NOT0, polyfun_PRSCS_NOT0,wightman_UKBB_qc,title='wightman',
-                      QC1name='PRSCS_POLYFUN_intersect',QC2name = 'polyfun_PRSCS(PIP >0)', QC3name = 'polyfun_sumstat_PRSCS(PIP > 0)',QC4name='genomewide_plink',
+plot_ethnic_roc_facet(PRSCS_subset,PRSCS,wightman_UKBB_qc,title='wightman',
+                      QC1name='PRSCS_POLYFUN_intersect(PIP>0)',QC2name = 'PRSCS',QC3name='genomewide_plink',
                       legendname = "method", boot_num=50)
 
 plot_ethnic_roc_facet(PRSCS, polypred_PRSCS, polypred_plink,wightman_UKBB_qc,title='wightman',
@@ -927,6 +929,24 @@ plot_auc_facet_all_sumstat(kunkle_susie, kunkle_polypred, FALSE,
                            QC1name = "none",
                            QC2name = "all",
                            boot_num = 50)
+
+
+## PRSCS vs Polyfun vs Polypred---
+polypred_roc=plot_ethnic_roc(polypred, col='PRS', plot=FALSE, boot_num=50)
+polypred_roc$PRS='PolyPred'
+PRSCS_roc=plot_ethnic_roc(PRSCS, col='PRS_05', plot=FALSE, boot_num=50)
+PRSCS_roc$PRS = "PRSCS"
+polyfun_roc=plot_ethnic_roc(wightman_all_anno, col='PRS5', plot=FALSE, boot_num=50)
+polyfun_roc$PRS = 'PolyFun'
+
+df = rbind(polyfun_roc, polypred_roc, PRSCS_roc)
+
+
+ggplot(data = df, aes(x=auc, y = PRS))+
+  geom_point(size=2,alpha=0.9,position = position_dodge(width = 0.7), color='darkblue')+ylab('method')+
+  xlab('AUC')+ ggtitle('Wightman')+xlim(0.3, 0.72)+theme_bw() +facet_wrap(~ethnicity, ncol=1)+
+  geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,color='darkblue',show.legend = FALSE) 
+
 
 
 
