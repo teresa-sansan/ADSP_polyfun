@@ -144,11 +144,11 @@ polyfun_PRSCS_NOT0 <- pre_process('/gpfs/commons/home/tlin/output/wightman/prscs
 PRSCS_subset <- pre_process("/gpfs/commons/home/tlin/output/wightman/prscs/original/subset_polyfun/prscs_pipNOT0.tsv")
 
 #36k
+PRSCS_36k_fixed_hispanic <- read.csv('/gpfs/commons/home/tlin/output/36k/wightman/PRSCS_fixed_hispanic.tsv', sep = '\t', header=T,fill = T)
 PRSCS_36K <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/PRS_hg38/prscs/prs_36k.tsv')
-
-
 PRSCS_36K <- merge(PRSCS_36K, lookup_table, by = "Race", all.x = TRUE)
 
+head(PRSCS_36K)
 PRSCS_36K_bellenguez<- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k/bellenguez/prscs_36k.tsv')
 
 #Polypred (PRSCS_POLYFUN)
@@ -1449,12 +1449,12 @@ lookup_table <- data.frame(Race = c(1, 2, 4, 5),
                            final_population = c("AMR", "ASN", "AFR", "EUR"))
 
 # Merge data frames based on 'race'
-PRSCS_36K <- merge(PRSCS_36K, lookup_table, by = "Race", all.x = TRUE)
-plink_36k <- merge(plink_36k, lookup_table, by='Race', all.x=TRUE)
+#PRSCS_36K <- merge(PRSCS_36K, lookup_table, by = "Race", all.x = TRUE)
+#plink_36k <- merge(plink_36k, lookup_table, by='Race', all.x=TRUE)
 plot_ethnic_roc(PRSCS_36K, title='wightman_36k', plot=TRUE)
 plot_ethnic_roc(plink_36k, title='wightman_36k', plot=TRUE)
 
-
+plot_ethnic_roc(PRSCS_36k_fixed_hispanic, title='fix hispanic 36k PRSCS', plot=TRUE)
 
 ASN=roc_result_boot(extract_race(PRSCS_36K,'ASN'), column_for_roc = col_roc_E5, boot_num = 50)
 
