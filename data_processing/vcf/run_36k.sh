@@ -8,7 +8,7 @@
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
-for chr in {10..18}
+for chr in {1..12}
 do
     path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/'
     chunk_num=$(ls $path/plink_hg38| grep chr"${chr}".chunk | grep bed | wc -l)
