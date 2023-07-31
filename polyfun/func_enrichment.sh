@@ -2,9 +2,10 @@
 #SBATCH --job-name=func_enrichment
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=100G 
+#SBATCH --mem=200G 
+#SBATCH --partition bigmem
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/func_enrichment/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/glasslab/func_enrichment/%x%j.log
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
@@ -24,11 +25,13 @@ glass_lab='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annot
 glass_lab_enformer='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/glass_lab_enformer/glass_lab_enformer_high_h2_chr'
 roadmap='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/roadmap/roadmap_high_h2_chr'
 
+path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/glasslab/func_enrichment'
+
 python ~/polyfun_omer_repo/ldsc.py \
     --h2 $summary_stats \
-    --ref-ld-chr $bl/baselineLF2.2.UKB.,$deepsea,$roadmap,$glass_lab,$enformer,$glass_lab_enformer \
+    --ref-ld-chr $bl/baselineLF2.2.UKB.,$glass_lab,$glass_lab_enformer \
     --w-ld-chr $bl/weights.UKB. \
     --overlap-annot \
     --not-M-5-50 \
-    --out /gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/func_enrichment/enrichment
+    --out $path/enrichment
     
