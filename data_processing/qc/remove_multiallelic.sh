@@ -8,7 +8,7 @@
 
 plink_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/plink_hg38_qc'
 
-
+chunk=1
 
 ~/plink	--bfile $plink_path/processing_files/ADSP.chr${chr}.chunk${chunk} \
     --exclude $plink_path/duplist.txt \
