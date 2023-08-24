@@ -91,3 +91,48 @@ plot_top20(our_anno)
 plot_top20(coff_all)
 plot_top20(coff_all_subset)
 ```
+
+
+## try 0822_new annotations
+```{R}
+#library('ggpubr')
+load_coff <- function(file_path){
+file_suffix <- ".txt"
+file_paths <- sprintf("%s%d%s", file_path, 1:2, file_suffix)
+## read data
+data_list <- lapply(file_paths, read.table, header = TRUE) 
+# enrichment_file = paste0(dirname(file_path),'/func_enrichment/enrichment_no_suffix.results')
+# enrichment = read.csv(enrichment_file, sep = '\t')
+# 
+# enrichment$type <- ifelse(grepl('deepsea', enrichment$Category, ignore.case = TRUE), 'deepsea',
+#                           ifelse(grepl('roadmap', enrichment$Category, ignore.case = TRUE), 'roadmap',
+#                                  ifelse(grepl('glass_lab_enformer', enrichment$Category, ignore.case = TRUE), 'glasslab_enformer',
+#                                         ifelse(grepl('enformer', enrichment$Category, ignore.case = TRUE), 'enformer', 
+#                                                ifelse(grepl('glass_lab', enrichment$Category, ignore.case = TRUE), 'glass_lab', 'bl')))))
+
+#enrichment$Category = gsub("zscore_[1-5]", "zscore", enrichment$Category)
+
+
+## only need an odd chr one and an even one 
+coff = merge(data.frame(data_list[[1]]), data.frame(data_list[[2]]), by = "ANNOTATION", all = TRUE)
+coff$Coefficient_mean = rowMeans(coff[, c("ANNOTATION_COEFFICIENT.x", "ANNOTATION_COEFFICIENT.y")])
+#merged_df <- merge(coff,enrichment, by.x = "ANNOTATION", by.y = "Category", all = TRUE)
+return (coff)
+}
+
+coff_all = load_coff('/gpfs/commons/home/tlin/output/wightman/new_anno_0822/all.annot_coeff_ridge.')
+print(dim(coff_all))
+```
+```{r}
+coff_all$type='NA'
+coff_all[1:5,'type'] = 'Baseline'
+coff_all[6:13,'type'] = 'Deepsea'
+coff_all[14:18,'type'] = 'Glasslab_enformer'
+coff_all[19:22,'type'] = 'Roadmap'
+```
+
+```{r,fig.align="center", echo = FALSE,fig.width = 12,fig.length = 8}
+ggplot(coff_all[order(abs(coff_all$Coefficient_mean), decreasing = TRUE), ], aes(reorder(ANNOTATION, -abs(Coefficient_mean)), Coefficient_mean, fill = type)) +
+  geom_bar(stat = "identity", alpha = 0.5, width = 0.5) + ggtitle("New_annotation") +
+  theme_minimal() + coord_flip()+theme(axis.text.x = element_text(angle = 45, hjust = 1))+ylab('weights') + xlab('Annotation') 
+```

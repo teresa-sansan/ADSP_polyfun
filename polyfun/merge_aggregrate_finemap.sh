@@ -1,4 +1,5 @@
-path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/'
+#path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/'
+path='/gpfs/commons/home/tlin/output/wightman/new_anno_0822/'
 #summary_stat='bellenguez'
 summary_stat='wightman'
 #summary_stat='kunkle'
@@ -6,12 +7,13 @@ summary_stat='wightman'
 
 # bl no_ml all_anno all_enformer
 #for anno in all_except_enformer bl no_ml_new
-for anno in bl
+for anno in all
 do
-  for max_snp in 1 2 5 10
+  for max_snp in 10
   do 
     echo max_snp${max_snp}
-    cd ${path}/$anno/finemap/max_snp_${max_snp}
+    #cd ${path}/$anno/finemap/max_snp_${max_snp}
+    cd ${path}/finemap/max_snp_${max_snp}
     pwd
     zcat chr11.aggregate.all.txt.gz| head -n 1 > aggregate.all.txt
     for i in {1..22}

@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=kunkle
+#SBATCH --job-name=wightman
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=200G 
-#SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/kunkle/new_anno/no_ml/%x%j.log
+#SBATCH --mem=50G 
+#SBATCH --time=5:00:00
+#SBATCH --output=//gpfs/commons/home/tlin/output/wightman/new_anno_0822/%x%j.log
 
 ## --partition bigmem
 sumstat_name='kunkle'
@@ -14,7 +14,7 @@ sumstat_name='kunkle'
 
 #output='/gpfs/commons/home/tlin/output/kunkle/new_anno/all_anno/all_anno'
 #output='/gpfs/commons/home/tlin/output/kunkle/new_anno/all_enformer/all_enformer'
-output='/gpfs/commons/home/tlin/output/kunkle/new_anno/no_ml/no_ml'
+#output='/gpfs/commons/home/tlin/output/kunkle/new_anno/no_ml/no_ml'
 #output='/gpfs/commons/home/tlin/output/kunkle/new_anno/bl/bl'
 
 #output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/update_all+enformer' 
@@ -22,15 +22,26 @@ output='/gpfs/commons/home/tlin/output/kunkle/new_anno/no_ml/no_ml'
 #output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/bl/bl' 
 #output='/gpfs/commons/home/tlin/output/bellenguez/new_anno/bl/bl'
 
+output='/gpfs/commons/home/tlin/output/wightman/new_anno_0822/all'
+
 bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
-all_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/combined_AD_annotations_polyfun/combined_AD_annotations_polyfun_'
+# all_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/combined_AD_annotations_polyfun/combined_AD_annotations_polyfun_'
 
 ## new_anno_0203
+# deepsea='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/deepsea/deepsea_high_h2_chr'
+# enformer='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/enformer/enformer_high_h2_chr'
+# glass_lab='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/glass_lab/glass_lab_high_h2_chr'
+# glass_lab_enformer='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/glass_lab_enformer/glass_lab_enformer_high_h2_chr'
+# roadmap='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/roadmap/roadmap_high_h2_chr'
+
+
+## new_anno_0822
+bl_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/baseline/baseline_high_h2_chr'
 deepsea='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/deepsea/deepsea_high_h2_chr'
-enformer='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/enformer/enformer_high_h2_chr'
-glass_lab='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/glass_lab/glass_lab_high_h2_chr'
 glass_lab_enformer='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/glass_lab_enformer/glass_lab_enformer_high_h2_chr'
 roadmap='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/roadmap/roadmap_high_h2_chr'
+
+## org_bl_anno='$bl/baselineLF2.2.UKB.'
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun
@@ -57,14 +68,14 @@ python polyfun.py \
   --compute-h2-L2 \
   --output-prefix $output \
   --sumstats $summary_stats \
-  --ref-ld-chr $bl/baselineLF2.2.UKB. \
+  --ref-ld-chr $bl_anno,$deepsea,$glass_lab_enformer,$roadmap \
   --w-ld-chr $bl/weights.UKB. \
   --allow-missing
 echo finish polyfun1_2
 fi
 
 #1-3
-if true; then
+if false; then
 for i in {1..22}   
 do
 sbatch --export=chr=$i,output=$output /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
@@ -72,7 +83,7 @@ done
 fi
 
 #1-4
-if false; then
+if true; then
 python polyfun_assertion_error.py \
  --compute-h2-bins \
   --output-prefix $output \

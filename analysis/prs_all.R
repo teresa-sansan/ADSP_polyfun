@@ -118,6 +118,7 @@ wightman_all_anno <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wi
 wightman_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/enformer.tsv')
 wightman_all_except_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/all_except_enformer.tsv')
 wightman_glasslab <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/glasslab.tsv')
+wightman_new_anno_0822 <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/new_anno_0822.tsv')
 
 jansen_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/susie.prs.tsv')
 jansen_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/new_plink_polypred.tsv')
@@ -867,6 +868,13 @@ plot_ethnic_roc_facet(wightman_polypred_converged, wightman_bl_converged, wightm
 plot_ethnic_roc_facet(wightman_susie, wightman_bl, wightman_polypred, col = col_roc_polypred3, QC1name='none', QC2name = 'baseline', QC3name = 'all', title = 'wightman', legendname = 'annotations' )
 
 plot_ethnic_R2(wightman_glasslab, boot_num=FALSE, col=col_roc_polypred3)
+
+## new_anno
+plot_ethnic_roc(wightman_new_anno_0822, col=col_roc_polypred3, title='new_anno_0822',plot=TRUE)
+plot_ethnic_roc_facet(wightman_all_anno, wightman_glasslab, wightman_new_anno_0822, QC1name = "all_anno(old)",
+                      QC2name = "glasslab only(old)",QC3name='new anno 0822', col = col_roc_polypred3,boot_num = 50, title='wightman',legendname = 'annotation')
+plot_ethnic_R2_facet(wightman_all_anno, wightman_glasslab, wightman_new_anno_0822, col = col_roc_polypred3, QC1name = "all_anno(old)",
+                     QC2name = "glasslab only(old)",QC3name='new anno 0822', title = 'wightman', legendname = 'annotations' )
 
 
 ## PRSCS ------

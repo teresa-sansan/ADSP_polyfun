@@ -7,10 +7,10 @@
 for anno in bl 
 do
 	echo $anno
-	for i in 1 2 5 10
+	for i in 10 
 	do
-		sbatch --export=max_snp=$i,anno=$anno polypred.sh
-		#sbatch --export=max_snp=$i polypred.sh
+		#sbatch --export=max_snp=$i,anno=$anno polypred.sh
+		sbatch --export=max_snp=$i polypred.sh
 	done
 done
 
