@@ -13,7 +13,7 @@ library(lattice)
 library(dplyr)
 library(stringr)
 library(tidyr)
-library(ggstance)
+#library(ggstance)
 library(jtools)
 library(tibble)
 library(tidyverse)
@@ -124,5 +124,35 @@ for (i in 1:22){
 
 }
 
+```
+
+
+## try newer annotations
+```{r,fig.align="center", echo = FALSE,fig.width = 12}
+
+#load_coff <- function(file_path){
+file_suffix <- ".txt"
+file_paths <- sprintf("%s%d%s", file_path, 1:2, file_suffix)
+## read data
+data_list <- lapply(file_paths, read.table, header = TRUE) 
+enrichment_file = paste0(dirname(file_path),'/func_enrichment/enrichment.results')
+enrichment = read.csv(enrichment_file, sep = '\t')
+## only need an odd chr one and an even one 
+coff = merge(data.frame(data_list[[1]]), data.frame(data_list[[2]]), by = "ANNOTATION", all = TRUE)
+
+# Assuming df1 and df2 are your data frames
+merged_df <- merge(df1, df2, by.x = "ANNOTATION", by.y = "category", all = TRUE)
+
+
+coff$AVERAGE = rowMeans(coff[, c("ANNOTATION_COEFFICIENT.x", "ANNOTATION_COEFFICIENT.y")])
+return (coff)
+}
+
+#coff_all = load_coff('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/update_all+enformer.annot_coeff_ridge.')
+```
+
+```{r}
+coff_all = coff_all %>%
+  arrange(desc(abs(AVERAGE)))
 
 ```

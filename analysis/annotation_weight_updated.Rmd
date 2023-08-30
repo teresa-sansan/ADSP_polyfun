@@ -136,3 +136,97 @@ ggplot(coff_all[order(abs(coff_all$Coefficient_mean), decreasing = TRUE), ], aes
   geom_bar(stat = "identity", alpha = 0.5, width = 0.5) + ggtitle("New_annotation") +
   theme_minimal() + coord_flip()+theme(axis.text.x = element_text(angle = 45, hjust = 1))+ylab('weights') + xlab('Annotation') 
 ```
+
+
+## trying annotation 0824
+```{R}
+#library('ggpubr')
+load_coff <- function(file_path){
+file_suffix <- ".txt"
+file_paths <- sprintf("%s%d%s", file_path, 1:2, file_suffix)
+## read data
+data_list <- lapply(file_paths, read.table, header = TRUE) 
+
+## only need an odd chr one and an even one 
+coff = merge(data.frame(data_list[[1]]), data.frame(data_list[[2]]), by = "ANNOTATION", all = TRUE)
+coff$Coefficient_mean = rowMeans(coff[, c("ANNOTATION_COEFFICIENT.x", "ANNOTATION_COEFFICIENT.y")])
+#merged_df <- merge(coff,enrichment, by.x = "ANNOTATION", by.y = "Category", all = TRUE)
+return (coff)
+}
+
+coff_all = load_coff('/gpfs/commons/home/tlin/output/wightman/new_anno_0824/all/all.annot_coeff_ridge.')
+print(dim(coff_all))
+```
+```{r}
+coff_all = load_coff('/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/all/all.annot_coeff_ridge.')
+coff_all$type='NA'
+coff_all[1:5,'type'] = 'Baseline'
+coff_all[6:10,'type'] = 'Deepsea'
+coff_all[11:28,'type'] = 'Enformer'
+coff_all[29:53,'type'] = 'Glasslab_enformer'
+coff_all[54:61,'type'] = 'Glasslab'
+coff_all[62:65,'type'] = 'Roadmap'
+```
+
+```{r,fig.align="center", echo = FALSE,fig.width = 12,fig.length = 8}
+ggplot(tail(coff_all[order(abs(coff_all$Coefficient_mean), decreasing = TRUE), ],20), aes(reorder(ANNOTATION, -abs(Coefficient_mean)), Coefficient_mean, fill = type)) +
+  geom_bar(stat = "identity", alpha = 0.5, width = 0.5) + ggtitle("New_annotation_0824_all, bellenguez") +
+  theme_minimal() + coord_flip()+theme(axis.text.x = element_text(angle = 45, hjust = 1))+ylab('weights') + xlab('Annotation') 
+```
+
+
+## no_ml
+```{r,fig.align="center", echo = FALSE,fig.width = 12,fig.length = 8}
+coff_all = load_coff('/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/no_ml/no_ml.annot_coeff_ridge.')
+coff_all$type='NA'
+coff_all[1:5,'type'] = 'Baseline'
+coff_all[6:13,'type'] = 'Glasslab'
+coff_all[14:17,'type'] = 'Roadmap'
+
+ggplot(tail(coff_all[order(abs(coff_all$Coefficient_mean), decreasing = TRUE), ],20), aes(reorder(ANNOTATION, -abs(Coefficient_mean)), Coefficient_mean, fill = type)) +
+  geom_bar(stat = "identity", alpha = 0.5, width = 0.5) + ggtitle("New_annotation_0824_no_ml, bellenguez") +
+  theme_minimal() + coord_flip()+theme(axis.text.x = element_text(angle = 45, hjust = 1))+ylab('weights') + xlab('Annotation') 
+```
+
+```{r,fig.align="center", echo = FALSE,fig.width = 12,fig.length = 8}
+
+
+coff_all = load_coff('/gpfs/commons/home/tlin/output/wightman/new_anno_0824/no_ml/no_ml.annot_coeff_ridge.')
+coff_all$type='NA'
+coff_all[1:5,'type'] = 'Baseline'
+coff_all[6:13,'type'] = 'Glasslab'
+coff_all[14:17,'type'] = 'Roadmap'
+
+ggplot(tail(coff_all[order(abs(coff_all$Coefficient_mean), decreasing = TRUE), ],20), aes(reorder(ANNOTATION, -abs(Coefficient_mean)), Coefficient_mean, fill = type)) +
+  geom_bar(stat = "identity", alpha = 0.5, width = 0.5) + ggtitle("New_annotation_0824_no_ml, wightman") +
+  theme_minimal() + coord_flip()+theme(axis.text.x = element_text(angle = 45, hjust = 1))+ylab('weights') + xlab('Annotation') 
+```
+
+## only_ml
+```{r,fig.align="center", echo = FALSE,fig.width = 12,fig.length = 8}
+coff_all = load_coff('/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/only_ml/only_ml.annot_coeff_ridge.')
+coff_all$type='NA'
+coff_all[1:5,'type'] = 'Baseline'
+coff_all[6:10,'type'] = 'Deepsea'
+coff_all[11:28,'type'] = 'Enformer'
+coff_all[29:53,'type'] = 'Glasslab_enformer'
+
+
+ggplot(tail(coff_all[order(abs(coff_all$Coefficient_mean), decreasing = TRUE), ],20), aes(reorder(ANNOTATION, -abs(Coefficient_mean)), Coefficient_mean, fill = type)) +
+  geom_bar(stat = "identity", alpha = 0.5, width = 0.5) + ggtitle("New_annotation_0824_only_ml, bellenguez") +
+  theme_minimal() + coord_flip()+theme(axis.text.x = element_text(angle = 45, hjust = 1))+ylab('weights') + xlab('Annotation') 
+```
+
+```{r,fig.align="center", echo = FALSE,fig.width = 12,fig.length = 8}
+coff_all = load_coff('/gpfs/commons/home/tlin/output/wightman/new_anno_0824/only_ml/only_ml.annot_coeff_ridge.')
+coff_all$type='NA'
+coff_all[1:5,'type'] = 'Baseline'
+coff_all[6:10,'type'] = 'Deepsea'
+coff_all[11:28,'type'] = 'Enformer'
+coff_all[29:53,'type'] = 'Glasslab_enformer'
+
+
+ggplot(tail(coff_all[order(abs(coff_all$Coefficient_mean), decreasing = TRUE), ],20), aes(reorder(ANNOTATION, -abs(Coefficient_mean)), Coefficient_mean, fill = type)) +
+  geom_bar(stat = "identity", alpha = 0.5, width = 0.5) + ggtitle("New_annotation_0824_only_ml, wightman") +
+  theme_minimal() + coord_flip()+theme(axis.text.x = element_text(angle = 45, hjust = 1))+ylab('weights') + xlab('Annotation') 
+```
