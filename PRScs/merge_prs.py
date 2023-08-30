@@ -4,10 +4,10 @@ from functools import reduce
 #path='/gpfs/commons/home/tlin/output/wightman/prscs/'
 #path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/PIP_not0/'
 #path='/gpfs/commons/home/tlin/output/wightman/prscs/all_except_enformer/'
-#path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/PRS_hg38/prscs/plink_output/'
+path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/PRS_hg38/prscs/plink_output/'
 #path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/beta_sumstat/'
-path='/gpfs/commons/home/tlin/output/wightman/prscs/original/subset_polyfun/'
-name='prscs'
+#path='/gpfs/commons/home/tlin/output/wightman/prscs/original/subset_polyfun/'
+name='prs'
 prs_e5 = pd.read_csv(path+name+"_e-5_prs.tsv", sep = ' ', usecols = ["IID","SCORE"])
 prs_001 = pd.read_csv(path+name+"_0.001_prs.tsv", sep = ' ', usecols = ["IID","SCORE"])
 prs_005 = pd.read_csv(path+name+"_0.005_prs.tsv", sep = ' ', usecols = ["IID","SCORE"])   
@@ -17,8 +17,10 @@ prs_1 = pd.read_csv(path+name+"_0.1_prs.tsv", sep = ' ', usecols = ["IID","SCORE
 prs_5 = pd.read_csv(path+name+"_0.5_prs.tsv", sep = ' ', usecols = ["IID","SCORE"]) 
 
 
-pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
+#pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
 #pheno = pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_fin.tsv', sep = '\t')
+## 36k w. fixed ancestry
+pheno = pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_LOAD_1000k.tsv', sep = '\t')
 
 prs = [prs_e5, prs_001, prs_005, prs_01, prs_05, prs_1, prs_5]  
 prs_merge = reduce(lambda left, right:pd.merge(left,right,on=["IID"]),prs)
@@ -29,6 +31,7 @@ all_merge = pd.merge(pheno,prs_merge, left_on ="SampleID", right_on='IID')
 all_merge.fillna('-1', inplace=True) # Race and Ethniciity
 
 # save=path+name+'_36k.tsv'
-save = path+name+'_pipNOT0.tsv'
+ save=path+'prscs_new_ancestry_36k.tsv'
+# save = path+name+'_pipNOT0.tsv'
 all_merge.to_csv(save,index = False, sep='\t')
 print("save prs to " + save)

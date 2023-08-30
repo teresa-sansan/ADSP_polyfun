@@ -2,9 +2,9 @@
 #SBATCH --job-name=Polypred_wightman
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=15G
-#SBATCH --time=3:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0822/finemap/polypred/%x_%j.log 
+#SBATCH --mem=25G
+#SBATCH --time=5:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0824/all/finemap/polypred/%x_%j.log 
 
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate 
@@ -20,14 +20,14 @@ fi
 if false; then
 ## susie
 #path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/susie'
-path='/gpfs/commons/home/tlin/output/bellenguez/new_anno/'
+path='/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/'
 #path='/gpfs/commons/home/tlin/output/bellenguez/old/bellenguez_fixed_0224_annotations/bl/'
 fi
 
 ##wightman
 if true; then
 #path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/'
-path='/gpfs/commons/home/tlin/output/wightman/new_anno_0822/'
+path='/gpfs/commons/home/tlin/output/wightman/new_anno_0824/'
 fi
 
 ## jansen

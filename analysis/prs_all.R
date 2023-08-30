@@ -120,11 +120,20 @@ wightman_all_except_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/
 wightman_glasslab <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/glasslab.tsv')
 wightman_new_anno_0822 <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/new_anno_0822.tsv')
 
+
+wightman_new_anno_0824_all <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightmanall.tsv')
+wightman_new_anno_0824_no_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightmanno_ml.tsv')
+wightman_new_anno_0824_only_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightmanonly_ml.tsv')
+
+
+bellenguez_new_anno_0824_all <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/bellenguezall.tsv')
+bellenguez_new_anno_0824_no_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/bellenguezno_ml.tsv')
+bellenguez_new_anno_0824_only_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/bellenguezonly_ml.tsv')
+
+
 jansen_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/susie.prs.tsv')
 jansen_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/new_plink_polypred.tsv')
 jansen_fix_convergence <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/fixed_convergence.tsv')
-
-
 
 
 ### Other PRS method -----
@@ -875,6 +884,13 @@ plot_ethnic_roc_facet(wightman_all_anno, wightman_glasslab, wightman_new_anno_08
                       QC2name = "glasslab only(old)",QC3name='new anno 0822', col = col_roc_polypred3,boot_num = 50, title='wightman',legendname = 'annotation')
 plot_ethnic_R2_facet(wightman_all_anno, wightman_glasslab, wightman_new_anno_0822, col = col_roc_polypred3, QC1name = "all_anno(old)",
                      QC2name = "glasslab only(old)",QC3name='new anno 0822', title = 'wightman', legendname = 'annotations' )
+
+plot_ethnic_roc_facet(wightman_all_anno, wightman_new_anno_0824_all, wightman_new_anno_0824_no_ml,QC4 = wightman_new_anno_0824_only_ml, QC1name = "all_anno(old)",
+                      QC2name = "all_anno(0824)",QC3name='no_ml(0824)', QC4name='only_ml(0824)',col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
+
+plot_ethnic_roc_facet(bellenguez_all_anno, bellenguez_new_anno_0824_all, bellenguez_new_anno_0824_no_ml,QC4 = bellenguez_new_anno_0824_only_ml, QC1name = "all_anno(old)",
+                      QC2name = "all_anno(0824)",QC3name='no_ml(0824)', QC4name='only_ml(0824)',col = list("PRS1","PRS5"),boot_num = 50, title='bellenguez',legendname = 'annotation')       
+
 
 
 ## PRSCS ------

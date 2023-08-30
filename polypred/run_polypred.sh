@@ -4,13 +4,13 @@
 #for anno in enformer no_ml all_except_enformer update_all+enformer
 #for anno in no_ml bl all_enformer all_anno 
 #for anno in all_except_enformer bl no_ml_new
-for anno in bl 
+for anno in no_ml only_ml all
 do
-	echo $anno
-	for i in 10 
+	echo $anno 
+	for i in 1 5
 	do
-		#sbatch --export=max_snp=$i,anno=$anno polypred.sh
-		sbatch --export=max_snp=$i polypred.sh
+		sbatch --export=max_snp=$i,anno=$anno polypred.sh
+		#sbatch --export=max_snp=$i polypred.sh
 	done
 done
 

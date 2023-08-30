@@ -1,10 +1,10 @@
 #!/bin/bash 
-## run  wightman n fixed 
+## run  bellenguez n fixed 
 
-for i in {1..22}
+for i in {1..20}
 do
-	for max_snp in 10 
-	do	
+	for max_snp in 1 5 
+	do	    
 		echo "run_max_snp_$max_snp"
         	echo "run chr$i"
         	#sbatch --export=chr=$i,max_num_snp=${max_snp},anno='bl' finemap.sh
@@ -14,6 +14,10 @@ do
 			#sbatch --export=chr=$i,max_num_snp=${max_snp},anno='all_enformer' finemap.sh
 			#sbatch --export=chr=$i,max_num_snp=${max_snp},anno='no_ml' finemap.sh
 			#sbatch --export=chr=$i,max_num_snp=${max_snp},anno='bl' finemap.sh
-			sbatch --export=chr=$i,max_num_snp=${max_snp} finemap.sh
+			
+			#sbatch --export=chr=$i,max_num_snp=${max_snp},anno='all' finemap.sh
+			#sbatch --export=chr=$i,max_num_snp=${max_snp},anno='no_ml' finemap.sh
+			sbatch --export=chr=$i,max_num_snp=${max_snp},anno='only_ml' finemap.sh
+
 	done
 done

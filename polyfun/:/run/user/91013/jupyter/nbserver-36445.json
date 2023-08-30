@@ -1,0 +1,11 @@
+{
+  "base_url": "/",
+  "hostname": "pe2cc2-064.c.nygenome.org",
+  "notebook_dir": "/gpfs/commons/home/tlin/script/polyfun",
+  "password": false,
+  "pid": 36445,
+  "port": 8797,
+  "secure": false,
+  "token": "7bf9dcec6d8891cf365ebeaa016083796952fe695764f8df",
+  "url": "http://pe2cc2-064.c.nygenome.org:8797/"
+}

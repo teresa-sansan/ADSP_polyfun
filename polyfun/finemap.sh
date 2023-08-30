@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=finemap_bellenguz
+#SBATCH --job-name=finemap_bellenguez_new_anno
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=150G
-#SBATCH --time=60:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_anno/%x_%j.log
+#SBATCH --mem=40G
+#SBATCH --time=40:00:00
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/only_ml/finemap/%x_%j.log
 
 ## double check if im running susie
 cd /gpfs/commons/home/tlin/polyfun_omer_repo
@@ -26,9 +26,9 @@ fi
 ##bellenguez
 if true; then
 sumstat_name='bellenguez'
-anno_path='/gpfs/commons/home/tlin/output/bellenguez/new_anno/${anno}/'
-sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_anno/${anno}/${anno}.${chr}.snpvar_ridge_constrained.gz"
-output="/gpfs/commons/home/tlin/output/bellenguez/new_anno/${anno}/finemap"
+anno_path='/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/'
+#sumstat="/gpfs/commons/home/tlin/output/bellenguez/new_anno/${anno}/${anno}.${chr}.snpvar_ridge_constrained.gz"
+#output="/gpfs/commons/home/tlin/output/bellenguez/new_anno/${anno}/finemap"
 n=487511
 
 ##susie
@@ -41,10 +41,10 @@ sumstat_name='wightman'
 n=762971
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_all.${chr}.snpvar_constrained.gz"
 #sumstat="/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/bl/bl.${chr}.snpvar_constrained.gz"
-#anno='no_ml_new'
-anno_path='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/'
-sumstat="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/${anno}.${chr}.snpvar_ridge_constrained.gz"
-output="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/finemap"
+anno_path='/gpfs/commons/home/tlin/output/wightman/new_anno_0824/'
+#sumstat="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/${anno}.${chr}.snpvar_ridge_constrained.gz"
+#output='/gpfs/commons/home/tlin/output/wightman/new_anno_0824/all/finemap'
+#output="/gpfs/commons/home/tlin/output/wightman/new_anno_0203/${anno}/finemap"
 fi
 
 ## jansen
@@ -99,21 +99,21 @@ do
 		if [ $max_num_snp -eq 1 ] 
 		then
 		python finemapper.py \
-					--sumstats $sumstat \
+					--sumstats $anno_path/$anno/${anno}.${chr}.snpvar_constrained.gz \
 					--n $n --chr ${chr} --start $start --end $end \
 					--method susie \
 					--max-num-causal 1 \
 					--allow-missing \
-					--out $output/max_snp_${max_num_snp}/${sumstat_name}.${chr}.$start.$end.gz
+					--out $anno_path/$anno/finemap/max_snp_${max_num_snp}/${sumstat_name}.${chr}.$start.$end.gz
 		else
 		python finemapper.py \
 			--ld $ld \
-			--sumstats $sumstat \
+			--sumstats $anno_path/$anno/${anno}.${chr}.snpvar_constrained.gz \
 			--n $n --chr ${chr} --start $start --end $end \
 			--method susie \
 			--max-num-causal $max_num_snp \
 			--allow-missing \
-			--out $output/max_snp_${max_num_snp}/${sumstat_name}.${chr}.$start.$end.gz
+			--out $anno_path/$anno/finemap/max_snp_${max_num_snp}/${sumstat_name}.${chr}.$start.$end.gz
 		fi
 	fi
 
