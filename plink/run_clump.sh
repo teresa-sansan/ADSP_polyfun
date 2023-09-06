@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in {1..22}
+for i in 10 16 17
 do
    echo "run chr $i"
    #sbatch --export=chr=$i /gpfs/commons/home/tlin/script/plink/plink_clump.sh
