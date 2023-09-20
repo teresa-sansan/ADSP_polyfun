@@ -39,6 +39,8 @@ pre_process <- function(df, file=FALSE){
     print("change PRS column name")
     colnames(df) = gsub("_0\\.", "_", colnames(df))
   }
+  if("predicted_ancestry" %in% colnames(df))
+    df['final_population'] = df$predicted_ancestry
   return(df)
 } ## remove the sample younger than 65 || have no diagnosis || rename col
 
@@ -159,6 +161,10 @@ PRSCS_36K <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/AD
 PRSCS_36k_new_ancestry <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/PRS_hg38/prscs/prscs_new_ancestry.tsv')
 PRSCS_36K <- merge(PRSCS_36K, lookup_table, by = "Race", all.x = TRUE)
 
+##36k_IBD
+PRSCS_36k_ibd_wightman <- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k_ibd_adsp_fixed/wightman/prscs_wightman_ADSP_ibd_36k.tsv')
+PRSCS_36k_ibd_bellengeuz <- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k_ibd_adsp_fixed/bellenguez/prscs_bellenguez_ADSP_ibd_36k.tsv')
+
 PRSCS_36K_bellenguez<- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k/bellenguez/prscs_36k.tsv')
 
 #Polypred (PRSCS_POLYFUN)
@@ -200,7 +206,7 @@ segregate_control_by_age <- function(df, age, balanced = TRUE){
 }
 
 ## Set prs col names ------
-col_roc <- list("PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
+col_roc <- list("PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
 col_roc_polypred3 <- list("PRS1","PRS5","PRS10")
@@ -337,6 +343,7 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
   output_df$PRS =  rep(unlist(col),1)
   output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)))
   output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR"))
+  
   if (boot != TRUE){ ## no bootstraping, use the original roc_result
     EUR = roc_result(extract_race(df,'EUR') , column_for_roc = col)
     AFR = roc_result(extract_race(df,'AFR') , column_for_roc = col)
@@ -352,7 +359,6 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
     output_df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
     output_df$boot_CI_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
     output_df$boot_CI_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
-  
     
     output_df[c("auc","boot_CI_lower","boot_CI_upper")] <- sapply(output_df[c("auc","boot_CI_lower","boot_CI_upper")],as.numeric)
   }
@@ -932,7 +938,8 @@ plot_ethnic_roc_facet(bellenguez_bl, bellenguez_no_ml, bellenguez_enformer, bell
                       QC1name='bl',QC2name = 'no ml',QC3name = 'bl+enformer', QC4name = 'all anno',
                       title = 'bellenguez', legendname = 'annotations' )
 
-
+plot_ethnic_roc(PRSCS_36k_ibd_wightman, col=col_roc, plot=TRUE, title = '36K IBD wightman')
+plot_ethnic_roc(PRSCS_36k_ibd_bellengeuz, col=col_roc, plot=TRUE, title = '36K IBD bellenguez')
 
 ## all, polyfun vs susie-----
 plot_auc_facet_all_sumstat(kunkle_susie, kunkle_polypred, FALSE, 

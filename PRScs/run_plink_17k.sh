@@ -19,9 +19,3 @@ wightman_snp='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/
 --score $path/agg_prscs_beta.txt 2 4 6 \
 --q-score-range /gpfs/commons/home/tlin/script/plink/range_list.txt $bellenguez_snp \
 --out $path/prs
-
-# for thres in e-5 0.001 0.005 0.01 0.05 0.1 0.5 
-#     do
-#         cat $path/chr${chr}.qc.${thres}.profile  |tr -s ' '| cut -d ' ' -f 2-7 > $path/chr${chr}.qc_${thres}.prs.tsv
-            
-#     done
