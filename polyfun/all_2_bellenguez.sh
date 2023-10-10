@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=50G 
 #SBATCH --time=5:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/bl/%x%j.log
 
 ## --partition bigmem
 sumstat_name='bellenguez'
@@ -91,7 +91,7 @@ python polyfun.py \
   --compute-h2-L2 \
   --output-prefix $output/all/all \
   --sumstats $summary_stats \
-  --ref-ld-chr $bl_anno,$glasslab,$roadmap,$deepsea,$enformer,$glass_lab_enformer \
+  --ref-ld-chr $bl_anno \
   --w-ld-chr $bl/weights.UKB. \
   --allow-missing
 echo finish polyfun1_2
@@ -101,9 +101,9 @@ fi
 if false; then
 for i in {1..22}   
 do
-# sbatch --export=chr=$i,output=$output /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
-sbatch --export=chr=$i,output=$output/no_ml/no_ml /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
-sbatch --export=chr=$i,output=$output/only_ml/only_ml /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
+sbatch --export=chr=$i,output=$output/bl/bl /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
+# sbatch --export=chr=$i,output=$output/no_ml/no_ml /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
+# sbatch --export=chr=$i,output=$output/only_ml/only_ml /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
 done
 fi
 
@@ -111,17 +111,11 @@ fi
 if true; then
 python polyfun_assertion_error.py \
  --compute-h2-bins \
-  --output-prefix $output/no_ml/no_ml \
+  --output-prefix $output/bl/bl \
   --sumstats $summary_stats \
   --w-ld-chr $bl/weights.UKB. \
   --allow-missing
 
-python polyfun_assertion_error.py \
- --compute-h2-bins \
-  --output-prefix $output/only_ml/only_ml \
-  --sumstats $summary_stats \
-  --w-ld-chr $bl/weights.UKB. \
-  --allow-missing
 
 echo finish polyfun1_4
 fi

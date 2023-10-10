@@ -4,13 +4,9 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=50G 
 #SBATCH --time=5:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0824/all/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0824/bl/%x%j.log
 
 ## --partition bigmem
-sumstat_name='kunkle'
-
-#summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/Bellenguez_et_al_2021_hg37_ldsc.tsv.gz'
-##create munge
 
 #output='/gpfs/commons/home/tlin/output/kunkle/new_anno/all_anno/all_anno'
 #output='/gpfs/commons/home/tlin/output/kunkle/new_anno/all_enformer/all_enformer'
@@ -34,7 +30,6 @@ bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
 # glass_lab_enformer='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/glass_lab_enformer/glass_lab_enformer_high_h2_chr'
 # roadmap='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/roadmap/roadmap_high_h2_chr'
 
-
 ## new_anno_0822
 # bl_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/baseline/baseline_high_h2_chr'
 # deepsea='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/deepsea/deepsea_high_h2_chr'
@@ -42,8 +37,6 @@ bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
 # roadmap='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/roadmap/roadmap_high_h2_chr'
 
 ## new_anno0824
-
-## org_bl_anno='$bl/baselineLF2.2.UKB.'
 bl_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/baseline/baseline_high_h2_chr'
 deepsea='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/deepsea/deepsea_high_h2_chr'
 enformer='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/annotations_high_h2/enformer/enformer_high_h2_chr'
@@ -71,30 +64,13 @@ summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats
 ##1-2
 if false; then
 echo running $summary_stats
-# python polyfun.py \
-#   --compute-h2-L2 \
-#   --output-prefix $output/no_ml/no_ml \
-#   --sumstats $summary_stats \
-#   --ref-ld-chr $bl_anno,$glasslab,$roadmap \
-#   --w-ld-chr $bl/weights.UKB. \
-#   --allow-missing
-
-# python polyfun.py \
-#   --compute-h2-L2 \
-#   --output-prefix $output/only_ml/only_ml \
-#   --sumstats $summary_stats \
-#   --ref-ld-chr $bl_anno,$deepsea,$enformer,$glass_lab_enformer \
-#   --w-ld-chr $bl/weights.UKB. \
-#   --allow-missing
-
 python polyfun.py \
   --compute-h2-L2 \
-  --output-prefix $output/all/all \
+  --output-prefix $output/bl/bl \
   --sumstats $summary_stats \
-  --ref-ld-chr $bl_anno,$glasslab,$roadmap,$deepsea,$enformer,$glass_lab_enformer \
+  --ref-ld-chr $bl_anno \
   --w-ld-chr $bl/weights.UKB. \
   --allow-missing
-# echo finish polyfun1_2
 
 echo finish polyfun1_2
 fi
@@ -103,23 +79,15 @@ fi
 if false; then
 for i in {1..22}   
 do
-sbatch --export=chr=$i,output=$output/no_ml/no_ml /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
-sbatch --export=chr=$i,output=$output/only_ml/only_ml /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
+sbatch --export=chr=$i,output=$output/bl/bl /gpfs/commons/home/tlin/script/polyfun/polyfun_1_3.sh  
 done
 fi
 
 #1-4
 if true; then
 python polyfun_assertion_error.py \
- --compute-h2-bins \
+  --compute-h2-bins \
   --output-prefix $output/no_ml/no_ml \
-  --sumstats $summary_stats \
-  --w-ld-chr $bl/weights.UKB. \
-  --allow-missing
-
-python polyfun_assertion_error.py \
- --compute-h2-bins \
-  --output-prefix $output/only_ml/only_ml \
   --sumstats $summary_stats \
   --w-ld-chr $bl/weights.UKB. \
   --allow-missing
@@ -129,3 +97,4 @@ fi
 
 
 
+ 
