@@ -368,7 +368,7 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
     plot <- ggplot(data = output_df, aes(x=auc, y = PRS))+
       geom_point(size=3,alpha=0.9,position = position_dodge(width = 0.7), color='darkblue')+
       facet_wrap(~ethnicity, ncol=1)+
-      xlab('AUC')+ ggtitle(title)+xlim(0.3, 0.72)+theme_bw()
+      xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.72)+theme_bw()
     if (boot == TRUE){  
       plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,color='darkblue',show.legend = FALSE) 
     }## plot error bar or not
@@ -1219,8 +1219,8 @@ plot_control_age_roc <- function(df, col=col_roc_E5, title=' ',age1="65", age2="
   all = process_prs_col_name(all)
   
   if(plot==TRUE){
-    plot <- ggplot(data = all, aes(x=auc, y = PRS, shape = age))+
-      geom_point(size=3,alpha=0.4,position = position_dodge(width = 0.7))+
+    plot <- ggplot(data = all, aes(x=auc, y = PRS, shape = age, color=age))+
+      geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
       facet_wrap(~ethnicity, ncol=1)+ guides(col=guide_legend('control_age_thres'))+
       xlab('AUC')+ ggtitle(title)+xlim(min(min(all$boot_CI_lower),0.45),max(max(all$boot_CI_upper),0.75))+
       theme_bw() 
@@ -1229,8 +1229,6 @@ plot_control_age_roc <- function(df, col=col_roc_E5, title=' ',age1="65", age2="
     }
   return(all)
 }
-
-
 
 plot_control_age_roc_multi <- function(df1, df2, df3, df1_name, df2_name, df3_name, title, legendname=FALSE){
   df1$method =df1_name 
@@ -1266,6 +1264,12 @@ plot_control_age_roc_multi(plot_control_age_roc(wightman_bl[-34], col=col_roc_po
 wightman_polypred_control_age = plot_control_age_roc(wightman_polypred, col=col_roc_polypred3, title='All annotations')
 wightman_susie_control_age = plot_control_age_roc(wightman_susie, col=col_roc_polypred3, title='no annotations', plot=FALSE)
 
+
+plot_control_age_roc(PRSCS_36k_ibd_wightman, col=col_roc, plot=TRUE, title = '36K IBD wightman')
+plot_control_age_roc(PRSCS_36k_ibd_bellengeuz, col=col_roc, plot=TRUE, title = '36K IBD bellenguez')
+
+plot_ethnic_roc(PRSCS_36k_ibd_wightman, col=col_roc, plot=TRUE, title = '36K IBD wightman')
+plot_ethnic_roc(PRSCS_36k_ibd_bellengeuz, col=col_roc, plot=TRUE, title = '36K IBD bellenguez')
 plot_control_age_roc_multi(plot_control_age_roc(wightman_polypred_converged, col=col_roc_polypred3, plot=FALSE),
                            plot_control_age_roc(wightman_bl_converged, col=col_roc_polypred3, plot=FALSE),
                            plot_control_age_roc(wightman_susie_converged, col=col_roc_polypred3, plot=FALSE),

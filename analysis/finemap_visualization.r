@@ -46,14 +46,24 @@ wightman_no_enformer_max10 = read.table('/gpfs/commons/home/tlin/output/wightman
 wightman_update_enformer_max10 = read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_10/agg_extract_1e-3.tsv', header = T)
 wightman_enformer_max10=read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/enformer/finemap/max_snp_10/agg_extract_1e-3.tsv', header=T)
 wightman_glasslab_max10=read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/glasslab/finemap/max_snp_10/agg_extract_1e-3.tsv', header=T)
-
 colnames(wightman_old) = colnames(wightman_update_enformer_max1)
+
+## update 0824_shrunk_anno------
+wightman_susie_max5 <- read.table('/gpfs/commons/home/tlin/output/wightman/fixed_0224_annotations/susie/max_snp_5/agg_extract_1e-3.tsv', header=T)
+wightman_all_max5 <- read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0824/all/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+wightman_no_ml_max5 <- read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0824/no_ml/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+wightman_only_ml_max5 <-  read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0824/only_ml/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+
+
+bellenguez_all_max5 <- read.table('/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/all/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+bellenguez_no_ml_max5 <- read.table('/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/no_ml/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+bellenguez_only_ml_max5 <-  read.table('/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/only_ml/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+bellenguez_susie_max5 <- read.table('/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+
 
 wightman_snp = read.table('/gpfs/commons/home/tlin/data/snp_wightman_opentarget.tsv', header = T, sep = '\t')
 
 #tau = read.csv('/gpfs/commons/home/tlin/polyfun/data/bl_annotation_tau.tsv', header=T, sep='\t')
-
-
 
 # visualization -----------------------------------------------------------
 
@@ -148,12 +158,39 @@ manhattan(subset(bl_max5, PIP>0.05), p="PIP", logp = FALSE,ylim = c(0,1.1), ylab
 # *bar plot (SNPs count in different PIP threshold) ------
 
 count_SNP <-function(df){
-  return(c(dim(subset(df,P<1e-5))[1],dim(subset(df,PIP >=0.8))[1],dim(subset(df, PIP>=0.5))[1],
-          dim(subset(df,PIP>=0.3))[1]))
+  count = c(dim(subset(df,PIP >=0.8))[1],dim(subset(df, PIP>=0.5))[1],
+           dim(subset(df,PIP>=0.2))[1])
+  count_df = data.frame(
+    name=c("PIP >= 0.8","PIP >= 0.5","PIP >= 0.2"),count)
+  df_name = deparse(substitute(df))
+  df_name = strsplit(df_name, split = '_')[[1]][-1]
+  #df_name =  df_name
+  df_name = paste(df_name[-length(df_name)], collapse = "_")
+  count_df$anno = df_name
+  return(count_df)
 }
+
+wightman_0824 <- rbind(count_SNP(wightman_susie_max5),count_SNP(wightman_only_ml_max5),count_SNP(wightman_no_ml_max5),count_SNP(wightman_all_max5))
+
+wightman_0824$anno <- factor(wightman_0824$anno, levels = c('susie','no_ml','only_ml','all'))
+ggplot(data = wightman_0824, aes(x = name, y = count, fill = anno)) +  
+  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
+  labs(x = "\n PIP threshold", y = "SNP count \n", title = "\n wightman_max5 \n") +
+  geom_text(aes(label = count),  vjust = 1.5, position = position_dodge(.9), size = 4) +theme_bw()
+
+
+bellenguez_0824 <- rbind(count_SNP(bellenguez_susie_max5),count_SNP(bellenguez_only_ml_max5),count_SNP(bellenguez_no_ml_max5),count_SNP(bellenguez_all_max5))
+
+bellenguez_0824$anno <- factor(bellenguez_0824$anno, levels = c('susie','no_ml','only_ml','all'))
+ggplot(data = bellenguez_0824, aes(x = name, y = count, fill = anno)) +  
+  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
+  labs(x = "\n PIP threshold", y = "SNP count \n", title = "\n bellenguez_max5 \n") +
+  geom_text(aes(label = count),  vjust = 1.5, position = position_dodge(.9), size = 4) +theme_bw()
+
+
 create_bar_plot <- function(df,title){
   count <- data.frame(
-    name=c("PIP >= 0.8","PIP >= 0.5","PIP >= 0.3"),
+    name=c("PIP >= 0.8","PIP >= 0.5","PIP >= 0.2"),
     SNP=count_SNP(df)[-1]
   )
   print(count)
@@ -162,7 +199,6 @@ create_bar_plot <- function(df,title){
   }
 
 create_bar_plot(bellenguez_max_10, title="bellenguez_fixed_0224")
-create_bar_plot(old_test, title="bellenguez_all_2")
 create_bar_plot(bellenguez_max_10_updateRSID, title="bellenguez_updateRSID")
 create_bar_plot(kunkle_max_10, title="kunkle_fixed_0224")  
 create_bar_plot(wightman_update_enformer_max10, title = 'wightman, all enformer, max10')
@@ -185,10 +221,7 @@ create_bar_plot_legend <- function(df,remove=T,main=F){
   print(only_pip)
 }
   
-# ** different annotations ----
-
-
-
+# ** different annotations ---
 SNP_num <-data.matrix(data.frame(count_SNP(wightman_update_enformer_max1),count_SNP(wightman_update_enformer_max5),count_SNP(wightman_update_enformer_max10), count_SNP(wightman_old)))
 #row.names(SNP_num) = c('Wightman_all(max_1)','Wightman_all(max_5)','Wightman_all(max_10)','Wightman_wo_enformer(max_10)')
 
