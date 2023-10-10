@@ -2,7 +2,7 @@
 #SBATCH --job-name=polyfun_1-3
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=40G
+#SBATCH --mem=20G
 #SBATCH --time=12:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/%x_%j.log
 

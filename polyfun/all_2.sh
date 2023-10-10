@@ -87,7 +87,7 @@ fi
 if true; then
 python polyfun_assertion_error.py \
   --compute-h2-bins \
-  --output-prefix $output/no_ml/no_ml \
+  --output-prefix $output/bl/bl \
   --sumstats $summary_stats \
   --w-ld-chr $bl/weights.UKB. \
   --allow-missing
