@@ -122,16 +122,32 @@ wightman_all_except_enformer <- pre_process('/gpfs/commons/home/tlin/output/prs/
 wightman_glasslab <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/glasslab.tsv')
 wightman_new_anno_0822 <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/new_anno_0822.tsv')
 
-
 wightman_new_anno_0824_all <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightmanall.tsv')
 wightman_new_anno_0824_no_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightmanno_ml.tsv')
 wightman_new_anno_0824_only_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightmanonly_ml.tsv')
+
+wightman_new_anno_0824_all_ibd <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightman.all.ibd36k.tsv')
+wightman_new_anno_0824_no_ml_ibd <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightman.no_ml.ibd36k.tsv')
+wightman_new_anno_0824_bl_ibd <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightman.bl.ibd36k.tsv')
+
+##1023
+wightman_new_anno_0824_all_no_partitions_ibd <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.all.ibd36k.tsv')
+wightman_new_anno_0824_no_ml_no_partitions_ibd <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.no_ml.ibd36k.tsv')
+wightman_new_anno_0824_bl_no_partitions_ibd <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.bl.ibd36k.tsv')
+wightman_new_anno_0824_only_ml_no_partitions_ibd <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.only_ml.ibd36k.tsv')
+wightman_new_anno_0824_susie_no_partitions_ibd <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.susie.ibd36k.tsv')
+
+## no_partitions_adj beta
+wightman_0824_all_no_partitions_adj_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.all.adj_beta_ibd36k.tsv')
+wightman_0824_no_ml_no_partitions_adj_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.no_ml.adj_beta_ibd36k.tsv')
+wightman_0824_bl_no_partitions_adj_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.bl.adj_beta_ibd36k.tsv')
+wightman_0824_only_ml_no_partitions_adj_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.only_ml.adj_beta_ibd36k.tsv')
+wightman_0824_susie_no_partitions_adj_beta <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824_no_partitions/wightman.susie.adj_beta_ibd36k.tsv')
 
 
 bellenguez_new_anno_0824_all <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/bellenguezall.tsv')
 bellenguez_new_anno_0824_no_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/bellenguezno_ml.tsv')
 bellenguez_new_anno_0824_only_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/bellenguezonly_ml.tsv')
-
 
 jansen_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/susie.prs.tsv')
 jansen_polypred <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/jansen/new_plink_polypred.tsv')
@@ -164,7 +180,6 @@ PRSCS_36K <- merge(PRSCS_36K, lookup_table, by = "Race", all.x = TRUE)
 ##36k_IBD
 PRSCS_36k_ibd_wightman <- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k_ibd_adsp_fixed/wightman/prscs_wightman_ADSP_ibd_36k.tsv')
 PRSCS_36k_ibd_bellengeuz <- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k_ibd_adsp_fixed/bellenguez/prscs_bellenguez_ADSP_ibd_36k.tsv')
-
 PRSCS_36K_bellenguez<- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k/bellenguez/prscs_36k.tsv')
 
 #Polypred (PRSCS_POLYFUN)
@@ -210,21 +225,23 @@ col_roc <- list("PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_E5 <- list("PRS_e5","PRS_001","PRS_005","PRS_01","PRS_05","PRS_1","PRS_5")
 col_roc_polypred <- list("PRS1","PRS3","PRS5","PRS7","PRS10")
 col_roc_polypred3 <- list("PRS1","PRS5","PRS10")
-col_roc_polypred_125<- list("PRS1","PRS2","PRS5")
+col_roc_polypred_125 <- list("PRS1","PRS2","PRS5")
+col_roc_polypred_135 <- list("PRS1","PRS3","PRS5")
 
 ## process PRS name
 process_prs_col_name <- function(df){
-  if ('PRS10' %in% df$PRS){
+  if ('PRS1' %in% df$PRS){
     df$PRS = str_replace(df$PRS, 'PRS', 'max snp ')
-    if ('PRS3' %in% df$PRS){
-      df$PRS = factor(df$PRS, level = c('max snp 10','max snp 7','max snp 5','max snp 3','max snp 1'))
-    }else if ('PRS2' %in% df$PRS){
-      df$PRS = factor(df$PRS, level = c('max snp 5','max snp 2','max snp 1'))
-    }
-    else{
-      df$PRS = factor(df$PRS, level = c('max snp 10','max snp 5','max snp 1'))
-    }
-  }else if('PRS_5' %in% df$PRS){
+    # if ('PRS3' %in% df$PRS){
+    #   df$PRS = factor(df$PRS, level = c('max snp 10','max snp 7','max snp 5','max snp 3','max snp 1'))
+    # }else if ('PRS2' %in% df$PRS){
+    #   df$PRS = factor(df$PRS, level = c('max snp 5','max snp 2','max snp 1'))
+    # }
+    # else{
+    #   df$PRS = factor(df$PRS, level = c('max snp 10','max snp 5','max snp 1'))
+    # }
+  }
+  else if('PRS_5' %in% df$PRS){
     if('PRS_e5' %in% df$PRS){
       df[df$PRS=='PRS_e5',]$PRS ="p = 1e-5"
       df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
@@ -394,8 +411,7 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(
     if (nrow(df) != 0) {
       name <- factor(name, levels = unique(dfsname))
       df_new <- roc_add_anno(df, col, boot, boot_num, name)
-      return(df_new)
-    }}, dfs, dfsname, SIMPLIFY = FALSE))
+      return(df_new) }}, dfs, dfsname, SIMPLIFY = FALSE))
   
   result = process_prs_col_name(result)
   print(result)
@@ -421,6 +437,19 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(
   } ## if we want to plot APOE (line) ## should do bootstrap automatically if it is specified 
   return(plot)
 }
+
+
+
+test_function <- function(..., QC_names, col = col_roc_E5, title = ' ', boot = TRUE, boot_num = 50, legendname = FALSE, APOE = FALSE) {
+  # Extract the QC data frames and QC names
+  QC_data_frames <- list(...)
+  print(QC_data_frames)
+  
+  # Extract the QC names
+  print('qc_names')
+  }
+
+
 
 plot_auc_facet_all_sumstat <- function(a,b,c,d,legendname = FALSE){
   prow <- plot_grid(a+ theme(legend.position="none"), 
@@ -629,6 +658,9 @@ plot_ethnic_R2_facet <- function(QC1, QC2, QC3, col=col_roc_E5, boot_num=50, tit
   }else
     all = rbind(QC1, QC2)
   all = process_prs_col_name(all)
+  
+  all$qc_status = factor(all$qc_status, levels = unique(all$qc_status))
+  
   add_xlegend = '' 
   if("partial_R2" %in% colnames(all)){
     print('R2 here is partial R2')
@@ -642,7 +674,7 @@ plot_ethnic_R2_facet <- function(QC1, QC2, QC3, col=col_roc_E5, boot_num=50, tit
   all$boot_CI_lower = all$boot_CI_lower * 100
   plot <- ggplot(data = all, aes(x= boot_mean, y = PRS, color = qc_status))+
     geom_point(size=2, alpha=0.7,position = position_dodge(width = 0.7))+
-    geom_pointrange(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), linetype="dotted",position=position_dodge(width=0.7),show.legend = FALSE) +
+    geom_pointrange(aes(xmin=boot_CI_lower, xmax=boot_CI_upper), linetype="dashed",position=position_dodge(width=0.7),show.legend = FALSE) +
     facet_wrap(~ethnicity, ncol=1)+
     xlab(paste(add_xlegend,'R squared (%)'))+ ggtitle(title)+xlim(min(all$boot_CI_lower), max(all$boot_CI_upper)) +
     theme_bw()
@@ -884,8 +916,19 @@ plot_ethnic_roc_facet(wightman_susie, wightman_bl, wightman_polypred, col = col_
 
 plot_ethnic_R2(wightman_glasslab, boot_num=FALSE, col=col_roc_polypred3)
 
-## new_anno
+## new_anno 0824 ---- 
 plot_ethnic_roc(wightman_new_anno_0822, col=col_roc_polypred3, title='new_anno_0822',plot=TRUE)
+
+plot_ethnic_roc_facet(wightman_susie, wightman_all_anno, wightman_new_anno_0822, QC4 = wightman_new_anno_0824_all, 
+                      QC1name = "no anno", QC2name = "all_anno(old)",QC3name='new anno 0822',QC4name = 'new_anno 0824', 
+                      col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
+wightman_new_anno_0824_bl_ibd
+
+plot_ethnic_roc_facet(wightman_susie, wightman_all_anno, wightman_new_anno_0822, QC4 = wightman_new_anno_0824_all,QC5=wightman_new_anno_0824_all_ibd, 
+                      QC1name = "no anno", QC2name = "all_anno(old)",QC3name='new anno 0822',QC4name = 'new_anno 0824', QC5name='new_anno 0824 ibd36k',
+                      col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
+
+
 plot_ethnic_roc_facet(wightman_all_anno, wightman_glasslab, wightman_new_anno_0822, QC1name = "all_anno(old)",
                       QC2name = "glasslab only(old)",QC3name='new anno 0822', col = col_roc_polypred3,boot_num = 50, title='wightman',legendname = 'annotation')
 plot_ethnic_R2_facet(wightman_all_anno, wightman_glasslab, wightman_new_anno_0822, col = col_roc_polypred3, QC1name = "all_anno(old)",
@@ -897,6 +940,30 @@ plot_ethnic_roc_facet(wightman_all_anno, wightman_new_anno_0824_all, wightman_ne
 plot_ethnic_roc_facet(bellenguez_all_anno, bellenguez_new_anno_0824_all, bellenguez_new_anno_0824_no_ml,QC4 = bellenguez_new_anno_0824_only_ml, QC1name = "all_anno(old)",
                       QC2name = "all_anno(0824)",QC3name='no_ml(0824)', QC4name='only_ml(0824)',col = list("PRS1","PRS5"),boot_num = 50, title='bellenguez',legendname = 'annotation')       
 
+plot_ethnic_roc_facet(wightman_all_anno, wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_no_partitions_ibd, QC1name = "all_anno(433)",
+                      QC2name = "all_anno(65)",QC3name='all_anno_no_partitions(65)',col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
+
+plot_ethnic_R2_facet(wightman_all_anno, wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_no_partitions_ibd, QC1name = "all_anno(433)",
+                      QC2name = "all_anno(65)",QC3name='all_anno_no_partitions(65)',col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
+
+
+plot_ethnic_roc_facet(wightman_new_anno_0824_susie_no_partitions_ibd, wightman_new_anno_0824_bl_no_partitions_ibd, wightman_new_anno_0824_no_ml_no_partitions_ibd, 
+                      QC4 = wightman_new_anno_0824_only_ml_no_partitions_ibd, wightman_new_anno_0824_all_no_partitions_ibd,
+                      QC1name = "susie(0)", QC2name = "bl(5)",QC3name='no_ml(17)', QC4name='only_ml(53)',QC5name='all(65)',
+                      col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
+
+
+plot_ethnic_roc_facet(wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_no_partitions_ibd, wightman_0824_all_no_partitions_adj_beta, 
+                      QC1name = "regular", QC2name = "no_partitions",QC3name='adj_beta_no_partitions',
+                      col = list("PRS1","PRS5"),boot_num = 5, title='wightman_all anno(65)',legendname = 'annotation')
+
+plot_ethnic_R2_facet(wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_no_partitions_ibd, wightman_0824_all_no_partitions_adj_beta, 
+                     QC1name = "regular", QC2name = "no_partitions",QC3name='adj_beta_no_partitions',
+                     col = list("PRS1","PRS5"),boot_num = 5, title='wightman_all anno(65)',legendname = 'annotation')
+
+
+plot_ethnic_roc_facet(wightman_all_anno, wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_no_partitions_ibd, QC1name = "all_anno(433)",
+                      QC2name = "all_anno(65)",QC3name='all_anno_no_partitions(65)',col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
 
 
 ## PRSCS ------
@@ -1070,10 +1137,8 @@ plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred,FALSE,col =col_roc_p
                       legendname = 'Annotation'
 )
 
-
 plot_ethnic_roc_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num = 50, col='PRS',
                       title='bellenguez', QC1name = 'PolyFun_Pred', QC2name = 'SuSiE', legendname = 'Tools')
-
 
 plot_ethnic_roc_facet(wightman_susie_max10, wightman_polypred, FALSE, boot_num = 50, col='PRS',
                       title='wightman', QC1name = 'PolyFun_Pred', QC2name = 'SuSiE', legendname = 'Tools')
@@ -1180,7 +1245,6 @@ RsqGLM(glm(Diagnosis~PRS1+Sex+Age,family = 'binomial', data = kunkle_susie), plo
 
 
 ## test age threshold -----
-
 control_age_roc <- function(df, age, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALSE, title=''){
   output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*3))
   output_df$PRS =  rep(unlist(col),1)
@@ -1209,8 +1273,7 @@ control_age_roc <- function(df, age, col=col_roc_E5,boot_num=50, boot=TRUE, plot
   }
   return(output_df)}
 
-
-plot_control_age_roc <- function(df, col=col_roc_E5, title=' ',age1="65", age2="75",age3="85", legendname=FALSE, APOE=FALSE, plot=TRUE){
+plot_control_age_roc <- function(df, col=col_roc_E5, title=' ',age1="65", age2="75",age3="85", legendname=FALSE, APOE=FALSE, plot=FALSE){
   QC1 = control_age_roc(df,as.integer(age1),col=col)
   QC2 = control_age_roc(df,as.integer(age2),col=col)
   QC3 = control_age_roc(df,as.integer(age3),col=col)
@@ -1230,17 +1293,18 @@ plot_control_age_roc <- function(df, col=col_roc_E5, title=' ',age1="65", age2="
   return(all)
 }
 
-plot_control_age_roc_multi <- function(df1, df2, df3, df1_name, df2_name, df3_name, title, legendname=FALSE){
-  df1$method =df1_name 
-  df2$method =df2_name 
-  df=rbind(df1,df2)
-  if(class(df3) != "logical"){
-    df3$method=df3_name
-    df=rbind(df, df3)
-    df$method = factor(df$method, level=c(df1_name, df2_name, df3_name))
-  }else{
-    df$method = factor(df$method, level=c(df1_name, df2_name))
+plot_control_age_roc_multi <- function(..., names = FALSE,sub=' ', title= '', legendname=FALSE){
+  data_frames <- list(...)
+  if (missing(names)) {
+    names <- as.character(substitute(list(...))[-1])
+    names <- gsub(sub, '', names)
   }
+  
+  for (i in seq_along(data_frames)) {
+    data_frames[[i]]$method <- names[i]
+  }
+  df <- do.call(rbind, data_frames)
+  df$method <- factor(df$method, levels = names)
   plot <- ggplot(data = df, aes(x=auc, y = PRS, shape = age, color=method)) + scale_fill_hue()+
     geom_point(size=2,alpha=0.7,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
@@ -1254,11 +1318,28 @@ plot_control_age_roc_multi <- function(df1, df2, df3, df1_name, df2_name, df3_na
   return(plot)
 }
 
+plot_control_age_roc_multi(plot_control_age_roc(wightman_susie,col = list("PRS1","PRS5")),
+                           plot_control_age_roc(wightman_all_anno,col = list("PRS1","PRS5")),
+                           plot_control_age_roc(wightman_new_anno_0822,col = list("PRS1","PRS5")),
+                           names=list("no anno", "all_anno(old)",'new_anno'), title='Wightman')
+
+plot_control_age_roc_multi(plot_control_age_roc(wightman_susie,col = list("PRS1","PRS5")),
+                            plot_control_age_roc(wightman_all_anno,col = list("PRS1","PRS5")),
+                            plot_control_age_roc(wightman_new_anno_0822,col = list("PRS1","PRS5")),
+                            plot_control_age_roc(wightman_new_anno_0824_all,col = list("PRS1","PRS5")), 
+                            names= list("no anno", "all_anno(old)",'new anno 0822', 'new_anno 0824'), title='Wightman')
+
 plot_control_age_roc_multi(plot_control_age_roc(wightman_bl[-34], col=col_roc_polypred3, plot=FALSE),
                            plot_control_age_roc(wightman_enformer, col=col_roc_polypred3, plot=FALSE),
                            plot_control_age_roc(wightman_update_all, col=col_roc_polypred3, plot=FALSE),
-                           'baseline','bl+enformer','all anno', title='Wightman')
+                           names=list('baseline','bl+enformer','all anno'), title='Wightman')
 
+
+plot_control_age_roc_multi(plot_control_age_roc(wightman_susie,col = list("PRS1","PRS5")),
+                            plot_control_age_roc(wightman_all_anno,col = list("PRS1","PRS5")),
+                            plot_control_age_roc(wightman_new_anno_0822,col = list("PRS1","PRS5")),
+                            plot_control_age_roc(wightman_new_anno_0824_all,col = list("PRS1","PRS5")), 
+                            names = list("no anno", "all_anno(old)",'new anno 0822', 'new_anno 0824') title='Wightman')
 
 
 wightman_polypred_control_age = plot_control_age_roc(wightman_polypred, col=col_roc_polypred3, title='All annotations')
@@ -1285,12 +1366,34 @@ plot_control_age_roc_multi(plot_control_age_roc(bellenguez_polypred, col=col_roc
                            plot_control_age_roc(bellenguez_susie, col=col_roc_polypred3, plot=FALSE),
                            'all','baseline','none','bellenguez')
 
-
-
 plot_control_age_roc_multi(plot_control_age_roc(polypred_PRSCS, col=col_roc_E5, plot=FALSE),
                            plot_control_age_roc(polypred_PRSCS_NOT0, col=col_roc_E5, plot=FALSE),
                            plot_control_age_roc(polypred_prscs_noEnformer, col=col_roc_E5, plot=FALSE),
                           "polyfun_PRSCS(PIP >0.3)",  "polyfun_PRSCS(PIP > 0)", 'polyfun_PRSCS_noenformer(PIP>0)','genomewide_plink')
+
+plot_control_age_roc_multi(plot_control_age_roc(wightman_new_anno_0824_susie_no_partitions_ibd, col=list("PRS1","PRS5"), plot=FALSE),
+                           plot_control_age_roc(wightman_new_anno_0824_bl_no_partitions_ibd, col=list("PRS1","PRS5"), plot=FALSE),
+                           plot_control_age_roc(wightman_new_anno_0824_no_ml_no_partitions_ibd, col=list("PRS1","PRS5"), plot=FALSE),
+                           plot_control_age_roc(wightman_new_anno_0824_only_ml_no_partitions_ibd, col=list("PRS1","PRS5"), plot=FALSE),
+                           plot_control_age_roc(wightman_new_anno_0824_all_no_partitions_ibd, col=list("PRS1","PRS5"), plot=FALSE),
+                           names = list("susie(0)",  "bl(5)", 'no_ml(17)','only_ml(53)','all(65)','wightman ibd no partitions'))
+
+
+plot_control_age_roc_multi(plot_control_age_roc(wightman_0824_susie_no_partitions_adj_beta, col=list("PRS1","PRS5"), plot=FALSE),
+                           plot_control_age_roc(wightman_0824_bl_no_partitions_adj_beta, col=list("PRS1","PRS5"), plot=FALSE),
+                           plot_control_age_roc(wightman_0824_no_ml_no_partitions_adj_beta, col=list("PRS1","PRS5"), plot=FALSE),
+                           plot_control_age_roc(wightman_0824_only_ml_no_partitions_adj_beta, col=list("PRS1","PRS5"), plot=FALSE),
+                           plot_control_age_roc(wightman_0824_all_no_partitions_adj_beta, col=list("PRS1","PRS5"), plot=FALSE),
+                           names = list("susie(0)",  "bl(5)", 'no_ml(17)','only_ml(53)','all(65)','wightman ibd no partitions, adj beta'))
+
+
+
+plot_control_age_roc_multi( plot_control_age_roc(wightman_new_anno_0824_all, col=list("PRS1","PRS5"), plot=FALSE),
+                            plot_control_age_roc(wightman_new_anno_0824_all_no_partitions_ibd, col=list("PRS1","PRS5"), plot=FALSE),
+                           plot_control_age_roc(wightman_0824_all_no_partitions_adj_beta, col=list("PRS1","PRS5"), plot=FALSE),
+                           names = list("regular",  "no_partitions", 'no_partitions,adj beta'), title='wightman, all anno(65)')
+
+
 
 ##others -----
 sbayesr_log <-  glm(Diagnosis~PRS+Sex+Age,family = 'binomial', data = sbayesR)
