@@ -25,8 +25,9 @@ from functools import reduce
 #plink=["ADSP_qc_all"]
 #sumstat=['kunkle']
 
-path='/gpfs/commons/home/tlin/output/prs/pT_36k/wightman/'
-save_name='wightman_pT'
+#path='/gpfs/commons/home/tlin/output/prs/pT_36k_ibd/'
+path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/plink_prs/clump_wightman/'
+save_name='wightman_pT_36k_ibd'
 
 #for x in sumstat:
   #for y in plink:
@@ -41,7 +42,8 @@ prs_1 = pd.read_csv(path+"pT_0.1.prs", sep = ' ', names = ["IID","PRS"])
 prs_5 = pd.read_csv(path+"pT_0.5.prs", sep = ' ', names = ["IID","PRS"]) 
 
 #pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
-pheno=pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_LOAD_1000k.tsv", sep = '\t')
+#pheno=pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_LOAD_1000k.tsv", sep = '\t')
+pheno=pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_ADSP_IBD.tsv', sep='\t')
 prs = [prs_e5, prs_001, prs_005, prs_01, prs_05, prs_1, prs_5]  
 prs_merge = reduce(lambda left, right:pd.merge(left,right,on=["IID"]),prs)
 

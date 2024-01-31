@@ -7,7 +7,7 @@
 #file_name='ADSP_pT'
 #file_name='ADSP_qc_all_pT'
 
-dir_path='/gpfs/commons/home/tlin/output/prs/pT_36k/wightman'
+dir_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/plink_prs/clump_wightman'
 file_name='ADSP_qc_plink_pT'
 
 #for dir in bellenguez kunkle wightman
