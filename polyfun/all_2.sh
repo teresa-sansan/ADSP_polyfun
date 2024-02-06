@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=wightman
+#SBATCH --job-name=wightman_all
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=50G 
+#SBATCH --mem=100G 
 #SBATCH --time=5:00:00
-#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0824/bl/%x%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/wightman/new_anno_0824_no_partitions/bl/%x%j.log
 
 ## --partition bigmem
 
@@ -18,7 +18,7 @@
 #output='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/bl/bl' 
 #output='/gpfs/commons/home/tlin/output/bellenguez/new_anno/bl/bl'
 
-output='/gpfs/commons/home/tlin/output/wightman/new_anno_0824/'
+output='/gpfs/commons/home/tlin/output/wightman/new_anno_0824_no_partitions/'
 
 bl='/gpfs/commons/groups/knowles_lab/data/ldsc/polyfun/baselineLF2.2.UKB'
 # all_anno='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/combined_AD_annotations_polyfun/combined_AD_annotations_polyfun_'
@@ -62,15 +62,37 @@ fi
 summary_stats='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta.munged.parquet'
 
 ##1-2
-if false; then
+if true; then
 echo running $summary_stats
+
 python polyfun.py \
   --compute-h2-L2 \
-  --output-prefix $output/bl/bl \
+  --no-partitions \
+  --output-prefix $output/no_ml/no_ml \
   --sumstats $summary_stats \
-  --ref-ld-chr $bl_anno \
+  --ref-ld-chr $bl_anno,$roadmap,$glasslab \
   --w-ld-chr $bl/weights.UKB. \
-  --allow-missing
+  --allow-missing &
+
+python polyfun.py \
+  --compute-h2-L2 \
+  --no-partitions \
+  --output-prefix $output/only_ml/only_ml \
+  --sumstats $summary_stats \
+  --ref-ld-chr $bl_anno,$deepsea,$enformer,$glass_lab_enformer \
+  --w-ld-chr $bl/weights.UKB. \
+  --allow-missing &
+
+python polyfun.py \
+  --compute-h2-L2 \
+  --no-partitions \
+  --output-prefix $output/all/all \
+  --sumstats $summary_stats \
+  --ref-ld-chr $bl_anno,$roadmap,$glasslab,$deepsea,$enformer,$glass_lab_enformer \
+  --w-ld-chr $bl/weights.UKB. \
+  --allow-missing 
+
+
 
 echo finish polyfun1_2
 fi
@@ -84,7 +106,7 @@ done
 fi
 
 #1-4
-if true; then
+if false; then
 python polyfun_assertion_error.py \
   --compute-h2-bins \
   --output-prefix $output/bl/bl \
