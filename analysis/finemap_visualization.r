@@ -55,6 +55,12 @@ wightman_no_ml_max5 <- read.table('/gpfs/commons/home/tlin/output/wightman/new_a
 wightman_only_ml_max5 <-  read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0824/only_ml/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
 
 
+## update no_partitions
+wightman_susie_max5_no_partitions <- read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0824_no_partitions/susie/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+wightman_all_max5_no_partitions <- read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0824_no_partitions/all/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+wightman_no_ml_max5_no_partitions <- read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0824_no_partitions/no_ml/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+wightman_only_ml_max5_no_partitions <-  read.table('/gpfs/commons/home/tlin/output/wightman/new_anno_0824_no_partitions/only_ml/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
+
 bellenguez_all_max5 <- read.table('/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/all/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
 bellenguez_no_ml_max5 <- read.table('/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/no_ml/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
 bellenguez_only_ml_max5 <-  read.table('/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/only_ml/finemap/max_snp_5/agg_extract_1e-3.tsv', header=T)
@@ -164,8 +170,9 @@ count_SNP <-function(df){
     name=c("PIP >= 0.8","PIP >= 0.5","PIP >= 0.2"),count)
   df_name = deparse(substitute(df))
   df_name = strsplit(df_name, split = '_')[[1]][-1]
-  #df_name =  df_name
+  df_name =  df_name
   df_name = paste(df_name[-length(df_name)], collapse = "_")
+  
   count_df$anno = df_name
   return(count_df)
 }
@@ -177,6 +184,23 @@ ggplot(data = wightman_0824, aes(x = name, y = count, fill = anno)) +
   geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
   labs(x = "\n PIP threshold", y = "SNP count \n", title = "\n wightman_max5 \n") +
   geom_text(aes(label = count),  vjust = 1.5, position = position_dodge(.9), size = 4) +theme_bw()
+
+
+wightman_0824_no_partitions <- rbind(count_SNP(wightman_susie_max5_no_partitions),count_SNP(wightman_no_ml_max5_no_partitions),
+                                     count_SNP(wightman_only_ml_max5_no_partitions),count_SNP(wightman_all_max5_no_partitions))
+
+
+
+wightman_0824_no_partitions$anno <- factor(wightman_0824_no_partitions$anno, levels = c('susie_max5_no','no_ml_max5_no','only_ml_max5_no','all_max5_no'))
+ggplot(data = wightman_0824_no_partitions, aes(x = name, y = count, fill = anno)) +  
+  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
+  labs(x = "\n PIP threshold", y = "SNP count \n", title = "\n wightman_max5_ibd_no_partitions \n") +
+  geom_text(aes(label = count),  vjust = 1.5, position = position_dodge(.9), size = 4) +theme_bw()
+
+
+
+
+
 
 
 bellenguez_0824 <- rbind(count_SNP(bellenguez_susie_max5),count_SNP(bellenguez_only_ml_max5),count_SNP(bellenguez_no_ml_max5),count_SNP(bellenguez_all_max5))

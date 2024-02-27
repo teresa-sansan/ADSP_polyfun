@@ -44,8 +44,8 @@ pre_process <- function(df, file=FALSE){
     df['final_population'] = df$predicted_ancestry
   
   ## check hispanic
-  print('remove hispanic')
-  df = df[!(df$SampleID %in% ibd_his$V1), ]
+  #print('remove hispanic')
+  #df = df[!(df$SampleID %in% ibd_his$V1), ]
   
   return(df)
 } ## remove the sample younger than 65 || have no diagnosis || rename col
@@ -132,6 +132,7 @@ wightman_new_anno_0822 <- pre_process('/gpfs/commons/home/tlin/output/prs/polypr
 wightman_new_anno_0824_all <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightmanall.tsv')
 wightman_new_anno_0824_no_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightmanno_ml.tsv')
 wightman_new_anno_0824_only_ml <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightmanonly_ml.tsv')
+wightman_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/wightman/susie.17k.tsv')
 
 ## 36k
 wightman_new_anno_0824_all_ibd <-  pre_process('/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/wightman.all.ibd36k.tsv')
@@ -941,13 +942,13 @@ plot_ethnic_roc(wightman_new_anno_0822, col=col_roc_polypred3, title='new_anno_0
 
 plot_ethnic_roc_facet(wightman_susie, wightman_all_anno, wightman_new_anno_0822, QC4 = wightman_new_anno_0824_all, 
                       QC1name = "no anno", QC2name = "all_anno(old)",QC3name='new anno 0822',QC4name = 'new_anno 0824', 
-                      col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
+                      col = list("PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
 
 plot_ethnic_roc_facet(wightman_susie, wightman_all_anno, QC3 = wightman_new_anno_0824_all, 
                       QC1name = "no anno", QC2name = "all_anno(old)",QC3name = 'new_anno 0824', 
-                      col = list("PRS1","PRS5"),boot_num = 50, title='wightman 17k',legendname = 'annotation')
+                      col = list("PRS5"),boot_num = 50, title='wightman 17k',legendname = 'annotation')
 
-plot_ethnic_roc_facet( wightman_allanno_ibd , wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_ibd_checkhis,  
+ibdplot_ethnic_roc_facet( wightman_allanno_ibd , wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_ibd_checkhis,  
                        QC1name ='all_anno(old)' , QC2name = 'all_anno(0824)',QC3name='all_anno(0824),check_his', col =list("PRS5"),boot_num = 50, title='wightman 36k',legendname = 'annotation')
 
 plot_ethnic_roc_facet(wightman_susie, wightman_all_anno, wightman_new_anno_0822, QC4 = wightman_new_anno_0824_all,QC5=wightman_new_anno_0824_all_ibd, 
@@ -971,17 +972,27 @@ plot_ethnic_roc_facet(wightman_new_anno_0824_susie_ibd, wightman_allanno_ibd,
                       wightman_new_anno_0824_all, QC1name = "susie",
                       QC2name = "all_anno(old)",QC3name='all_anno(0824)',col = list("PRS5"),boot_num = 50, title='wightman 36k',legendname = 'annotation')
 
+
+plot_ethnic_roc_facet(wightman_new_anno_0824_susie_ibd, wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_bl_ibd, QC4 = wightman_new_anno_0824_no_ml_ibd, 
+                      QC1name = "susie", QC2name = "all_anno(65)", QC3name='bl(0824)', QC4name = 'no_ml', col = list("PRS5"),boot_num = 50, title='wightman 36k',legendname = 'annotation')
+
+
+plot_ethnic_roc_facet(PRSCS_36k_ibd_wightman,inf_0214, inf_inter2_0219,  boot_num = 50, col=list("PRS_01","PRS_05","PRS_1","PRS_5"),
+                      title='wightman', QC1name = 'PRSCS', QC2name = 'inf', QC3name='inf_intersection2',legendname = 'Tools')
+
+
+plot_ethnic_roc_facet(PRSCS_36k_ibd_wightman, inf_0214, inf_inter2_0219,
+                      QC1name = 'PRSCS', QC2name = 'inf', QC3name='inf_intersection2',  col = col_roc_E5,boot_num = 5, title='wightman 36k',legendname = 'annotation')
+
+
 plot_ethnic_R2_facet(wightman_new_anno_0824_susie_ibd, wightman_allanno_ibd, wightman_new_anno_0824_all,
                      col = list("PRS5"), QC1name = "all_anno(old)", QC2name = "glasslab only(old)",QC3name='new anno 0822', title = 'wightman', legendname = 'annotations' )
 
 plot_ethnic_R2_facet(wightman_all_anno, wightman_glasslab, wightman_new_anno_0822, col = col_roc_polypred3, QC1name = "all_anno(old)",
                      QC2name = "glasslab only(old)",QC3name='new anno 0822', title = 'wightman', legendname = 'annotations' )
 
-plot_ethnic_roc_facet(wightman_all_anno, wightman_new_anno_0824_all, wightman_new_anno_0824_no_ml,QC4 = wightman_new_anno_0824_only_ml, QC1name = "all_anno(old)",
-                      QC2name = "all_anno(0824)",QC3name='no_ml(0824)', QC4name='only_ml(0824)',col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
-
-
-
+plot_ethnic_roc_facet(wightman_all_anno, wightman_new_anno_0824_all, wightman_new_anno_0824_no_ml,QC4 = wightman_new_anno_0824_only_ml,QC5 = wightman_susie,QC1name = "all_anno(old)",
+                      QC2name = "all_anno(0824)",QC3name='no_ml(0824)', QC4name='only_ml(0824)',QC5name ='susie',col = list("PRS5"),boot_num = 50, title='wightman 17k',legendname = 'annotation')
 
 plot_ethnic_roc_facet(bellenguez_all_anno, bellenguez_new_anno_0824_all, bellenguez_new_anno_0824_no_ml,QC4 = bellenguez_new_anno_0824_only_ml, QC1name = "all_anno(old)",
                       QC2name = "all_anno(0824)",QC3name='no_ml(0824)', QC4name='only_ml(0824)',col = list("PRS1","PRS5"),boot_num = 50, title='bellenguez',legendname = 'annotation')       
@@ -991,7 +1002,6 @@ plot_ethnic_roc_facet(wightman_all_anno, wightman_new_anno_0824_all_ibd, wightma
 
 plot_ethnic_R2_facet(wightman_all_anno, wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_no_partitions_ibd, QC1name = "all_anno(433)",
                       QC2name = "all_anno(65)",QC3name='all_anno_no_partitions(65)',col = list("PRS1","PRS5"),boot_num = 50, title='wightman',legendname = 'annotation')
-
 
 plot_ethnic_roc_facet(wightman_new_anno_0824_susie_no_partitions_ibd, wightman_new_anno_0824_bl_no_partitions_ibd, wightman_new_anno_0824_no_ml_no_partitions_ibd, 
                       QC4 = wightman_new_anno_0824_only_ml_no_partitions_ibd, wightman_new_anno_0824_all_no_partitions_ibd,
@@ -1182,6 +1192,10 @@ plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred,FALSE,col =col_roc_p
                       legendname = 'Annotation'
 )
 
+
+
+
+
 plot_ethnic_roc_facet(bellenguez_susie, bellenguez_polypred,FALSE,col ='PRS', title= 'bellenguez (old_plink)',
                       QC1name = 'SuSiE', QC2name = 'Polyfun',
                       legendname = 'Annotation',boot_num = FALSE
@@ -1203,6 +1217,9 @@ plot_ethnic_R2_facet(wightman_susie_max10, wightman_polypred,FALSE, col ='PRS', 
                      QC1name = 'SuSiE', QC2name = 'Polyfun_pred',
                      legendname = 'Annotation',boot_num=FALSE
 )
+
+
+
 
 
 ## polyfun beta vs sumstat beta ---

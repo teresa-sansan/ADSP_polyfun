@@ -1,0 +1,88 @@
+---
+title: "snp_var"
+author: "Teresa Lin"
+date: "8/30/2023"
+output: pdf_document
+---
+
+```{r, include = FALSE}
+library(ggplot2)
+library(lattice)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(jtools)
+library(tibble)
+library(tidyverse)
+library(cowplot)
+```
+```{r}
+# snpvar_access <- function(df,anno_name){
+#   
+# }
+
+
+load_snpvar <- function(file_path){
+  file_suffix <- ".snpvar_ridge.gz"
+  path_parts <- strsplit(file_path, "/")[[1]]
+  anno <- path_parts[length(path_parts)]
+  file_paths <- sprintf("%s%s%s%s%d%s", file_path,'/',anno,'.', 1:10, file_suffix)
+
+## read data
+    snpvar <- lapply(file_paths, function(file_paths) {
+    df <- read.table(gzfile(file_paths), header = TRUE)
+    path_parts <- strsplit(file_path, "/")[[1]]
+    anno <- path_parts[length(path_parts)]
+    df$anno = anno
+    return(df)
+    })
+  return(snpvar)
+  }
+snpvars = load_snpvar('/gpfs/commons/home/tlin/output/wightman/new_anno_0824/all')
+snpvar_df <- do.call(rbind, snpvars)
+
+snpvar_no_ml = load_snpvar('/gpfs/commons/home/tlin/output/wightman/new_anno_0824/no_ml')
+snpvar_no_ml <- do.call(rbind, snpvar_no_ml)
+
+df = rbind(snpvar_df, snpvar_no_ml)
+
+ggplot(df, aes(x = SNPVAR, color= factor(anno) )) +
+  geom_density(alpha = 0.2) +
+  labs(title = "Distribution of snpvar by chr", x = "snpvar", y = "Density") +
+  theme_minimal()
+
+
+
+```
+
+```{r}
+ggplot(df, aes(x = SNPVAR, y=anno, color= factor(anno) )) +
+  geom_boxplot(outlier.colour="red") +
+  labs(title = "Distribution of snpvar by chr", x = "snpvar") +
+  theme_minimal()
+```
+##bl
+
+```{r}
+#snpvars = load_snpvar('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer')
+#snpvar_df <- do.call(rbind, snpvars)
+#snpvar_df$anno = 'all'
+
+#snpvar_no_ml = load_snpvar('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/bl')
+#snpvar_no_ml <- do.call(rbind, snpvar_no_ml)
+#snpvar_no_ml$anno = 'bl'
+
+#df = rbind(snpvar_df, snpvar_no_ml)
+
+ggplot(df, aes(x = SNPVAR, color= factor(anno) )) +
+  geom_density(alpha = 0.2) +
+  labs(title = "Distribution of snpvar by chr", x = "snpvar", y = "Density") +
+  theme_minimal()
+
+ggplot(df, aes(x = SNPVAR, y=anno, color= factor(anno) )) +
+  geom_boxplot(outlier.colour="yellow") +
+  labs(title = "Distribution of snpvar by chr", x = "snpvar") +
+  theme_minimal()
+```
+
+

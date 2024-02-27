@@ -54,18 +54,7 @@ bellenguez_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/
 new_bellenguez_adsp <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/new_sep22/ADSP.tsv')
 
 wightman_UKBB_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/fixed_rsid1002/ADSP_qc_all.tsv')
-
 jansen_adsp_qc <- pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/jansen/ADSP_qc_all.tsv')
-
-## polyfun_beta_pt 
-kunkle_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_polyfun_beta.tsv')
-kunkle_polyfun_plink_no_cpT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/kunkle/kunkle_polyfun_beta_noclump.tsv')
-
-bellenguez_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_polyfun_beta.tsv')
-bellenguez_polyfun_plink_no_cpT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/bellenguez/bellenguez_polyfun_beta_noclump.tsv')
-
-wightman_polyfun_pT = pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_polyfun_beta.tsv')
-wightman_polyfun_plink_no_cpT= pre_process('/gpfs/commons/home/tlin/output/prs/new_plink/wightman/wightman_polyfun_beta_noclump.tsv')
 
 ###  polyfun-Pred ----
 kunkle_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/polypred/kunkle/new_anno/bl.tsv')
@@ -113,9 +102,17 @@ PRSCS_36K <- merge(PRSCS_36K, lookup_table, by = "Race", all.x = TRUE)
 PRSCS_36k_fixed_hispanic <- read.csv('/gpfs/commons/home/tlin/output/36k/wightman/PRSCS_fixed_hispanic.tsv', sep = '\t', header=T,fill = T)
 PRSCS_36k_new_ancestry <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/PRS_hg38/prscs/prscs_new_ancestry.tsv')
 PRSCS_36K_bellenguez<- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k/bellenguez/prscs_36k.tsv')
+PRSCS_36k_ibd_wightman <- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k_ibd_adsp_fixed/wightman/prscs_wightman_ADSP_ibd_36k.tsv')
 
 #Polypred (PRSCS_POLYFUN)
 polypred <- pre_process('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/polypred/w_prscs/polypred.prs.wpheno.tsv')
+
+
+##CasioPR36K
+
+inf_inter2_0219 <- pre_process('/gpfs/commons/home/tlin/pic/casioPR/simulation/prs/0219_inf_intersect2_whole_genome.tsv')
+inf_0214<- pre_process('/gpfs/commons/home/tlin/pic/casioPR/simulation/prs/0214_inf_whole_genome.tsv')
+
 
 ## Extract specific race ----- 
 extract_race <-function (df,race){
@@ -212,7 +209,6 @@ roc_result <-function(df, column_for_roc = col_roc_E5){
   auc_df$auc = unlist(auc_list)
   return(auc_df)
 }
-
 roc_result_boot <-function(df,column_for_roc=col_roc_E5, boot_num=50, mean=FALSE){
   CI_roc = data.frame(matrix(ncol = 4, nrow = 0))
   colnames(CI_roc) = c("PRS","boot_CI_lower","boot_mean","boot_CI_upper")
@@ -681,8 +677,6 @@ for ( i in list(wightman_bl, wightman_polypred, wightman_no_ml, wightman_all_exc
 }
 
 ## polyfun ------
-
-##
 plot_ethnic_roc_facet(kunkle_susie, kunkle_polypred, kunkle_bl, QC1name = "none",
                       QC2name = "all",QC3name='baseline', col = col_roc_polypred3,boot_num = 50, title='kunkle',legendname = 'annotation')
 
@@ -840,6 +834,12 @@ plot_ethnic_roc_facet(bellenguez_polypred_new, bellenguez_susie, FALSE, boot_num
 
 plot_ethnic_roc_facet(wightman_susie_max10, wightman_polypred, FALSE, boot_num = 50, col='PRS',
                       title='wightman', QC1name = 'PolyFun_Pred', QC2name = 'SuSiE', legendname = 'Tools')
+
+
+
+plot_ethnic_roc_facet(PRSCS_36k_ibd_wightman,inf_0214, inf_inter2_0219,  boot_num = 50, col='PRS',
+                      title='wightman', QC1name = 'PRSCS', QC2name = 'inf', QC3name='inf_intersection2',legendname = 'Tools')
+
 
 plot_ethnic_R2_facet(wightman_susie_max10, wightman_polypred,FALSE, col ='PRS', title= 'wightman',
                      QC1name = 'SuSiE', QC2name = 'Polyfun_pred',
