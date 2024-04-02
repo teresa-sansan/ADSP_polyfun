@@ -207,7 +207,12 @@ PRSCS_36K_bellenguez<- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k
 polypred <- pre_process('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/polypred/w_prscs/polypred.prs.wpheno.tsv')
 ## Extract specific race ----- 
 extract_race <-function (df,race){
-  one_race = df[df$final_population == race,]
+  if ("final_population" %in% colnames(df))
+    one_race = df[df$final_population == race,]
+  else if ("predicted_ancestry" %in% colnames(df))
+    one_race = df[df$predicted_ancestry == race,]
+  else
+    print('cannot find column name "predicted_ancestry" or "final_population" in the df')
   return(one_race)
 }
 
@@ -253,24 +258,18 @@ col_roc_polypred_135 <- list("PRS1","PRS3","PRS5")
 process_prs_col_name <- function(df){
   if ('PRS1' %in% df$PRS){
     df$PRS = str_replace(df$PRS, 'PRS', 'max snp ')
-    # if ('PRS3' %in% df$PRS){
-    #   df$PRS = factor(df$PRS, level = c('max snp 10','max snp 7','max snp 5','max snp 3','max snp 1'))
-    # }else if ('PRS2' %in% df$PRS){
-    #   df$PRS = factor(df$PRS, level = c('max snp 5','max snp 2','max snp 1'))
-    # }
-    # else{
-    #   df$PRS = factor(df$PRS, level = c('max snp 10','max snp 5','max snp 1'))
-    # }
   }
   else if('PRS_5' %in% df$PRS){
     if('PRS_e5' %in% df$PRS){
       df[df$PRS=='PRS_e5',]$PRS ="p = 1e-5"
       df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
     }else{
-      df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
-    }
+      df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')}
     df$PRS = factor(df$PRS, level = c('p = 1e-5','p = 0.001','p = 0.005','p = 0.01','p = 0.05','p = 0.1','p = 0.5'))
   }
+  else
+  {df$PRS = str_replace(df$PRS, 'PRS_', '')}
+  
   return(df)
 }
 
@@ -345,8 +344,9 @@ roc_result <-function(df, column_for_roc = col_roc_E5){
   auc_df = data.frame("PRS" = unlist(column_for_roc), "auc" = 0)
   for (i in 1:length(column_for_roc)){
     col = column_for_roc[[i]]
-    roc_formula = roc(df[["Diagnosis"]],df[[col]], quiet=T)
-    auc_value <- roc(df[["Diagnosis"]],df[[col]], quiet=T)$auc
+    #roc_formula = roc(df[["Diagnosis"]],df[[col]], quiet=T)
+    auc_value <- roc(df[["Diagnosis"]],df[[col]] , quiet=T)$auc
+    
     auc_list[i] = as.numeric(auc_value)
   }
   auc_df$auc = unlist(auc_list)
@@ -359,6 +359,8 @@ roc_result_boot <-function(df,column_for_roc=col_roc_E5, boot_num=50, mean=FALSE
   for (i in 1:length(column_for_roc)){
     col = column_for_roc[[i]]
     roc_formula <- roc(df[["Diagnosis"]],df[[col]], quiet=T)
+    # roc_formula <- roc(df[["Diagnosis"]],df[[col]]+df[['Age']]+df[['Sex']], quiet=T)
+    # print('mixed PRS')
     set.seed(10)
     ci = ci.auc(roc_formula, conf.level = 0.95, method='bootstrap', boot.n = boot_num)
     CI_roc[nrow(CI_roc) + 1,] = c(col,ci)
@@ -393,20 +395,20 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
     EUR = roc_result_boot(extract_race(df,'EUR'), column_for_roc = col, boot_num = boot_num)
     AFR = roc_result_boot(extract_race(df,'AFR'), column_for_roc = col, boot_num = boot_num)
     AMR = roc_result_boot(extract_race(df,'AMR'), column_for_roc = col, boot_num = boot_num)
-  
     output_df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
     output_df$boot_CI_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
     output_df$boot_CI_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
-    
     output_df[c("auc","boot_CI_lower","boot_CI_upper")] <- sapply(output_df[c("auc","boot_CI_lower","boot_CI_upper")],as.numeric)
   }
   
   if(plot != FALSE){
     output_df = process_prs_col_name(output_df)
+    output_df$PRS <- factor(output_df$PRS, levels=unique(output_df$PRS))
+    
     plot <- ggplot(data = output_df, aes(x=auc, y = PRS))+
-      geom_point(size=3,alpha=0.9,position = position_dodge(width = 0.7), color='darkblue')+
+      geom_point(size=2,alpha=0.9,position = position_dodge(width = 0.7), color='darkblue')+
       facet_wrap(~ethnicity, ncol=1)+
-      xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.72)+theme_bw()
+      xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.7)+theme_bw()
     if (boot == TRUE){  
       plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,color='darkblue',show.legend = FALSE) 
     }## plot error bar or not
@@ -443,7 +445,7 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(
   plot <- ggplot(data = result, aes(x=auc, y = PRS, color = qc_status,))+
     geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
-    xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.7)+
+    xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.64)+
     theme_bw()
   
   if (boot == TRUE){  
@@ -505,7 +507,7 @@ line_plot <- function(df1, df2, df3, df4,  header, col = col_roc_polypred3){
   ggplot(data=test[test$PRS=="PRS2",], aes(x=factor(anno, level= c('bl','no_ml','enformer only','all_anno')), y=auc, group=inter)) +
     geom_line(aes(color=ethnicity),position = position_dodge(width = 0.3),alpha=0.3,linetype='dashed')+ 
     geom_errorbar(aes(ymin=boot_CI_lower, ymax=boot_CI_upper,color=ethnicity), alpha=0.5, width=0.1,position = position_dodge(width = 0.3))+
-    geom_point(aes(color=ethnicity),position=position_dodge(0.3))+ylim(c(0.45,0.65))+
+    geom_point(aes(color=ethnicity),position=position_dodge(0.3))+ylim(c(0.45,0.6))+
     xlab("")+ theme_bw()+ggtitle(header)+ scale_x_discrete(guide = guide_axis(n.dodge = 2)) 
 }
 
@@ -806,10 +808,10 @@ log_reg_partial_cov <- function(df,col){
   modR <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a reduced model only using covariates
   modR_R2 <- RsqGLM(modR, plot=FALSE)$Nagelkerke
   
-  modR_pc <- glm(Diagnosis ~ Sex + Age +X1+X2+X3+X4+X5, data= df, family=binomial) ## first create a reduced model only using covariates
+  modR_pc <- glm(Diagnosis ~ Sex + Age +PC1+PC2+PC3+PC4+PC5, data= df, family=binomial) ## first create a reduced model only using covariates
   modR_R2_pc <- RsqGLM(modR_pc, plot=FALSE)$Nagelkerke
   
-  modR_noage <- glm(Diagnosis ~ Sex +X1+X2+X3+X4+X5, data= df, family=binomial) ## first create a reduced model only using covariates
+  modR_noage <- glm(Diagnosis ~ Sex +PC1+PC2+PC3+PC4+PC5, data= df, family=binomial) ## first create a reduced model only using covariates
   modR_R2_noage <- RsqGLM(modR_noage, plot=FALSE)$Nagelkerke
   
   partial_R2 = rep(NA, length(col))
@@ -823,13 +825,13 @@ log_reg_partial_cov <- function(df,col){
     partialR2 <-  1- ((1-modF_R2 ) / (1-modR_R2))
     partial_R2[i] = partialR2*100
   
-    frm <- as.formula(paste("Diagnosis ~ Sex + Age + X1 + X2 + X3 + X4 + X5 + ", col[[i]])) ## add the PRS you wanted
+    frm <- as.formula(paste("Diagnosis ~ Sex + Age +PC1+PC2+PC3+PC4+PC5 + ", col[[i]])) ## add the PRS you wanted
     modF <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
     modF_R2 <-  RsqGLM(modF, plot=FALSE)$Nagelkerke 
     partialR2_pc <-  1- ((1-modF_R2 ) / (1-modR_R2_pc))
     partial_R2_pc[i] = partialR2_pc*100
   
-    frm <- as.formula(paste("Diagnosis ~ Sex  + X1 + X2 + X3 + X4 + X5 + ", col[[i]])) ## add the PRS you wanted
+    frm <- as.formula(paste("Diagnosis ~ Sex  + PC1+PC2+PC3+PC4+PC5 + ", col[[i]])) ## add the PRS you wanted
     modF <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
     modF_R2 <-  RsqGLM(modF, plot=FALSE)$Nagelkerke 
     partialR2_noage <-  1- ((1-modF_R2 ) / (1-modR_R2_noage))
@@ -899,6 +901,9 @@ for ( i in list(kunkle_adsp,kunkle_adsp_no_apoe, bellenguez_adsp,wightman_UKBB, 
   print("")
 }
 
+
+
+
 ## qc
 for ( i in list(kunkle_adsp_qc,kunkle_adsp_no_apoe_qc, bellenguez_adsp_qc,wightman_UKBB_qc, jansen_adsp_qc)){
   print("EUR")
@@ -948,7 +953,14 @@ plot_ethnic_roc_facet(wightman_susie, wightman_all_anno, QC3 = wightman_new_anno
                       QC1name = "no anno", QC2name = "all_anno(old)",QC3name = 'new_anno 0824', 
                       col = list("PRS5"),boot_num = 50, title='wightman 17k',legendname = 'annotation')
 
-ibdplot_ethnic_roc_facet( wightman_allanno_ibd , wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_ibd_checkhis,  
+
+plot_ethnic_roc_facet(bellenguez_new_anno_0824_susie, bellenguez_new_anno_0824_no_ml_ibd ,QC3=bellenguez_new_anno_0824_only_ml_ibd,QC4=bellenguez_new_anno_0824_all_ibd,
+                      QC1name = "none", QC2name = "Omics",QC3name = 'DL', QC4name='Omics+DL',
+                      col = list("PRS"),boot_num = 50, title='bellenguez 36k',legendname = 'annotation')
+
+
+##ibd
+plot_ethnic_roc_facet( wightman_allanno_ibd , wightman_new_anno_0824_all_ibd, wightman_new_anno_0824_all_ibd_checkhis,  
                        QC1name ='all_anno(old)' , QC2name = 'all_anno(0824)',QC3name='all_anno(0824),check_his', col =list("PRS5"),boot_num = 50, title='wightman 36k',legendname = 'annotation')
 
 plot_ethnic_roc_facet(wightman_susie, wightman_all_anno, wightman_new_anno_0822, QC4 = wightman_new_anno_0824_all,QC5=wightman_new_anno_0824_all_ibd, 
@@ -968,6 +980,10 @@ wightman_new_anno_0824_susie_ibd <- pre_process('/gpfs/commons/home/tlin/output/
 wightman_allanno_ibd <- pre_process('/gpfs/commons/home/tlin/output/wightman/new_anno_0203/wightman.update_all+enformer.ibd36k.tsv')
 
 ##0205
+plot_ethnic_roc_facet(bellenguez_new_anno_0824_susie, bellenguez_new_anno_0824_bl_ibd, 
+                      bellenguez_new_anno_0824_all, QC1name = "susie", QC2name = "bl",QC3name='susie',
+                      col = list("PRS"),boot_num = 50, title='bellenguez 36k',legendname = 'annotation')
+
 plot_ethnic_roc_facet(wightman_new_anno_0824_susie_ibd, wightman_allanno_ibd, 
                       wightman_new_anno_0824_all, QC1name = "susie",
                       QC2name = "all_anno(old)",QC3name='all_anno(0824)',col = list("PRS5"),boot_num = 50, title='wightman 36k',legendname = 'annotation')
@@ -1318,16 +1334,21 @@ RsqGLM(glm(Diagnosis~PRS1+Sex+Age,family = 'binomial', data = kunkle_susie), plo
 
 
 ## test age threshold -----
+
+segregate_control_by_age <- function(df,age)
+  return(subset(df,Age >= age))
+
 control_age_roc <- function(df, age, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALSE, title=''){
   output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*3))
   output_df$PRS =  rep(unlist(col),1)
   output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)))
   output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR"))
   print('age segregation')
-  EUR = roc_result_boot(segregate_control_by_age(extract_eur(df),age), column_for_roc = col, boot_num = boot_num)
-  AFR = roc_result_boot(segregate_control_by_age(extract_afr(df),age), column_for_roc = col, boot_num = boot_num)
-  AMR = roc_result_boot(segregate_control_by_age(extract_amr(df),age), column_for_roc = col, boot_num = boot_num)
+  EUR = roc_result_boot(segregate_control_by_age(extract_race(df,'EUR'),age), column_for_roc = col, boot_num = boot_num)
+  AFR = roc_result_boot(segregate_control_by_age(extract_race(df,'AFR'),age), column_for_roc = col, boot_num = boot_num)
+  AMR = roc_result_boot(segregate_control_by_age(extract_race(df,'AMR'),age), column_for_roc = col, boot_num = boot_num)
   output_df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
+  
   output_df$boot_CI_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
   output_df$boot_CI_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
   output_df[c("auc","boot_CI_lower","boot_CI_upper")] <- sapply(output_df[c("auc","boot_CI_lower","boot_CI_upper")],as.numeric)
@@ -1388,6 +1409,7 @@ plot_control_age_roc_multi <- function(..., names = FALSE,sub=' ', title= '', le
     plot=plot +
       guides(col=guide_legend(legendname))
   }
+  print(df)
   return(plot)
 }
 
@@ -1397,6 +1419,10 @@ plot_control_age_roc_multi(
   plot_control_age_roc(wightman_allanno_ibd,col = list("PRS5")),
   plot_control_age_roc(wightman_new_anno_0824_all,col = list("PRS5")),
   names=list("no anno", "all_anno(old)",'all_anno(0824)'), title='Wightman 36k')
+
+
+
+
 
 
 plot_control_age_roc_multi(plot_control_age_roc(wightman_susie,col = list("PRS1","PRS5")),
@@ -1420,7 +1446,7 @@ plot_control_age_roc_multi(plot_control_age_roc(wightman_susie,col = list("PRS1"
                             plot_control_age_roc(wightman_all_anno,col = list("PRS1","PRS5")),
                             plot_control_age_roc(wightman_new_anno_0822,col = list("PRS1","PRS5")),
                             plot_control_age_roc(wightman_new_anno_0824_all,col = list("PRS1","PRS5")), 
-                            names = list("no anno", "all_anno(old)",'new anno 0822', 'new_anno 0824') title='Wightman')
+                            names = list("no anno", "all_anno(old)",'new anno 0822', 'new_anno 0824'), title='Wightman')
 
 
 wightman_polypred_control_age = plot_control_age_roc(wightman_polypred, col=col_roc_polypred3, title='All annotations')
@@ -1474,6 +1500,12 @@ plot_control_age_roc_multi( plot_control_age_roc(wightman_new_anno_0824_all, col
                            plot_control_age_roc(wightman_0824_all_no_partitions_adj_beta, col=list("PRS1","PRS5"), plot=FALSE),
                            names = list("regular",  "no_partitions", 'no_partitions,adj beta'), title='wightman, all anno(65)')
 
+
+
+plot_control_age_roc_multi( plot_control_age_roc(wightman_new_anno_0824_all, col=list("PRS1","PRS5"), plot=FALSE),
+                            plot_control_age_roc(wightman_new_anno_0824_all_no_partitions_ibd, col=list("PRS1","PRS5"), plot=FALSE),
+                            plot_control_age_roc(wightman_0824_all_no_partitions_adj_beta, col=list("PRS1","PRS5"), plot=FALSE),
+                            names = list("regular",  "no_partitions", 'no_partitions,adj beta'), title='wightman, all anno(65)')
 
 
 ##others -----
