@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=15G
 #SBATCH --time=10:00:00
-#SBATCH --array=1-22%12
+#SBATCH --array=15-22%12
 #SBATCH --output=/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/%x_%j.log
 
 ## calculate PRS for specific region/SNPs. So didnt perform clumping here
@@ -15,20 +15,23 @@ polyfun_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/
 adsp_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap'
 output='/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/'
 sumstat='bellenguez'
-
-chr=$SLURM_ARRAY_TASK_ID
 thres=0.25
-for anno in baseline omics omics_dl 
+chr=21
+for anno in baseline
 do 
   echo running $anno
-    zcat $adsp_path/${sumstat}_${anno}_chr${chr}.txt.gz > $output/bellenguez_adsp_reference/thres/${sumstat}_${anno}_chr${chr}.txt
-    
-    ~/plink \
-    --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/qc/qc_chr${chr} \
-    --extract /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/pip_filt/${sumstat}_${anno}_pip_${thres}.snp \
-    --score  $output/bellenguez_adsp_reference/thres/${sumstat}_${anno}_chr${chr}.txt 2 4 12 header \
-    --out $output/bellenguez_adsp_reference/thres/${anno}_pip${thres}_chr${chr}
-    
-    rm  $output/bellenguez_adsp_reference/thres/${sumstat}_${anno}_chr${chr}.txt
+  zcat $adsp_path/${sumstat}_${anno}_chr${chr}.txt.gz > $output/bellenguez_adsp_reference/thres/${sumstat}_${anno}_chr${chr}.txt
   
+  ~/plink \
+  --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/qc/qc_chr${chr} \
+  --extract /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/pip_filt/${sumstat}_${anno}_pip_${thres}.snp \
+  --score  $output/bellenguez_adsp_reference/thres/${sumstat}_${anno}_chr${chr}.txt 2 4 12 header \
+  --out $output/bellenguez_adsp_reference/thres/test_${anno}_pip${thres}_chr${chr}
+  
+  rm  $output/bellenguez_adsp_reference/thres/${sumstat}_${anno}_chr${chr}.txt
 done
+
+#baseline omics omics_dl 
+## also snp and chr is reversed!
+## susie : 1,4,11
+## others: 2,4,12
