@@ -7,7 +7,7 @@
 #file_name='ADSP_pT'
 #file_name='ADSP_qc_all_pT'
 
-dir_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/plink_prs/clump_wightman'
+dir_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/plink_prs/clump_bellenguez'
 file_name='ADSP_qc_plink_pT'
 
 #for dir in bellenguez kunkle wightman
@@ -17,7 +17,7 @@ file_name='ADSP_qc_plink_pT'
  	#cd  /gpfs/commons/home/tlin/output/cT/genomewide_plink/$dir/$qc
 	cd $dir_path
 	pwd
-	for i in e-5 0.001 0.005 0.01 0.05 0.1 0.5
+	for i in e-5 0.001 0.005 0.01 0.05 0.1 0.5 e-6 e-4 
 	do
 	echo write pT_$i.prs
 	awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' ${file_name}_*.$i.profile > pT_${i}.prs
