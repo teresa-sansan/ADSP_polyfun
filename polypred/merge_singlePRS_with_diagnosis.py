@@ -13,13 +13,26 @@ import os
 
 # file_name='/gpfs/commons/home/tlin/output/wightman/wightman_check_1003/susie/finemap/polypred/fixed_max_snp_10_polypred.tsv.prs'
 # save_name='/gpfs/commons/home/tlin/output/prs/polypred/wightman/check_1003_susie_max_snp_10_rescue'
-file_name='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/polypred/w_prscs/polypred.predictions.prs'
-save_name='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/polypred/w_prscs/polypred.prs.wpheno'
+
+# file_name='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/polypred/w_prscs/polypred.predictions.prs'
+# save_name='/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/polypred/w_prscs/polypred.prs.wpheno'
+
+
+# file_name='/gpfs/commons/home/tlin/output/bellenguez/new_anno_0824/bl/finemap/polypred/36k_ibd/36k_ibd_max_snp_5_polypred.tsv.prs'
+# save_name='/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/bellenguez_bl_ibd36k'
+
+
+file_name='/gpfs/commons/home/tlin/output/bellenguez/new_sep22/susie/finemap/polypred/36k_ibd/36k_ibd_max_snp_5_polypred.tsv.prs'
+save_name='/gpfs/commons/home/tlin/output/prs/polypred/new_anno_0824/bellenguez_susie_ibd36k'
 
 prs= pd.read_csv(file_name, sep = '\t', names = ["IID","FID","PRS"])
-pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
+#pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
+pheno = pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_ADSP_IBD.tsv', sep = '\t')
 pheno_merge = pd.merge(pheno,prs, left_on ="SampleID", right_on='IID')
+
+
 pheno_merge.to_csv(save_name+'.tsv',index = False, sep='\t')
+print('save file in %s.tsv'%save_name)
 
 # file_name=['/gpfs/commons/home/tlin/output/kunkle/kunkle_fixed_0224/finemap/polypred/10.prs_Mean_SE',
 #           '/gpfs/commons/home/tlin/output/bellenguez/bellenguez_fixed_0224/finemap/max_snp_10/try_rescue_not_converge/polypred/polypred_genomewide.tsv.prs_Mean_SE',
