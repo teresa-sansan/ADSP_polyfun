@@ -265,13 +265,14 @@ process_prs_col_name <- function(df){
       df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
     }else{
       df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')}
-    df$PRS = factor(df$PRS, level = c('p = 1e-5','p = 0.001','p = 0.005','p = 0.01','p = 0.05','p = 0.1','p = 0.5'))
+    #df$PRS = factor(df$PRS, level = c('p = 1e-5','p = 0.001','p = 0.005','p = 0.01','p = 0.05','p = 0.1','p = 0.5'))
   }
   else
   {df$PRS = str_replace(df$PRS, 'PRS_', '')}
   
   return(df)
 }
+
 
 ## Case/Control PRS dist ----
 ## create a race-separated pivot df for different PRS method  (which is easier for plotting). 
@@ -439,7 +440,7 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(
   result = process_prs_col_name(result)
   print(result)
   
-  result$PRS <- str_replace(result$PRS,'PRS','max snp ')
+  #result$PRS <- str_replace(result$PRS,'PRS','max snp ')
   result$PRS <- factor(result$PRS, levels=unique(result$PRS))
 
   plot <- ggplot(data = result, aes(x=auc, y = PRS, color = qc_status,))+

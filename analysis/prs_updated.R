@@ -15,6 +15,7 @@ library(modEvA)  # psuedo rsquare
 library(boot)
 library(gridGraphics)
 library(UpSetR)
+library(gridExtra)
 
 pre_process <- function(df, file=FALSE){
   if(file==FALSE){
@@ -34,10 +35,13 @@ pre_process <- function(df, file=FALSE){
   print(paste("filtered=",  dim(df)[1], "rows"))
   df$Diagnosis <- as.numeric(df$Diagnosis)
   print(colnames(df))
-  if("PRS_0.1" %in% colnames(df))
+  if("PRS_01" %in% colnames(df))
   {
     print("change PRS column name")
-    colnames(df) = gsub("_0\\.", "_", colnames(df))
+    #colnames(df) = gsub("_0\\.", "_", colnames(df))
+    colnames(df) = gsub("PRS_", "P ",colnames(df))
+    colnames(df) = gsub("P 0", "P 0.0",colnames(df))
+    names(df)[names(df) == "P 1"] = 'P 0.1'
   }
   return(df)
 } ## remove the sample younger than 65 || have no diagnosis || rename col
@@ -66,12 +70,38 @@ bellenguez_0318 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318
 bellenguez_adsp_0318 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/bellenguez_adsp_reference.tsv')
 
 
-## new_anno_0318_24 with thres
+## new_anno_0318_24 with pip thres
 bellenguez_adsp_0318_no_thres <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_no_pip_thres.tsv')
 bellenguez_adsp_0318_pip01 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip0.1.tsv')
 bellenguez_adsp_0318_pip025 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip0.25.tsv')
 
 
+pip_thres_0.1 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.1.tsv')
+pip_thres_0.2 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.2.tsv')
+pip_thres_0.25 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.25.tsv')
+pip_thres_0.3 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.3.tsv')
+pip_thres_0.4 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.4.tsv')
+pip_thres_0.5 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.5.tsv')
+pip_thres_0.6 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.6.tsv')
+pip_thres_0.7 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.7.tsv')
+pip_thres_0.8 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.8.tsv')
+
+
+
+pip_thres_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/susie.tsv')
+pip_thres_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/baseline.tsv')
+pip_thres_omics <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/omics.tsv')
+pip_thres_omics_dl <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/omics_dl.tsv')
+
+## new_anno_0318_14 with p thres
+bellenguez_adsp_0318_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/p_thres/susie.tsv')
+bellenguez_adsp_0318_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/p_thres/baseline.tsv')
+bellenguez_adsp_0318_omics <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/p_thres/omics.tsv')
+bellenguez_adsp_0318_omics_dl <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/p_thres/omics_dl.tsv')
+
+
+## pT_CLUMPING
+bellenguez_pT <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/PRS/36k_ibd/bellenguez_pT_36k_ibd.tsv')
 ### Other PRS method -----
 PRSice <- pre_process("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 sbayesR = pre_process("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
@@ -144,6 +174,9 @@ col_roc_polypred3 <- list("PRS1","PRS5","PRS10")
 col_roc_polypred_125<- list("PRS1","PRS2","PRS5")
 col_roc_test_anno <-list ('PRS_bl','PRS_bl_omics','PRS_bl_omics_dl')
 col_roc_anno <-list ('PRS_susie','PRS_bl','PRS_bl_omics','PRS_bl_omics_dl')
+col_roc_polyfun_pthres <- list("P e5","P e4","P 0.001","P 0.01","P 0.1")
+col_roc_pthres <- list("PRS_1","PRS_2","PRS_3","PRS_4","PRS_5","PRS_6","PRS_7","PRS_8")
+#col_roc_polyfun_pthres <- list("PRS_e5","PRS_e4","PRS_001","PRS_01","PRS_1")
 
 plot_ethnic_roc(PRSCS_36k_ibd_bellengeuz, col = list("PRS_1","PRS_5","PRS_01"))
 plot_ethnic_roc(PRSCS_36k_ibd_wightman, col = list("PRS_1","PRS_5","PRS_01",'PRS_05'))
@@ -346,6 +379,187 @@ plot_ethnic_roc(bellenguez_0318, col=col_roc_test_anno, plot=TRUE,title='belleng
 plot_ethnic_roc_facet(bellenguez_adsp_0318_no_thres ,bellenguez_adsp_0318_pip01, QC3 =bellenguez_adsp_0318_pip025,QC1name = "no thres", QC2name = "pip > 0.1",QC3name='pip > 0.25',
                       col = col_roc_anno,boot_num = 50, title='bellenguez adsp panel',legendname = 'pip thres')
 
+
 plot_ethnic_roc(bellenguez_adsp_0318_no_thres, col=col_roc_anno, title='no thres', plot=TRUE)
 plot_ethnic_roc(bellenguez_adsp_0318_pip01, col=col_roc_anno, title='max snp PIP > 0.1', plot=TRUE)
 plot_ethnic_roc(bellenguez_adsp_0318_pip025, col=col_roc_anno, title='max snp PIP > 0.25', plot=TRUE)
+
+
+
+
+plot_ethnic_roc(pip_thres_susie, col=col_roc_pthres, title='SUSIE', plot=TRUE)
+plot_ethnic_roc(pip_thres_bl, col=col_roc_pthres, title='baseline', plot=TRUE)
+plot_ethnic_roc(pip_thres_omics, col=col_roc_pthres, title='omics', plot=TRUE)
+plot_ethnic_roc(pip_thres_omics_dl, col=col_roc_pthres, title='omics_dl', plot=TRUE)
+
+## test adsp reference panel without PIP thres, but with p thres
+
+plot_ethnic_roc(bellenguez_adsp_0318_susie, col=col_roc_polyfun_pthres, title='susie', plot=TRUE)
+plot_ethnic_roc(bellenguez_adsp_0318_bl, col=col_roc_polyfun_pthres, title='bl', plot=TRUE)
+plot_ethnic_roc(bellenguez_adsp_0318_omics, col=col_roc_polyfun_pthres, title='omics', plot=TRUE)
+plot_ethnic_roc(bellenguez_adsp_0318_omics_dl, col=col_roc_polyfun_pthres, title='omics_dl', plot=TRUE)
+
+
+plot_ethnic_roc(bellenguez_pT, col=col_roc_polyfun_pthres, title='pT', plot=TRUE)
+
+
+
+plot_ethnic_roc_facet(bellenguez_adsp_0318_susie ,bellenguez_adsp_0318_omics_dl, QC3 =bellenguez_pT,QC1name = "SuSiE", 
+                      QC2name = "omics_dl",QC3name='pT',col = list("P e5","P 0.001","P 0.01","P 0.1"),boot_num = 50, title='bellenguez ',legendname = '')
+
+
+
+
+### test corrlation
+
+
+cor(bellenguez_adsp_0318_omics_dl$`P 0.1`,bellenguez_adsp_0318_omics_dl$Diagnosis )
+
+
+
+print(cor(bellenguez_adsp_0318_omics_dl[, c('Diagnosis','P 0.1','P 0.01','P e5')]))
+
+
+print(cor(bellenguez_adsp_0318_susie[, c('Diagnosis','P 0.1','P 0.01','P e5')]))
+
+
+print(cor(bellenguez_adsp_0318_susie[bellenguez_adsp_0318_susie$predicted_ancestry =='EUR', c('Diagnosis','P 0.1','P 0.01','P e5')]))
+print(cor(bellenguez_adsp_0318_susie[bellenguez_adsp_0318_susie$predicted_ancestry =='AMR', c('Diagnosis','P 0.1','P 0.01','P e5')]))
+print(cor(bellenguez_adsp_0318_susie[bellenguez_adsp_0318_susie$predicted_ancestry =='AFR', c('Diagnosis','P 0.1','P 0.01','P e5')]))
+
+roc(bellenguez_adsp_0318_susie[["Diagnosis"]],bellenguez_adsp_0318_susie$`P 0.1` , quiet=T)$auc
+
+print(cor(bellenguez_pT[, c('Diagnosis','P 0.1','P 0.01','P e5')]))
+
+
+bellenguez_adsp_0318_susie$Diagnosis <- factor(bellenguez_adsp_0318_susie$Diagnosis)
+
+density_plot <- function(df,title,column)
+{
+  
+  #df$Diagnosis <- factor(df$Diagnosis)
+  df$Diagnosis <- factor(ifelse(df$Diagnosis == 0, "Control", "Case"))
+  print(column)
+  plot <- ggplot(df, aes_string(x=column, colour = 'Diagnosis', label = 'Diagnosis')) +
+    geom_density() + theme_bw()  +labs(title = title, x = 'PRS',y= 'count') 
+  return (plot)
+}
+
+pip_thres_densityplot <- function(df, title){
+  plot1 <- density_plot(df, 'susie','PRS_susie')
+  plot2 <- density_plot(df, 'bl','PRS_bl')
+  plot3 <- density_plot(df, 'omics','PRS_bl_omics')
+  plot4 <- density_plot(df, 'omics + dl','PRS_bl_omics_dl')
+  grid.arrange(plot1, plot2, plot3,plot4, nrow = 2,top = textGrob(title,gp=gpar(fontsize=15,font=1)))
+  
+}
+
+pip_thres_densityplot(pip_thres_0.1, 'pip_credibleset thres 0.1')
+pip_thres_densityplot(extract_race(pip_thres_0.1,'EUR'), 'pip_credibleset thres 0.1 EUR')
+pip_thres_densityplot(extract_race(pip_thres_0.1,'AMR'), 'pip_credibleset thres 0.1 AMR')
+pip_thres_densityplot(extract_race(pip_thres_0.1,'AFR'), 'pip_credibleset thres 0.1 AFR')
+
+
+pip_thres_densityplot(pip_thres_0.25, 'pip_credibleset thres 0.25')
+pip_thres_densityplot(extract_race(pip_thres_0.25,'EUR'), 'pip_credibleset thres 0.25 EUR')
+pip_thres_densityplot(extract_race(pip_thres_0.25,'AMR'), 'pip_credibleset thres 0.25 AMR')
+pip_thres_densityplot(extract_race(pip_thres_0.25,'AFR'), 'pip_credibleset thres 0.25 AFR')
+
+
+
+pip_thres_densityplot(pip_thres_0.8, 'pip_credibleset thres 0.8')
+pip_thres_densityplot(extract_race(pip_thres_0.8,'EUR'), 'pip_credibleset thres 0.8 EUR')
+pip_thres_densityplot(extract_race(pip_thres_0.8,'AMR'), 'pip_credibleset thres 0.8 AMR')
+pip_thres_densityplot(extract_race(pip_thres_0.8,'AFR'), 'pip_credibleset thres 0.8 AFR')
+
+pip_thres_densityplot(bellenguez_adsp_0318_pip01,"PIP thres 0.1 (all population)")
+pip_thres_densityplot(extract_race(bellenguez_adsp_0318_pip01,'EUR'),"PIP thres 0.1 (EUR)")
+pip_thres_densityplot(extract_race(bellenguez_adsp_0318_pip01,'AMR'),"PIP thres 0.1 (AMR)")
+pip_thres_densityplot(extract_race(bellenguez_adsp_0318_pip01,'AFR'),"PIP thres 0.1 (AFR)")
+
+
+pip_thres_densityplot(bellenguez_adsp_0318_no_thres,"no PIP thres (all population)")
+pip_thres_densityplot(extract_race(bellenguez_adsp_0318_no_thres,'EUR'),"no PIP thres (EUR)")
+pip_thres_densityplot(extract_race(bellenguez_adsp_0318_no_thres,'AMR'),"no PIP thres (AMR)")
+pip_thres_densityplot(extract_race(bellenguez_adsp_0318_no_thres,'AFR'),"no PIP thres (AFR)")
+
+
+
+pip_thres_densityplot(allele_flip, "allele_flip")
+
+density_plot(plink_chr19, 'plink bl chr19','PRS')
+
+
+density_plot(bellenguez_new_anno_0824_susie ,'','PRS')
+
+
+density_plot(kunkle_adsp_no_apoe_qc ,'','PRS_5')
+density_plot(kunkle_polyfun_pT ,'','PRS_5')
+
+
+
+test_chr19 <- read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/plink_prs/clump_bellenguez/test_chr19.prs.tsv', sep = '\t')
+density_plot(test_chr19,'pt chr19', 'PRS')
+
+hist(height$Height, height$PRS_05)
+
+
+summary(height$Height)
+
+
+ggplot(height[height$Height> 170.1,]$PRS_5) +boxplot()
+
+subset_data1 <- subset(height, Height > 171)$PRS_5
+subset_data2 <- subset(height, Height < 169)$PRS_5
+
+
+
+# Create data frames for plotting
+data1 <- data.frame(Height = rep("Height > 170.1", length(subset_data1)), PRS_5 = subset_data1)
+data2 <- data.frame(Height = rep("Height < 169", length(subset_data2)), PRS_5 = subset_data2)
+combined_data <- rbind(data1, data2)
+
+# Create boxplot
+ggplot(combined_data, aes(x = Height, y = PRS_5)) +
+  geom_boxplot() +
+  labs(x = "Height", y = "PRS_5") +
+  theme_minimal()
+
+
+
+
+## test wightman
+
+wightman_pT_check<- read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/plink_prs/clump_wightman/pT0.5_all_chrom.tsv', sep = '\t')
+
+density_plot(wightman_pT_check,'whole_genome', 'SCORE_wholegenome')
+density_plot(wightman_pT_check,'chr19', 'SCORE_19')
+
+plots <- list()
+for (chr in seq(1,22)) {
+  plots[[chr]] <-density_plot(wightman_pT_check,sprintf("chr%d", chr), sprintf("SCORE_%d", chr))
+
+}
+
+grid.arrange(grobs = plots, nrow = 5,top = textGrob("in each chr", gp = gpar(fontsize = 15, font = 1)))
+
+
+
+allele_flip <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/allele_flip/allele_flip.prs.tsv')
+
+cor(allele_flip$Diagnosis, allele_flip$PRS_bl_omics_dl)
+plink_chr19<- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/plink_output/sum_baseline_chr19.profilepheno.tsv')
+plink_chr19= plink_chr19[plink_chr19$Age >= 65,]
+density_plot(plink_chr19, 'plink bl chr19','PRS')
+cor(plink_chr19$PRS, plink_chr19$Diagnosis)
+
+cor(polypred_check$PRS, polypred_check$Diagnosis)
+
+
+
+polypred_check <- read.csv('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/check_result_bl_19.tsv.prspheno.tsv', sep ='\t')
+polypred_check = polypred_check[polypred_check$Age >= 65,]
+density_plot(polypred_check, 'polypred bl chr19','PRS')
+
+
+cor(polypred_check$PRS, plink_chr19$PRS)
