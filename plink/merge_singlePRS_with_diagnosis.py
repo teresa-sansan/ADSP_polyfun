@@ -16,13 +16,14 @@ from functools import reduce
 # path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/plink_prs/clump_wightman/'
 # file_name ='pT_0.5.prs'
 path='/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/'
-#file_name = 'baseline_chr20.profile'
-file_name='check_result_bl_20.tsv.prs'
-#prs = pd.read_csv(path+file_name, delim_whitespace=True, usecols = ['IID','SCORE'])
+file_name = '/thres/plink_output/sum_baseline_chr20.profile'
+#file_name='check_result_bl_19.tsv.prs'
+prs = pd.read_csv(path+file_name, delim_whitespace=True, usecols = ['IID','SCORESUM'])
+print(prs)
 os.system("echo Merging PRS with phenotype file....")   
 # prs= pd.read_csv(no_dup, sep = ' ', names = ["IID","PRS"])
-prs= pd.read_csv(path+file_name, sep = '\t')
-#prs= prs.rename(columns={"SCORE": "PRS"})
+#prs= pd.read_csv(path+file_name, sep = '\t')
+prs= prs.rename(columns={"SCORESUM": "PRS"})
 #pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
 pheno=pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_ADSP_IBD.tsv', sep='\t')
 pheno_merge = pd.merge(pheno,prs[["IID","PRS"]], left_on ="SampleID", right_on='IID')
