@@ -1,0 +1,197 @@
+---
+title: "Introduction to SBayesRC"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to SBayesRC}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+## SBayesRC
+SBayesRC is a method that incorporates functional genomic annotations with high-density SNPs (> 7 millions) for polygenic prediction. Our manuscript is available [here](https://www.biorxiv.org/content/10.1101/2022.10.12.510418v1). Our method requires summary statistics from GWAS and LD data only. It also estimates functional genetic architecture parameters such as SNP-based heritability and polygenicity associated with the functional annotations. 
+
+This is the R implementation of SBayesRC that produced the results in the manuscript and had a good performance (benchmarked in the manuscript). This version has more experimental flags, but it is user-friendly as demonstrated in the example below.
+
+## Minimal example
+A complete script to run SBayesRC without coding in R for Linux or Mac is provided below. Only the top few variables require modification.
+```{bash, eval=FALSE}
+##############################################
+# Variables: need to be fixed
+ma_file="MA_file"               # GWAS summary in COJO format (the only input)
+ld_folder="YOUR_LD_PATH"        # LD reference (download from "Resources")
+annot="YOUR_ANNOT_FILE"         # Functional annotation (download from "Resources")
+out_prefix="YOUR_OUTPUT_PATH"   # Output prefix, e.g. "./test"
+threads=4                       # Number of CPU cores
+
+##############################################
+# Code: usually don't need a change in this section
+## Note: Flags were documented in the package, use ?function in R to lookup.
+## we suggest to run those in multiple jobs (tasks)
+export OMP_NUM_THREADS=$threads # Revise the threads
+
+# Tidy: optional step, tidy summary data
+## "log2file=TRUE" means the messages will be redirected to a log file 
+Rscript -e "SBayesRC::tidy(mafile='$ma_file', LDdir='$ld_folder', \
+                  output='${out_prefix}_tidy.ma', log2file=TRUE)"
+## Best practice: read the log to check issues in your GWAS summary data.  
+
+# Impute: optional step if your summary data doesn't cover the SNP panel
+Rscript -e "SBayesRC::impute(mafile='${out_prefix}_tidy.ma', LDdir='$ld_folder', \
+                  output='${out_prefix}_imp.ma', log2file=TRUE)"
+
+# SBayesRC: main function for SBayesRC
+Rscript -e "SBayesRC::sbayesrc(mafile='${out_prefix}_imp.ma', LDdir='$ld_folder', \
+                  outPrefix='${out_prefix}_sbrc', annot='$annot', log2file=TRUE)"
+# Alternative, without annotation (similar to SBayesR, not recommended)
+# Rscript -e "SBayesRC::sbayesrc(mafile='${out_prefix}_imp.ma', LDdir='$ld_folder', \
+#                  outPrefix='${out_prefix}_sbrc_noAnnot', log2file=TRUE)"
+
+##############################################
+# Polygenic risk score
+## Just a toy demo to calculate the polygenic risk score using plink2
+# plink2 --bfile $YOUR_GENO_PLINK --score ${out_prefix}_sbrc.txt 1 2 3 header sum center \
+#        --threads $OMP_NUM_THREADS --out $YOUR_PRS
+```
+### Inputs
+* `ma_file` is the file of GWAS summary statistics with the following COJO format:
+```{r, eval=FALSE, indent="   " }
+SNP A1 A2 freq b se p N
+rs1001 A G 0.8493 0.0024 0.0055 0.6653 129850
+rs1002 C G 0.0306 0.0034 0.0115 0.7659 129799
+rs1003 A C 0.5128 0.0045 0.0038 0.2319 129830
+```
+    * SNP: SNP name to match LD reference; A1: effect allele; A2: alternative allele; 
+    * freq: frequencies of A1; b: marginal effects (reference to A1); se: sd of marginal effects; 
+    * p: p value; N: per-SNP sample size;
+
+* `ld_folder` is a folder contains the eigen-decomposition data for each LD block. We have provided LD information for several ancestries and SNP panel (refer to the "Resources" section for download). If the SNP panel used is significantly different from ours, it is possible to customize the LD (refer to the "Generate LD" section).
+
+* `annot` is the annotation file, with columns being SNP ID, Intercept (a column of one), and annotation values. We have provided the baseline model 2.2 (refer to the "Resources section for download). It's easy to customize the annotation in the text format:
+```{r, eval=FALSE, indent="   "}
+SNP Intercept Coding Conserved CTCF
+rs1001 1 0 0 1
+rs1002 1 0 1 0
+rs1003 1 0 0 0
+```
+
+Note: Customized annotation should be provided in the same format with the first two columns as SNP and Intercept (all 1); binary annotation can be input as 0 and 1 (1 means in the functional category); continous annotation can be input as its raw value. 
+
+### Outputs
+The outputs share the same name prefix (in the example: ${out\_prefix}\_sbrc):
+
+* SNP weights (PREFIX.txt): First 3 columns are for PGS calculation (SNP: SNP id; A1: effect allele; BETA: joint effect on 0/1/2 genotype scale). Other columns:  PIP: posterior inclusion probability of the variant to be causal; BETAlast: joint effect obtained in last iteration on 0/1/2 scale.
+
+* Running log (PREFIX.log, if set log2file=TRUE): details of running, includes the starting parameters, MCMC status, parameter estimation and estimated runtime.
+
+* Parameter estimation (PREFIX.par): parameter estimations for heritablity (hsq) and number of non-zero effect variants (nnz). The details from MCMC (PREFIX.rds) can be loaded in R (readRDS).
+
+* Functional per-SNP heritability enrichment (PREFIX.AnnoPerSnpHsqEnrichment): per-SNP heritability enrichment for each annotation, averaged value and standard deviation were reported.
+
+* Proportion of causals in a functional category to the mixture distributions (PREFIX.AnnoJointProb, pi):  component 1 zero effec; 2 small effect; 3 median effect; 4 large effect; 5 very large effect. The pi is the mean value from MCMC iterations.
+
+* MCMC sampling details (PREFIX.mcmcsamples.\*): the value from MCMC iterations after burn-in, at a preset interval (default 10).
+
+### Computational time
+
+Runtime with 4 CPU cores:
+
+* 7 million SNPs with 96 annotation, estimated 8.5 hours, 74GB memory
+
+* 1 million HapMap3 SNPs with 96 annotation, estimated 0.8 hour, 5GB memory
+
+
+## Install
+A valid R is required. 
+```{r, eval=FALSE}
+# Suggest: enable faster backend BLAS for R, e.g. openBlas, MKL
+# Run in R to install dependencies
+install.packages(c("Rcpp","data.table","BH","RcppEigen"))
+# Install SBayesRC package
+install.packages("https://github.com/zhilizheng/SBayesRC/releases/download/v0.2.2/SBayesRC_0.2.2.tar.gz",
+                 repos=NULL, type="source")
+
+# If R report problem when installing, try alternative package (a bit worse performance)
+## install.packages("https://github.com/zhilizheng/SBayesRC/releases/download/v0.2.0/SBayesRC_0.2.0_comp.tar.gz", repos=NULL, type="source")
+#
+```
+
+If you are interested in developing version, try to install by devtools: `devtools::install_github("zhilizheng/SBayesRC")`.
+
+
+## Resources
+Download the resources and decompress by "unzip" (.zip) or "tar -xvf" (.tar.xz):
+* [Baseline model 2.2](https://plot.cnsgenomics.com/SBayesRC/Annotation/annot_baseline2.2.zip): functional annotation information for 8M SNPs from baseline model 2.2 ([Márquez-Luna 2021](https://doi.org/10.1038/s41467-021-25171-9)).  
+* LD reference: We provide LD data calculated from different UKB ancestry (EUR, EAS and AFR) in imputed SNPs and HapMap3 SNPs. We suggest to download imputed LD same ancestry as the GWAS summary data.  
+    * Imputed SNPs: [EUR](https://plot.cnsgenomics.com/SBayesRC/LD/Imputed/ukbEUR_Imputed.zip), [EAS](https://plot.cnsgenomics.com/SBayesRC/LD/Imputed/ukbEAS_Imputed.zip) and [AFR](https://plot.cnsgenomics.com/SBayesRC/LD/Imputed/ukbAFR_Imputed.zip)
+    * HapMap3 SNPs: [EUR](https://plot.cnsgenomics.com/SBayesRC/LD/HapMap3/ukbEUR_HM3.zip), [EAS](https://plot.cnsgenomics.com/SBayesRC/LD/HapMap3/ukbEAS_HM3.zip) and [AFR](https://plot.cnsgenomics.com/SBayesRC/LD/HapMap3/ukbAFR_HM3.zip)
+* Example: [A summary data](https://plot.cnsgenomics.com/SBayesRC/example/example.tar.xz) as an example to try SBayesRC. You can fill the example code with a HapMap3 LD (ukbEUR\_HM3), Baseline 2.2 annotation, and this summary data. 
+
+If you have downloaded our previous version, no need to download it again (althrough the format changed).
+
+## Generate LD
+Always try the LD from "Resources" section first. Generate LD If more than 30% SNPs are missing in "tidy" step, or from different SNP panel, different ancestry.
+
+Here is a complete code to generate customized LD:
+```{bash, eval=FALSE}
+##############################################
+# Variables: need to be fixed
+ma_file="MA_file"                # GWAS summary data in COJO format
+genotype="YOUR_GENOTYPE_Prefix"  # genotype prefix as LD reference (PLINK format), {CHR} to spefify multiple
+genoCHR=""                       # If more than 1 genotype file, input range (e.g. "1-22") here.
+refblock=""                      # Text file to define LD blocks, by default to use our GRCH37 coordination 
+outDir="YOUR_OUTPUT"             # Output folder that would be created automatically
+tool="gctb"                      # Command line to run gctb for generating the full LD matrix
+threads=4                        # Number of CPU cores for eigen decomposition
+
+##############################################
+# Code
+# Step1: generate the LD block information and script
+# Output $outDir/ldm.info, $outDir/ld.sh, $outDir/snplist/*.snplist
+Rscript -e "SBayesRC::LDstep1(mafile='$ma_file', genoPrefix='$genotype', \
+            outDir='$outDir', genoCHR='$genoCHR', blockRef='$refblock', log2file=TRUE)"
+
+# Step2: generate each LD matrix for blocks
+#  Loop idx from 1 to NUM_BLOCK (591)
+#  Submit multiple jobs on your cluster / clouds instead of for loop
+#  Input depends on $outDir/ld.sh, $outDir/snplist/$idx.snplist
+#  Ouput $outDir/b$idx.ldm.full.info, $outDir/b$idx.ldm.full.bin
+for idx in {1..591}; do
+    Rscript -e "SBayesRC::LDstep2(outDir='$outDir', blockIndex=idx, log2file=TRUE)"
+done
+
+# Step3: eigen decomposition for each LD block
+#  Loop idx from 1 to NUM_BLOCK (591)
+#  Submit multiple jobs on your cluster / clouds instead of for loop
+#  Input depends on $outDir/ldm.info, $outDir/b$idx.ldm.full.info, $outDir/b$idx.ldm.full.bin
+#  Output $outDir/block$block.eigen.bin, $outDir/block$block.eigen.bin.log
+export OMP_NUM_THREADS=$threads  # parallel computing supported in this step
+for idx in {1..591}; do
+    Rscript -e "SBayesRC::LDstep3(outDir='$outDir', blockIndex=idx, log2file=TRUE)"
+done
+
+# Step4: merge LD information
+Rscript -e "SBayesRC::LDstep4(outDir='$outDir', log2file=TRUE)"
+
+# Step5: clean if necessary
+# Essential for analysis: $outDir/ldm.info, $outDir/snp.info, $outDir/block*.eigen.bin 
+# Other files could be removed
+# Note: before removing, check all blocks were finished.
+```
+
+`refblock` is a text file for block defination with the format:
+```{r, eval=FALSE}
+Block Chrom StartBP EndBP
+1 1 10583 3582736
+2 1 3582736 5913893
+3 1 5913893 9365199
+4 1 9365199 11777841
+5 1 11777841 14891511
+```
+Note: The blocking is based on the coordination, i.e., chromosome (Chrom) and BP [StartBP, EndBP). So the genome build version should be consistent between the block defination and the genotype. 
+
+## Citation
+Zheng Z, Liu S, Sidorenko, J, Yengo L, Turley P, Ani A, Wang R, Nolt I, Snieder H, Lifelines Cohort Study, Yang J, Wray NR, Goddard ME, Visscher PM, Zeng J. (2022) Leveraging functional genomic annotations and genome coverage to improve polygenic prediction of complex traits within and between ancestries. bioRxiv 2022.10.12.510418; doi: https://doi.org/10.1101/2022.10.12.510418
+
+## Bug report
+Report issue to GitHub repository ([https://github.com/zhilizheng/SBayesRC](https://github.com/zhilizheng/SBayesRC)) by using the "Issues" feature.

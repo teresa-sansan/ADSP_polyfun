@@ -1,0 +1,31 @@
+Package: SBayesRC
+Type: Package
+Title: SBayesRC Method for Polygenic Prediction
+Version: 0.2.5
+Date: 2024-4-29
+Description: This package implemented SBayesRC that incorporates functional annotations with high-density variants for polygenic prediction. 
+Authors@R: c(
+  person("Zhili","Zheng", role=c("aut","cre"), email="zhilizheng@outlook.com"),
+  person("Jian","Zeng", role=c("aut"), email="j.zeng@uq.edu.au")
+  )
+License: GPL (>= 3) | file LICENSE
+URL: https://github.com/zhilizheng/SBayesRC
+BugReports: https://github.com/zhilizheng/SBayesRC/issues
+Imports: 
+    Rcpp,
+    stringi
+LinkingTo: Rcpp, BH, RcppEigen
+RoxygenNote: 7.2.3
+Depends:
+    R (>= 3.0.0),
+    methods,
+    utils,
+    data.table,
+    stats
+Suggests:
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+NeedsCompilation: yes
+ByteCompile: TRUE
+Encoding: UTF-8
