@@ -9,7 +9,6 @@ library("dplyr")
 library(UpSetR)
 library(grid)
 library(tidyverse)
-
 library(mltools)
 library(data.table)
 
@@ -71,99 +70,15 @@ wightman_snp = read.table('/gpfs/commons/home/tlin/data/snp_wightman_opentarget.
 
 # visualization -----------------------------------------------------------
 
-# *draw manhatten plot ---------
-gwas_man <- function(data, title, color=c("blue4", "firebrick1"), ylim = c(5,25),  highlight = FALSE){
-  qq(data$P, main =title)
-  if(highlight == FALSE){
-    manhattan(data, chr = "CHR", bp = "BP", snp = "SNP", p = "P", ylim = ylim, col = color , main = title, annotatePval = 1e-8,annotateTop = TRUE)
-  }
-  else{
-    manhattan(data, chr = "CHR", bp = "BP", snp = "SNP", p = "P", ylim = ylim, col = c("grey39","grey79") , main = title,annotatePval = 1e-10,annotateTop = FALSE, highlight = highlight)
-  }
-}
-
-manhattan(wightman_update_enformer_max10, annotatePval = 0.01, chr = "CHR", bp = "BP", snp = "SNP", p = "P", ylim = c(5,30), main='Wightman, 2022')
-
-
-gwas_man(wightman_update_enformer_max10, "Wightman, 2022") 
-
-
-
-# *GWAS significant ---------
-
-gwas_data <- function(data, pvalue=FALSE, p=TRUE){
-  if(pvalue == FALSE){
-    pvalue=1e-8
-  }
-  if(p=TRUE){
-    gwas_sig <- subset(data, P<pvalue)
-    return(gwas_sig)
-  }
-  else{
-    return(subset(data, p<pvalue))
-  }
-}
-
-kunkle_gwas = subset(kunkle, P<1e-8)
-jansen_gwas = subset(jansen, P<1e-8)
-wightman_gwas = subset(wightman_update_enformer_max10, P < 1e-8)
-gwas_man(wightman_gwas)
-
-roadmap_gwas = gwas_data(roadmap)
-
-kunkle_SNPreport = c("rs4844610","rs6733839","rs10933431","rs9271058","rs75932628","rs9473117",
-                     "rs12539172","rs10808026","rs73223431","rs9331896","rs73223431","rs9331896",
-                     "rs3740688","rs7933202","rs3851179","rs1128343","rs17125924","rs12881735",
-                     "rs3752246","rs429358","rs6024870",
-                     "rs7920721","rs138190086")
-
-
-head(microglia_gwas[with(microglia_gwas,order(P)),], n=50)[1:10]
-gwas_man(microglia_gwas,"microglia_gwas")
-
-kunkle_gwas_sort <- kunkle_gwas[with(kunkle_gwas,order(P)),]
-
-manhattan(kunkle, highlight =kunkle_SNPreport, annotatePval = 0.0005,annotateTop = FALSE, main = ("Kunkle Baseline, highlighted"))
-
-
-head(baseline_kunkle[with(baseline_kunkle,order(PIP)),],n=50)[1:10]
-
-
-get_report_SNP <- function(snp, data){
-  init = 1
-  snp_in_data = rep(NA, length(data))
-  for (i in snp){
-    if (isin(data$SNP,i) == TRUE){
-      snp_in_data[init] = i
-      init = init +1
-    }
-    else{
-      print(i)
-    }
-  }
-  snp_in_data <- as.character(na.omit(snp_in_data))
-}
-
-
-brain_atacSNP <- get_report_SNP(kunkle_SNPreport, brain_atac)
-microglia_SNP <- get_report_SNP(kunkle_SNPreport, microglia)
-
-
-manhattan(subset(bl_max1, PIP>0.05), p="PIP", logp = FALSE,ylim = c(0,1.1), ylab = "PIP", genomewideline = FALSE, suggestiveline = FALSE, main = "baseline PIP (max_causal = 1)")
-
-manhattan(subset(bl_max3, PIP>0.05), p="PIP", logp = FALSE,ylim = c(0,1.1), ylab = "PIP", genomewideline = FALSE, suggestiveline = FALSE, main = "baseline PIP (max_causal = 3)")
-
-manhattan(subset(bl_max5, PIP>0.05), p="PIP", logp = FALSE,ylim = c(0,1.1), ylab = "PIP", genomewideline = FALSE, suggestiveline = FALSE, main = "baseline PIP (max_causal = 5)")
-
-
 
 
 
 # *bar plot (SNPs count in different PIP threshold) ------
 
 count_SNP <-function(df){
-  count = c(dim(subset(df,PIP >=0.8))[1],dim(subset(df, PIP>=0.5))[1],
-            dim(subset(df,PIP>=0.3))[1])
+  df_new = subset(df, PIP <1)
+  count = c(dim(subset(df_new,PIP >=0.8 ))[1],dim(subset(df_new, PIP>=0.5))[1],
+            dim(subset(df_new,PIP>=0.3))[1])
   count_df = data.frame(
     name=c("PIP >= 0.8","PIP >= 0.5","PIP >= 0.3"),count)
   df_name = deparse(substitute(df))
@@ -190,7 +105,6 @@ count_SNP_new <-function(df){
 }
 
 wightman_0824 <- rbind(count_SNP(wightman_susie_max5),count_SNP(wightman_bl_max5), count_SNP(wightman_only_ml_max5),count_SNP(wightman_no_ml_max5),count_SNP(wightman_all_max5))
-
 wightman_0824$anno <- factor(wightman_0824$anno, levels = c('susie','bl','no_ml','only_ml','all'))
 
 wightman_count <- ggplot(data = wightman_0824, aes(x = anno, y = count, fill = name)) +  
@@ -218,7 +132,7 @@ ggplot(data = combined_data, aes(x = anno, y = count, fill = name)) +
   geom_bar(stat = "identity", position = position_dodge(0.7), alpha = 0.9, width = 0.6) +
   labs(x = NULL, y = "SNP count \n") +
   guides(fill = guide_legend(title = NULL)) +
-  geom_text(aes(label = count), vjust = -0.1, position = position_dodge(0.7), size = 3) +
+  geom_text(aes(label = count), vjust =-0.1, position = position_dodge(0.7), size = 3) +
   scale_fill_manual(values = c("skyblue", "mediumturquoise", "steelblue3")) +
   facet_wrap(~ source,scales = "free_y", ncol = 1) + theme_bw()+theme(legend.direction = "horizontal", legend.position = "bottom")      
 
@@ -275,4 +189,58 @@ breaks <- c(0, 0.2, 0.4, 0.6, 0.8, 1)
  
  table(cut(wightman_susie_max5$PIP, breaks = breaks, right = FALSE))
  table(cut(bellenguez_susie_max5$PIP, breaks = breaks, right = FALSE))
+ sum(bellenguez_susie_max5$PIP == 1)
+ 
+ 
+ sus_snp =subset(bellenguez_susie_max5,PIP ==1)
+ 
+
+ 
+### wightman pip_credible set thres (remove index0)-------------
+ 
+ 
+ baseline = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/remove_index0/bellenguez_baseline_pip_count.txt',
+                     header = FALSE, col.names = c("COUNT", 'thres'), sep =' ')
+ 
+ omics = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/remove_index0/bellenguez_omics_pip_count.txt',
+                     header = FALSE, col.names = c("COUNT", 'thres'), sep =' ')
+ 
+ omics_dl = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/remove_index0/bellenguez_omics_dl_pip_count.txt',
+                     header = FALSE, col.names = c("COUNT", 'thres'), sep =' ')
+ 
+ susie = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/remove_index0/bellenguez_susie_pip_count.txt',
+                     header = FALSE, col.names = c("COUNT", 'thres'), sep =' ')
+ 
+### without remove index0
+# baseline = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/pip_filt/baseline_snpcount.txt',
+#                     header = FALSE, col.names = c("COUNT", 'thres'), sep =' ')
+# susie = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/pip_filt/susie_snpcount.txt',
+#                  header = FALSE, col.names = c("COUNT", 'thres'), sep =' ')
+# omics = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/pip_filt/omics_snpcount.txt',
+#                  header = FALSE, col.names = c("COUNT", 'thres'), sep =' ')
+# omics_dl = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/pip_filt/omics_dl_snpcount.txt',
+#                     header = FALSE, col.names = c("COUNT", 'thres'), sep =' ')
+#  
+baseline$anno = 'Baseline'
+baseline$thres = factor(seq(0.1,0.8,by=0.1))
+susie$anno = 'SuSiE'
+susie$thres = factor(seq(0.1,0.8,by=0.1))
+omics$anno = 'omics'
+omics$thres =  factor(seq(0.1,0.8,by=0.1))
+omics_dl$anno = 'omics_dl'
+omics_dl$thres =  factor(seq(0.1,0.8,by=0.1))
+snp_count_thres <- rbind(susie,baseline, omics,omics_dl)
+snp_count_thres$anno = factor(snp_count_thres$anno, levels = c("SuSiE", "Baseline", "omics", "omics_dl"))
+
+
+snp_count_thres %>%
+  ggplot(aes(x = thres , y = COUNT, fill = anno)) +
+  geom_bar(stat="identity", color="black", position=position_dodge()) +
+  geom_text(aes(label = COUNT, vjust = -0.3), position = position_dodge(width = 0.09), size = 3)+  
+  xlab('pip threshold ') +
+  theme_minimal()+
+  ggtitle('SNP counts(accumulated)')
+
+
+
 

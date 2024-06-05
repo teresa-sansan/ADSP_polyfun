@@ -1,9 +1,14 @@
-path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap'
+#path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap'
+path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap_v2/combined'
 sumstat='bellenguez'
+
+#zcat $path/bellenguez_${anno}_chr${chr}.txt.gz | grep -v '1:0' > $path/remove_index0/bellenguez_${anno}_chr${chr}.txt
+zcat $path/bellenguez_${anno}.txt.gz | grep -v '1:0' > $path/remove_index0/bellenguez_${anno}.txt
+
 cd $path
 for anno in susie baseline omics_dl omics
 do
-    for thres in 0.8 0.7 0.6 0.5 0.4 0.3 0.2 
+    for thres in 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1
     do
         echo thres = $thres
         touch pip_filt/${sumstat}_${anno}_pip_thres${thres}.txt
