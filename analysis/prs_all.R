@@ -264,8 +264,11 @@ process_prs_col_name <- function(df){
       df[df$PRS=='PRS_e5',]$PRS ="p = 1e-5"
       df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')
     }else{
-      df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'p = 0.')}
+      df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'PIP > 0.')}
     #df$PRS = factor(df$PRS, level = c('p = 1e-5','p = 0.001','p = 0.005','p = 0.01','p = 0.05','p = 0.1','p = 0.5'))
+  }
+  else if('PRS_2' %in% df$PRS){
+      df[df$PRS!='PRS_e5',]$PRS = str_replace(df$PRS, 'PRS_', 'PIP > 0.')
   }
   else
   {df$PRS = str_replace(df$PRS, 'PRS_', '')}
@@ -380,25 +383,27 @@ roc_result_boot <-function(df,column_for_roc=col_roc_E5, boot_num=50, mean=FALSE
 # A function to plot result of diff race all at once. 
 ## remember to change x lim
 plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALSE, title=''){
-  output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*3))
+  output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*4))
   output_df$PRS =  rep(unlist(col),1)
-  output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)))
-  output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR"))
+  output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)), rep("SAS",length(col)))
+  output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR","SAS"))
   
   if (boot != TRUE){ ## no bootstraping, use the original roc_result
     EUR = roc_result(extract_race(df,'EUR') , column_for_roc = col)
     AFR = roc_result(extract_race(df,'AFR') , column_for_roc = col)
     AMR = roc_result(extract_race(df,'AMR') , column_for_roc = col)
-    output_df$auc = append(append(EUR$auc,AFR$auc),AMR$auc)
+    SAS = roc_result(extract_race(df,'SAS') , column_for_roc = col)
+    output_df$auc = append(append(append(EUR$auc,AFR$auc),AMR$auc), SAS$auc)
     
   } else {
     print(paste("boot time = ",boot_num))
     EUR = roc_result_boot(extract_race(df,'EUR'), column_for_roc = col, boot_num = boot_num)
     AFR = roc_result_boot(extract_race(df,'AFR'), column_for_roc = col, boot_num = boot_num)
     AMR = roc_result_boot(extract_race(df,'AMR'), column_for_roc = col, boot_num = boot_num)
-    output_df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
-    output_df$boot_CI_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
-    output_df$boot_CI_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
+    SAS = roc_result_boot(extract_race(df,'SAS'), column_for_roc = col, boot_num = boot_num)
+    output_df$auc = append(append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean)), unlist(SAS$boot_mean))
+    output_df$boot_CI_lower = append(append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower)), unlist(SAS$boot_CI_lower))
+    output_df$boot_CI_upper = append(append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper)), unlist(SAS$boot_CI_upper))
     output_df[c("auc","boot_CI_lower","boot_CI_upper")] <- sapply(output_df[c("auc","boot_CI_lower","boot_CI_upper")],as.numeric)
   }
   
@@ -409,7 +414,7 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
     plot <- ggplot(data = output_df, aes(x=auc, y = PRS))+
       geom_point(size=2,alpha=0.9,position = position_dodge(width = 0.7), color='darkblue')+
       facet_wrap(~ethnicity, ncol=1)+
-      xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.6)+theme_bw()
+      xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+theme_bw()
     if (boot == TRUE){  
       plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,color='darkblue',show.legend = FALSE) 
     }## plot error bar or not
@@ -445,7 +450,7 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(
 
   plot <- ggplot(data = result, aes(x=auc, y = PRS, color = qc_status,))+
     geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
-    facet_wrap(~ethnicity, ncol=1)+
+    facet_wrap(~ethnicity, ncol=2)+
     xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.64)+
     theme_bw()
   
