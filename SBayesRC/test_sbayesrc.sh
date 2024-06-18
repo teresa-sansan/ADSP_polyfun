@@ -1,10 +1,33 @@
+#!/bin/bash
+#SBATCH --job-name=sbayesrc_our_anno
+#SBATCH --partition=pe2
+#SBATCH --nodes=1           # minimum number of nodes to be allocated
+#SBATCH --ntasks=1          # number of tasks
+#SBATCH --cpus-per-task=8   # number of cores on the CPU for the task
+#SBATCH --mem=100G
+#SBATCH --time=9:00:00
+#SBATCH --mail-type=FAIL,END
+#SBATCH --array=1-14%5
+#SBATCH --mail-user=tlin@nygenome.org
+#SBATCH --output=/gpfs/commons/home/tlin/output/sbayesRC/%x_%j.log
+
+module load R/4.3.3
+chr=$SLURM_ARRAY_TASK_ID
 ##############################################
+
+
 # Variables: need to be fixed
+#ma_file='/gpfs/commons/home/tlin/data/sbayesrc/example.ma'
 ma_file="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/sbayesrc/bellenguez_hg19.cojo"     # GWAS summary in COJO format (the only input)
-ld_folder="/gpfs/commons/home/tlin/data/sbayesrc/ukbEUR_HM3/"        # LD reference (download from "Resources")
-annot="/gpfs/commons/home/tlin/data/sbayesrc/annot_baseline2.2.txt"         # Functional annotation (download from "Resources")
-out_prefix="/gpfs/commons/home/tlin/output/sbayesRC/test"   # Output prefix, e.g. "./test"
+ld_folder="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD_sbayesrc/ukbEUR_Imputed/"        # LD reference (download from "Resources")
+#annot="/gpfs/commons/home/tlin/data/sbayesrc/annot_baseline2.2.txt"         # Functional annotation (download from "Resources")
+annot="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations/4SBayesRC/chr" 
+suffix=".tsv"
+annot="$annot$chr$suffix"
+echo $annot
+out_prefix="/gpfs/commons/home/tlin/output/sbayesRC/our_annno"   # Output prefix, e.g. "./test"
 threads=4                       # Number of CPU cores
+
 
 ##############################################
 # Code: usually don't need a change in this section
@@ -14,20 +37,25 @@ export OMP_NUM_THREADS=$threads # Revise the threads
 
 # Tidy: optional step, tidy summary data
 ## "log2file=TRUE" means the messages will be redirected to a log file 
-Rscript -e "SBayesRC::tidy(mafile='$ma_file', LDdir='$ld_folder', \
-                  output='${out_prefix}_tidy.ma', log2file=TRUE)"
+# Rscript -e "SBayesRC::tidy(mafile='$ma_file', LDdir='$ld_folder', \
+#                   output='${out_prefix}_tidy.ma', log2file=TRUE)"
 ## Best practice: read the log to check issues in your GWAS summary data.   
 
-# Impute: optional step if your summary data doesn't cover the SNP panel
-Rscript -e "SBayesRC::impute(mafile='${out_prefix}_tidy.ma', LDdir='$ld_folder', \
-                  output='${out_prefix}_imp.ma', log2file=TRUE)"
+# # Impute: optional step if your summary data doesn't cover the SNP panel
+# Rscript -e "SBayesRC::impute(mafile='${out_prefix}_tidy.ma', LDdir='$ld_folder', \
+#                   output='${out_prefix}_imp.ma', log2file=TRUE)"
 
-# SBayesRC: main function for SBayesRC
-Rscript -e "SBayesRC::sbayesrc(mafile='${out_prefix}_imp.ma', LDdir='$ld_folder', \
-                  outPrefix='${out_prefix}_sbrc', annot='$annot', log2file=TRUE)"
+# # SBayesRC: main function for SBayesRC
+# Rscript -e "SBayesRC::sbayesrc(mafile='${out_prefix}_imp.ma', LDdir='$ld_folder', \
+#                   outPrefix='${out_prefix}_imp.ma', annot='$annot', log2file=TRUE)"
+
+Rscript -e "SBayesRC::sbayesrc(mafile='/gpfs/commons/home/tlin/output/sbayesRC/imputed_imp.ma', LDdir='$ld_folder', \
+                 outPrefix='${out_prefix}_imp.ma', annot='$annot', log2file=TRUE)"
+
+                  
 # Alternative run, SBayesRC without annotation (similar to SBayesR, not recommended)
 # Rscript -e "SBayesRC::sbayesrc(mafile='${out_prefix}_imp.ma', LDdir='$ld_folder', \
-#                  outPrefix='${out_prefix}_sbrc_noAnnot', log2file=TRUE)"
+#                   outPrefix='${out_prefix}_sbrc_noAnnot', log2file=TRUE)"
 
 ##############################################
 # Polygenic risk score

@@ -17,7 +17,7 @@
 tidy = function(mafile, LDdir, output, freq_thresh=0.2, N_sd_range=3, rate2pq=0.5, log2file=FALSE){
     ma_file = mafile
     ld_folder = LDdir
-
+    message('this is the right one')
     message("Tidy the summary data")
     if(file.exists(output)){
         message("the output file ", output, " exists")
@@ -116,13 +116,13 @@ tidy = function(mafile, LDdir, output, freq_thresh=0.2, N_sd_range=3, rate2pq=0.
     bWarn = FALSE
     if(nrow(ma_val6) / nrow(snpinfo) < 0.7){
         bWarn = TRUE
-        warning("Too many SNPs (>30%) were missing in the summary data after QC. The SBayesRC results may be unreliable.")
+        warning(paste0("Too many SNPs (>30%, precisely ", nrow(ma_val6)* 100 / nrow(snpinfo),"(%, were missing in the summary data after QC. The SBayesRC results may be unreliable."))
     }
     message("Done")
     logger.end()
     if(log2file){
         if(bWarn){
-            warning("Too many SNPs (>30%) were missing in summary data after QC. The SBayesRC results may be unreliable.")
+            warning(paste0("Too many SNPs (>30%, precisely ", nrow(ma_val6)* 100 / nrow(snpinfo),"(%) were missing in summary data after QC. The SBayesRC results may be unreliable."))
         }
         message("Done.")
     }
