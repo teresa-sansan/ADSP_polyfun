@@ -21,6 +21,8 @@ from sklearn.impute import SimpleImputer
 from polyfun import configure_logger, check_package_versions
 import urllib.request
 from urllib.parse import urlparse
+import json
+
 
 
 def splash_screen():
@@ -80,8 +82,6 @@ def load_ld_npz(ld_prefix):
     
     logging.info('Done in %0.2f seconds'%(time.time() - t0))
     return ld_arr, df_ld_snps
-    
-    
     
     
 def get_bcor_meta(bcor_obj):
@@ -313,7 +313,6 @@ class Fine_Mapping(object):
         self.df_ld_snps = df_ld_snps
         assert self.df_ld.notnull().all().all()
         
-
 
     def find_cached_ld_file(self, locus_start, locus_end, need_bcor=False):
     
@@ -558,7 +557,7 @@ class Fine_Mapping(object):
             
             
             
-    def get_ld_data(self, locus_start, locus_end, need_bcor=False, verbose=False):
+    def get_ld_data(self, locus_start, locus_end, need_bcor=False, verbose=False, output = None):
     
         ld_arr, df_ld_snps, ld_file = None, None, None
         
@@ -573,6 +572,12 @@ class Fine_Mapping(object):
                 ld_file = self.compute_ld_bgen(locus_start, locus_end, verbose=verbose)
             elif os.path.exists(self.genotypes_file+'.bed'):
                 ld_arr, df_ld_snps = self.compute_ld_plink(locus_start, locus_end, verbose=verbose)
+                # np.savetxt(output+'.ld', ld_arr, delimiter='\t')
+                # df_ld_snps.SNP.to_csv(output+'.ldsnp', index=False)
+                ld_df = pd.DataFrame(ld_arr, index=df_ld_snps.SNP, columns=df_ld_snps.SNP)
+                # Save the DataFrame to a CSV file with indices
+                ld_df.to_csv(output+'.ld', index=True, sep = '\t')
+               
             else:
                 raise ValueError('no suitable file found for: %s'%(self.genotypes_file))
                 
@@ -679,8 +684,62 @@ class Fine_Mapping(object):
             
     
     
-    
-    
+import numpy as np
+
+class susie:
+    def __init__(self, alpha, mu, mu2, lbf, lbf_variable, V, elbo, sets, pip, niter, converged):
+        self.alpha = np.array(alpha)
+        self.mu = np.array(mu)
+        self.mu2 = np.array(mu2)
+        self.lbf = np.array(lbf)
+        self.lbf_variable = lbf_variable
+        self.V = np.array(V)
+        self.elbo = elbo
+        self.sets = sets
+        self.pip = pip
+        self.niter = niter
+        self.converged = converged
+
+    def summary(self):
+        summary_dict = {
+            'alpha': self.alpha.tolist(),
+            'mu': self.mu.tolist(),
+            'mu2': self.mu2.tolist(),
+            'V': self.V.tolist(),
+            'elbo': self.elbo.tolist(),
+            'lbf': self.lbf.tolist(),
+            'lbf_variable' : self.lbf_variable.tolist(),
+            'pip': self.pip.tolist(),
+            'sets': self.sets.tolist(),
+            'niter': self.niter.tolist(),
+            'converged': self.converged.tolist() 
+        }
+        return summary_dict
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __repr__(self):
+        return (f"alpha:\n{self.alpha}\n"
+                f"mu:\n{self.mu}\n"
+                f"mu2:\n{self.mu2}\n"
+                f"V:\n{self.V}\n"
+                f"elbo:\n{self.elbo}\n"
+                f"lbf:\n{self.lbf}\n"
+                f"lbf_var:\n{self.lbf_variable}\n"
+                f"pip:\n{self.pip}\n"
+                f"sets:\n{self.sets}\n"
+                f"niter:\n{self.niter}\n"
+                f"converged:\n{self.converged}\n"
+        )
+
+    def save_to_json(self, file_path):
+        if file_path is None:
+             raise ValueError("The output file name 'susie_outfile' is None. Please provide a valid file name.")
+        print('save json file in %s'%file_path)
+        with open(file_path + '.json', 'w') as f:
+            json.dump(self.summary(), f)
+
     
 class SUSIE_Wrapper(Fine_Mapping):
 
@@ -700,8 +759,6 @@ class SUSIE_Wrapper(Fine_Mapping):
         self.susieR = importr('susieR')
         self.R_null = ro.rinterface.NULL
         #self.RNULLType = rpy2.rinterface.RNULLType
-
-
 
 
     def finemap(self, locus_start, locus_end, num_causal_snps, use_prior_causal_prob=True, prior_var=None, residual_var=None, residual_var_init=None, hess_resvar=False, hess=False, hess_iter=100, hess_min_h2=None, susie_max_iter=100, verbose=False, ld_file=None, debug_dir=None, allow_missing=False, susie_outfile=None, finemap_dir=None):
@@ -730,7 +787,7 @@ class SUSIE_Wrapper(Fine_Mapping):
             self.df_ld_snps = self.df_sumstats_locus
         else:
             if ld_file is None:
-                ld_arr, df_ld_snps = self.get_ld_data(locus_start, locus_end, need_bcor=False, verbose=verbose)
+                ld_arr, df_ld_snps = self.get_ld_data(locus_start, locus_end, need_bcor=False, verbose=verbose, output = susie_outfile)
             else:
                 ld_arr, df_ld_snps = read_ld_from_file(ld_file)
             assert np.all(~np.isnan(ld_arr))
@@ -829,10 +886,9 @@ class SUSIE_Wrapper(Fine_Mapping):
         assert self.df_ld.notnull().all().all()
             
         if residual_var is not None: residual_var_init = residual_var
-        print("## Run susie_rss")
-       
+
         try:
-            print("## 1")
+            print("## Run susie_rss.")
             susie_obj = self.susieR.susie_rss(
                     z= Z, 
                     R=self.df_ld.values,
@@ -847,7 +903,8 @@ class SUSIE_Wrapper(Fine_Mapping):
                 )
 
         except:
-            print('## 1 fail, 2 bhat shat')
+            print("## susie_rss failed, run susie_suff_stat instead.")
+            print("## need to use susie 0.11.92")
             susie_obj = self.susieR.susie_suff_stat(
                     bhat=bhat.reshape((m,1)),
                     shat=np.ones((m,1)),
@@ -863,39 +920,6 @@ class SUSIE_Wrapper(Fine_Mapping):
                     prior_weights=(prior_weights.reshape((m,1)) if use_prior_causal_prob else self.R_null)
                 )
             
-        # try:
-        #     print("## Run susie_suff_stat")
-        #     susie_obj = self.susieR.susie_suff_stat(
-        #             bhat=bhat.reshape((m,1)),
-        #             shat=np.ones((m,1)),
-        #             R=self.df_ld.values,
-        #             n=self.n,
-        #             L=num_causal_snps,
-        #             scaled_prior_variance=(0.0001 if (prior_var is None) else prior_var),
-        #             estimate_prior_variance=(prior_var is None),
-        #             residual_variance=(self.R_null if (residual_var_init is None) else residual_var_init),
-        #             estimate_residual_variance=(residual_var is None),
-        #             max_iter=susie_max_iter,
-        #             verbose=verbose,
-        #             prior_weights=(prior_weights.reshape((m,1)) if use_prior_causal_prob else self.R_null)
-        #         )
-        # except:
-        #     print("## Try susie_suff_bhat, because susie suff stat failed")
-        #     susie_obj = self.susieR.susie_bhat(
-        #             bhat=bhat.reshape((m,1)),
-        #             shat=np.ones((m,1)),
-        #             R=self.df_ld.values,
-        #             n=self.n,
-        #             L=num_causal_snps,
-        #             scaled_prior_variance=(0.0001 if (prior_var is None) else prior_var),
-        #             estimate_prior_variance=(prior_var is None),
-        #             residual_variance=(self.R_null if (residual_var is None) else residual_var),
-        #             estimate_residual_variance=(residual_var is None),
-        #             max_iter=susie_max_iter,
-        #             verbose=verbose,
-        #             prior_weights=(prior_weights.reshape((m,1)) if use_prior_causal_prob else self.R_null)
-        #         )
-        
         susie_time = time.time() -t0        
         logging.info('Done in %0.2f seconds'%(susie_time))
         
@@ -921,63 +945,54 @@ class SUSIE_Wrapper(Fine_Mapping):
             print(np.min(beta_var))
             print('## update the %d beta_var to 1e10'%negative)
 
-
         #create output df
+        #df_susie = self.df_sumstats_locus.copy()
+        susie_output = susie(alpha = susie_obj.rx2('alpha'), mu = susie_obj.rx2('mu'), 
+                             mu2=susie_obj.rx2('mu2'),lbf =susie_obj.rx2('lbf'),
+                             lbf_variable = susie_obj.rx2('lbf_variable'),
+                             pip = np.array(self.susieR.susie_get_pip(susie_obj)),
+                             niter = susie_obj.rx2('mu2'),
+                             V = np.array(susie_obj.rx2('V')),
+                             converged = susie_obj.rx2('converged'),
+                             sets = susie_obj.rx2('sets'),
+                             elbo = susie_obj.rx2('elbo'))
+
+        logging.info('print class(susie)')
+        logging.info(susie_output)
+
+        ##output from polyfun
         df_susie = self.df_sumstats_locus.copy()
         df_susie['PIP'] = pip
         df_susie['BETA_MEAN'] = beta_mean
         # flip back the finemap BETA, as the alleles are in original order
         df_susie.loc[is_flipped, 'BETA_MEAN'] *= (-1)
         df_susie['BETA_SD'] = np.sqrt(beta_var)
-        print(np.array(susie_obj.rx2('lbf')))
-        print(len(np.array(susie_obj.rx2('lbf'))))
-        print('\n')
+        df_susie.to_csv(susie_outfile +'.tsv', sep = '\t', index = False)
+        logging.info(df_susie)
+        logging.info(df_susie.shape)
+        
+        #add distance from center
+        start = df_susie['BP'].min()
+        end = df_susie['BP'].max()
+        middle = (start+end)//2
+        df_susie['DISTANCE_FROM_CENTER'] = np.abs(df_susie['BP'] - middle)        
 
-        print(susie_obj.rx2('lbf_variable'))
-        print(len(np.array(susie_obj.rx2('lbf'))))
+        from rpy2.robjects.packages import importr
+        R_base = importr('base', robject_translations = {'print.me': 'print_dot_me', 'print_me': 'print_uscore_me'})
+        R_base.saveRDS(susie_obj , file=susie_outfile + '.rds')
+        logging.info('Saved SuSiE object to RDS file: %s'%(susie_outfile))
         
-        # #add distance from center
-        # start = df_susie['BP'].min()
-        # end = df_susie['BP'].max()
-        # middle = (start+end)//2
-        # df_susie['DISTANCE_FROM_CENTER'] = np.abs(df_susie['BP'] - middle)        
-        
-        #mark causal sets
-        self.susie_dict = {key:np.array(susie_obj.rx2(key), dtype=np.object) for key in list(susie_obj.names)}
-        df_susie['CREDIBLE_SET'] = 0
-        susie_sets = self.susie_dict['sets'][0]
-        #if type(susie_sets) != self.RNULLType:
-        try:
-            for set_i, susie_set in enumerate(susie_sets):
-                is_in_set = np.zeros(df_susie.shape[0], dtype=np.bool)
-                is_in_set[np.array(susie_set)-1] = True
-                is_in_set[df_susie['CREDIBLE_SET']>0] = False
-                df_susie.loc[is_in_set, 'CREDIBLE_SET'] = set_i+1
-        except TypeError:
-            pass
-            
-            
-        #save SuSiE object if requested
-        if susie_outfile is not None:
-            from rpy2.robjects.packages import importr
-            R_base = importr('base', robject_translations = {'print.me': 'print_dot_me', 'print_me': 'print_uscore_me'})
-            R_base.saveRDS(susie_obj, file=susie_outfile)
-            logging.info('Saved SuSiE object to RDS file: %s'%(susie_outfile))
+        # try:
+        #     susie_output.save_to_json(susie_outfile)
+        # except:
+        #     from rpy2.robjects.packages import importr
+        #     R_base = importr('base', robject_translations = {'print.me': 'print_dot_me', 'print_me': 'print_uscore_me'})
+        #     R_base.saveRDS(susie_obj , file=susie_outfile + '.rds')
 
-        
-        #delete the LD file if needed
-        if delete_ld_files_on_exit:
-            ld_file_dir = os.path.dirname(ld_file)
-            if os.path.exists(ld_file_dir): shutil.rmtree(ld_file_dir)
-        
-        return df_susie
-        
+        #     logging.info('Saved SuSiE object to RDS file: %s'%(susie_outfile))
+                
     
     
-    
-    
-
-
 class FINEMAP_Wrapper(Fine_Mapping):
 
     def __init__(self, genotypes_file, sumstats_file, n, chr_num, finemap_exe, ldstore_exe, sample_file=None,
@@ -1192,9 +1207,6 @@ class FINEMAP_Wrapper(Fine_Mapping):
         return df_finemap
         
     
-    
-    
-    
 
 
 if __name__ == '__main__':
@@ -1321,13 +1333,14 @@ if __name__ == '__main__':
                  susie_outfile=args.susie_outfile, finemap_dir=args.finemap_dir,
                  residual_var=args.susie_resvar, residual_var_init=args.susie_resvar_init, hess_resvar=args.susie_resvar_hess,
                  susie_max_iter=args.susie_max_iter)
-    logging.info('Writing fine-mapping results to %s'%(args.out))
-    if not args.no_sort_pip:
-        df_finemap.sort_values('PIP', ascending=False, inplace=True)
-    if args.out.endswith('.parquet'):
-        df_finemap.to_parquet(args.out, index=False)
-    else:
-        df_finemap.to_csv(args.out, sep='\t', index=False, float_format='%0.5e')
+
+    # logging.info('Writing fine-mapping results to %s'%(args.out))
+    # if not args.no_sort_pip:
+    #     df_finemap.sort_values('PIP', ascending=False, inplace=True)
+    # if args.out.endswith('.parquet'):
+    #     df_finemap.to_parquet(args.out, index=False)
+    # else:
+    #     df_finemap.to_csv(args.out, sep='\t', index=False, float_format='%0.5e')
 
 
 
