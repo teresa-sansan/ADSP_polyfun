@@ -196,7 +196,6 @@ def run_executable(cmd, description, good_returncode=0, measure_time=True, check
     
     
 def save_ld_to_npz(ld_arr, df_ld_snps, npz_file):
-    
     assert npz_file.endswith('.npz')
     logging.info('Saving LD file %s'%(npz_file))
     t0 = time.time()
@@ -234,10 +233,18 @@ class Fine_Mapping(object):
             df_sumstats = pd.read_parquet(sumstats_file)
         except (ArrowIOError, ArrowInvalid):
             df_sumstats = pd.read_table(sumstats_file, sep='\s+')
-        if not np.any(df_sumstats['CHR'] == chr_num):
+
+        if np.any(df_sumstats['CHR'].str.contains('CHR', case = False)):
+            print('Renaming CHR column...')
+            df_sumstats['CHR'] = df_sumstats['CHR'].str.replace(r'CHR', '', regex=True)
+            df_sumstats['CHR'] = df_sumstats['CHR'].str.replace(r'chr', '', regex=True)
+           
+        if not np.any(df_sumstats['CHR'] == str(chr_num)):
             raise IOError('sumstats file does not include any SNPs in chromosome %s'%(chr_num))
-        if np.any(df_sumstats['CHR'] != chr_num):
-            df_sumstats = df_sumstats.query('CHR==%s'%(chr_num)).copy()
+        # df_sumstats = df_sumstats.query('CHR==%s'%(chr_num)).copy()
+        # print(df_sumstats)
+        if np.any(df_sumstats['CHR'] != str(chr_num)):
+            df_sumstats = df_sumstats[df_sumstats['CHR'] == str(chr_num)]
         df_sumstats = set_snpid_index(df_sumstats, allow_swapped_indel_alleles=allow_swapped_indel_alleles)
         if 'P' not in df_sumstats.columns:
             df_sumstats['P'] = stats.chi2(1).sf(df_sumstats['Z']**2)
@@ -289,7 +296,16 @@ class Fine_Mapping(object):
                 raise ValueError(error_msg)
         
         #filter LD to only SNPs found in the sumstats file
-        assert not np.any(self.df_sumstats_locus.index.duplicated())
+        #assert not np.any(self.df_sumstats_locus.index.duplicated())
+        duplicated_indices = self.df_sumstats_locus.index[self.df_sumstats_locus.index.duplicated()]
+        if len(duplicated_indices) > 0:
+            print(f"Duplicated indices found: {duplicated_indices}")
+            return
+        else:
+            print("No duplicated indices found. Data integrity verified.")
+        
+
+
         if df_ld.shape[0] != self.df_sumstats_locus.shape[0] or np.any(df_ld.index != self.df_sumstats_locus.index):
             if ld_arr is None:
                 df_ld = df_ld.loc[self.df_sumstats_locus.index]
@@ -873,38 +889,26 @@ class SUSIE_Wrapper(Fine_Mapping):
             np.savetxt(os.path.join(debug_dir, 'residual_var.txt'), [np.nan] if (residual_var is None) else [residual_var])
             np.savetxt(os.path.join(debug_dir, 'prior_var.txt'), [np.nan] if (prior_var is None) else [prior_var])
             np.savetxt(os.path.join(debug_dir, 'prior_weights.txt'), prior_weights if use_prior_causal_prob else [np.nan])
-            
-            #create a zipped debug file
-            import zipfile
-            debug_files = glob.glob(os.path.join(debug_dir, '*.txt'))
-            zip_file = os.path.join(debug_dir, 'debug.zip')
-            zf = zipfile.ZipFile(zip_file, mode='w')
-            for debug_file in debug_files:
-                zf.write(debug_file, os.path.basename(debug_file), compress_type=zipfile.ZIP_DEFLATED)
+    
                 
-
         assert self.df_ld.notnull().all().all()
-            
         if residual_var is not None: residual_var_init = residual_var
-
         try:
             print("## Run susie_rss.")
             susie_obj = self.susieR.susie_rss(
-                    z= Z, 
-                    R=self.df_ld.values,
-                    n=self.n,
-                    L=num_causal_snps,
-                    estimate_prior_variance=(prior_var is None),
-                    residual_variance=(self.R_null if (residual_var_init is None) else residual_var_init),
-                    estimate_residual_variance=(residual_var is None),
-                    max_iter=susie_max_iter,
-                    verbose=verbose,
-                    prior_weights=(prior_weights.reshape((m,1)) if use_prior_causal_prob else self.R_null)
-                )
+                        z= Z, 
+                        R=self.df_ld.values,
+                        n=self.n,
+                        L=num_causal_snps,
+                        estimate_prior_variance=(prior_var is None),
+                        residual_variance=(self.R_null if (residual_var_init is None) else residual_var_init),
+                        estimate_residual_variance=(residual_var is None),
+                        max_iter=susie_max_iter,
+                        verbose=verbose)
 
         except:
             print("## susie_rss failed, run susie_suff_stat instead.")
-            print("## need to use susie 0.11.92")
+           
             susie_obj = self.susieR.susie_suff_stat(
                     bhat=bhat.reshape((m,1)),
                     shat=np.ones((m,1)),
@@ -919,6 +923,38 @@ class SUSIE_Wrapper(Fine_Mapping):
                     verbose=verbose,
                     prior_weights=(prior_weights.reshape((m,1)) if use_prior_causal_prob else self.R_null)
                 )
+        # try:
+        #     print("## Run susie_rss.")
+        #     susie_obj = self.susieR.susie_rss(
+        #             z= Z, 
+        #             R=self.df_ld.values,
+        #             n=self.n,
+        #             L=num_causal_snps,
+        #             estimate_prior_variance=(prior_var is None),
+        #             residual_variance=(self.R_null if (residual_var_init is None) else residual_var_init),
+        #             estimate_residual_variance=(residual_var is None),
+        #             max_iter=susie_max_iter,
+        #             verbose=verbose,
+        #             prior_weights=(prior_weights.reshape((m,1)) if use_prior_causal_prob else self.R_null)
+        #         )
+
+        # except:
+        #     print("## susie_rss failed, run susie_suff_stat instead.")
+        #     print("## need to use susie 0.11.92")
+        #     susie_obj = self.susieR.susie_suff_stat(
+        #             bhat=bhat.reshape((m,1)),
+        #             shat=np.ones((m,1)),
+        #             R=self.df_ld.values,
+        #             n=self.n,
+        #             L=num_causal_snps,
+        #             scaled_prior_variance=(0.0001 if (prior_var is None) else prior_var),
+        #             estimate_prior_variance=(prior_var is None),
+        #             residual_variance=(self.R_null if (residual_var is None) else residual_var),
+        #             estimate_residual_variance=(residual_var is None),
+        #             max_iter=susie_max_iter,
+        #             verbose=verbose,
+        #             prior_weights=(prior_weights.reshape((m,1)) if use_prior_causal_prob else self.R_null)
+        #         )
             
         susie_time = time.time() -t0        
         logging.info('Done in %0.2f seconds'%(susie_time))
@@ -1224,7 +1260,7 @@ if __name__ == '__main__':
     parser.add_argument('--geno', default=None, help='Genotypes file (plink or bgen format)')
     parser.add_argument('--ld', default=None, help='prefix or fill name of an LD matrix file')
     parser.add_argument('--out', required=True, help='name of the output file')
-    parser.add_argument('--verbose', action='store_true', default=False, help='If specified, show verbose output')
+    parser.add_argument('--verbose', action='store_true', default=True, help='If specified, show verbose output')
     parser.add_argument('--debug-dir', default=None, help='If specified, this is a path of a directory that will include files for debugging problems')
     parser.add_argument('--sample-file', default=None, help='BGEN files must be used together with a sample file')
     parser.add_argument('--incl-samples', default=None, help='A single-column text file specifying the ids of individuals to include in fine-mapping')
