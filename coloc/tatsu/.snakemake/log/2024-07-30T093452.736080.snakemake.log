@@ -1,0 +1,289 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cluster nodes: 25
+Job stats:
+job        count    min threads    max threads
+-------  -------  -------------  -------------
+all            1              1              1
+extract     3587              1              1
+total       3588              1              1
+
+Select jobs to execute...
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000005471.19_sumstats_hg38.gz
+    jobid: 3215
+    wildcards: gene=ENSG00000005471.19
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000205978.6_sumstats_hg38.gz
+    jobid: 6013
+    wildcards: gene=ENSG00000205978.6
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000280149.1_sumstats_hg38.gz
+    jobid: 3703
+    wildcards: gene=ENSG00000280149.1
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000166987.15_sumstats_hg38.gz
+    jobid: 5383
+    wildcards: gene=ENSG00000166987.15
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000160185.15_sumstats_hg38.gz
+    jobid: 8728
+    wildcards: gene=ENSG00000160185.15
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000262833.1_sumstats_hg38.gz
+    jobid: 7453
+    wildcards: gene=ENSG00000262833.1
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000263843.1_sumstats_hg38.gz
+    jobid: 7468
+    wildcards: gene=ENSG00000263843.1
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000105618.14_sumstats_hg38.gz
+    jobid: 7888
+    wildcards: gene=ENSG00000105618.14
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000112186.12_sumstats_hg38.gz
+    jobid: 2878
+    wildcards: gene=ENSG00000112186.12
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000179163.12_sumstats_hg38.gz
+    jobid: 583
+    wildcards: gene=ENSG00000179163.12
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000172403.11_sumstats_hg38.gz
+    jobid: 2248
+    wildcards: gene=ENSG00000172403.11
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000160188.10_sumstats_hg38.gz
+    jobid: 8729
+    wildcards: gene=ENSG00000160188.10
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000262877.5_sumstats_hg38.gz
+    jobid: 7454
+    wildcards: gene=ENSG00000262877.5
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000280828.1_sumstats_hg38.gz
+    jobid: 3704
+    wildcards: gene=ENSG00000280828.1
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000211896.7_sumstats_hg38.gz
+    jobid: 6014
+    wildcards: gene=ENSG00000211896.7
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000167528.13_sumstats_hg38.gz
+    jobid: 5384
+    wildcards: gene=ENSG00000167528.13
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000263874.2_sumstats_hg38.gz
+    jobid: 7469
+    wildcards: gene=ENSG00000263874.2
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000236992.2_sumstats_hg38.gz
+    jobid: 8669
+    wildcards: gene=ENSG00000236992.2
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000278916.1_sumstats_hg38.gz
+    jobid: 5594
+    wildcards: gene=ENSG00000278916.1
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000105641.4_sumstats_hg38.gz
+    jobid: 7889
+    wildcards: gene=ENSG00000105641.4
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000179397.18_sumstats_hg38.gz
+    jobid: 584
+    wildcards: gene=ENSG00000179397.18
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000104427.12_sumstats_hg38.gz
+    jobid: 3772
+    wildcards: gene=ENSG00000104427.12
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000189171.15_sumstats_hg38.gz
+    jobid: 637
+    wildcards: gene=ENSG00000189171.15
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000279233.1_sumstats_hg38.gz
+    jobid: 5595
+    wildcards: gene=ENSG00000279233.1
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+
+[Tue Jul 30 09:35:20 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000167085.13_sumstats_hg38.gz
+    jobid: 7193
+    wildcards: gene=ENSG00000167085.13
+    resources: tmpdir=/scratch
+
+Error submitting jobscript (exit code 127):
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /gpfs/commons/home/tlin/script/coloc_raj_pipeline/tatsu/.snakemake/log/2024-07-30T093452.736080.snakemake.log

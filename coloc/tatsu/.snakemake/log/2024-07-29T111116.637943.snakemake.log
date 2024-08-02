@@ -1,0 +1,1014 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cluster nodes: 100
+Job stats:
+job        count    min threads    max threads
+-------  -------  -------------  -------------
+all            1              1              1
+extract     8440              1              1
+total       8441              1              1
+
+Select jobs to execute...
+
+[Mon Jul 29 11:11:26 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164161.10_sumstats_hg38.gz
+    jobid: 2212
+    wildcards: gene=ENSG00000164161.10
+    resources: tmpdir=/scratch
+
+Submitted job 2212 with external jobid 'Submitted batch job 46956708'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000163867.17_sumstats_hg38.gz
+    jobid: 519
+    wildcards: gene=ENSG00000163867.17
+    resources: tmpdir=/scratch
+
+Submitted job 519 with external jobid 'Submitted batch job 46956709'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000286138.1_sumstats_hg38.gz
+    jobid: 8470
+    wildcards: gene=ENSG00000286138.1
+    resources: tmpdir=/scratch
+
+Submitted job 8470 with external jobid 'Submitted batch job 46956710'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000163879.11_sumstats_hg38.gz
+    jobid: 521
+    wildcards: gene=ENSG00000163879.11
+    resources: tmpdir=/scratch
+
+Submitted job 521 with external jobid 'Submitted batch job 46956711'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164089.9_sumstats_hg38.gz
+    jobid: 2201
+    wildcards: gene=ENSG00000164089.9
+    resources: tmpdir=/scratch
+
+Submitted job 2201 with external jobid 'Submitted batch job 46956712'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000152229.18_sumstats_hg38.gz
+    jobid: 7631
+    wildcards: gene=ENSG00000152229.18
+    resources: tmpdir=/scratch
+
+Submitted job 7631 with external jobid 'Submitted batch job 46956713'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000286177.1_sumstats_hg38.gz
+    jobid: 8471
+    wildcards: gene=ENSG00000286177.1
+    resources: tmpdir=/scratch
+
+Submitted job 8471 with external jobid 'Submitted batch job 46956714'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000163909.8_sumstats_hg38.gz
+    jobid: 522
+    wildcards: gene=ENSG00000163909.8
+    resources: tmpdir=/scratch
+
+Submitted job 522 with external jobid 'Submitted batch job 46956715'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164096.13_sumstats_hg38.gz
+    jobid: 2202
+    wildcards: gene=ENSG00000164096.13
+    resources: tmpdir=/scratch
+
+Submitted job 2202 with external jobid 'Submitted batch job 46956716'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000152242.11_sumstats_hg38.gz
+    jobid: 7632
+    wildcards: gene=ENSG00000152242.11
+    resources: tmpdir=/scratch
+
+Submitted job 7632 with external jobid 'Submitted batch job 46956717'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000286236.1_sumstats_hg38.gz
+    jobid: 8472
+    wildcards: gene=ENSG00000286236.1
+    resources: tmpdir=/scratch
+
+Submitted job 8472 with external jobid 'Submitted batch job 46956718'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000232098.3_sumstats_hg38.gz
+    jobid: 8323
+    wildcards: gene=ENSG00000232098.3
+    resources: tmpdir=/scratch
+
+Submitted job 8323 with external jobid 'Submitted batch job 46956719'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164002.12_sumstats_hg38.gz
+    jobid: 523
+    wildcards: gene=ENSG00000164002.12
+    resources: tmpdir=/scratch
+
+Submitted job 523 with external jobid 'Submitted batch job 46956720'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164111.15_sumstats_hg38.gz
+    jobid: 2203
+    wildcards: gene=ENSG00000164111.15
+    resources: tmpdir=/scratch
+
+Submitted job 2203 with external jobid 'Submitted batch job 46956721'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000153339.15_sumstats_hg38.gz
+    jobid: 7633
+    wildcards: gene=ENSG00000153339.15
+    resources: tmpdir=/scratch
+
+Submitted job 7633 with external jobid 'Submitted batch job 46956722'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000022277.13_sumstats_hg38.gz
+    jobid: 8473
+    wildcards: gene=ENSG00000022277.13
+    resources: tmpdir=/scratch
+
+Submitted job 8473 with external jobid 'Submitted batch job 46956723'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000182134.16_sumstats_hg38.gz
+    jobid: 599
+    wildcards: gene=ENSG00000182134.16
+    resources: tmpdir=/scratch
+
+Submitted job 599 with external jobid 'Submitted batch job 46956724'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000154309.9_sumstats_hg38.gz
+    jobid: 374
+    wildcards: gene=ENSG00000154309.9
+    resources: tmpdir=/scratch
+
+Submitted job 374 with external jobid 'Submitted batch job 46956725'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000168243.11_sumstats_hg38.gz
+    jobid: 524
+    wildcards: gene=ENSG00000168243.11
+    resources: tmpdir=/scratch
+
+Submitted job 524 with external jobid 'Submitted batch job 46956726'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164117.14_sumstats_hg38.gz
+    jobid: 2204
+    wildcards: gene=ENSG00000164117.14
+    resources: tmpdir=/scratch
+
+Submitted job 2204 with external jobid 'Submitted batch job 46956727'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000153391.16_sumstats_hg38.gz
+    jobid: 7634
+    wildcards: gene=ENSG00000153391.16
+    resources: tmpdir=/scratch
+
+Submitted job 7634 with external jobid 'Submitted batch job 46956728'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000025772.8_sumstats_hg38.gz
+    jobid: 8474
+    wildcards: gene=ENSG00000025772.8
+    resources: tmpdir=/scratch
+
+Submitted job 8474 with external jobid 'Submitted batch job 46956729'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000154358.23_sumstats_hg38.gz
+    jobid: 375
+    wildcards: gene=ENSG00000154358.23
+    resources: tmpdir=/scratch
+
+Submitted job 375 with external jobid 'Submitted batch job 46956730'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000182866.17_sumstats_hg38.gz
+    jobid: 600
+    wildcards: gene=ENSG00000182866.17
+    resources: tmpdir=/scratch
+
+Submitted job 600 with external jobid 'Submitted batch job 46956731'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000153561.13_sumstats_hg38.gz
+    jobid: 1215
+    wildcards: gene=ENSG00000153561.13
+    resources: tmpdir=/scratch
+
+Submitted job 1215 with external jobid 'Submitted batch job 46956732'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000092020.11_sumstats_hg38.gz
+    jobid: 5805
+    wildcards: gene=ENSG00000092020.11
+    resources: tmpdir=/scratch
+
+Submitted job 5805 with external jobid 'Submitted batch job 46956733'.
+
+[Mon Jul 29 11:11:27 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000232871.8_sumstats_hg38.gz
+    jobid: 8325
+    wildcards: gene=ENSG00000232871.8
+    resources: tmpdir=/scratch
+
+Submitted job 8325 with external jobid 'Submitted batch job 46956734'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000168275.16_sumstats_hg38.gz
+    jobid: 525
+    wildcards: gene=ENSG00000168275.16
+    resources: tmpdir=/scratch
+
+Submitted job 525 with external jobid 'Submitted batch job 46956735'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164118.13_sumstats_hg38.gz
+    jobid: 2205
+    wildcards: gene=ENSG00000164118.13
+    resources: tmpdir=/scratch
+
+Submitted job 2205 with external jobid 'Submitted batch job 46956736'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000154040.21_sumstats_hg38.gz
+    jobid: 7635
+    wildcards: gene=ENSG00000154040.21
+    resources: tmpdir=/scratch
+
+Submitted job 7635 with external jobid 'Submitted batch job 46956737'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000026559.14_sumstats_hg38.gz
+    jobid: 8475
+    wildcards: gene=ENSG00000026559.14
+    resources: tmpdir=/scratch
+
+Submitted job 8475 with external jobid 'Submitted batch job 46956738'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000154429.11_sumstats_hg38.gz
+    jobid: 376
+    wildcards: gene=ENSG00000154429.11
+    resources: tmpdir=/scratch
+
+Submitted job 376 with external jobid 'Submitted batch job 46956739'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000168389.18_sumstats_hg38.gz
+    jobid: 526
+    wildcards: gene=ENSG00000168389.18
+    resources: tmpdir=/scratch
+
+Submitted job 526 with external jobid 'Submitted batch job 46956740'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164120.14_sumstats_hg38.gz
+    jobid: 2206
+    wildcards: gene=ENSG00000164120.14
+    resources: tmpdir=/scratch
+
+Submitted job 2206 with external jobid 'Submitted batch job 46956741'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000154059.11_sumstats_hg38.gz
+    jobid: 7636
+    wildcards: gene=ENSG00000154059.11
+    resources: tmpdir=/scratch
+
+Submitted job 7636 with external jobid 'Submitted batch job 46956742'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000054793.14_sumstats_hg38.gz
+    jobid: 8476
+    wildcards: gene=ENSG00000054793.14
+    resources: tmpdir=/scratch
+
+Submitted job 8476 with external jobid 'Submitted batch job 46956743'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000168528.12_sumstats_hg38.gz
+    jobid: 527
+    wildcards: gene=ENSG00000168528.12
+    resources: tmpdir=/scratch
+
+Submitted job 527 with external jobid 'Submitted batch job 46956744'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164125.16_sumstats_hg38.gz
+    jobid: 2207
+    wildcards: gene=ENSG00000164125.16
+    resources: tmpdir=/scratch
+
+Submitted job 2207 with external jobid 'Submitted batch job 46956745'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000154065.17_sumstats_hg38.gz
+    jobid: 7637
+    wildcards: gene=ENSG00000154065.17
+    resources: tmpdir=/scratch
+
+Submitted job 7637 with external jobid 'Submitted batch job 46956746'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000062598.18_sumstats_hg38.gz
+    jobid: 8477
+    wildcards: gene=ENSG00000062598.18
+    resources: tmpdir=/scratch
+
+Submitted job 8477 with external jobid 'Submitted batch job 46956747'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000168653.11_sumstats_hg38.gz
+    jobid: 528
+    wildcards: gene=ENSG00000168653.11
+    resources: tmpdir=/scratch
+
+Submitted job 528 with external jobid 'Submitted batch job 46956748'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164134.13_sumstats_hg38.gz
+    jobid: 2208
+    wildcards: gene=ENSG00000164134.13
+    resources: tmpdir=/scratch
+
+Submitted job 2208 with external jobid 'Submitted batch job 46956749'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000154655.16_sumstats_hg38.gz
+    jobid: 7638
+    wildcards: gene=ENSG00000154655.16
+    resources: tmpdir=/scratch
+
+Submitted job 7638 with external jobid 'Submitted batch job 46956750'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000064601.21_sumstats_hg38.gz
+    jobid: 8478
+    wildcards: gene=ENSG00000064601.21
+    resources: tmpdir=/scratch
+
+Submitted job 8478 with external jobid 'Submitted batch job 46956751'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000168765.17_sumstats_hg38.gz
+    jobid: 529
+    wildcards: gene=ENSG00000168765.17
+    resources: tmpdir=/scratch
+
+Submitted job 529 with external jobid 'Submitted batch job 46956752'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000164136.17_sumstats_hg38.gz
+    jobid: 2209
+    wildcards: gene=ENSG00000164136.17
+    resources: tmpdir=/scratch
+
+Submitted job 2209 with external jobid 'Submitted batch job 46956753'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000154839.10_sumstats_hg38.gz
+    jobid: 7639
+    wildcards: gene=ENSG00000154839.10
+    resources: tmpdir=/scratch
+
+Submitted job 7639 with external jobid 'Submitted batch job 46956754'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000064655.19_sumstats_hg38.gz
+    jobid: 8479
+    wildcards: gene=ENSG00000064655.19
+    resources: tmpdir=/scratch
+
+Submitted job 8479 with external jobid 'Submitted batch job 46956755'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000139428.12_sumstats_hg38.gz
+    jobid: 5330
+    wildcards: gene=ENSG00000139428.12
+    resources: tmpdir=/scratch
+
+Submitted job 5330 with external jobid 'Submitted batch job 46956756'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000200488.1_sumstats_hg38.gz
+    jobid: 1355
+    wildcards: gene=ENSG00000200488.1
+    resources: tmpdir=/scratch
+
+Submitted job 1355 with external jobid 'Submitted batch job 46956757'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000005700.15_sumstats_hg38.gz
+    jobid: 2810
+    wildcards: gene=ENSG00000005700.15
+    resources: tmpdir=/scratch
+
+Submitted job 2810 with external jobid 'Submitted batch job 46956758'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000243335.10_sumstats_hg38.gz
+    jobid: 3650
+    wildcards: gene=ENSG00000243335.10
+    resources: tmpdir=/scratch
+
+Submitted job 3650 with external jobid 'Submitted batch job 46956759'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000165102.15_sumstats_hg38.gz
+    jobid: 3875
+    wildcards: gene=ENSG00000165102.15
+    resources: tmpdir=/scratch
+
+Submitted job 3875 with external jobid 'Submitted batch job 46956760'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000229847.9_sumstats_hg38.gz
+    jobid: 4490
+    wildcards: gene=ENSG00000229847.9
+    resources: tmpdir=/scratch
+
+Submitted job 4490 with external jobid 'Submitted batch job 46956761'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000139433.11_sumstats_hg38.gz
+    jobid: 5331
+    wildcards: gene=ENSG00000139433.11
+    resources: tmpdir=/scratch
+
+Submitted job 5331 with external jobid 'Submitted batch job 46956762'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000204104.12_sumstats_hg38.gz
+    jobid: 1356
+    wildcards: gene=ENSG00000204104.12
+    resources: tmpdir=/scratch
+
+Submitted job 1356 with external jobid 'Submitted batch job 46956763'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000009413.16_sumstats_hg38.gz
+    jobid: 2811
+    wildcards: gene=ENSG00000009413.16
+    resources: tmpdir=/scratch
+
+Submitted job 2811 with external jobid 'Submitted batch job 46956764'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000243566.7_sumstats_hg38.gz
+    jobid: 3651
+    wildcards: gene=ENSG00000243566.7
+    resources: tmpdir=/scratch
+
+Submitted job 3651 with external jobid 'Submitted batch job 46956765'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000167632.18_sumstats_hg38.gz
+    jobid: 3876
+    wildcards: gene=ENSG00000167632.18
+    resources: tmpdir=/scratch
+
+Submitted job 3876 with external jobid 'Submitted batch job 46956766'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000230091.6_sumstats_hg38.gz
+    jobid: 4491
+    wildcards: gene=ENSG00000230091.6
+    resources: tmpdir=/scratch
+
+Submitted job 4491 with external jobid 'Submitted batch job 46956767'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000213699.9_sumstats_hg38.gz
+    jobid: 1372
+    wildcards: gene=ENSG00000213699.9
+    resources: tmpdir=/scratch
+
+Submitted job 1372 with external jobid 'Submitted batch job 46956768'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000228594.4_sumstats_hg38.gz
+    jobid: 757
+    wildcards: gene=ENSG00000228594.4
+    resources: tmpdir=/scratch
+
+Submitted job 757 with external jobid 'Submitted batch job 46956769'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000230417.12_sumstats_hg38.gz
+    jobid: 4492
+    wildcards: gene=ENSG00000230417.12
+    resources: tmpdir=/scratch
+
+Submitted job 4492 with external jobid 'Submitted batch job 46956770'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000139531.13_sumstats_hg38.gz
+    jobid: 5332
+    wildcards: gene=ENSG00000139531.13
+    resources: tmpdir=/scratch
+
+Submitted job 5332 with external jobid 'Submitted batch job 46956771'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000204186.10_sumstats_hg38.gz
+    jobid: 1357
+    wildcards: gene=ENSG00000204186.10
+    resources: tmpdir=/scratch
+
+Submitted job 1357 with external jobid 'Submitted batch job 46956772'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000010030.14_sumstats_hg38.gz
+    jobid: 2812
+    wildcards: gene=ENSG00000010030.14
+    resources: tmpdir=/scratch
+
+Submitted job 2812 with external jobid 'Submitted batch job 46956773'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000243679.1_sumstats_hg38.gz
+    jobid: 3652
+    wildcards: gene=ENSG00000243679.1
+    resources: tmpdir=/scratch
+
+Submitted job 3652 with external jobid 'Submitted batch job 46956774'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000167702.13_sumstats_hg38.gz
+    jobid: 3877
+    wildcards: gene=ENSG00000167702.13
+    resources: tmpdir=/scratch
+
+Submitted job 3877 with external jobid 'Submitted batch job 46956775'.
+
+[Mon Jul 29 11:11:28 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000139537.11_sumstats_hg38.gz
+    jobid: 5333
+    wildcards: gene=ENSG00000139537.11
+    resources: tmpdir=/scratch
+
+Submitted job 5333 with external jobid 'Submitted batch job 46956776'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000204217.15_sumstats_hg38.gz
+    jobid: 1358
+    wildcards: gene=ENSG00000204217.15
+    resources: tmpdir=/scratch
+
+Submitted job 1358 with external jobid 'Submitted batch job 46956777'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000013375.16_sumstats_hg38.gz
+    jobid: 2813
+    wildcards: gene=ENSG00000013375.16
+    resources: tmpdir=/scratch
+
+Submitted job 2813 with external jobid 'Submitted batch job 46956778'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000244219.7_sumstats_hg38.gz
+    jobid: 3653
+    wildcards: gene=ENSG00000244219.7
+    resources: tmpdir=/scratch
+
+Submitted job 3653 with external jobid 'Submitted batch job 46956779'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000165948.11_sumstats_hg38.gz
+    jobid: 5951
+    wildcards: gene=ENSG00000165948.11
+    resources: tmpdir=/scratch
+
+Submitted job 5951 with external jobid 'Submitted batch job 46956780'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000224578.5_sumstats_hg38.gz
+    jobid: 6791
+    wildcards: gene=ENSG00000224578.5
+    resources: tmpdir=/scratch
+
+Submitted job 6791 with external jobid 'Submitted batch job 46956781'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000165949.12_sumstats_hg38.gz
+    jobid: 5952
+    wildcards: gene=ENSG00000165949.12
+    resources: tmpdir=/scratch
+
+Submitted job 5952 with external jobid 'Submitted batch job 46956782'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000225614.4_sumstats_hg38.gz
+    jobid: 6792
+    wildcards: gene=ENSG00000225614.4
+    resources: tmpdir=/scratch
+
+Submitted job 6792 with external jobid 'Submitted batch job 46956783'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000249846.7_sumstats_hg38.gz
+    jobid: 1977
+    wildcards: gene=ENSG00000249846.7
+    resources: tmpdir=/scratch
+
+Submitted job 1977 with external jobid 'Submitted batch job 46956784'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000168116.14_sumstats_hg38.gz
+    jobid: 3042
+    wildcards: gene=ENSG00000168116.14
+    resources: tmpdir=/scratch
+
+Submitted job 3042 with external jobid 'Submitted batch job 46956785'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000250151.9_sumstats_hg38.gz
+    jobid: 1978
+    wildcards: gene=ENSG00000250151.9
+    resources: tmpdir=/scratch
+
+Submitted job 1978 with external jobid 'Submitted batch job 46956786'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000168216.13_sumstats_hg38.gz
+    jobid: 3043
+    wildcards: gene=ENSG00000168216.13
+    resources: tmpdir=/scratch
+
+Submitted job 3043 with external jobid 'Submitted batch job 46956787'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000165959.12_sumstats_hg38.gz
+    jobid: 5953
+    wildcards: gene=ENSG00000165959.12
+    resources: tmpdir=/scratch
+
+Submitted job 5953 with external jobid 'Submitted batch job 46956788'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000226232.8_sumstats_hg38.gz
+    jobid: 6793
+    wildcards: gene=ENSG00000226232.8
+    resources: tmpdir=/scratch
+
+Submitted job 6793 with external jobid 'Submitted batch job 46956789'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000250170.1_sumstats_hg38.gz
+    jobid: 1979
+    wildcards: gene=ENSG00000250170.1
+    resources: tmpdir=/scratch
+
+Submitted job 1979 with external jobid 'Submitted batch job 46956790'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000171453.20_sumstats_hg38.gz
+    jobid: 3044
+    wildcards: gene=ENSG00000171453.20
+    resources: tmpdir=/scratch
+
+Submitted job 3044 with external jobid 'Submitted batch job 46956791'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000166165.13_sumstats_hg38.gz
+    jobid: 5954
+    wildcards: gene=ENSG00000166165.13
+    resources: tmpdir=/scratch
+
+Submitted job 5954 with external jobid 'Submitted batch job 46956792'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000226942.2_sumstats_hg38.gz
+    jobid: 6794
+    wildcards: gene=ENSG00000226942.2
+    resources: tmpdir=/scratch
+
+Submitted job 6794 with external jobid 'Submitted batch job 46956793'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000251287.8_sumstats_hg38.gz
+    jobid: 1980
+    wildcards: gene=ENSG00000251287.8
+    resources: tmpdir=/scratch
+
+Submitted job 1980 with external jobid 'Submitted batch job 46956794'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000171467.16_sumstats_hg38.gz
+    jobid: 3045
+    wildcards: gene=ENSG00000171467.16
+    resources: tmpdir=/scratch
+
+Submitted job 3045 with external jobid 'Submitted batch job 46956795'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000166170.11_sumstats_hg38.gz
+    jobid: 5955
+    wildcards: gene=ENSG00000166170.11
+    resources: tmpdir=/scratch
+
+Submitted job 5955 with external jobid 'Submitted batch job 46956796'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000227827.3_sumstats_hg38.gz
+    jobid: 6795
+    wildcards: gene=ENSG00000227827.3
+    resources: tmpdir=/scratch
+
+Submitted job 6795 with external jobid 'Submitted batch job 46956797'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000254485.5_sumstats_hg38.gz
+    jobid: 1981
+    wildcards: gene=ENSG00000254485.5
+    resources: tmpdir=/scratch
+
+Submitted job 1981 with external jobid 'Submitted batch job 46956798'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000171611.10_sumstats_hg38.gz
+    jobid: 3046
+    wildcards: gene=ENSG00000171611.10
+    resources: tmpdir=/scratch
+
+Submitted job 3046 with external jobid 'Submitted batch job 46956799'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000166428.14_sumstats_hg38.gz
+    jobid: 5956
+    wildcards: gene=ENSG00000166428.14
+    resources: tmpdir=/scratch
+
+Submitted job 5956 with external jobid 'Submitted batch job 46956800'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000229809.9_sumstats_hg38.gz
+    jobid: 6796
+    wildcards: gene=ENSG00000229809.9
+    resources: tmpdir=/scratch
+
+Submitted job 6796 with external jobid 'Submitted batch job 46956801'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000254999.4_sumstats_hg38.gz
+    jobid: 1982
+    wildcards: gene=ENSG00000254999.4
+    resources: tmpdir=/scratch
+
+Submitted job 1982 with external jobid 'Submitted batch job 46956802'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000172197.11_sumstats_hg38.gz
+    jobid: 3047
+    wildcards: gene=ENSG00000172197.11
+    resources: tmpdir=/scratch
+
+Submitted job 3047 with external jobid 'Submitted batch job 46956803'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000168282.6_sumstats_hg38.gz
+    jobid: 5957
+    wildcards: gene=ENSG00000168282.6
+    resources: tmpdir=/scratch
+
+Submitted job 5957 with external jobid 'Submitted batch job 46956804'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000230989.7_sumstats_hg38.gz
+    jobid: 6797
+    wildcards: gene=ENSG00000230989.7
+    resources: tmpdir=/scratch
+
+Submitted job 6797 with external jobid 'Submitted batch job 46956805'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000255154.9_sumstats_hg38.gz
+    jobid: 1983
+    wildcards: gene=ENSG00000255154.9
+    resources: tmpdir=/scratch
+
+Submitted job 1983 with external jobid 'Submitted batch job 46956806'.
+
+[Mon Jul 29 11:11:29 2024]
+rule extract:
+    input: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz
+    output: /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia/gene/ENSG00000172426.16_sumstats_hg38.gz
+    jobid: 3048
+    wildcards: gene=ENSG00000172426.16
+    resources: tmpdir=/scratch
+
+Submitted job 3048 with external jobid 'Submitted batch job 46956807'.
+Terminating processes on user request, this might take some time.
+Will exit after finishing currently running jobs.
+Cancelling snakemake on user request.
