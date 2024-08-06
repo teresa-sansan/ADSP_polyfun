@@ -33,7 +33,7 @@ splitCoords = function(coords = "") {
   chromCoords = strsplit(gsub(",", "", coords), ":")[[1]][2]
   start = as.numeric(strsplit(chromCoords, "-")[[1]][1])
   end = as.numeric(strsplit(chromCoords, "-")[[1]][2])
-  coordSplit = list(chrom = chrom, start = start, end = end)
+  coordSplit = list(chr = chrom, start = start, end = end)
   
   return(coordSplit)
 }
@@ -195,10 +195,9 @@ matchMAF <- function(data, maf){
 # account for different GWAS having different column naming and ordering with a GWAS_config.yaml file
 # for each GWAS set the column numbers, the number of samples (N), the type of GWAS ("cc" or "quant") and the case proportion
 # and whether the GWAS was hg19 or hg38
-extractGWAS <- function(gwas, coord, refFolder = "/sc/arion/projects/ad-omics/data/references/GWAS/", force_maf = TRUE){
+extractGWAS <- function(gwas, coord, force_maf = TRUE){
     # either read in config.yaml or Brian's CSV table
     gwas_path <- gwas$full_processed_path
-    #gwas_path <- file.path( refFolder,  paste0(gwas$dataset, ".processed.tsv.gz" ))
     if( !file.exists(gwas_path) ){
         stop("ERROR - processed GWAS not found, make sure you ran process_GWAS.R first")
     }
