@@ -8,3 +8,7 @@ analysis/.ipynb_checkpoints
 casopr/test_data
 data_processing/phenotype/.ipynb_checkpoints/
 enformer/.ipynb_checkpoints/
+coloc/tatsu/.
+coloc/tatsu/..
+coloc/tatsu/.snakemake
+coloc/tatus/.ipynb_checkpoints
