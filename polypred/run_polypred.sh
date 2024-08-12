@@ -4,8 +4,7 @@
 #for anno in enformer no_ml all_except_enformer update_all+enformer
 #for anno in no_ml bl all_enformer all_anno 
 #for anno in all_except_enformer bl no_ml_new
-#for anno in susie all no_ml only_ml bl
-for anno in update_all+enformer
+for anno in only_ml
 do
 	echo $anno 
 	for i in  5

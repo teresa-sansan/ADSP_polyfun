@@ -3,10 +3,9 @@
 #for anno in bl_brain_atac bl_dl_annotations bl
 #bl no_ml all only_ml
 if true; then 
-#for anno in all no_ml only_ml bl
-for anno in only_ml
+for anno in bl
 do
-        for i in  5
+        for i in  1 3 5 10
         do
                 echo "max_snp = $i" 
                 sbatch --export=max_snp=$i,anno=$anno aggregate_finemap_result.sh 

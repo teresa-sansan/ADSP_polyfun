@@ -361,7 +361,7 @@ AnnoProb::AnnoProb(string fileAnnot, int numAnno, const VectorXf &Pi, MatrixXf &
         float XPX = annoMat.col(i).dot(annoMat.col(i));
         if(XPX < 1e-6){
             Rcout << "Annotation column " << i+1 << " has too small XPX: " << XPX << ", please remove this column from annotation data or perform re-scale." <<std::endl;
-            throw("Error");
+            //  throw("Error");
         }
         if(bAnnoBinary[i]){
             XPXiSD[i] = 1.0 / XPX * annoSD[i];

@@ -50,7 +50,6 @@ sbayesrc = function(mafile, LDdir, outPrefix, annot="", log2file=FALSE,
     ld_folder = LDdir
     file_out = outPrefix
     fileAnnot = annot
-
     cSamVe = "fixVe"
     if(sSamVe == "noReSamVe"){
         cSamVe = "fixVe"
@@ -242,6 +241,7 @@ sbayesrc = function(mafile, LDdir, outPrefix, annot="", log2file=FALSE,
     numAnno = 0
     annoStrings = c("")
     tempFileAnnot = paste0(outfile, ".annot.tmp.bin")
+
     if(bAnnot){
         anno = fread(fileAnnot, head=TRUE)
 

@@ -1,0 +1,1 @@
+/gpfs/commons/home/tlin/plink --allow-no-sex --extract /scratch/tmpsb27n9ul/3916nz4i --out /scratch/tmpsb27n9ul/w14apjch --memory 2048 --threads 1 --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink/ADSP.chr20 --score /scratch/tmpsb27n9ul/3916nz4i sum --q-score-range /scratch/tmpsb27n9ul/ranges.txt /scratch/tmpsb27n9ul/9zxxiyyp

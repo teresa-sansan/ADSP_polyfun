@@ -12,3 +12,9 @@ coloc/tatsu/.
 coloc/tatsu/..
 coloc/tatsu/.snakemake
 coloc/tatus/.ipynb_checkpoints
+.ipynb_checkpoints/
+PRScs/.ipynb_checkpoints/
+analysis/polyfun_prs/.ipynb_checkpoints/
+coloc/.ipynb_checkpoints/ 
+polypred/.ipynb_checkpoints/
+
