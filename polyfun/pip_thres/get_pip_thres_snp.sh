@@ -1,14 +1,22 @@
 ## will create a count file with $anno $pip_thres #snp_that_passed_thres #snp_in_the_credibleset_that_passed_thres
+#!/bin/bash
+#SBATCH --job-name=bellenguez_index
+#SBATCH --mail-type=FAIL,END
+#SBATCH --mail-user=tlin@nygenome.org
+#SBATCH --mem=10G
+#SBATCH --time=10:00:00
+#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa/pip_thres/%x_%j.log
+
 
 path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa'
 
 touch $path/pip_thres/credible_set_snp.count
-
-for anno in susie baseline omics omics_dl
+#baseline omics omics_dl 
+for anno in susie 
 do
 if [ $anno == "susie" ]; then
-        pip=10
-        credible_set=13
+        pip=9
+        credible_set=12
         snp=3
     else
         pip=11

@@ -2,8 +2,14 @@ import pandas as pd
 from functools import reduce  
 import sys
 
-anno=sys.argv[0]
-path=sys.argv[1]
+anno=sys.argv[1]
+path=sys.argv[2]
+flag=sys.argv[3]
+
+if (flag='no_qc'):
+    print('geno no qc')
+    path=path+flag
+
 
 pheno=pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_ADSP_IBD.tsv', sep='\t')
 
