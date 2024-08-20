@@ -8,9 +8,11 @@
 
 dir_beta="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa/"
 #dir_geno="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink_qc"
+#flag='qc'
 
 dir_geno="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink_qc/middle_file/" ## noqc
 flag='no_qc_'
+
 anno=$1
 if [ $anno == "susie" ]; then
     snp=3

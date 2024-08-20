@@ -12,7 +12,7 @@ path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheime
 
 touch $path/pip_thres/credible_set_snp.count
 #baseline omics omics_dl 
-for anno in susie 
+for anno in susie baseline omics omics_dl 
 do
 if [ $anno == "susie" ]; then
         pip=9

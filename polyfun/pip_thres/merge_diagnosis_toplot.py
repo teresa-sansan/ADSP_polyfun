@@ -6,9 +6,9 @@ anno=sys.argv[1]
 path=sys.argv[2]
 flag=sys.argv[3]
 
-if (flag='no_qc'):
+if (flag=='no_qc_'):
     print('geno no qc')
-    path=path+flag
+    anno=flag+anno
 
 
 pheno=pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_ADSP_IBD.tsv', sep='\t')
