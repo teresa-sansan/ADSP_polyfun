@@ -55,9 +55,9 @@ LDstep1 <- function(mafile, genoPrefix, outDir, genoCHR="", blockRef="", tool="g
     }
     setnames(valid_poses, c("blk", "chr", "start", "end"))
 
-    if(dir.exists(output)){
-        stop("The output folder: ", output, " already exists, please change it to another one, or remove the old one")
-    }
+    # if(dir.exists(output)){
+    #     stop("The output folder: ", output, " already exists, please change it to another one, or remove the old one")
+    # }
 
     dir.create(output)
 
