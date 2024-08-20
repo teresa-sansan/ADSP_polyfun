@@ -4,8 +4,8 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=30G
 #SBATCH --time=15:00:00
-#SBATCH --array=1-22%5
-#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink//%x_%j.log
+#SBATCH --array=1-22%12
+#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD_sbayesrc/plink_file/%x_%j.log
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun 
@@ -15,16 +15,15 @@ conda activate polyfun
 chr=$SLURM_ARRAY_TASK_ID
 
 # create hg38 plink (for bellenguez in ADSPpanel)
-variant_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/1KG/ADSP_EUR/plink/'
-output_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink/'
-
-
+#variant_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/1KG/ADSP_EUR/plink/'
+variant_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/1KG/ADSP_EUR/'
+output_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD_sbayesrc/plink_file/'
 
 echo start chr $chr ...
 
-cd $output_path
-cut -f 2 ADSP.chr${chr}.bim | sort | uniq -d > ${chr}_dups
-~/plink --bfile ADSP.chr${chr} --exclude ${chr}_dups --make-bed --out ADSP_chr${chr}_filt
+# cd $output_path
+# cut -f 2 ADSP.chr${chr}.bim | sort | uniq -d > ${chr}_dups
+# ~/plink --bfile ADSP.chr${chr} --exclude ${chr}_dups --make-bed --out ADSP_chr${chr}_filt --snps-only 
 
 
 #--maf 0.001 \
@@ -37,10 +36,10 @@ cut -f 2 ADSP.chr${chr}.bim | sort | uniq -d > ${chr}_dups
 
 #awk '{print $2}' $variant_path/ADSP_bellenguez_snps_chr${chr}.bim  > $variant_path/ADSP_bellenguez_snps_chr${chr}.txt
 
-# ~/plink2/plink2 \
-# --const-fid \
-# --make-bed \
-# --out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink/ADSP.chr${chr} \
-# --vcf /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated/ADSP.chr${chr}.vcf.gz
+~/plink2/plink2 \
+--const-fid \
+--make-bed --snps-only --exclude exclude_snps.txt \
+--out $output_path/ADSP_EUR_chr${chr} \
+--vcf $variant_path/ADSP_EUR_chr${chr}.vcf.gz
 
 #rm $variant_path/ADSP_bellenguez_snps_chr${chr}.txt
