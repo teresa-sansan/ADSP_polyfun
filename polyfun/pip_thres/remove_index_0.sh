@@ -4,10 +4,15 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=10G
 #SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa/pip_thres/%x_%j.log
+#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa_update/%x_%j.log
 
 anno=$1
-path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa'
+path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa_update'
+
+if [ ! -d $path/pip_thres ]; then
+    mkdir $path/pip_thres
+fi
+
 # for anno in  susie baseline omics omics_dl
 # do  
 if [ $anno == "susie" ]; then
@@ -23,3 +28,5 @@ else
     
 fi
 #done
+
+bash get_pip_thres_snp.sh $path $anno

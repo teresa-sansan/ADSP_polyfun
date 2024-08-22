@@ -34,7 +34,7 @@ plot1/plot2
 
 
 ## load prs (remove index0)------------
-path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa/prs/'
+path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa_update/prs/'
 bellenguez_adsp_susie_aug <- pre_process(paste(path, 'prs_susie.tsv', sep = ''))
 bellenguez_adsp_baseline_aug <- pre_process(paste(path, 'prs_baseline.tsv', sep = ''))
 bellenguez_adsp_omics_aug <- pre_process(paste(path, 'prs_omics.tsv', sep = ''))
@@ -46,9 +46,10 @@ bellenguez_adsp_omics_aug_noqc <- pre_process(paste(path, 'prs_no_qc_omics.tsv',
 bellenguez_adsp_omics_dl_aug_noqc <- pre_process(paste(path, 'prs_no_qc_omics_dl.tsv', sep = ''))
 
 col_roc_pthres <- list("PRS_0","PRS_1","PRS_2","PRS_3","PRS_4","PRS_5","PRS_6","PRS_7","PRS_8", "PRS_9")
-
+plot_ethnic_roc_facet(bellenguez_adsp_susie_aug, bellenguez_adsp_baseline_aug, bellenguez_adsp_omics_aug, bellenguez_adsp_omics_dl_aug, QC1name="susie", QC2name="baseline",QC3name="omics", 
+                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0(boot 50)' , boot_num=50, legendname = 'annotation')
 check <-plot_ethnic_roc_facet(bellenguez_adsp_susie_aug, bellenguez_adsp_baseline_aug, bellenguez_adsp_omics_aug, bellenguez_adsp_omics_dl_aug, QC1name="susie", QC2name="baseline",QC3name="omics", 
-                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0' , boot_num=1, legendname = 'annotation')
+                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0' , boot_num=50, legendname = 'annotation')
 
 #plot_ethnic_roc_facet(bellenguez_adsp_susie_aug_noqc, bellenguez_adsp_baseline_aug_noqc,bellenguez_adsp_omics_aug_noqc, bellenguez_adsp_omics_dl_aug_noqc, QC1name="susie", QC2name="baseline",QC3name="omics", 
 #                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0, no qc on genotype data' , boot_num=5, legendname = 'annotation')

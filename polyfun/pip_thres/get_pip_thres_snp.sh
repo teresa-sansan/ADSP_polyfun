@@ -1,19 +1,13 @@
 ## will create a count file with $anno $pip_thres #snp_that_passed_thres #snp_in_the_credibleset_that_passed_thres
-#!/bin/bash
-#SBATCH --job-name=bellenguez_index
-#SBATCH --mail-type=FAIL,END
-#SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=10G
-#SBATCH --time=10:00:00
-#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa/pip_thres/%x_%j.log
 
-
-path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa'
+path=$1
+anno=$2
+#path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa_update'
 
 touch $path/pip_thres/credible_set_snp.count
 #baseline omics omics_dl 
-for anno in susie baseline omics omics_dl 
-do
+
+echo start $anno
 if [ $anno == "susie" ]; then
         pip=9
         credible_set=12
@@ -39,4 +33,3 @@ if [ $anno == "susie" ]; then
         count_all_snp=$(wc -l $path/pip_thres/${anno}_pip${thres}.snp| awk '{print $1}') ## count all snps in the credible set
         echo $anno $thres  $count_one_snp $count_all_snp| tee -a  $path/pip_thres/credible_set_snp.count
     done 
-done

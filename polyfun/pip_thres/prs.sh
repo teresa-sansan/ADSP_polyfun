@@ -1,17 +1,22 @@
 #!/bin/bash
-#SBATCH --job-name=prs_polyfun_noqc
+#SBATCH --job-name=prs_polyfun
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=16G
 #SBATCH --time=5:00:00
-#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa/prs/%x_%j.log
+#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa_update/%x_%j.log
 
-dir_beta="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa/"
-#dir_geno="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink_qc"
-#flag='qc'
+dir_beta="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/finemap_v3_backup_teresa_update/"
+dir_geno="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink_qc"
+flag='/'
 
-dir_geno="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink_qc/middle_file/" ## noqc
-flag='no_qc_'
+# dir_geno="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink_qc/middle_file/" ## noqc
+# flag='no_qc_'
+
+if [ ! -d $dir_beta/prs ]; then
+    mkdir $dir_beta/prs 
+    mkdir $dir_beta/prs/middle_file
+fi
 
 anno=$1
 if [ $anno == "susie" ]; then
