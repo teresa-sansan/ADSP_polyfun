@@ -4,8 +4,8 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=30G
 #SBATCH --time=15:00:00
-#SBATCH --array=1-22%12
-#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD_sbayesrc/plink_file/%x_%j.log
+#SBATCH --array=1-22%15
+#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plink_file_hg38/%x_%j.log
 
 source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
 conda activate polyfun 
@@ -16,9 +16,9 @@ chr=$SLURM_ARRAY_TASK_ID
 
 # create hg38 plink (for bellenguez in ADSPpanel)
 #variant_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/1KG/ADSP_EUR/plink/'
-variant_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/1KG/ADSP_EUR/'
-output_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD_sbayesrc/plink_file/'
-
+variant_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/1KG/ADSP_EUR/' ## this is updated in June
+#output_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD_sbayesrc/plink_file/' ## this is in may
+output_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plink_file_hg38/' 
 echo start chr $chr ...
 
 # cd $output_path
