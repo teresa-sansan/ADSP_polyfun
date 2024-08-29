@@ -1,7 +1,16 @@
-### load all required modules
-module purge
-module load R/4.1.1
-module load gcc/11.2.0
-LD_PRELOAD=/gpfs/commons/home/tlin/miniconda3/envs/carma/lib/libmkl_rt.so R
+devtools::install_github("ZikunY/CARMA")
+library(CARMA)
 
-which R
+pkgs = c('data.table', 'magrittr', 'dplyr','devtools', 'R.utlis')
+pkgs.na = pkgs[!pkgs %in% installed.packages()[,'Package']]
+if (length(pkgs.na)>0){
+  install.packages(pkgs.na)
+}
+
+library(data.table)
+library(magrittr)
+library(dplyr)
+library(devtools)
+library(R.utils)
+
+setwd('/gpfs/commons/home/tlin/output/CARMA')
