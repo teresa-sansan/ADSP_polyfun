@@ -4,7 +4,7 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=30G
 #SBATCH --time=25:00:00
-#SBATCH --array=1-22%10
+#SBATCH --array=1-22%15
 #SBATCH --output=/gpfs/commons/home/tlin/output/prs/PRSCS/36k/bellenguez_rerun_0909/%x_%j.log
 
 
@@ -35,7 +35,7 @@ output_dir='/gpfs/commons/home/tlin/output/prs/PRSCS/36k_adsp_ld_panel/bellengue
 
 ## ukb ld reference
 python PRScs.py --ref_dir=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_PRScs/ldblk_ukbb_eur \
-    --bim_prefix=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink_qc/ADSP.chr${chr} \
+    --bim_prefix=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/qc/qc_chr${chr} \
     --sst_file=$sumstat_path/$sumstat \
     --chr $chr --n_gwas=$n_sumstat --phi=1e-2 \
     --out_dir=/gpfs/commons/home/tlin/output/prs/PRSCS/36k/bellenguez_rerun_0909/bellenguez

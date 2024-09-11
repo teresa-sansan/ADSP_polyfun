@@ -1,41 +1,34 @@
 import pandas as pd
 from functools import reduce  
+import sys
 
-#path='/gpfs/commons/home/tlin/output/wightman/prscs/'
-#path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/PIP_not0/'
-#path='/gpfs/commons/home/tlin/output/wightman/prscs/all_except_enformer/'
-#path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/PRS_hg38/prscs/plink_output/'
-#path='/gpfs/commons/home/tlin/output/wightman/prscs/all_anno/beta_sumstat/'
-#path='/gpfs/commons/home/tlin/output/wightman/prscs/original/subset_polyfun/'
-path='/gpfs/commons/home/tlin/output/prs/PRSCS/36k_ibd_adsp_fixed/wightman/'
+path = sys.argv[1]
+save = sys.argv[2]
 
 name='prs'
-#prs_e5 = pd.read_csv(path+name+"_e-5.tsv", sep = ' ', usecols = ["IID","SCORE"])
-#prs_001 = pd.read_csv(path+name+"_0.001.tsv", sep = ' ', usecols = ["IID","SCORE"])
+prs_e6 = pd.read_csv(path+name+"_e-6.tsv", sep = ' ', names = ["IID","SCORE"])
+prs_e5 = pd.read_csv(path+name+"_e-5.tsv", sep = ' ', names = ["IID","SCORE"])
+prs_e4 = pd.read_csv(path+name+"_e-4.tsv", sep = ' ', names = ["IID","SCORE"])
+prs_001 = pd.read_csv(path+name+"_0.001.tsv", sep = ' ', names = ["IID","SCORE"])
 #prs_005 = pd.read_csv(path+name+"_0.005.tsv", sep = ' ', usecols = ["IID","SCORE"])   
 prs_01 = pd.read_csv(path+name+"_0.01.tsv", sep = ' ', names = ["IID","SCORE"]) 
-prs_05 = pd.read_csv(path+name+"_0.05.tsv", sep = ' ', names= ["IID","SCORE"])
+#prs_05 = pd.read_csv(path+name+"_0.05.tsv", sep = ' ', names= ["IID","SCORE"])
 prs_1 = pd.read_csv(path+name+"_0.1.tsv", sep = ' ', names = ["IID","SCORE"]) 
-prs_5 = pd.read_csv(path+name+"_0.5.tsv", sep = ' ', names = ["IID","SCORE"]) 
+#prs_5 = pd.read_csv(path+name+"_0.5.tsv", sep = ' ', names = ["IID","SCORE"]) 
 
-
-#pheno = pd.read_csv("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/compact_filtered_vcf_16906/phenotype_data_10_28_2021/all_phenotypes_unique_ancestry_subset.tsv", sep='\t')
-#pheno = pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_fin.tsv', sep = '\t')
-## 36k w. fixed ancestry
-#pheno = pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_LOAD_1000k.tsv', sep = '\t')
 
 ## 36k w. fixed IBD
 pheno = pd.read_csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/pheno_ADSP_IBD.tsv', sep = '\t')
-prs = [prs_01, prs_05, prs_1, prs_5]  
+prs = [prs_e6, prs_e5 ,prs_e4,prs_001, prs_01 , prs_1]  
 prs_merge = reduce(lambda left, right:pd.merge(left,right,on=["IID"]),prs)
-prs_merge = prs_merge.set_axis( ["IID","PRS_01","PRS_05","PRS_1","PRS_5"], axis='columns')
+prs_merge = prs_merge.set_axis( ["IID","PRS_e6","PRS_e5","PRS_e4","PRS_001","PRS_01","PRS_1"], axis='columns')
 
 
 all_merge = pd.merge(pheno,prs_merge, left_on ="SampleID", right_on='IID')
 all_merge.fillna('-1', inplace=True) # Race and Ethniciity
 
-# save=path+name+'_36k.tsv'
-save=path+'prscs_wightman_ADSP_ibd_36k.tsv'
+save=path+'_'+save+ '_36k.tsv'
+# save=path+'prscs_wightman_ADSP_ibd_36k.tsv'
 # save = path+name+'_pipNOT0.tsv'
 all_merge.to_csv(save,index = False, sep='\t')
 print("save prs to " + save)
