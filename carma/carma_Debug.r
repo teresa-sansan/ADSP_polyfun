@@ -34,29 +34,29 @@ library(Matrix)
 # print(length(saved_p_S))       # Check length of saved_p_S
 # print(var(saved_y_var))        # Check variance of saved_y_var
 # print(dim(saved_Sigma))        # Check dimensions of saved_Sigma
-# 
 
-chrom = 22
-ld=25
+
+
+chrom = 16
+#ld = 64 ## ok
+#ld= 62 ## test (doesnt work)
 sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
 ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.ld',sep = '' )
 output_name = paste('/gpfs/commons/home/tlin/output/CARMA/',  chrom, '_', ld, '.txt.gz', sep = '')
 snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] ## can only take the sumstat snps that's in ld blk
 print(sprintf('run CARMA using on chr %s, ld blk %s', chrom, ld))
-
+snp_df = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)
 ## read sumstat
 sumstat <- fread(file = sumstat_path ,
                 sep = "\t", header = T, check.names = F, data.table = F, stringsAsFactors = F)
 sumstat <- subset(sumstat, SNP %in% snp)
-# sumstat_25 = sumstat[sumstat$POS <= 46078842 &sumstat$POS >= 45062034,]
-# sumstat_sub <- subset(sumstat_25, SNP %in% snp)
-
+print(sprintf('%d snps in sumstat that overlap with LD',dim(sumstat)[1] ))
 ld = fread(file = ld_path, sep = " ", header = F, check.names = F, data.table = F, stringsAsFactors = F)
 
 z.list<-list()
 ld.list<-list()
 lambda.list<-list()
-z.list[[1]]<-sumstat_sub$Z
+z.list[[1]]<-sumstat$Z
 ld.list[[1]]<-as.matrix(ld)
 lambda.list[[1]]<-1
 ##### test here ------------------------------
@@ -68,9 +68,18 @@ lambda.list[[1]]<-1
 # saved_p_S <- NULL
 # saved_y_var <- NULL
 
-CARMA.results<-CARMA(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T)
+set_gamma.margin <<-NULL
+aa <<- NULL
+set_star <<- NULL
+# 
+
+
+CARMA.results<-CARMA_check(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T, all.inner.iter=3)
 ###### Posterior inclusion probability (PIP) and credible set (CS)
-sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
+sumstat.result = sumstat_sub %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
+snp.result = snp_df %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
+
+
 if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
   for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
   } }
@@ -263,7 +272,6 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
                                   outlier.switch,input.conditional.S.list=NULL,tau=1/0.05^2,
                                   C.list=NULL,prior.prob=NULL,epsilon=1e-3,inner.all.iter=10){
     {
-      print('shotgun')
       #######The prior distributions on the model space#########
       prob.list<-list()
       p<-nrow(z);
@@ -541,7 +549,6 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
     }
     ####Function that computes posterior inclusion probability based on the marginal likelihood and model space
     PIP.func<-function(likeli,model.space){
-      print('pip fun')
       infi.index<-which(is.infinite(likeli))
       if(length(infi.index)!=0){
         likeli<-likeli[-infi.index]
@@ -581,7 +588,6 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
       }else{
         result.m<-index.fun.inner(outer.x)
       }
-      print('finish indexfun')
       return(result.m)
       
     }
@@ -629,7 +635,6 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
             for(i in  1:length(set.gamma)){
               t0=Sys.time()
               matrix.gamma[[i]]<-index.fun(set.gamma[[i]])
-              print('done 601')
               if(length(C.list[[2]])<ncol(set.gamma[[i]])){
                 C.list[[2]][[ncol(set.gamma[[i]])]]<-as(Matrix(nrow=0,ncol=p,sparse = T,data=0),'CsparseMatrix')
                 C.list[[1]][[ncol(set.gamma[[i]])]]<-integer(0)
@@ -675,7 +680,7 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
             for(i in 2:3){
               
               matrix.gamma[[i]]<-index.fun(set.gamma[[i]])
-              print('647 done')
+      
               
               if(length(C.list[[2]])<ncol(set.gamma[[i]])){
                 C.list[[2]][[ncol(set.gamma[[i]])]]<-as(Matrix(nrow=0,ncol=p,sparse = T,data=0),'CsparseMatrix')
@@ -746,7 +751,6 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
                 })
               
                 # test <- apply(set.gamma[[i]],1,marginal_likelihood,Sigma=Sigma,z=z,tau=tau.sample,p_S=p_S,y_sigma=y.var)
-                print('test')
                 set.gamma.margin[[i]] <-test
 
                 C.list[[1]][[ncol(set.gamma[[i]])]]<-c(C.list[[1]][[ncol(set.gamma[[i]])]],set.gamma.margin[[i]])
@@ -771,7 +775,6 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
             add.B<-list()
             add.B[[1]]<-c(set.gamma.margin[[2]])
             add.B[[2]]<-matrix.gamma[[2]]
-            print('pass 728')
           }
           ########## add visited models into the storage space of models###############
           
@@ -893,9 +896,10 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
             
             set.star$gamma.set.index[2] <-c(sample((1:length(set.gamma.margin[[2]]))[order(exp(aa),decreasing = T)[1:(min(length(aa),floor(p/2)))]],
                                                    1,prob=exp(aa)[order(exp(aa),decreasing = T)[1:(min(length(aa),floor(p/2)))]]))
-            set.star$margin[2]<-set.gamma.margin[[2]][  set.star$gamma.set.index[2]]
+            set.star$margin[2]<-set.gamma.margin[[2]][set.star$gamma.set.index[2]]
             
             S<-set.gamma[[2]][set.star$gamma.set.index[2],]
+            
             if(printing.log==T){
               print(set.star)
             }
@@ -903,6 +907,7 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
           if(printing.log==T){
             print(paste0('this is running S: ',paste0(S,collapse = ',')))
           }
+          #print(conditional.S)
           S<-unique(c(S,conditional.S))
         }
       }

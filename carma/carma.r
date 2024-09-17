@@ -25,6 +25,11 @@ sumstat <- fread(file = sumstat_path , sep = "\t", header = T, check.names = F, 
 sumstat <- subset(sumstat, SNP %in% snp) ## can only take the sumstat snps that's in ld blk
 print(sprintf('%d snps in sumstat that overlap with LD',dim(sumstat)[1] ))
 
+nan_count = sum(is.na(ld))
+if (nan_count > 0)
+  print(sprintf('set %d nan ld score to 0', nan_count))
+  ld[is.na(ld)] <- 0
+
 z.list<-list()
 ld.list<-list()
 lambda.list<-list()
