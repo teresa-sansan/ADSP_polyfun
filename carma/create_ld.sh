@@ -10,11 +10,11 @@ cat <<EOT > $tmp_script
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=50G
 #SBATCH --time=15:00:00
-#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/%x_%j.log
+#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/maf_filt/%x_%j.log
 #SBATCH --array=1-${ttl_blksize}%6
 #SBATCH --job-name=create_ld_carma_chr${chr}
 
-dir_blk="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA"
+dir_blk="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/maf_filt/"
 dir_1kg="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plink_file_hg38/"
 
 block=1
