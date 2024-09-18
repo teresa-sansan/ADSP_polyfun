@@ -6,26 +6,9 @@ library(devtools)
 library(R.utils)
 library(Matrix)
 
-# args <- commandArgs(trailingOnly = TRUE)
-# 
-# chrom = args[1]
-# ld = args[2]
-
-# setwd('/gpfs/commons/home/tlin/data/CARMA_try')
-# sumstat<- fread(file = "Sample_data/sumstats_chr1_200937832_201937832.txt.gz",
-#                 sep = "\t", header = T, check.names = F, data.table = F,
-#                 stringsAsFactors = F)
-# ld = fread(file = "Sample_data/sumstats_chr1_200937832_201937832_ld.txt.gz", sep = "\t", header = F, check.names = F, data.table = F, stringsAsFactors = F)
-# 
-# # 
-# z.list<-list()
-# ld.list<-list()
-# lambda.list<-list()
-# z.list[[1]]<-sumstat$Z
-# ld.list[[1]]<-as.matrix(ld)
-# lambda.list[[1]]<-1
-# CARMA.results<-CARMA_check(z.list,ld.list,lambda.list=lambda.list,
-#                      outlier.switch=F)
+args <- commandArgs(trailingOnly = TRUE)
+chrom = args[1]
+ld = args[2]
 
 
 # print(dim(saved_set_gamma))    # Check dimensions of saved_set_gamma
@@ -36,29 +19,52 @@ library(Matrix)
 # print(dim(saved_Sigma))        # Check dimensions of saved_Sigma
 
 
+# chrom = 22
+# ld = 13
+# debug(22,2)
+debug <- function (chrom, ld) {
+    sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
+    ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.ld',sep = '' )
+    output_name = paste('/gpfs/commons/home/tlin/output/CARMA/',  chrom, '_', ld, '.txt.gz', sep = '')
+    snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] ## can only take the sumstat snps that's in ld blk
+    print(sprintf('run CARMA using on chr %s, ld blk %s', chrom, ld))
+    snp_df = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)
+    ## read sumstat
+    sumstat <- fread(file = sumstat_path ,
+                    sep = "\t", header = T, check.names = F, data.table = F, stringsAsFactors = F)
+    sumstat <- subset(sumstat, SNP %in% snp)
+    print(sprintf('%d snps in sumstat that overlap with LD',dim(sumstat)[1]))
+    if (dim(sumstat)[1] > 10000){
+      print(sprintf('skip, blk too big (size %d)',dim(sumstat)[1]))
+      return(invisible()) 
+    } 
+    ld = fread(file = ld_path, sep = " ", header = F, check.names = F, data.table = F, stringsAsFactors = F)
+    nan_count = sum(is.na(ld))
+    if (nan_count > 0){
+      print(sprintf('set %d nan ld score to 0', nan_count))
+      ld[is.na(ld)] <- 0
+    }
+     
+    z.list<-list()
+    ld.list<-list()
+    lambda.list<-list()
+    z.list[[1]]<-sumstat$Z
+    ld.list[[1]]<-as.matrix(ld)
+    lambda.list[[1]]<-1
 
-chrom = 16
-#ld = 64 ## ok
-#ld= 62 ## test (doesnt work)
-sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
-ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.ld',sep = '' )
-output_name = paste('/gpfs/commons/home/tlin/output/CARMA/',  chrom, '_', ld, '.txt.gz', sep = '')
-snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] ## can only take the sumstat snps that's in ld blk
-print(sprintf('run CARMA using on chr %s, ld blk %s', chrom, ld))
-snp_df = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)
-## read sumstat
-sumstat <- fread(file = sumstat_path ,
-                sep = "\t", header = T, check.names = F, data.table = F, stringsAsFactors = F)
-sumstat <- subset(sumstat, SNP %in% snp)
-print(sprintf('%d snps in sumstat that overlap with LD',dim(sumstat)[1] ))
-ld = fread(file = ld_path, sep = " ", header = F, check.names = F, data.table = F, stringsAsFactors = F)
+    CARMA.results<-CARMA_check(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T, all.inner.iter=3)
+    sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
 
-z.list<-list()
-ld.list<-list()
-lambda.list<-list()
-z.list[[1]]<-sumstat$Z
-ld.list[[1]]<-as.matrix(ld)
-lambda.list[[1]]<-1
+    if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
+      for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
+      } }
+   
+    fwrite(x = sumstat.result,
+          file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
+
+    print(sprintf('write result in %s', output_name))
+
+    }
 ##### test here ------------------------------
 
 # saved_set_gamma <- NULL
@@ -67,25 +73,6 @@ lambda.list[[1]]<-1
 # saved_tau_sample <- NULL
 # saved_p_S <- NULL
 # saved_y_var <- NULL
-
-set_gamma.margin <<-NULL
-aa <<- NULL
-set_star <<- NULL
-# 
-
-
-CARMA.results<-CARMA_check(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T, all.inner.iter=3)
-###### Posterior inclusion probability (PIP) and credible set (CS)
-sumstat.result = sumstat_sub %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
-snp.result = snp_df %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
-
-
-if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
-  for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
-  } }
-###### write the GWAS summary statistics with PIP and CS
-fwrite(x = sumstat.result,
-       file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
 
 CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels='.',label.list=NULL,
                 effect.size.prior='Spike-slab',rho.index=0.99,BF.index=10,EM.dist='Logistic',
@@ -191,8 +178,10 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
       group.index<-1
       s<-1
       while(sum(pip[pip.order[s:length(pip.order)]])>rho){
-        
         cor.group<-as.numeric(names(which(abs(working.ld[which(pip.order[s]==as.numeric(colnames(working.ld))),])>cor.threshold)))
+        print(cor.group)
+        print('check sum')
+        print(sum(pip[cor.group]))
         if(sum(pip[cor.group])>rho){
           group.pip<- pip[cor.group]
           snp.index<- cor.group[order(group.pip,decreasing = T)][1: min(which(cumsum( sort(group.pip,decreasing = T))>rho))]

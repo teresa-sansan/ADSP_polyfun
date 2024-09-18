@@ -47,3 +47,5 @@ if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
 ###### write the GWAS summary statistics with PIP and CS
 fwrite(x = sumstat.result,
        file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
+
+print(sprintf('write result in %s', output_name))
