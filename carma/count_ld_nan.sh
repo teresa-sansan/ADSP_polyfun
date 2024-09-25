@@ -1,5 +1,5 @@
 cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt
-for chr in {15..22}
+for chr in {1..22}
 do   
     n_ld=$(ls -1 | grep .bim| grep chr${chr}_ | wc -l)
     echo start checking chr${chr}, with total of $n_ld ld blocks....
@@ -15,7 +15,7 @@ do
            result="failed"
         }
         fi
-        echo $chr $i $size_ld $nan $result | tee -a count/nan_sizes.txt
+        echo $chr $i $size_ld $nan $result | tee -a count/nan_size.txt
     done
 done
 

@@ -11,10 +11,17 @@ args <- commandArgs(trailingOnly = TRUE)
 chrom = args[1]
 ld = args[2]
 
+if (length(args) == 3 ) {
+  maf_0.5 <- 'remove_maf_0.5/'
+  print('rerun with excluding snp with maf = 0.5')
+} else {
+  maf_0.5 <- ''
+}
+
 sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
-ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/chr', chrom, '_', ld,'.ld',sep = '' )
-output_name = paste('/gpfs/commons/home/tlin/output/CARMA/geno_filt/',  chrom, '_', ld, '.txt.gz', sep = '')
-snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] 
+ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/',maf_0.5,'/chr', chrom, '_', ld,'.ld',sep = '' )
+output_name = paste('/gpfs/commons/home/tlin/output/CARMA/geno_filt/', maf_0.5,  chrom, '_', ld, '.txt.gz', sep = '')
+snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/',maf_0.5,'chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] 
 print(sprintf('run CARMA using on chr %s, ld blk %s', chrom, ld))
 
 ## read data
