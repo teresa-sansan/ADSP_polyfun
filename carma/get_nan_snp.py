@@ -11,16 +11,16 @@ print(f'running on chr{chrom}, ld_blk: {ld_index}')
 path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/'
 ld_path = f'/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/chr{chrom}_{ld_index}.ld'
 
-# ld = np.genfromtxt(ld_path, delimiter=' ')
-# nan_count_per_row = np.sum(np.isnan(ld), axis=1)
+ld = np.genfromtxt(ld_path, delimiter=' ')
+nan_count_per_row = np.sum(np.isnan(ld), axis=1)
 
-# index = np.where(nan_count_per_row > ld.shape[0]/2)[0]
-# nan_results = nan_count_per_row[index]
+index = np.where(nan_count_per_row > ld.shape[0]/2)[0]
+nan_results = nan_count_per_row[index]
 
-# index_df = pd.DataFrame({'Row': index, 'NaN_Count':nan_count_per_row[index]})
+index_df = pd.DataFrame({'Row': index, 'NaN_Count':nan_count_per_row[index]})
 output_name = f'/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/count/chr{chrom}_{ld_index}_nan_row.tsv'
-# index_df.to_csv(output_name, index = False, sep = '\t')
-# print(f'Created index file with %d SNPs' %index_df.shape[0])
+index_df.to_csv(output_name, index = False, sep = '\t')
+print(f'Created index file with %d SNPs' %index_df.shape[0])
 index_df = pd.read_csv(output_name, sep = '\t')
 
 ## merge snp information

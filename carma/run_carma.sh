@@ -1,8 +1,8 @@
 #!/bin/sh
-#SBATCH --job-name=carma_rerun
+#SBATCH --job-name=carma_rerun2
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=190G
+#SBATCH --mem=50G
 #SBATCH --time=60:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/CARMA/geno_filt/%x_%j.log
 
