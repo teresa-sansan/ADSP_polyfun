@@ -6,9 +6,63 @@ library(devtools)
 library(R.utils)
 library(Matrix)
 
-args <- commandArgs(trailingOnly = TRUE)
-chrom = args[1]
-ld = args[2]
+# args <- commandArgs(trailingOnly = TRUE)
+# chrom = args[1]
+# ld = args[2]
+chrom=21
+ld=29
+
+debug(15, 25)
+
+
+
+debug <- function (chrom, ld) {
+  sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
+  ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/chr', chrom, '_', ld,'.ld',sep = '' )
+  output_name = paste('/gpfs/commons/home/tlin/output/CARMA/',  chrom, '_', ld, '.txt.gz', sep = '')
+  snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] ## can only take the sumstat snps that's in ld blk
+  print(sprintf('run CARMA using on chr %s, ld blk %s', chrom, ld))
+  snp_df = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)
+  ## read sumstat
+  sumstat <- fread(file = sumstat_path ,
+                   sep = "\t", header = T, check.names = F, data.table = F, stringsAsFactors = F)
+  sumstat <- subset(sumstat, SNP %in% snp)
+  print(sprintf('%d snps in sumstat that overlap with LD',dim(sumstat)[1]))
+  if (dim(sumstat)[1] > 10000){
+    print(sprintf('skip, blk too big (size %d)',dim(sumstat)[1]))
+    return(invisible()) 
+  } 
+  ld = fread(file = ld_path, sep = " ", header = F, check.names = F, data.table = F, stringsAsFactors = F)
+  nan_count = sum(is.na(ld))
+  if (nan_count > 0){
+    print(sprintf('set %d nan ld score to 0', nan_count))
+    ld[is.na(ld)] <- 0
+  }
+  
+  z.list<-list()
+  ld.list<-list()
+  lambda.list<-list()
+  z.list[[1]]<-sumstat$Z
+  ld.list[[1]]<-as.matrix(ld)
+  lambda.list[[1]]<-1
+  
+  CARMA.results<-CARMA_check(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T, all.inner.iter=3)
+  sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
+  
+  if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
+    for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
+    } }
+  
+  fwrite(x = sumstat.result,
+         file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
+  
+  print(sprintf('write result in %s', output_name))
+  return(CARMA.results)
+  
+}
+
+
+
 
 CARMA_check <- function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels='.',label.list=NULL,
                 effect.size.prior='Spike-slab',rho.index=0.99,BF.index=10,EM.dist='Logistic',
@@ -747,7 +801,10 @@ CARMA_check <- function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.label
                   set.star$gamma.set.index[i]<-c(sample((1:length(set.gamma.margin[[i]])),
                                                         1,prob=exp(aa)))
                   set.star$margin[i]<-set.gamma.margin[[i]][  set.star$gamma.set.index[i]]
-                  
+                  print('test')
+                  print(set.star$gamma.set.index[i], )
+                  print(set.gamma[[i]][set.star$gamma.set.index[i],])
+                
                   test.S<-set.gamma[[i]][set.star$gamma.set.index[i],]
                   
                   modi.Sigma<-Sigma
@@ -1069,48 +1126,3 @@ CARMA_check <- function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.label
 
 
 
-debug <- function (chrom, ld) {
-    sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
-    ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.ld',sep = '' )
-    output_name = paste('/gpfs/commons/home/tlin/output/CARMA/',  chrom, '_', ld, '.txt.gz', sep = '')
-    snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] ## can only take the sumstat snps that's in ld blk
-    print(sprintf('run CARMA using on chr %s, ld blk %s', chrom, ld))
-    snp_df = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)
-    ## read sumstat
-    sumstat <- fread(file = sumstat_path ,
-                    sep = "\t", header = T, check.names = F, data.table = F, stringsAsFactors = F)
-    sumstat <- subset(sumstat, SNP %in% snp)
-    print(sprintf('%d snps in sumstat that overlap with LD',dim(sumstat)[1]))
-    if (dim(sumstat)[1] > 10000){
-      print(sprintf('skip, blk too big (size %d)',dim(sumstat)[1]))
-      return(invisible()) 
-    } 
-    ld = fread(file = ld_path, sep = " ", header = F, check.names = F, data.table = F, stringsAsFactors = F)
-    nan_count = sum(is.na(ld))
-    if (nan_count > 0){
-      print(sprintf('set %d nan ld score to 0', nan_count))
-      ld[is.na(ld)] <- 0
-    }
-     
-    z.list<-list()
-    ld.list<-list()
-    lambda.list<-list()
-    z.list[[1]]<-sumstat$Z
-    ld.list[[1]]<-as.matrix(ld)
-    lambda.list[[1]]<-1
-
-    CARMA.results<-CARMA_check(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T, all.inner.iter=3)
-    sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
-
-    if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
-      for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
-      } }
-   
-    fwrite(x = sumstat.result,
-          file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
-
-    print(sprintf('write result in %s', output_name))
-
-    }
-
-debug(chrom, ld)
