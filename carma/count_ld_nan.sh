@@ -1,5 +1,5 @@
 cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt
-echo chr ld_blk ld_size nan result remove_maf_0.5 > count/nan_size_rerun2.txt
+echo chr ld_blk ld_size nan result remove_maf_0.5 > count/nan_size_rerun4.txt
 for chr in {1..22}
 do   
     n_ld=$(ls -1 | grep .bim| grep chr${chr}_ | wc -l)
@@ -28,7 +28,7 @@ do
            result="failed"
         }
         fi
-        echo $chr $i $size_ld $nan $result $remove_maf | tee -a count/nan_size_rerun2.txt
+        echo $chr $i $size_ld $nan $result $remove_maf | tee -a count/nan_size_rerun4.txt
     done
 done
 

@@ -5,66 +5,187 @@ library(dplyr)
 library(devtools)
 library(R.utils)
 library(Matrix)
+install.packages("bigsnpr")
+library(bigsnpr)
+install.packages("pheatmap")
+library(pheatmap)
+library(ggplot2)
+library(tidyr)
+library(tibble)
 
-args <- commandArgs(trailingOnly = TRUE)
-chrom = args[1]
-ld = args[2]
+chrom = 17 
+ld_index = 10
+
+get_snp_geno <- function (chrom, ld_index){
+  check_snp = snp_readBed2(bedfile = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plink_file_hg38/ADSP_EUR_chr', chrom, '.bed', sep = '') , backingfile = tempfile())
+  test <- snp_attach(check_snp)
+  snp=fread(paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/chr', chrom, '_', ld_index, '.snplist', sep=''), header = FALSE)
+  snp = snp$V1
+  indices = which(test$map[['marker.ID']] %in% snp) ##get the index of the ones that we are interested
+  
+  ## read the file again, only get the filtered snp
+  temp_file = snp_readBed2(bedfile = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plink_file_hg38/ADSP_EUR_chr', chrom, '.bed', sep = '') , backingfile = tempfile(), ind.col=indices)
+  check_snp = snp_attach(temp_file)
+  frq = fread(paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/chr',chrom, '_',ld_index,'.frq', sep = ''))
+  MAF_0.5 = frq[frq$MAF==0.5]$SNP
+  maf_index = which(check_snp$map$marker.ID %in% MAF_0.5)
+  return(list(check_snp = check_snp, maf_index = maf_index))
+}
+
+chr17_10 = get_snp_geno(17,10)
+check_snp <- chr17_10$check_snp
+maf_index <- chr17_10$maf_index
+percentage = get_percentage(check_snp, maf_index, 'chr17_10')
+
+chr19_14 = get_snp_geno(19,14)
+check_snp_chr19_14 = chr19_14$check_snp
+maf_index_chr19_14 = chr19_14$maf_index
+percentage_chr19_14 = get_percentage(check_snp_chr19_14, maf_index_chr19_14, 'chr19_14')
+
+percentage_chr20_17 = process_snp_data(20,17)
+percentage_combined = rbind(percentage, percentage_chr19_14, percentage_chr20_17)
+
+ggplot(percentage_combined, aes(x = blk, y = percentage, fill = maf)) +
+  geom_boxplot() +
+  labs(title = "",
+       x = "ld block",
+       y = "Hetrozygous Percentage (%)") +
+  theme_minimal()
 
 
-# print(dim(saved_set_gamma))    # Check dimensions of saved_set_gamma
-# print(length(saved_z))         # Check length of saved_z
-# print(length(saved_tau_sample)) # Check length of saved_tau_sample
-# print(length(saved_p_S))       # Check length of saved_p_S
-# print(var(saved_y_var))        # Check variance of saved_y_var
-# print(dim(saved_Sigma))        # Check dimensions of saved_Sigma
+process_snp_data <- function(chrom, ld_index) {
+  snp_data = get_snp_geno(chrom, ld_index)
+  check_snp = snp_data$check_snp
+  maf_index = snp_data$maf_index
+  percentage = get_percentage(check_snp, maf_index, paste('chr',chrom,'_', ld_index, sep = ''))
+  return(percentage)
+}
+get_percentage <- function(df, maf_index, blk) {
+  maf0.5 <- apply(df$genotypes[, maf_index], 2, function(x) {
+    mean(x == 1, na.rm = TRUE) * 100  
+  })
+  
+  maf0.5_df <- as.data.frame(maf0.5)
+  maf0.5_df$maf <- 'maf = 0.5'
+  colnames(maf0.5_df) <- c("percentage", "maf")  
+  
+  notmaf0.5 <- apply(df$genotypes[, -maf_index], 2, function(x) {
+    mean(x == 1, na.rm = TRUE) * 100  
+  })
+
+  notmaf0.5_df <- as.data.frame(notmaf0.5)
+  notmaf0.5_df$maf <- 'maf != 0.5'
+  colnames(notmaf0.5_df) <- c("percentage", "maf") 
+  
+  # Combine both data frames
+  result <- rbind(maf0.5_df, notmaf0.5_df)
+  result$blk = blk
+  
+  return(result)
+}
+
+genotype <- check_snp$genotypes[1:10, head(maf_index, 1)]
+marker_id <- check_snp$map$marker.ID[head(maf_index, 1)]
+
+genotype_df <- as.data.frame(genotype)
+#genotype_df$SNP = marker_id
+genotype_df$sample_id = head(check_snp$fam$sample.ID, 10)
+genotype_df$snp = check_snp$map$marker.ID[head(maf_index, 1)]
+
+genotype_df$Genotype <- factor(genotype_df$genotype, levels = c(0, 1, 2), labels = c("0", "1", "2"))
+
+ggplot(genotype_df, aes(x = snp, y = sample_id, fill = Genotype)) +
+  geom_tile(color = "white") +  # Add white borders to tiles
+  scale_fill_manual(values = c("0" = "blue", "1" = "yellow", "2" = "red"), na.value = "white") +  # Color mapping
+  labs(title = "MAF=0.5", x = "", y = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),  # Rotate x-axis labels
+        axis.text.y = element_blank(),                     # Optionally hide y-axis labels
+        legend.title = element_blank())     
 
 
-# chrom = 22
-# ld = 13
-# debug(22,2)
-debug <- function (chrom, ld) {
-    sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
-    ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.ld',sep = '' )
-    output_name = paste('/gpfs/commons/home/tlin/output/CARMA/',  chrom, '_', ld, '.txt.gz', sep = '')
-    snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] ## can only take the sumstat snps that's in ld blk
-    print(sprintf('run CARMA using on chr %s, ld blk %s', chrom, ld))
-    snp_df = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)
-    ## read sumstat
-    sumstat <- fread(file = sumstat_path ,
-                    sep = "\t", header = T, check.names = F, data.table = F, stringsAsFactors = F)
-    sumstat <- subset(sumstat, SNP %in% snp)
-    print(sprintf('%d snps in sumstat that overlap with LD',dim(sumstat)[1]))
-    if (dim(sumstat)[1] > 10000){
-      print(sprintf('skip, blk too big (size %d)',dim(sumstat)[1]))
-      return(invisible()) 
-    } 
-    ld = fread(file = ld_path, sep = " ", header = F, check.names = F, data.table = F, stringsAsFactors = F)
-    nan_count = sum(is.na(ld))
-    if (nan_count > 0){
-      print(sprintf('set %d nan ld score to 0', nan_count))
-      ld[is.na(ld)] <- 0
-    }
-     
-    z.list<-list()
-    ld.list<-list()
-    lambda.list<-list()
-    z.list[[1]]<-sumstat$Z
-    ld.list[[1]]<-as.matrix(ld)
-    lambda.list[[1]]<-1
 
-    CARMA.results<-CARMA_check(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T, all.inner.iter=3)
-    sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
+pheatmap(check_snp$genotypes[1:300,head(maf_index, 1)], 
+         color = c("blue", "yellow", "red"),  
+         na_col = "white",                        
+         cluster_rows = FALSE,                         
+         cluster_cols = FALSE,                        
+         legend_breaks = c(0, 1, 2),                 
+         legend_labels = c("0", "1", "2"),           
+         labels_column = check_snp$map$marker.ID[head(maf_index, 1)],   fontsize_row = 8,   main = "MAF=0.5",      
+         legend = TRUE)                            
 
-    if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
-      for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
-      } }
-   
-    fwrite(x = sumstat.result,
-          file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
+#---------------------
+plot_maf_geno(n_snp=60)
+plot_maf_geno <- function(file = check_snp, n_snp = 10, index = maf_index){
+  counts <- apply(file$genotypes[, head(index, n_snp)], 2, function(x) {
+    table(factor(x, levels = c(0, 1, 2)))})
+  counts_df <- as.data.frame(counts)
+  colnames(counts_df) = file$map$marker.ID[head(index, n_snp)]
+  counts_long <- counts_df %>%
+    rownames_to_column(var = "genotype") %>%  
+    pivot_longer(cols = -genotype,            
+                 names_to = "SNP",            
+                 values_to = "count") 
+  
+  # Create the full stacked bar chart
+  ggplot(counts_long, aes(x = SNP, y = count, fill = genotype)) +
+    geom_bar(stat = "identity") +  # Stacked bars by default
+    scale_fill_manual(values = c("0" = "blue", "1" = "yellow", "2" = "red"),labels = c("0" = "0", "1" = "1", "2" = "2")) +
+    labs(title = "Genotype of SNP (MAF = 0.5)",
+         x = "",
+         y = "Count",
+         fill = "Genotype") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))  # Rotate x-axis labels for better readability
+}
 
-    print(sprintf('write result in %s', output_name))
 
-    }
+sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
+ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/chr', chrom, '_', ld_index,'.ld',sep = '' )
+output_name = paste('/gpfs/commons/home/tlin/output/CARMA/',  chrom, '_', ld, '.txt.gz', sep = '')
+snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld_index,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] ## can only take the sumstat snps that's in ld blk
+print(sprintf('run CARMA using on chr %s, ld blk %s', chrom, ld))
+snp_df = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/chr', chrom, '_', ld_index,'.bim',sep = '' ), sep = "\t", select = 2)
+## read sumstat
+sumstat <- fread(file = sumstat_path ,
+                sep = "\t", header = T, check.names = F, data.table = F, stringsAsFactors = F)
+sumstat <- subset(sumstat, SNP %in% snp)
+print(sprintf('%d snps in sumstat that overlap with LD',dim(sumstat)[1] ))
+ld = fread(file = ld_path, sep = " ", header = F, check.names = F, data.table = F, stringsAsFactors = F)
+
+nan_locations <- is.nan(as.matrix(ld))
+
+# Get the row and column indices where NaN is TRUE
+nan_indices <- which(nan_locations, arr.ind = TRUE)
+
+# Display the results with row and column names
+nan_locations <- is.nan(as.matrix(ld))
+nan_count_per_row <- rowSums(nan_locations)
+
+nan_counts <- data.frame(
+  Row = rownames(ld),
+  NaN_Count = nan_count_per_row
+)
+
+print(nan_counts)
+
+dim(nan_counts[nan_counts$NaN_Count > dim(ld)[0]/2,])
+nan_counts[nan_counts$NaN_Count >  dim(ld)[0]/2,]
+write.table(nan_counts[nan_counts$NaN_Count > 7000,], file = "/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/count/nan_row.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
+nan_count = sum(is.na(ld))
+if (nan_count > 0)
+    print(sprintf('set %d nan ld score to 0', nan_count))
+    ld[is.na(ld)] <- 0
+
+z.list<-list()
+ld.list<-list()
+lambda.list<-list()
+z.list[[1]]<-sumstat$Z
+ld.list[[1]]<-as.matrix(ld)
+lambda.list[[1]]<-1
+
+
 ##### test here ------------------------------
 
 # saved_set_gamma <- NULL
@@ -74,10 +195,29 @@ debug <- function (chrom, ld) {
 # saved_p_S <- NULL
 # saved_y_var <- NULL
 
+set_gamma.margin <<-NULL
+aa <<- NULL
+set_star <<- NULL
+
+
+CARMA.results<-CARMA_check(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T, all.inner.iter=3)
+###### Posterior inclusion probability (PIP) and credible set (CS)
+sumstat.result = sumstat_sub %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
+snp.result = snp_df %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
+
+
+if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
+  for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
+  } }
+###### write the GWAS summary statistics with PIP and CS
+fwrite(x = sumstat.result,
+       file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
+output_name = paste('/gpfs/commons/home/tlin/output/CARMA/',  chrom, '_', ld, '.txt.gz', sep = '')
+
+
 CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels='.',label.list=NULL,
-                effect.size.prior='Spike-slab',rho.index=0.99,BF.index=10,EM.dist='Logistic',
-                Max.Model.Dim=2e+5,all.iter=3,all.inner.iter=10,input.alpha=0,epsilon.threshold=1e-5,printing.log=T,
-                num.causal=10,y.var=1,tau=0.04,outlier.switch=T,outlier.BF.index=1/3.2,prior.prob.computation='Logistic'){
+                effect.size.prior='Spike-slab',rho.index=0.99,BF.index=10,EM.dist='Logistic',printing.log = TRUE,
+                Max.Model.Dim=2e+5,all.iter=3,all.inner.iter=10,input.alpha=0,epsilon.threshold=1e-5,num.causal=10,y.var=1,tau=0.04,outlier.switch=T,outlier.BF.index=1/3.2,prior.prob.computation='Logistic'){
   
   
   Sys.setenv("PKG_CXXFLAGS"="-std=c++11")    #compile functions that use C++11 in R
@@ -178,9 +318,9 @@ CARMA_check<-function(z.list,ld.list,w.list=NULL,lambda.list=NULL,output.labels=
       group.index<-1
       s<-1
       while(sum(pip[pip.order[s:length(pip.order)]])>rho){
+        
         cor.group<-as.numeric(names(which(abs(working.ld[which(pip.order[s]==as.numeric(colnames(working.ld))),])>cor.threshold)))
-        print(cor.group)
-        print('check sum')
+        print('sum')
         print(sum(pip[cor.group]))
         if(sum(pip[cor.group])>rho){
           group.pip<- pip[cor.group]
