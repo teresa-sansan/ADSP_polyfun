@@ -1,5 +1,6 @@
-sumstat_file='Bellenguez_et_al_2021_hg37_new_sep20_qc.tsv'
+#sumstat_file='Bellenguez_et_al_2021_hg37_new_sep20_qc.tsv'
 
+sumstat_file=''
 cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed
 chr=$1
 echo start chr$chr
