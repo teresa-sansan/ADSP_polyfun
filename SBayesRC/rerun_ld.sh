@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=chr22_gctb   
 #SBATCH --mem=16G           
-#SBATCH --array=2100-2108
+#SBATCH --array=2088-2108%10
 #SBATCH --time=02:00:00            
 #SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/%x_%j.log.log
 
@@ -21,8 +21,10 @@ chr=22
 
 blk=${SLURM_ARRAY_TASK_ID}
 
-gctb --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/plink_file/ADSP_EUR_chr${chr} \
---chr ${chr} --extract /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/snplist/${blk}.snplist --make-full-ldm \
---out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/b${blk}
+# gctb --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/plink_file/ADSP_EUR_chr${chr} \
+# --chr ${chr} --extract /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/snplist/${blk}.snplist --make-full-ldm \
+# --out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/b${blk}
 
-cp  /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/b${blk}* /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/LD_sbayesrc/
+# cp  /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/b${blk}* /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/LD_sbayesrc/
+
+gctb --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/plink_file/ADSP_EUR_chr22 --chr 22 --extract /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/snplist/${blk}.snplist --make-full-ldm --out /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/b2088 &> /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/b{blk}.log
