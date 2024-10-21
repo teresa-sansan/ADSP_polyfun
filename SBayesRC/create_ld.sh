@@ -1,14 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=step3_rerun
+#SBATCH --job-name=step4
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
-#SBATCH --mem=30G
-#SBATCH --array=2087-2108%10
+#SBATCH --mem=40G
 #SBATCH --time=15:00:00
 #SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/%x_%j.log
 
 ##
-###
+####SBATCH --array=2087-2108%10
 # source /gpfs/commons/home/tlin/miniconda3/etc/profile.d/conda.sh
 # conda activate sbayesrc
 module load R/4.3.3
@@ -18,18 +17,16 @@ module load R/4.3.3
 #CHR=$SLURM_ARRAY_TASK_ID
 ma_file="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/sbayesrc/rerun/bellenguez_hg38_from_parquet_reversed_a1a2.cojo"     # GWAS summary in COJO format 
 #genotype="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/plink_file/ADSP_EUR_chr{CHR}"  # genotype prefix as LD reference (PLINK format), with {CHR} to spefify multiple
-genotype="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/plink_file/ADSP_EUR_chr{CHR}"
+genotype="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plinkfile_hg38_rerun/ADSP_EUR_chr{CHR}"
 outDir="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc"             # Output folder that would be created automatically
 threads=4                        # Number of CPU cores for eigen decomposition
 
 
 #---usually don't need change bellow
-
 genoCHR="1-22"                     # If more than 1 genotype file, input range (e.g. "1-22") here.
 # refblock=""                      # Text file to define LD blocks, by default to use our GRCH37 coordination 
 refblock='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/ref.pos'
 tool="gctb"                      # Command line to run gctb for generating the full LD matrix
-
 
 ##############################################
 # Code
@@ -47,29 +44,29 @@ tool="gctb"                      # Command line to run gctb for generating the f
 # which gctb
 #Rscript -e ".libPaths('/gpfs/commons/home/tlin/R/x86_64-conda-linux-gnu-library/4.3'); library(SBayesRC); SBayesRC::LDstep2(outDir='$outDir', blockIndex=$idx, log2file=TRUE)"
 
-
-# for idx in {1..591}; do
-#     # Rscript -e "SBayesRC::LDstep2(outDir='$outDir', blockIndex=$idx, log2file=TRUE)"
-# done
-
 # # Step3: eigen decomposition for each LD block
 # #  Loop idx from 1 to NUM_BLOCK (591)
 # #  Submit multiple jobs on your cluster / clouds instead of for loop
 # #  Input depends on $outDir/ldm.info, $outDir/b$idx.ldm.full.info, $outDir/b$idx.ldm.full.bin
 # #  Output $outDir/block$block.eigen.bin, $outDir/block$block.eigen.bin.log
-# export OMP_NUM_THREADS=$threads  # parallel computing supported in this step
+export OMP_NUM_THREADS=$threads  # parallel computing supported in this step
 # for idx in {2087..2108}
 # do
 #     echo $idx
-#     Rscript -e ".libPaths('/gpfs/commons/home/tlin/R/x86_64-conda-linux-gnu-library/4.3'); library(SBayesRC); SBayesRC::LDstep3(outDir='$outDir', blockIndex=$idx, log2file=TRUE)"
+#     
 # done
+#Rscript -e ".libPaths('/gpfs/commons/home/tlin/R/x86_64-conda-linux-gnu-library/4.3'); library(SBayesRC); SBayesRC::LDstep3(outDir='$outDir', blockIndex=$idx, log2file=TRUE)"
+#error_file=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_sbayesrc/ADSP_hg38/rerun_LD_sbayesrc/block.eigen.bin_error.txt
+#cat block.eigen.bin_error.txt | xargs -I {} -P 8 bash -c 'Rscript -e ".libPaths('/gpfs/commons/home/tlin/R/x86_64-conda-linux-gnu-library/4.3'); library(SBayesRC); SBayesRC::LDstep3(outDir='\''$outDir'\'', blockIndex={}, log2file=TRUE)"'
+
 #Rscript -e "library(SBayesRC);SBayesRC::LDstep3(outDir='$outDir', blockIndex=$idx, log2file=TRUE)"
 # for idx in {1..591}; do
 #     Rscript -e "SBayesRC::LDstep3(outDir='$outDir', blockIndex=$idx, log2file=TRUE)"
 # done
 
 # # Step4: merge LD information
-Rscript -e ".libPaths('/gpfs/commons/home/tlin/R/x86_64-conda-linux-gnu-library/4.3'); library(SBayesRC); SBayesRC::LDstep4(outDir='$outDir', log2file=TRUE)"
+## this one doesnt work because of A1/A2 flip, use sbayesRC.r
+#Rscript -e ".libPaths('/gpfs/commons/home/tlin/R/x86_64-conda-linux-gnu-library/4.3'); library(SBayesRC); SBayesRC::LDstep4(outDir='$outDir', log2file=TRUE)"
 
 
 # Step5: clean if necessary
