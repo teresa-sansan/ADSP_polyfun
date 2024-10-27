@@ -30,11 +30,12 @@ genelist = top_assoc.loc[top_assoc.Random_P<thr_p].index
 """
 
 # Assuming a dataframe where the index is the gene name and a column 'n' represents the sample size for that gene
-df_cohorts = pd.read_table(dir_eqtl + "microglia/gene_count.tsv",index_col=0)
+# df_cohorts = pd.read_table(dir_eqtl + "microglia/gene_count.tsv",index_col=0)
 rule all:
      input:
+        expand("/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/eqtl/susie.{gene}.hg38.txt.gz", gene=genelist) 
         #expand(dir_eqtl + "microglia/gene/{gene}_sumstats_hg38.gz", gene=genelist),
-        expand(dir_eqtl + "microglia/gene/{gene}_sumstats.hg38.parquet", gene=genelist),
+        #expand(dir_eqtl + "microglia/gene/{gene}_sumstats.hg38.parquet", gene=genelist),
         # expand("finemapping/susie.{gene}.hg38.txt.gz" % name_window, gene=genelist),
         # expand("finemapping/finemap.{gene}.hg38.txt.gz" % name_window, gene=genelist),
 
@@ -61,23 +62,23 @@ def get_n(gene):
         raise KeyError(f"Column 'n' or gene {gene} not found in DataFrame")
 
 #If you want to use Random Z-scores, specify "--random True"
-rule munge_sumstats:
-    input:
-	    dir_eqtl + "microglia/gene/{gene}_sumstats_hg38.gz"
-    output:
-    	parquet= dir_eqtl + "microglia/gene/{gene}_sumstats.hg38.parquet",
-    params:
-        #n=lambda wildcards: int(df_cohorts.loc[wildcards.gene, "n"]),
-        n=lambda wildcards: get_n(wildcards.gene),
-        dir_polyfun="/gpfs/commons/home/tlin/polyfun_omer_repo"
-    conda:
-    	"polyfun"
-    shell:
-	    """
-        if [ ! -e {{output.parquet}} ]; then
-    	    python {params.dir_polyfun}/munge_eqtl_sumstats.revised.py --sumstats {input} --n {params.n} --out {output.parquet}
-        fi
-		"""
+# rule munge_sumstats:
+#     input:
+# 	    dir_eqtl + "microglia/gene/{gene}_sumstats_hg38.gz"
+#     output:
+#     	parquet= dir_eqtl + "microglia/gene/{gene}_sumstats.hg38.parquet",
+#     params:
+#         #n=lambda wildcards: int(df_cohorts.loc[wildcards.gene, "n"]),
+#         n=lambda wildcards: get_n(wildcards.gene),
+#         dir_polyfun="/gpfs/commons/home/tlin/polyfun_omer_repo"
+#     conda:
+#     	"polyfun"
+#     shell:
+# 	    """
+#         if [ ! -e {{output.parquet}} ]; then
+#     	    python {params.dir_polyfun}/munge_eqtl_sumstats.revised.py --sumstats {input} --n {params.n} --out {output.parquet}
+#         fi
+# 		"""
 
 # # https://github.com/omerwe/polyfun/issues/112
 # # If you get an error like "Estimating residual variance failed: the estimated value is negative", try specifying "--susie-resvar 1"
@@ -95,7 +96,7 @@ rule munge_sumstats:
 #     	n=lambda wildcards: int(df_cohorts.loc[wildcards.gene, "n"]),
 #     	geno=lambda wildcards: df_cohorts.loc[wildcards.gene, "genotype"],
 #     conda:
-#     	"polyfun3"
+#     	"polyfun"
 #     shell:
 #     	"""
 #     	PYTHONPATH=/sc/arion/projects/bigbrain/spliceDL/QTL/pipelines/finemapping/polyfun
@@ -136,3 +137,32 @@ rule munge_sumstats:
 # 		--out {output.out} --non-funct --allow-missing \
 # 		--allow-swapped-indel-alleles
 # 		"""
+
+
+rule finemapping_eqtl:
+    input:
+    	dir_eqtl+"microglia/gene/{gene}_sumstats.hg38.parquet",
+    output:
+    	out="/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/eqtl/susie.{gene}.hg38.txt.gz",
+    params:
+    	chr=lambda wildcards: wildcards.gene.CHR,
+    	start=lambda wildcards: int(max(0, int(wildcards.gene.BP)-window)),
+        end=lambda wildcards: int(int(wildcards.gene.BP)+window),
+    	dir_polyfun=dir_polyfun,
+    	dir_geno=dir_geno,
+    	n=lambda wildcards: int(df_cohorts.loc[wildcards.gene, "n"]),
+    	geno=lambda wildcards: df_cohorts.loc[wildcards.gene, "genotype"],
+
+    conda:
+    	"polyfun"
+    shell:
+    	"""
+	    python {params.dir_polyfun}/finemapper.py \
+	    --geno {params.dir_geno}/ADSP_chr{params.chr} \
+	    --sumstats {input.sumstats} --n {params.n} \
+	    --chr {params.chr} --start {params.start} --end {params.end} \
+	    --method susie --max-num-causal 10 \
+		--out {output.out} --non-funct --allow-missing \
+		--allow-swapped-indel-alleles
+		#--susie-resvar 1
+		"""
