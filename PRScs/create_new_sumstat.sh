@@ -1,8 +1,7 @@
-## README
-## This script is using the output from polyfun then run prscs!
+# README
 
 #path=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/update_all+enformer/finemap/max_snp_5
-path=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/finemap/max_snp_5
+#path=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/finemap/max_snp_5
 #path=/gpfs/commons/home/tlin/output/kunkle/new_anno/all_anno/finemap/max_snp_5
 #echo -n "#org snp:  "
 #cat $path/aggregate.all.txt | wc -l
@@ -25,13 +24,19 @@ path=/gpfs/commons/home/tlin/output/wightman/new_anno_0203/all_except_enformer/f
 ## this part is to create new sumstat from org sumstat to meet PRSCS's requirement.
 
 path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed'
-file_name='Bellenguez_et_al_2021_hg37_new_sep20_qc_nodup.tsv'
+#file_name='Bellenguez_et_al_2021_hg37_new_sep20_qc_nodup.tsv'
+file_name='bellenguez_hg38_parquet_flipped_a1a2.tsv'
+
+for i in {1..22}
+do  
+    awk -v chr="$i" 'NR == 1 {print $3, $4, $5, $6, $8} NR > 1 && ($1 == chr) {print $3, $4, $5, $6, $8}' $path/$file_name > ${path}/prscs/bellenguez_hg38_flippeda1a2_chr${i}.tsv
+#    awk -v chr="$i" '($1 == chr) {print $3, $4, $5, $6, $8}' $path/$file_name > ${path}/prscs/bellenguez_hg38_flippeda1a2_chr${i}.tsv
+done
 
 
-head -1 $path/$file_name
-echo
-echo 'the order need to be SNP, A1, A2, BETA and P'
-head -1 $path/$file_name| awk '{print $1, $4, $5, $11, $6}'
-awk '{print $1, $4, $5, $11, $6}' $path/$file_name > $path/bellenguez_4prscs.tsv 
-
-echo Done!
+#head -1 $path/$file_name
+#echo
+#echo 'the order need to be SNP, A1, A2, BETA and P'
+#head -1 $path/$file_name| awk '{print $1, $4, $5, $11, $6}'
+#awk '{print $1, $4, $5, $11, $6}' $path/$file_name > $path/bellenguez_4prscs.tsv 
+#echo Done!
