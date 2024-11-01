@@ -15,6 +15,9 @@ library(modEvA)  # psuedo rsquare
 library(boot)
 library(gridGraphics)
 library(UpSetR)
+library(rsq)
+install.packages("rsq") 
+
 
 ibd_his = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/ibd_his_remove.txt', header = F)
 pre_process <- function(df, file=FALSE){
@@ -350,12 +353,13 @@ roc_result <-function(df, column_for_roc = col_roc_E5){
     col = column_for_roc[[i]]
     #roc_formula = roc(df[["Diagnosis"]],df[[col]], quiet=T)
     auc_value <- roc(df[["Diagnosis"]],df[[col]] , quiet=T)$auc
-    
     auc_list[i] = as.numeric(auc_value)
   }
   auc_df$auc = unlist(auc_list)
   return(auc_df)
 }
+
+
 
 roc_result_boot <-function(df,column_for_roc=col_roc_E5, boot_num=50, mean=FALSE){
   CI_roc = data.frame(matrix(ncol = 4, nrow = 0))
@@ -366,7 +370,8 @@ roc_result_boot <-function(df,column_for_roc=col_roc_E5, boot_num=50, mean=FALSE
     # roc_formula <- roc(df[["Diagnosis"]],df[[col]]+df[['Age']]+df[['Sex']], quiet=T)
     # print('mixed PRS')
     set.seed(10)
-    ci = ci.auc(roc_formula, conf.level = 0.95, method='bootstrap', boot.n = boot_num)
+    ci = ci.auc(roc_formula, conf.level = 0.95)
+    #ci = ci.auc(roc_formula, conf.level = 0.95, method='bootstrap', boot.n = boot_num)
     CI_roc[nrow(CI_roc) + 1,] = c(col,ci)
   }
   ## only return auc if mean = TRUE
@@ -383,38 +388,46 @@ roc_result_boot <-function(df,column_for_roc=col_roc_E5, boot_num=50, mean=FALSE
 # A function to plot result of diff race all at once. 
 ## remember to change x lim
 plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALSE, title=''){
-  output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*4))
+  #output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*4))
+  output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*3))
   output_df$PRS =  rep(unlist(col),1)
-  output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)), rep("SAS",length(col)))
-  output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR","SAS"))
+  output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)))
+  output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR"))
+  #output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)), rep("SAS",length(col)))
+  #output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR","SAS"))
   
   if (boot != TRUE){ ## no bootstraping, use the original roc_result
     EUR = roc_result(extract_race(df,'EUR') , column_for_roc = col)
     AFR = roc_result(extract_race(df,'AFR') , column_for_roc = col)
     AMR = roc_result(extract_race(df,'AMR') , column_for_roc = col)
-    SAS = roc_result(extract_race(df,'SAS') , column_for_roc = col)
-    output_df$auc = append(append(append(EUR$auc,AFR$auc),AMR$auc), SAS$auc)
+    #SAS = roc_result(extract_race(df,'SAS') , column_for_roc = col)
+    #output_df$auc = append(append(append(EUR$auc,AFR$auc),AMR$auc), SAS$auc)
+    output_df$auc = append(append(EUR$auc,AFR$auc),AMR$auc)
     
   } else {
     print(paste("boot time = ",boot_num))
     EUR = roc_result_boot(extract_race(df,'EUR'), column_for_roc = col, boot_num = boot_num)
     AFR = roc_result_boot(extract_race(df,'AFR'), column_for_roc = col, boot_num = boot_num)
     AMR = roc_result_boot(extract_race(df,'AMR'), column_for_roc = col, boot_num = boot_num)
-    SAS = roc_result_boot(extract_race(df,'SAS'), column_for_roc = col, boot_num = boot_num)
-    output_df$auc = append(append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean)), unlist(SAS$boot_mean))
-    output_df$boot_CI_lower = append(append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower)), unlist(SAS$boot_CI_lower))
-    output_df$boot_CI_upper = append(append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper)), unlist(SAS$boot_CI_upper))
+  
+    #SAS = roc_result_boot(extract_race(df,'SAS'), column_for_roc = col, boot_num = boot_num)
+    # output_df$auc = append(append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean)), unlist(SAS$boot_mean))
+    # output_df$boot_CI_lower = append(append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower)), unlist(SAS$boot_CI_lower))
+    # output_df$boot_CI_upper = append(append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper)), unlist(SAS$boot_CI_upper))
+    output_df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
+    output_df$boot_CI_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
+    output_df$boot_CI_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
     output_df[c("auc","boot_CI_lower","boot_CI_upper")] <- sapply(output_df[c("auc","boot_CI_lower","boot_CI_upper")],as.numeric)
   }
   
   if(plot != FALSE){
-    output_df = process_prs_col_name(output_df)
+    #output_df = process_prs_col_name(output_df)
     output_df$PRS <- factor(output_df$PRS, levels=unique(output_df$PRS))
     
     plot <- ggplot(data = output_df, aes(x=auc, y = PRS))+
       geom_point(size=2,alpha=0.9,position = position_dodge(width = 0.7), color='darkblue')+
       facet_wrap(~ethnicity, ncol=1)+
-      xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.75)+theme_bw()
+      xlab('AUC')+ ggtitle(title)+xlim(0.475, 0.62)+theme_bw()
     if (boot == TRUE){  
       plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,color='darkblue',show.legend = FALSE) 
     }## plot error bar or not
@@ -441,21 +454,19 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(
       name <- factor(name, levels = unique(dfsname))
       df_new <- roc_add_anno(df, col, boot, boot_num, name)
       return(df_new) }}, dfs, dfsname, SIMPLIFY = FALSE))
-  
   result = process_prs_col_name(result)
   print(result)
   
-  #result$PRS <- str_replace(result$PRS,'PRS','max snp ')
   result$PRS <- factor(result$PRS, levels=unique(result$PRS))
 
   plot <- ggplot(data = result, aes(x=auc, y = PRS, color = qc_status,))+
-    geom_point(size=3,alpha=0.7,position = position_dodge(width = 0.7))+
-    facet_wrap(~ethnicity, ncol=2)+
-    xlab('AUC')+ ggtitle(title)+xlim(0.45, 0.64)+
-    theme_bw()
+    geom_point(size=2,alpha=0.8,position = position_dodge(width = 0.7))+
+    facet_wrap(~ethnicity, ncol=1)+
+    xlab('AUC')+ ggtitle(title)+xlim(0.47, 0.62)+ theme_bw()
   
+  #xlim(min(result$auc) - 0.05, max(result$auc) + 0.05)+
   if (boot == TRUE){  
-    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,show.legend = FALSE) 
+    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.3,alpha=0.5,show.legend = FALSE) 
   }## plot error bar or not
   if(legendname != FALSE){ 
     plot = plot +guides(col=guide_legend(legendname))
@@ -477,8 +488,6 @@ test_function <- function(..., QC_names, col = col_roc_E5, title = ' ', boot = T
   # Extract the QC names
   print('qc_names')
   }
-
-
 
 plot_auc_facet_all_sumstat <- function(a,b,c,d,legendname = FALSE){
   prow <- plot_grid(a+ theme(legend.position="none"), 
@@ -549,7 +558,8 @@ ggplot(data=test[test$PRS=="PRS5",], aes(x=factor(anno, level= c('bl','+glasslab
 rsq_formula <- function(formula, data, indices=FALSE) {    
   d <- data[indices,] # allows boot to select sample
   fit <- glm(formula = formula,family = 'binomial', data = d)
-  return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
+  #return(RsqGLM(fit, plot = FALSE)$Nagelkerke)
+  return(rsq(mod1, type = "nagelkerke"))
 }## this is for bootstrapping
 
 ## relative R2 w. bootstrap -----
@@ -557,7 +567,9 @@ rsq_formula <- function(formula, data, indices=FALSE) {
 log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FALSE, replace="pT = 0."){
   set.seed(50)
   mod1 <- glm(Diagnosis ~ Sex + Age, data= df, family=binomial) ## first create a formula only using covariates
-  mod1_R2 <- RsqGLM(mod1, plot=FALSE)$Nagelkerke
+  #mod1_R2 <- RsqGLM(mod1, plot=FALSE)$Nagelkerke
+  mod1_R2 <- rsq(mod1, type = "nagelkerke")
+
   for (i in 1:length(prs)){
     frm <- as.formula(paste("Diagnosis ~ Sex + Age+", prs[[i]])) ## add the PRS you wanted
     if(boot_num != FALSE){              
@@ -593,7 +605,8 @@ log_reg <- function(df,prs,main_title, plot = TRUE, legend="PRS_", boot_num = FA
     }  ##if don't do boostrap
     else{
       mod <- glm(formula = frm,family = 'binomial', data = df) ## with PRS
-      mod_R2 <-  RsqGLM(mod, plot=FALSE)$Nagelkerke 
+      mod_R2<- rsq(mod, type = "nagelkerke")
+      #mod_R2 <-  RsqGLM(mod, plot=FALSE)$Nagelkerke 
       ## table
       if(i ==1){  ## if theres only one threshold
         cof <- data.frame(round(summary(mod)$coefficients[,c(1,2,4)],4))

@@ -39,9 +39,10 @@ pre_process <- function(df, file=FALSE){
   {
     print("change PRS column name")
     #colnames(df) = gsub("_0\\.", "_", colnames(df))
-    colnames(df) = gsub("PRS_", "P ",colnames(df))
-    colnames(df) = gsub("P 0", "P 0.0",colnames(df))
-    names(df)[names(df) == "P 1"] = 'P 0.1'
+    colnames(df) = gsub("PRS_", "P_",colnames(df))
+    colnames(df) = gsub("P_0", "P_0.0",colnames(df))
+    names(df)[names(df) == "P_1"] = 'P_0.1'
+    names(df)[names(df) == "P_5"] = 'P_0.5'
   }
   return(df)
 } ## remove the sample younger than 65 || have no diagnosis || rename col
@@ -75,18 +76,15 @@ bellenguez_adsp_0318_no_thres <- pre_process('/gpfs/commons/home/tlin/output/prs
 bellenguez_adsp_0318_pip01 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip0.1.tsv')
 bellenguez_adsp_0318_pip025 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip0.25.tsv')
 
-
-pip_thres_0.1 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.1.tsv')
-pip_thres_0.2 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.2.tsv')
-pip_thres_0.25 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.25.tsv')
-pip_thres_0.3 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.3.tsv')
-pip_thres_0.4 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.4.tsv')
-pip_thres_0.5 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.5.tsv')
-pip_thres_0.6 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.6.tsv')
-pip_thres_0.7 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.7.tsv')
-pip_thres_0.8 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/prs_pip_0.8.tsv')
+## new_anno_v2
+bellenguez_v2 <- pre_process("/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/v2/v2.prs.tsv")
 
 
+## new anno 031824 with pip thres, remove index 0
+susie_remove0 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/remove_index0_susie.tsv')
+baseline_remove0 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/remove_index0_baseline.tsv')
+omics_remove0 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/remove_index0_omics.tsv')
+omics_dl_remove0 <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/remove_index0_omics_dl.tsv')
 
 pip_thres_susie <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/susie.tsv')
 pip_thres_bl <- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/baseline.tsv')
@@ -105,6 +103,7 @@ bellenguez_pT <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloM
 ### Other PRS method -----
 PRSice <- pre_process("/gpfs/commons/home/tlin/output/prs/PRSice_pheno.tsv")
 sbayesR = pre_process("/gpfs/commons/home/tlin/output/prs/sbayesR.tsv")
+sbayesRC = pre_process("/gpfs/commons/home/tlin/output/sbayesRC/bellenguez_whole_genome/bellenguez_tune_pheno.tsv")
 
 ### PRSCS ----
 PRSCS <- pre_process('/gpfs/commons/home/tlin/output/wightman/prscs/original/prscs_17k.tsv')
@@ -124,7 +123,7 @@ PRSCS_36K <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/AD
 PRSCS_36K <- merge(PRSCS_36K, lookup_table, by = "Race", all.x = TRUE)
 PRSCS_36k_fixed_hispanic <- read.csv('/gpfs/commons/home/tlin/output/36k/wightman/PRSCS_fixed_hispanic.tsv', sep = '\t', header=T,fill = T)
 PRSCS_36k_new_ancestry <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_preview/PRS_hg38/prscs/prscs_new_ancestry.tsv')
-PRSCS_36K_bellenguez<- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k/bellenguez/prscs_36k.tsv')
+PRSCS_36K_ibd_bellenguez<- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k_ibd_adsp_fixed/bellenguez/prscs_bellenguez_ADSP_ibd_36k.tsv')
 PRSCS_36k_ibd_wightman <- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k_ibd_adsp_fixed/wightman/prscs_wightman_ADSP_ibd_36k.tsv')
 
 #Polypred (PRSCS_POLYFUN)
@@ -175,7 +174,12 @@ col_roc_polypred_125<- list("PRS1","PRS2","PRS5")
 col_roc_test_anno <-list ('PRS_bl','PRS_bl_omics','PRS_bl_omics_dl')
 col_roc_anno <-list ('PRS_susie','PRS_bl','PRS_bl_omics','PRS_bl_omics_dl')
 col_roc_polyfun_pthres <- list("P e5","P e4","P 0.001","P 0.01","P 0.1")
-col_roc_pthres <- list("PRS_1","PRS_2","PRS_3","PRS_4","PRS_5","PRS_6","PRS_7","PRS_8")
+col_roc_pthres <- list("PRS_0","PRS_1","PRS_2","PRS_3","PRS_4","PRS_5","PRS_6","PRS_7","PRS_8")
+
+
+col_roc_pthres1 <- list("PRS_0","PRS_1","PRS_2","PRS_3")
+col_roc_pthres2 <- list("PRS_4","PRS_5","PRS_6","PRS_7","PRS_8")
+
 #col_roc_polyfun_pthres <- list("PRS_e5","PRS_e4","PRS_001","PRS_01","PRS_1")
 
 plot_ethnic_roc(PRSCS_36k_ibd_bellengeuz, col = list("PRS_1","PRS_5","PRS_01"))
@@ -306,6 +310,8 @@ ggplot(data = df, aes(x=auc, y = PRS))+
   geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,color='darkblue',show.legend = FALSE) 
 
 
+
+
 ## partial r2
 data_list <- list(kunkle_polypred, bellenguez_polypred, wightman_polypred, jansen_polypred)
 lapply(data_list, apply_log_reg_partial)
@@ -365,8 +371,7 @@ ggplot(data =df_out_wightman, aes(x = partial_R2_noage, y = annotation, color = 
 
 
 
-## 
-#36K_test_anno_chirag
+#36K_test_anno_chirag------
 plot_ethnic_roc_facet(bellenguez_0318 ,bellenguez_adsp_0318, QC3 =data.frame(),QC1name = "bellenguez_UKBB", QC2name = "bellenguez_adsp",
                       col = col_roc_test_anno,boot_num = 50, title='36k IBD test',legendname = 'sumstat')
 
@@ -385,14 +390,33 @@ plot_ethnic_roc(bellenguez_adsp_0318_pip01, col=col_roc_anno, title='max snp PIP
 plot_ethnic_roc(bellenguez_adsp_0318_pip025, col=col_roc_anno, title='max snp PIP > 0.25', plot=TRUE)
 
 
-
+plot_ethnic_roc(bellenguez_v2, col=col_roc_anno, title = 'v2', plot=TRUE)
 
 plot_ethnic_roc(pip_thres_susie, col=col_roc_pthres, title='SUSIE', plot=TRUE)
 plot_ethnic_roc(pip_thres_bl, col=col_roc_pthres, title='baseline', plot=TRUE)
 plot_ethnic_roc(pip_thres_omics, col=col_roc_pthres, title='omics', plot=TRUE)
 plot_ethnic_roc(pip_thres_omics_dl, col=col_roc_pthres, title='omics_dl', plot=TRUE)
 
-## test adsp reference panel without PIP thres, but with p thres
+plot_ethnic_roc(susie_remove0, col=col_roc_pthres, title='susie', plot=TRUE)
+plot_ethnic_roc(baseline_remove0, col=col_roc_pthres, title='baseline', plot=TRUE)
+plot_ethnic_roc(omics_remove0, col=col_roc_pthres, title='omics', plot=TRUE)
+plot_ethnic_roc(omics_dl_remove0 , col=col_roc_pthres, title='omics_dl', plot=TRUE)
+
+
+
+
+
+## PRSCS VS SBAYESRC VS POLYPRED ----
+PRSCS_36K_ibd_bellenguez$PRS = PRSCS_36K_ibd_bellenguez$PRS_1
+bellenguez_0318$PRS = bellenguez_0318$PRS_bl_omics
+plot_ethnic_roc_facet(PRSCS_36K_ibd_bellenguez, sbayesRC, QC3 =bellenguez_0318,QC1name = 'PRSCS_p_0.1', QC2name = "SBayesRC", QC3name="Polyfun_omics",
+                      col = list('PRS'),boot_num = 50, title='Bellenguez UKB',legendname = 'sumstat')
+
+
+plot_ethnic_roc(PRSCS_36K_ibd_bellenguez, col =col_roc, title='PRSCS', plot=TRUE)
+plot_ethnic_roc(bellenguez_0318, col =col_roc_test_anno, title='bellenguez_polyfun', plot=TRUE)
+
+ ## test adsp reference panel without PIP thres, but with p thres
 
 plot_ethnic_roc(bellenguez_adsp_0318_susie, col=col_roc_polyfun_pthres, title='susie', plot=TRUE)
 plot_ethnic_roc(bellenguez_adsp_0318_bl, col=col_roc_polyfun_pthres, title='bl', plot=TRUE)
@@ -465,8 +489,6 @@ pip_thres_densityplot(extract_race(pip_thres_0.25,'EUR'), 'pip_credibleset thres
 pip_thres_densityplot(extract_race(pip_thres_0.25,'AMR'), 'pip_credibleset thres 0.25 AMR')
 pip_thres_densityplot(extract_race(pip_thres_0.25,'AFR'), 'pip_credibleset thres 0.25 AFR')
 
-
-
 pip_thres_densityplot(pip_thres_0.8, 'pip_credibleset thres 0.8')
 pip_thres_densityplot(extract_race(pip_thres_0.8,'EUR'), 'pip_credibleset thres 0.8 EUR')
 pip_thres_densityplot(extract_race(pip_thres_0.8,'AMR'), 'pip_credibleset thres 0.8 AMR')
@@ -485,18 +507,20 @@ pip_thres_densityplot(extract_race(bellenguez_adsp_0318_no_thres,'AFR'),"no PIP 
 
 
 
+
+
 pip_thres_densityplot(allele_flip, "allele_flip")
 
 density_plot(plink_chr19, 'plink bl chr19','PRS')
 
 
 density_plot(bellenguez_new_anno_0824_susie ,'','PRS')
-
+pip_thres_densityplot(bellenguez_v2,"v2")
 
 density_plot(kunkle_adsp_no_apoe_qc ,'','PRS_5')
 density_plot(kunkle_polyfun_pT ,'','PRS_5')
 
-
+density_plot(baseline_remove0, 'remove credible index 0', 'PRS_8')
 
 test_chr19 <- read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/plink_prs/clump_bellenguez/test_chr19.prs.tsv', sep = '\t')
 density_plot(test_chr19,'pt chr19', 'PRS')
@@ -551,6 +575,7 @@ cor(allele_flip$Diagnosis, allele_flip$PRS_bl_omics_dl)
 plink_chr19<- pre_process('/gpfs/commons/home/tlin/output/prs/new_anno_0318_24/bellenguez_adsp_reference/thres/plink_output/sum_baseline_chr19.profilepheno.tsv')
 plink_chr19= plink_chr19[plink_chr19$Age >= 65,]
 density_plot(plink_chr19, 'plink bl chr19','PRS')
+density_plot(PRSCS_36k_ibd_wightman , 'prscs_wightman','P_0.05')
 cor(plink_chr19$PRS, plink_chr19$Diagnosis)
 
 cor(polypred_check$PRS, polypred_check$Diagnosis)
@@ -563,3 +588,55 @@ density_plot(polypred_check, 'polypred bl chr19','PRS')
 
 
 cor(polypred_check$PRS, plink_chr19$PRS)
+
+
+##
+plot_ethnic_roc_facet(susie_remove0, baseline_remove0,omics_remove0, omics_dl_remove0, QC1name="susie", QC2name="baseline",QC3name="omics", 
+                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0' , boot_num=50, legendname = 'annotation')
+
+plot_ethnic_roc_facet(susie_remove0, baseline_remove0,omics_remove0, omics_dl_remove0, QC1name="susie", QC2name="baseline",QC3name="omics", 
+                      QC4name="omics_dl",  col = col_roc_pthres2, title = 'remove index 0' , boot_num=50, legendname = 'annotation')
+
+
+plot_ethnic_roc_facet(susie_remove0, baseline_remove0,omics_remove0, omics_dl_remove0, QC1name="susie", QC2name="baseline",QC3name="omics", 
+                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0' , boot_num=50, legendname = 'annotation')
+
+
+
+
+
+
+df1 = plot_partialR(susie_remove0, col=  list('PRS_8'))
+df2 = plot_partialR(baseline_remove0, col=  list('PRS_8'))
+df3 = plot_partialR(omics_remove0, col=  list('PRS_8'))
+df4 = plot_partialR(omics_dl_remove0, col=  list('PRS_8'))
+df_out = rbind(df1,df2, df3,df4)
+df_out['annotation'] = c('none','Omics','DL','Omics+DL')
+
+df_out$annotation = factor(df_out$annotation, levels = unique( df_out$annotation ))
+df_out$ethnicity = factor(df_out$ethnicity, levels = c('EUR','AFR','AMR'))
+df_out_bellenguez= df_out
+ggplot(data =df_out, aes(x = partial_R2_noage, y = annotation, color = annotation)) + 
+  geom_point(size=2, alpha=0.9,position = position_dodge(width = 0.7)) + facet_wrap(~ethnicity, scales = "free_y", ncol=1)+
+  labs( x = "partial R2(%)")+ggtitle('bellenguez36k')+
+  theme_bw()
+
+
+
+
+
+
+df1 = plot_partialR(susie_remove0, col=  list('PRS_1'))
+df2 = plot_partialR(baseline_remove0, col=  list('PRS_1'))
+df3 = plot_partialR(omics_remove0, col=  list('PRS_1'))
+df4 = plot_partialR(omics_dl_remove0, col=  list('PRS_1'))
+df_out = rbind(df1,df2, df3,df4)
+df_out['annotation'] = c('none','Omics','DL','Omics+DL')
+
+df_out$annotation = factor(df_out$annotation, levels = unique( df_out$annotation ))
+df_out$ethnicity = factor(df_out$ethnicity, levels = c('EUR','AFR','AMR'))
+df_out_bellenguez= df_out
+ggplot(data =df_out, aes(x = partial_R2_noage, y = annotation, color = annotation)) + 
+  geom_point(size=2, alpha=0.9,position = position_dodge(width = 0.7)) + facet_wrap(~ethnicity, scales = "free_y", ncol=1)+
+  labs( x = "partial R2(%)")+ggtitle('bellenguez36k')+
+  theme_bw()
