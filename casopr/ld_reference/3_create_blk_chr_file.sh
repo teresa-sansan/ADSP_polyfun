@@ -4,23 +4,23 @@
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=20G
 #SBATCH --time=15:00:00
-#SBATCH --array=8-14%7
-#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD_ADSP36K_4PRScs/not_na/count/%x_%j.log
+#SBATCH --array=10-22%5
+#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_ADSP36K_4PRScs_OCT/count/%x_%j.log
 
-# source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
-# conda activate polyfun
+source /gpfs/commons/groups/knowles_lab/software/anaconda3/bin/activate
+conda activate polyfun
 
-dir_blk="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD_ADSP36K_4PRScs/"
-dir_1kg="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/1KG/ADSP_EUR/plink"
+#dir_blk="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD_ADSP36K_4PRScs/"
+dir_blk="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_ADSP36K_4PRScs_OCT/"
 
-cd ${dir_blk}/not_na/
+cd ${dir_blk}
+
+if [ ! -e count];then
+    mkdir count
+fi
+
 block=1
 chr=$SLURM_ARRAY_TASK_ID
-
-# if test -f  ../count/blk_chr${chr} ; then
-#             rm ../count/chr${chr}_blk_size
-#             rm ../count/blk_chr${chr}
-# fi
 
 echo chr $chr
 echo -e "CHR\tSNP\tBP\tA1\tA2\tMAF" > count/snpinfo_chr${chr}
@@ -55,6 +55,6 @@ if grep -q '\b0\b' count/chr${chr}_blk_size; then
     echo "there is empty block"
 fi 
 #echo 'creating h5 files... '
-python /gpfs/commons/home/tlin/script/casopr/ld_reference/write_ldblk_chr.py $chr
+python /gpfs/commons/home/tlin/script/casopr/ld_reference/write_ldblk_chr.py $chr $dir_blk
 
 

@@ -1,23 +1,24 @@
 #!/bin/bash
-#SBATCH --job-name=chr_1_calculate_ld
+#SBATCH --job-name=chr1_calculate_ld
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=30G
 #SBATCH --time=15:00:00
-#SBATCH --array=1-161%5
-#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_ADSP36K_4PRScs_Aug/ldblk/%x_%j.log
+#SBATCH --array=1-161%15
+#SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_ADSP36K_4PRScs_OCT/ldblk/%x_%j.log
 
-
-dir_blk="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_ADSP36K_4PRScs_Aug/"
-dir_1kg="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plink_file_hg38/"
+chr=1
+dir_blk="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_ADSP36K_4PRScs_OCT/"
+dir_1kg='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plinkfile_hg38_rerun/' 
+#dir_1kg="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plink_file_hg38/"
 
 cd $dir_blk
 
-# if [ ! -e ldblk ];then
-#     mkdir ldblk
-# fi
+if [ ! -e ldblk ];then
+    mkdir ldblk
+fi
 
-chr=1
+
 echo chr $chr
     
 block=1
