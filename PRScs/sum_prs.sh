@@ -11,20 +11,24 @@ EOF
 #path='/gpfs/commons/home/tlin/output/prs/PRSCS/36k/bellenguez_rerun_0909'
 #path='/gpfs/commons/home/tlin/output/prs/PRSCS/36k_adsp_ld_panel/bellenguez/'
 path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/PRS/36k_hg38/prscs/'
-savename='bellenguez_adsp_ld'
-
-cd $path/prs_middlefile/
-for thres in e-6 e-5 e-4 0.001 0.01 0.1 0.9
+#savename='bellenguez_adsp_ld'
+savename='bellenguez_adsp_ld2'
+# cd $path/prs_middlefile/
+thres=0
+for chr in {1..22}; do tr -s ' ' < chr${chr}.qc.profile | cut -d ' ' -f 2-7 > prscs_chr${chr}_prs.${thres}.tsv; done
+awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' prscs_chr*_prs.0.tsv > prs_0.tsv
+for thres in e-6 e-5 e-4 0.001 0.01 0.1 0.9 
 do
 
     echo running $thres ...
-    #for chr in {1..22}; do tr -s ' ' < chr${chr}.qc.${thres}.profile | cut -d ' ' -f 2-7 > prscs_chr${chr}_prs.${thres}.tsv; done
-    awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' chr*.qc_${thres}.prs.tsv > prs_${thres}.tsv
+
+    for chr in {1..22}; do tr -s ' ' < chr${chr}.qc.${thres}.profile | cut -d ' ' -f 2-7 > chr${chr}.qc.${thres}.tsv; done
+    awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' chr*.qc.${thres}.tsv > prs_${thres}.tsv
+
+    
 done
 
 # #cp prs_${thres}.tsv $path/prs_${thres}.tsv
 
 echo "merging prs with phenotype file"
 python /gpfs/commons/home/tlin/script/PRScs/merge_prs.py $path/prs_middlefile/ $savename
-
-# 0.01 0.1 
