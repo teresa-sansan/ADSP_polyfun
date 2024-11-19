@@ -20,38 +20,6 @@ install.packages("rsq")
 
 
 ibd_his = read.csv('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/phenotype_file/release_36K/ibd_his_remove.txt', header = F)
-pre_process <- function(df, file=FALSE){
-  if(file==FALSE){
-    df<- read.csv(df,sep = '\t', header=T,fill = T)
-  }
-  if("age_covariate" %in% colnames(df))
-  {
-    print("change column name first...")
-    colnames(df)[which(names(df) == 'age_covariate')] <- 'Age'
-    colnames(df)[which(names(df) == 'AD_status_final')] <- 'Diagnosis'
-  }
-  df$Age <- as.numeric(as.character(df$Age))
-  print(paste("original=",  dim(df)[1], "rows"))
-  #df <- df %>%
-  #  filter(Diagnosis != -1 & Age >= 65)
-  df <- df[df$Age >= 65,]
-  print(paste("filtered=",  dim(df)[1], "rows"))
-  df$Diagnosis <- as.numeric(df$Diagnosis)
-  print(colnames(df))
-  if("PRS_0.1" %in% colnames(df))
-  {
-    print("change PRS column name")
-    colnames(df) = gsub("_0\\.", "_", colnames(df))
-  }
-  if("predicted_ancestry" %in% colnames(df))
-    df['final_population'] = df$predicted_ancestry
-  
-  ## check hispanic
-  #print('remove hispanic')
-  #df = df[!(df$SampleID %in% ibd_his$V1), ]
-  
-  return(df)
-} ## remove the sample younger than 65 || have no diagnosis || rename col
 
 ## load PRS data ----
 ### pT -----
@@ -427,7 +395,7 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
     plot <- ggplot(data = output_df, aes(x=auc, y = PRS))+
       geom_point(size=2,alpha=0.9,position = position_dodge(width = 0.7), color='darkblue')+
       facet_wrap(~ethnicity, ncol=1)+
-      xlab('AUC')+ ggtitle(title)+xlim(0.475, 0.62)+theme_bw()
+      xlab('AUC')+ ggtitle(title)+xlim(0.475, 0.655)+theme_bw()
     if (boot == TRUE){  
       plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.1,alpha=0.5,color='darkblue',show.legend = FALSE) 
     }## plot error bar or not
@@ -462,7 +430,7 @@ plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(
   plot <- ggplot(data = result, aes(x=auc, y = PRS, color = qc_status,))+
     geom_point(size=2,alpha=0.8,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
-    xlab('AUC')+ ggtitle(title)+xlim(0.47, 0.62)+ theme_bw()
+    xlab('AUC')+ ggtitle(title)+xlim(0.47, 0.6)+ theme_bw()
   
   #xlim(min(result$auc) - 0.05, max(result$auc) + 0.05)+
   if (boot == TRUE){  

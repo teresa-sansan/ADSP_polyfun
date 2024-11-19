@@ -62,39 +62,30 @@ bellenguez_adsp_omics_dl <- pre_process(paste(path, 'omics_dl.tsv', sep = ''))
 
 ## c+ PT
 Cpt <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/PRS/36k_hg38/c+pt/c_pt.tsv')
-p_list = list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" )
+p_list = list("P_e5","P_e4","P_0.001","P_0.01","P_0.1", "P_0.0" )
 plot_ethnic_roc(Cpt, col =p_list, title='c+pt', plot=TRUE)
-
 
 ##prscs
 #bellenguez_prscs <- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k_adsp_ld_panel/bellenguez/_bellenguez_adsp_ld_36k.tsv')
 prscs <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/PRS/36k_hg38/prscs/bellenguez_adsp_ld_36k.tsv')
-plot_ethnic_roc(prscs, col =list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_9'), title='prscs', plot=TRUE)
+plot_ethnic_roc(prscs, col =list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_0.0'), title='prscs', plot=TRUE)
+
+## CPT+PRSCS
+plot_ethnic_roc_facet(Cpt, prscs, data.frame(), QC1name="C+pT", QC2name="PRSCS",QC3name="omics", 
+                      col = list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_0.0'), title = '' ,  legendname = 'method')
 
 ###prs RESULT----------
 
 col_roc_pthres <- list("PRS_0","PRS_1","PRS_2","PRS_3","PRS_4","PRS_5","PRS_6","PRS_7","PRS_8", "PRS_9")
 
-plot_ethnic_roc_facet(bellenguez_adsp_susie, bellenguez_adsp_baseline, bellenguez_adsp_omics, bellenguez_adsp_omics_dl, QC1name="susie", QC2name="baseline",QC3name="omics", 
-                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0(boot 100)' , boot_num=100, legendname = 'annotation')
-
-plot_ethnic_roc_facet(bellenguez_adsp_susie_aug, bellenguez_adsp_baseline_aug, bellenguez_adsp_omics_aug, bellenguez_adsp_omics_dl_aug, QC1name="susie", QC2name="baseline",QC3name="omics", 
-                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0(boot 50)' , boot_num=50, legendname = 'annotation')
-
-
 plot_ethnic_roc_facet(bellenguez_adsp_susie_aug, bellenguez_adsp_baseline_aug, bellenguez_adsp_omics_aug, bellenguez_adsp_omics_dl_aug, QC1name="susie", QC2name="baseline",QC3name="omics", 
                       QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0(boot 1000)' , boot_num=1000, legendname = 'annotation')
-check <-plot_ethnic_roc_facet(bellenguez_adsp_susie_aug, bellenguez_adsp_baseline_aug, bellenguez_adsp_omics_aug, bellenguez_adsp_omics_dl_aug, QC1name="susie", QC2name="baseline",QC3name="omics", 
-                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0' , boot_num=50, legendname = 'annotation')
 
 #plot_ethnic_roc_facet(bellenguez_adsp_susie_aug_noqc, bellenguez_adsp_baseline_aug_noqc,bellenguez_adsp_omics_aug_noqc, bellenguez_adsp_omics_dl_aug_noqc, QC1name="susie", QC2name="baseline",QC3name="omics", 
 #                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0, no qc on genotype data' , boot_num=5, legendname = 'annotation')
 
-pdf("/gpfs/commons/home/tlin/pic/prs.pdf",    width = 10,    height = 8)
-plot_ethnic_roc_facet(bellenguez_adsp_susie_aug, bellenguez_adsp_baseline_aug, bellenguez_adsp_omics_aug, bellenguez_adsp_omics_dl_aug, QC1name="susie", QC2name="baseline",QC3name="omics", 
+plot_ethnic_roc_facet(bellenguez_adsp_susie, bellenguez_adsp_baseline, bellenguez_adsp_omics, bellenguez_adsp_omics_dl, QC1name="susie", QC2name="baseline",QC3name="omics", 
                        QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0' , boot_num=50, legendname = 'annotation')
-
-dev.off() 
 
 
 col_roc_pthres_prscs <- list("P_0.0001","P_0.001","P_0.1")
@@ -118,8 +109,8 @@ roc_result <-function(df, column_for_roc = col_roc_E5){
   return(auc_df)
 }
 
-
-get_beta <- function(df = bellenguez_adsp_susie_aug, col = col_roc_pthres){
+## get beta for logistic regression
+get_beta <- function(df = bellenguez_adsp_susie, col = col_roc_pthres){
    df<- df %>% mutate_at(unlist(col), ~(scale(.) %>% as.vector))
    beta <- list()
    beta_sd <- list()
@@ -154,88 +145,80 @@ get_beta()
 
 
 
-###R2
-relative_nagelkerke_r2 <- function(df, prs) {
-  # Fit the base model (covariates only)
-  mod_base <- glm(Diagnosis ~ Sex + Age, data = df, family = binomial)
-  
-  # Fit the full model (covariates + PRS)
-  formula_full <- as.formula(paste("Diagnosis ~ Sex + Age +", prs))
-  mod_full <- glm(formula_full, data = df, family = binomial)
-  
-  # Calculate log-likelihoods for each model
-  LL_base <- logLik(mod_base)
-  LL_full <- logLik(mod_full)
-  LL_null <- logLik(glm(Diagnosis ~ 1, data = df, family = binomial))  # Null model
-  
-  # Function to compute Nagelkerke's R²
+relative_r2 <- function(df, prs) {
+  # Helper function for Nagelkerke's R²
   nagelkerke_R2 <- function(LL_model, LL_null, n) {
     1 - (exp(LL_null - LL_model)^(2 / n)) / (1 - exp(2 * LL_null / n))
   }
   
-  # Calculate Nagelkerke's R² for both models
-  n <- nrow(df)
-  R2_base <- nagelkerke_R2(LL_base, LL_null, n)
-  R2_full <- nagelkerke_R2(LL_full, LL_null, n)
-  
-  # Calculate relative R²
-  relative_R2 <- R2_full - R2_base
-  
-  # Output results
-  result <- data.frame(
-    R2_base = R2_base,
-    R2_full = R2_full,
-    Relative_R2 = relative_R2
+  ancestries <- c("EUR", "AFR", "AMR")
+  results <- data.frame(
+    Ancestry = character(),
+    PRS = character(),
+    R2_base = numeric(),
+    R2_full = numeric(),
+    Relative_R2 = numeric(),
+    stringsAsFactors = FALSE
   )
   
-  return(result)
-}
-
-relative_nagelkerke_r2 <- function(df, prs) {
-  # Fit the base model (covariates only)
-  mod_base <- glm(Diagnosis ~ Sex + Age, data = df, family = binomial)
-  
-  # Calculate log-likelihoods for the base model
-  LL_base <- logLik(mod_base)
-  LL_null <- logLik(glm(Diagnosis ~ 1, data = df, family = binomial))  # Null model
-  
-  # Function to compute Nagelkerke's R²
-  nagelkerke_R2 <- function(LL_model, LL_null, n) {
-    1 - (exp(LL_null - LL_model)^(2 / n)) / (1 - exp(2 * LL_null / n))
-  }
-  
-  # Initialize a list to store results
-  results <- data.frame(PRS = character(), R2_base = numeric(), R2_full = numeric(), Relative_R2 = numeric(), stringsAsFactors = FALSE)
-  
-  # Loop through each PRS variable
-  for (i in 1:length(prs)) {
-    # Fit the full model (covariates + current PRS)
-    formula_full <- as.formula(paste("Diagnosis ~ Sex + Age +", prs[i]))
-    mod_full <- glm(formula_full, data = df, family = binomial)
+  # Loop through ancestries
+  for (ancestry in ancestries) {
+    df_ancestry <- df[df$predicted_ancestry == ancestry, ]
     
-    # Calculate log-likelihood for the full model
-    LL_full <- logLik(mod_full)
+    # Fit the base model (covariates only)
+    mod_base <- glm(Diagnosis ~ Sex + Age, data = df_ancestry, family = binomial)
+    LL_base <- logLik(mod_base)
+    LL_null <- logLik(glm(Diagnosis ~ 1, data = df_ancestry, family = binomial))  # Null model
+    n <- nrow(df_ancestry)
     
-    # Calculate Nagelkerke's R² for both models
-    n <- nrow(df)
-    R2_base <- nagelkerke_R2(LL_base, LL_null, n)
-    R2_full <- nagelkerke_R2(LL_full, LL_null, n)
-    
-    # Calculate relative R²
-    relative_R2 <- R2_full - R2_base
-    
-    # Store results
-    results <- rbind(results, data.frame(PRS = prs[i], R2_base = R2_base, R2_full = R2_full, Relative_R2 = relative_R2))
+    # Loop through each PRS variable
+    for (i in seq_along(prs)) {
+      # Fit the full model (covariates + PRS)
+      formula_full <- as.formula(paste("Diagnosis ~ Sex + Age +", prs[i]))
+      mod_full <- glm(formula_full, data = df_ancestry, family = binomial)
+      LL_full <- logLik(mod_full)
+      
+      # Calculate Nagelkerke's R²
+      R2_base <- nagelkerke_R2(LL_base, LL_null, n)
+      R2_full <- nagelkerke_R2(LL_full, LL_null, n)
+      relative_R2 <- R2_full - R2_base
+      
+      # Store results
+      results <- rbind(
+        results,
+        data.frame(
+          Ancestry = ancestry,
+          PRS = prs[i],
+          R2_base = R2_base,
+          R2_full = R2_full,
+          Relative_R2 = relative_R2
+        )
+      )
+    }
   }
   
   return(results)
 }
 
 
-result <- relative_nagelkerke_r2(prscs, c("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_9'))
+result <- relative_r2(prscs, c("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_9'))
+prscs_r2=relative_r2(prscs, c('P_0.0','P_0.01'))
 
+df_r2 <- function(df, col, df_name){
+  df_r2=relative_r2(df, col)
+  df_r2$data = df_name
+  return(df_r2)
+}
+
+
+
+
+  
 ##cpt
-relative_nagelkerke_r2(Cpt , unlist(p_list))
+relative_r2(Cpt , unlist(p_list))
+cpt_r2=relative_r2(Cpt, c('P_0.0','P_0.01'))
+
+
 
 
 # List of data frames
@@ -244,8 +227,23 @@ data_frames <- list(bellenguez_adsp_susie, bellenguez_adsp_baseline,
 
 # Iterate over each data frame in the list
 for (i in data_frames) {
-  result <- relative_nagelkerke_r2(i, unlist(col_roc_pthres))
+  #result <- relative_r2(i, unlist(col_roc_pthres))
+  result <- relative_r2(i, c('PRS_0','PRS_6','PRS_9'))
   print(result)
   print('')
   
 }
+
+
+
+r2=rbind(df_r2(prscs, c('P_0.0','P_0.01'), 'PRSCS'),df_r2(Cpt, c('P_0.0','P_0.01'), 'c_pT'), df_r2(bellenguez_adsp_susie, c('PRS_6','PRS_9'), 'SuSiE'),
+      df_r2(bellenguez_adsp_susie, c('PRS_0','PRS_6'), 'bl'),df_r2(bellenguez_adsp_susie, c('PRS_0','PRS_6'), 'bl/omics'),df_r2(bellenguez_adsp_susie, c('PRS_0','PRS_6'), 'bl/omics/dl'))
+
+
+r2=rbind(df_r2(prscs, c('P_0.0'), 'PRSCS'),df_r2(Cpt, c('P_0.0'), 'c_pT'), df_r2(bellenguez_adsp_susie, c('PRS_6'), 'SuSiE'),
+         df_r2(bellenguez_adsp_susie, c('PRS_6'), 'bl'),df_r2(bellenguez_adsp_susie, c('PRS_6'), 'omics'),df_r2(bellenguez_adsp_susie, c('PRS_6'), 'dl'))
+
+ggplot(data = r2, aes(x=data, y = Relative_R2, color = data))+
+  geom_point(size=2,alpha=0.8,position = position_dodge(width = 0.7))+
+  facet_wrap(~Ancestry, ncol=3)+ theme_bw()
+
