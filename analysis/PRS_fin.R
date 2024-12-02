@@ -48,11 +48,6 @@ bellenguez_adsp_baseline_aug <- pre_process(paste(path, 'prs_baseline.tsv', sep 
 bellenguez_adsp_omics_aug <- pre_process(paste(path, 'prs_omics.tsv', sep = ''))
 bellenguez_adsp_omics_dl_aug <- pre_process(paste(path, 'prs_omics_dl.tsv', sep = ''))
 
-bellenguez_adsp_susie_aug_noqc <- pre_process(paste(path, 'prs_no_qc_susie.tsv', sep = ''))
-bellenguez_adsp_baseline_aug_noqc <- pre_process(paste(path, 'prs_no_qc_baseline.tsv', sep = ''))
-bellenguez_adsp_omics_aug_noqc <- pre_process(paste(path, 'prs_no_qc_omics.tsv', sep = ''))
-bellenguez_adsp_omics_dl_aug_noqc <- pre_process(paste(path, 'prs_no_qc_omics_dl.tsv', sep = ''))
-
 ## load prs (remove index0, fin)------
 path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/PRS/36k_hg38/polyfun/pip_thres/'
 bellenguez_adsp_susie <- pre_process(paste(path, 'susie.tsv', sep = ''))
@@ -68,28 +63,44 @@ plot_ethnic_roc(Cpt, col =p_list, title='c+pt', plot=TRUE)
 ##prscs
 #bellenguez_prscs <- pre_process('/gpfs/commons/home/tlin/output/prs/PRSCS/36k_adsp_ld_panel/bellenguez/_bellenguez_adsp_ld_36k.tsv')
 prscs <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/PRS/36k_hg38/prscs/bellenguez_adsp_ld_36k.tsv')
+prscs_ukbb <- pre_process('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/PRS/36k_hg38/prscs/ukbb/bellenguez_ukbb_ld_36k.tsv')
+plot_ethnic_roc(prscs_ukbb, col =list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_0.0'), title='prscs_ukbb', plot=TRUE)
 plot_ethnic_roc(prscs, col =list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_0.0'), title='prscs', plot=TRUE)
 
-## CPT+PRSCS
-plot_ethnic_roc_facet(Cpt, prscs, data.frame(), QC1name="C+pT", QC2name="PRSCS",QC3name="omics", 
-                      col = list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_0.0'), title = '' ,  legendname = 'method')
 
-###prs RESULT----------
+## ROC result
+cpt_prscs_roc = plot_ethnic_roc_facet( Cpt,prscs, prscs_ukbb, QC2name="PRSCS_ADSP", QC3name="PRSCS_UKBB",QC1name="C+pT", 
+                                      col = list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_0.0'), title = '' ,  legendname = 'method', return_plot=FALSE)
+plot_ethnic_roc_facet(prscs, prscs_ukbb,  data.frame(),QC1name="PRSCS_ADSP", QC2name="PRSCS_UKBB", 
+                       col = list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_0.0'), title = '' ,  legendname = 'method', return_plot=TRUE)
+# cpt_prscs_roc = plot_ethnic_roc_facet(Cpt, prscs, data.frame(), QC1name="C+pT", QC2name="PRSCS_ADSP",QC3name="omics", 
+#                       col = list("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_0.0'), title = '' ,  legendname = 'method')
 
 col_roc_pthres <- list("PRS_0","PRS_1","PRS_2","PRS_3","PRS_4","PRS_5","PRS_6","PRS_7","PRS_8", "PRS_9")
+polyfun_roc = plot_ethnic_roc_facet(bellenguez_adsp_susie, bellenguez_adsp_baseline, bellenguez_adsp_omics, bellenguez_adsp_omics_dl, 
+                                    QC1name="SuSiE", QC2name="bl",QC3name="bl/ omics", QC4name="bl/ omics/ dl",  
+                                    col = col_roc_pthres, title = 'remove index 0' , legendname = 'annotation', return_plot = FALSE)
 
-plot_ethnic_roc_facet(bellenguez_adsp_susie_aug, bellenguez_adsp_baseline_aug, bellenguez_adsp_omics_aug, bellenguez_adsp_omics_dl_aug, QC1name="susie", QC2name="baseline",QC3name="omics", 
-                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0(boot 1000)' , boot_num=1000, legendname = 'annotation')
+roc = rbind(polyfun_roc, cpt_prscs_roc)
+ggplot(roc, aes(x = qc_status, y = auc, fill = qc_status)) +
+  geom_boxplot(alpha = 0.8, outlier.size = 1) +
+  facet_wrap(~ethnicity, ncol = 3) +
+  labs(
+    x = "",
+    y = "auROC",
+    fill = "PRS"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1),
+    panel.grid.major = element_line(color = "gray90"),
+    strip.background = element_rect(fill = "gray90"),
+    strip.text = element_text(face = "bold"),legend.position = "none"
+  )
 
-#plot_ethnic_roc_facet(bellenguez_adsp_susie_aug_noqc, bellenguez_adsp_baseline_aug_noqc,bellenguez_adsp_omics_aug_noqc, bellenguez_adsp_omics_dl_aug_noqc, QC1name="susie", QC2name="baseline",QC3name="omics", 
-#                      QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0, no qc on genotype data' , boot_num=5, legendname = 'annotation')
-
-plot_ethnic_roc_facet(bellenguez_adsp_susie, bellenguez_adsp_baseline, bellenguez_adsp_omics, bellenguez_adsp_omics_dl, QC1name="susie", QC2name="baseline",QC3name="omics", 
-                       QC4name="omics_dl",  col = col_roc_pthres, title = 'remove index 0' , boot_num=50, legendname = 'annotation')
 
 
 col_roc_pthres_prscs <- list("P_0.0001","P_0.001","P_0.1")
-#"P_e6","P_e5","P_e4",
 roc_result(bellenguez_prscs, column_for_roc = col_roc_pthres_prscs)
 
 roc_result <-function(df, column_for_roc = col_roc_E5){
@@ -136,14 +147,7 @@ beta_PRS_0 <- summary_model$coefficients["PRS_0", "Estimate"]
 # Print the beta coefficient
 print(beta_PRS_0)
 
-
-
 get_beta()
-
-
-
-
-
 
 relative_r2 <- function(df, prs) {
   # Helper function for Nagelkerke's R²
@@ -200,50 +204,64 @@ relative_r2 <- function(df, prs) {
   return(results)
 }
 
-
-result <- relative_r2(prscs, c("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ,'P_9'))
-prscs_r2=relative_r2(prscs, c('P_0.0','P_0.01'))
-
 df_r2 <- function(df, col, df_name){
   df_r2=relative_r2(df, col)
   df_r2$data = df_name
   return(df_r2)
 }
 
+r2=rbind(df_r2(prscs, c("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ), 'PRSCS_adsp'),
+         df_r2(prscs_ukbb, c("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ), 'PRSCS_ukbb'),
+         df_r2(Cpt, c("P_e5","P_e4","P_0.001","P_0.01","P_0.1" ), 'c_pT'), 
+         df_r2(bellenguez_adsp_susie, unlist(col_roc_pthres), 'SuSiE'),
+         df_r2(bellenguez_adsp_susie, unlist(col_roc_pthres), 'bl'),
+         df_r2(bellenguez_adsp_susie, unlist(col_roc_pthres), 'bl/ omics'),
+         df_r2(bellenguez_adsp_susie, unlist(col_roc_pthres), 'bl/ omics/ dl'))
+
+r2$Ancestry <- factor(r2$Ancestry, levels = c('EUR', 'AFR', 'AMR'))
+r2$data <- factor(r2$data, levels = c('SuSiE', 'bl', 'bl/ omics', 'bl/ omics/ dl', 'c_pT','PRSCS_adsp', 'PRSCS_ukbb'))
+
+
+library(cowplot)
+roc_plot <- ggplot(roc, aes(x = qc_status, y = auc, fill = qc_status)) +
+  geom_boxplot(alpha = 0.8, outlier.size = 1) +
+  facet_wrap(~ethnicity, ncol = 3) +
+  labs(
+    x = "",
+    y = "auROC",
+    fill = "PRS"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1),
+    panel.grid.major = element_line(color = "gray90"),
+    strip.background = element_rect(fill = "gray90"),
+    strip.text = element_text(face = "bold"),legend.position = "none"
+  )
 
 
 
-  
-##cpt
-relative_r2(Cpt , unlist(p_list))
-cpt_r2=relative_r2(Cpt, c('P_0.0','P_0.01'))
+r2_plot <-ggplot(data = r2, aes(x = data, y = Relative_R2, fill = data)) +
+  geom_boxplot(alpha = 0.8, outlier.size = 1) +
+  facet_wrap(~Ancestry, ncol = 3) +
+  labs(
+    x = "",
+    y = "R²",
+    fill = "PRS"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1),
+    panel.grid.major = element_line(color = "gray90"),
+    strip.background = element_rect(fill = "gray90"),
+    strip.text = element_text(face = "bold"),legend.position = "none"
+  )
 
 
-
-
-# List of data frames
-data_frames <- list(bellenguez_adsp_susie, bellenguez_adsp_baseline, 
-                    bellenguez_adsp_omics, bellenguez_adsp_omics_dl)
-
-# Iterate over each data frame in the list
-for (i in data_frames) {
-  #result <- relative_r2(i, unlist(col_roc_pthres))
-  result <- relative_r2(i, c('PRS_0','PRS_6','PRS_9'))
-  print(result)
-  print('')
-  
-}
-
-
-
-r2=rbind(df_r2(prscs, c('P_0.0','P_0.01'), 'PRSCS'),df_r2(Cpt, c('P_0.0','P_0.01'), 'c_pT'), df_r2(bellenguez_adsp_susie, c('PRS_6','PRS_9'), 'SuSiE'),
-      df_r2(bellenguez_adsp_susie, c('PRS_0','PRS_6'), 'bl'),df_r2(bellenguez_adsp_susie, c('PRS_0','PRS_6'), 'bl/omics'),df_r2(bellenguez_adsp_susie, c('PRS_0','PRS_6'), 'bl/omics/dl'))
-
-
-r2=rbind(df_r2(prscs, c('P_0.0'), 'PRSCS'),df_r2(Cpt, c('P_0.0'), 'c_pT'), df_r2(bellenguez_adsp_susie, c('PRS_6'), 'SuSiE'),
-         df_r2(bellenguez_adsp_susie, c('PRS_6'), 'bl'),df_r2(bellenguez_adsp_susie, c('PRS_6'), 'omics'),df_r2(bellenguez_adsp_susie, c('PRS_6'), 'dl'))
-
-ggplot(data = r2, aes(x=data, y = Relative_R2, color = data))+
-  geom_point(size=2,alpha=0.8,position = position_dodge(width = 0.7))+
-  facet_wrap(~Ancestry, ncol=3)+ theme_bw()
+combined_plot <- plot_grid(
+  roc_plot,
+  r2_plot,
+  ncol = 1            
+)
+print(combined_plot)
 

@@ -29,9 +29,9 @@ pre_process <- function(df, file=FALSE){
   }
   df$Age <- as.numeric(as.character(df$Age))
   print(paste("original=",  dim(df)[1], "rows"))
-  #df <- df %>%
-  #  filter(Diagnosis != -1 & Age >= 65)
-  df <- df[df$Age >= 65,]
+  df <-df %>%
+    filter(Diagnosis == 1 | (Diagnosis == 0 & Age >= 65))
+ # df <- df[df$Age >= 65,]
   print(paste("filtered=",  dim(df)[1], "rows"))
   df$Diagnosis <- as.numeric(df$Diagnosis)
   print(colnames(df))
@@ -640,3 +640,26 @@ ggplot(data =df_out, aes(x = partial_R2_noage, y = annotation, color = annotatio
   geom_point(size=2, alpha=0.9,position = position_dodge(width = 0.7)) + facet_wrap(~ethnicity, scales = "free_y", ncol=1)+
   labs( x = "partial R2(%)")+ggtitle('bellenguez36k')+
   theme_bw()
+
+
+
+
+## other plot---
+### AGE group ------
+
+df= read.csv(paste(path, 'susie.tsv', sep = ''),sep = '\t', header=T,fill = T)
+
+df=bellenguez_adsp_susie
+df = df[df$predicted_ancestry %in% c('EUR', 'AFR', 'AMR'), ]
+df$Diagnosis <- factor(df$Diagnosis, levels = c(0, 1), labels = c("Control", "Case"))
+df$predicted_ancestry <- factor(df$predicted_ancestry, levels = c("EUR", "AMR", "AFR"))
+ggplot(df, aes(x = Diagnosis, y = Age, fill = Diagnosis)) +
+  geom_boxplot() +
+  labs(x = "", y = "Age") +  # Removed the 'fill' label to avoid confusion
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none") +  # This removes the legend
+  facet_wrap(~ predicted_ancestry, scales = "free")
+
+
+

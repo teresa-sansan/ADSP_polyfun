@@ -329,7 +329,7 @@ roc_result <-function(df, column_for_roc = col_roc_E5){
 
 
 
-roc_result_boot <-function(df,column_for_roc=col_roc_E5, boot_num=50, mean=FALSE){
+roc_result_boot <-function(df,column_for_roc=col_roc_E5, mean=FALSE){
   CI_roc = data.frame(matrix(ncol = 4, nrow = 0))
   colnames(CI_roc) = c("PRS","boot_CI_lower","boot_mean","boot_CI_upper")
   for (i in 1:length(column_for_roc)){
@@ -338,7 +338,7 @@ roc_result_boot <-function(df,column_for_roc=col_roc_E5, boot_num=50, mean=FALSE
     # roc_formula <- roc(df[["Diagnosis"]],df[[col]]+df[['Age']]+df[['Sex']], quiet=T)
     # print('mixed PRS')
     set.seed(10)
-    ci = ci.auc(roc_formula, conf.level = 0.95)
+    ci = ci.auc(roc_formula, conf.level = 0.95) ## delong test
     #ci = ci.auc(roc_formula, conf.level = 0.95, method='bootstrap', boot.n = boot_num)
     CI_roc[nrow(CI_roc) + 1,] = c(col,ci)
   }
@@ -355,7 +355,7 @@ roc_result_boot <-function(df,column_for_roc=col_roc_E5, boot_num=50, mean=FALSE
 
 # A function to plot result of diff race all at once. 
 ## remember to change x lim
-plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALSE, title=''){
+plot_ethnic_roc <- function(df, col=col_roc_E5, plot=FALSE, title=''){
   #output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*4))
   output_df <- data.frame(matrix(ncol = 0, nrow = length(col)*3))
   output_df$PRS =  rep(unlist(col),1)
@@ -364,29 +364,19 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
   #output_df$ethnicity = c(rep("EUR",length(col)),rep("AFR",length(col)),rep("AMR",length(col)), rep("SAS",length(col)))
   #output_df$ethnicity <- factor(output_df$ethnicity,levels = c("EUR","AFR","AMR","SAS"))
   
-  if (boot != TRUE){ ## no bootstraping, use the original roc_result
-    EUR = roc_result(extract_race(df,'EUR') , column_for_roc = col)
-    AFR = roc_result(extract_race(df,'AFR') , column_for_roc = col)
-    AMR = roc_result(extract_race(df,'AMR') , column_for_roc = col)
-    #SAS = roc_result(extract_race(df,'SAS') , column_for_roc = col)
-    #output_df$auc = append(append(append(EUR$auc,AFR$auc),AMR$auc), SAS$auc)
-    output_df$auc = append(append(EUR$auc,AFR$auc),AMR$auc)
-    
-  } else {
-    print(paste("boot time = ",boot_num))
-    EUR = roc_result_boot(extract_race(df,'EUR'), column_for_roc = col, boot_num = boot_num)
-    AFR = roc_result_boot(extract_race(df,'AFR'), column_for_roc = col, boot_num = boot_num)
-    AMR = roc_result_boot(extract_race(df,'AMR'), column_for_roc = col, boot_num = boot_num)
+  EUR = roc_result_boot(extract_race(df,'EUR'), column_for_roc = col)
+  AFR = roc_result_boot(extract_race(df,'AFR'), column_for_roc = col)
+  AMR = roc_result_boot(extract_race(df,'AMR'), column_for_roc = col)
+
+  #SAS = roc_result_boot(extract_race(df,'SAS'), column_for_roc = col, boot_num = boot_num)
+  # output_df$auc = append(append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean)), unlist(SAS$boot_mean))
+  # output_df$boot_CI_lower = append(append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower)), unlist(SAS$boot_CI_lower))
+  # output_df$boot_CI_upper = append(append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper)), unlist(SAS$boot_CI_upper))
+  output_df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
+  output_df$boot_CI_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
+  output_df$boot_CI_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
+  output_df[c("auc","boot_CI_lower","boot_CI_upper")] <- sapply(output_df[c("auc","boot_CI_lower","boot_CI_upper")],as.numeric)
   
-    #SAS = roc_result_boot(extract_race(df,'SAS'), column_for_roc = col, boot_num = boot_num)
-    # output_df$auc = append(append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean)), unlist(SAS$boot_mean))
-    # output_df$boot_CI_lower = append(append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower)), unlist(SAS$boot_CI_lower))
-    # output_df$boot_CI_upper = append(append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper)), unlist(SAS$boot_CI_upper))
-    output_df$auc = append(append(unlist(EUR$boot_mean),unlist(AFR$boot_mean)),unlist(AMR$boot_mean))
-    output_df$boot_CI_lower = append(append(unlist(EUR$boot_CI_lower),unlist(AFR$boot_CI_lower)),unlist(AMR$boot_CI_lower))
-    output_df$boot_CI_upper = append(append(unlist(EUR$boot_CI_upper),unlist(AFR$boot_CI_upper)),unlist(AMR$boot_CI_upper))
-    output_df[c("auc","boot_CI_lower","boot_CI_upper")] <- sapply(output_df[c("auc","boot_CI_lower","boot_CI_upper")],as.numeric)
-  }
   
   if(plot != FALSE){
     #output_df = process_prs_col_name(output_df)
@@ -407,43 +397,40 @@ plot_ethnic_roc <- function(df, col=col_roc_E5,boot_num=50, boot=TRUE, plot=FALS
 ## fixed legend
 ## The boolean APOE operator is to see whether you want to plot the effect of only using 5(6, depending on QC or not) APOE allele to make prediction. 
 plot_ethnic_roc_facet <- function(QC1, QC2, QC3,QC4=data.frame(),QC5=data.frame(),QC6=data.frame(), col=col_roc_E5, title=' ',
-                                  QC1name="", QC2name="",QC3name="",QC4name=' ',QC5name=' ',QC6name=' ',boot=TRUE, 
-                                  boot_num=50, legendname=FALSE, APOE=FALSE){
+                                  QC1name="", QC2name="",QC3name="",QC4name=' ',QC5name=' ',QC6name=' ',  legendname=FALSE,  return_plot=TRUE){
   dfs <- list(QC1, QC2, QC3, QC4, QC5, QC6)
   dfsname <- list(QC1name, QC2name, QC3name, QC4name, QC5name, QC6name)
   
-  roc_add_anno <- function(df, col, boot, bootnum, anno_name){
-    df = plot_ethnic_roc(df, col=col,boot=boot,boot_num=boot_num)
+  roc_add_anno <- function(df, col, anno_name){
+    df = plot_ethnic_roc(df, col=col)
     df$qc_status = anno_name
     return(df)
   } 
   result <- do.call(rbind, mapply(function(df, name) {
     if (nrow(df) != 0) {
       name <- factor(name, levels = unique(dfsname))
-      df_new <- roc_add_anno(df, col, boot, boot_num, name)
+      df_new <- roc_add_anno(df, col, name)
       return(df_new) }}, dfs, dfsname, SIMPLIFY = FALSE))
   result = process_prs_col_name(result)
-  print(result)
-  
   result$PRS <- factor(result$PRS, levels=unique(result$PRS))
 
   plot <- ggplot(data = result, aes(x=auc, y = PRS, color = qc_status,))+
     geom_point(size=2,alpha=0.8,position = position_dodge(width = 0.7))+
     facet_wrap(~ethnicity, ncol=1)+
-    xlab('AUC')+ ggtitle(title)+xlim(0.47, 0.6)+ theme_bw()
+    xlab('AUC')+ ggtitle(title)+xlim(max(0.47, min(result$auc) + -0.02), max(0.6,max(result$auc)+ 0.02))+ theme_bw()
   
   #xlim(min(result$auc) - 0.05, max(result$auc) + 0.05)+
-  if (boot == TRUE){  
-    plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.3,alpha=0.5,show.legend = FALSE) 
-  }## plot error bar or not
+
+  plot <- plot + geom_errorbar(aes(xmin=boot_CI_lower, xmax=boot_CI_upper),position=position_dodge(width=0.7), width=.3,alpha=0.5,show.legend = FALSE) 
   if(legendname != FALSE){ 
     plot = plot +guides(col=guide_legend(legendname))
   } ## change legend name or not (depends on usage)
-  if(class(APOE) != "logical"){
-    APOE_ci = plot_ethnic_roc(APOE, col="PRS", plot='F',boot=boot, boot_num=boot_num)
-    plot = plot +  geom_vline(data = APOE_ci, aes(xintercept = auc,color='only APOE'),color="black",lwd=0.5, alpha=0.7,linetype="dashed")  ## move color into aes will generate legend automatically.
-  } ## if we want to plot APOE (line) ## should do bootstrap automatically if it is specified 
-  return(plot)
+  
+  if (return_plot != TRUE) {
+    return(result)
+  } else {
+    return(plot)
+  }
 }
 
 
