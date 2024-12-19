@@ -4,7 +4,7 @@
 #SBATCH --mem=40G
 #SBATCH --time=15:00:00
 #SBATCH --output=/gpfs/commons/home/tlin/output/CARMA/geno_filt/remove_maf_0.5/%x_%j.log
-#SBATCH --job-name=rerun
+#SBATCH --job-name=carma_maf_rerun
 
 dir_blk="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/remove_maf_0.5"
 dir_1kg="/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plink_file_hg38/"

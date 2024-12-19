@@ -7,7 +7,6 @@ library(R.utils)
 library(Matrix)
 
 args <- commandArgs(trailingOnly = TRUE)
-
 chrom = args[1]
 ld = args[2]
 
@@ -17,11 +16,14 @@ if (length(args) == 3 ) {
 } else {
   maf_0.5 <- ''
 }
+anno ='bl'
+#anno ='geno_filt' ## for no anno
 
 sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
 ld_path = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/',maf_0.5,'/chr', chrom, '_', ld,'.ld',sep = '' )
-output_name = paste('/gpfs/commons/home/tlin/output/CARMA/geno_filt/', maf_0.5,  chrom, '_', ld, '.txt.gz', sep = '')
-snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/',maf_0.5,'chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] 
+output_name = paste('/gpfs/commons/home/tlin/output/CARMA/',anno,'/', maf_0.5,  chrom, '_', ld, '.txt.gz', sep = '')
+#snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt',maf_0.5,'chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] 
+snp = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/chr', chrom, '_', ld,'.bim',sep = '' ), sep = "\t", select = 2)[[1]] 
 print(sprintf('run CARMA using on chr %s, ld blk %s', chrom, ld))
 
 ## read data
@@ -44,9 +46,43 @@ z.list[[1]]<-sumstat$Z
 ld.list[[1]]<-as.matrix(ld)
 lambda.list[[1]]<-1
 
-## run carma
-CARMA.results<-CARMA(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T)
-###### Posterior inclusion probability (PIP) and credible set (CS)
+# ## run carma no annotation
+# CARMA.results<-CARMA(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T)
+
+# ###### Posterior inclusion probability (PIP) and credible set (CS)
+# sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
+# if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
+#   for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
+#   } }
+# ###### write the GWAS summary statistics with PIP and CS
+# fwrite(x = sumstat.result,
+#        file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
+
+# print(sprintf('write result in %s', output_name))
+
+
+## run carma w. annotation
+# annot = fread(file = paste('/gpfs/commons/home/tlin/data/ukbb_anno/baselineLF2.2.UKB.',chrom,'.annot.tsv', sep = ''),
+#         sep = '\t', header = T, check.names = F, data.table = F,
+#         stringsAsFactors = F)
+
+
+
+annot = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations_hg38/merged_annotations_ADSP_v2/baseline_filtered/baseline_chr',chrom,'.annot.gz', sep = ''),
+              sep = '\t', header = T, check.names = F, data.table = F,
+              stringsAsFactors = F)
+
+
+annot_sub <- sumstat[c('SNP','Ref','Alt')] %>%
+  left_join(annot, by = "SNP") %>%
+  select(SNP, everything())  
+
+annot_annot <- annot_sub[, -(1:7)]
+annot.list = list()
+#annot.list[[1]] = annot_annot
+annot.list[[1]] = as.matrix(annot_annot)
+CARMA.results<-CARMA(z.list,ld.list,lambda.list=lambda.list,w.list = annot.list, outlier.switch=F)
+
 sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
 if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
   for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
