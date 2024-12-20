@@ -9,14 +9,27 @@ library(Matrix)
 args <- commandArgs(trailingOnly = TRUE)
 chrom = args[1]
 ld = args[2]
+anno=args[3]
 
-if (length(args) == 3 ) {
-  maf_0.5 <- 'remove_maf_0.5/'
-  print('rerun with excluding snp with maf = 0.5')
+maf_0.5 <- ''
+
+# if (length(args) == 3 ) {
+#   maf_0.5 <- 'remove_maf_0.5/'
+#   print('rerun with excluding snp with maf = 0.5')
+# } else {
+#   maf_0.5 <- ''
+# }
+
+if (anno == "bl") {
+  anno_path <- "/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations_hg38/merged_annotations_ADSP_v2/baseline_filtered/baseline_chr"
+} else if (anno == "omics") {
+  anno_path <- "/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/teresa/anno_dec/omics_chr"
+} else if (anno == "omics_dl") {
+  anno_path <- "/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/teresa/anno_dec/omics_dl_chr"
 } else {
-  maf_0.5 <- ''
+  stop("Fail to find annotation")
 }
-anno ='bl'
+
 #anno ='geno_filt' ## for no anno
 
 sumstat_path = paste("/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/carma/chr",chrom,'.tsv.gz', sep = '')
@@ -67,8 +80,7 @@ lambda.list[[1]]<-1
 #         stringsAsFactors = F)
 
 
-
-annot = fread(file = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/annotations_hg38/merged_annotations_ADSP_v2/baseline_filtered/baseline_chr',chrom,'.annot.gz', sep = ''),
+annot = fread(file = paste(anno_path,chrom,'.annot.gz', sep = ''),
               sep = '\t', header = T, check.names = F, data.table = F,
               stringsAsFactors = F)
 
