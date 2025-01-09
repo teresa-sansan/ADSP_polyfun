@@ -11,7 +11,7 @@ chrom = args[1]
 ld = args[2]
 anno=args[3]
 
-maf_0.5 <- ''
+maf_0.5 <- 'remove_maf_0.5/'
 
 # if (length(args) == 3 ) {
 #   maf_0.5 <- 'remove_maf_0.5/'

@@ -1,12 +1,14 @@
 #!/bin/sh
-#SBATCH --job-name=carma_omics
+#SBATCH --job-name=bl
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=15G
 #SBATCH --time=60:00:00
-#SBATCH --array=1-14%4
-#SBATCH --output=/gpfs/commons/home/tlin/output/CARMA/omics/%x_%j.log
+#SBATCH --output=/gpfs/commons/home/tlin/output/CARMA/omics_dl/%x_%j.log
 
+###SBATCH --array=1-22%3
+
+anno='bl'
 module purge   
 module load R/4.2.2    
 module load gcc/11.2.0
@@ -14,7 +16,7 @@ LD_PRELOAD=/gpfs/commons/home/tlin/miniconda3/envs/carma/lib/libmkl_rt.so
 # chr=$1
 # ld=$2
 cd /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt
-anno='omics'
+
 
 # run by ld
 # #ld=$SLURM_ARRAY_TASK_ID
@@ -26,7 +28,7 @@ anno='omics'
 # #      echo "skip this block because it has > 10000 SNPs (size: $size_ld)"
 # # fi
 
-MAX_JOBS=200
+MAX_JOBS=220
 check_jobs() {
 # Count the number of currently running sbatch jobs for the user
 while [ "$(squeue -u tlin | grep '_ld' | wc -l)" -ge "$MAX_JOBS" ]; do
@@ -37,18 +39,29 @@ done
 ##----------------------------------------------------
 # run by chr 
 # only take ~30 min to run per ld chunk, can run by chr
+
 chr=$SLURM_ARRAY_TASK_ID
 n_ld=$(ls -1 | grep .bim| grep chr${chr}_ | wc -l)
 
-for ld in $(seq 11 "$n_ld")
-do
-    size_ld=$(wc -l < chr${chr}_${ld}.bim )
-    if [ "$size_ld" -lt 10000 ] && [ ! -e /gpfs/commons/home/tlin/output/CARMA/$anno/${chr}_${ld}.txt.gz ]; then
-        check_jobs 
-        sbatch --job-name=${chr}_ld${ld} --output=/gpfs/commons/home/tlin/output/CARMA/$anno/%x_%j.log --mem=15G --wrap="Rscript /gpfs/commons/home/tlin/script/carma/carma.r $chr $ld $anno"   
-        #Rscript /gpfs/commons/home/tlin/script/carma/carma.r $chr $ld
-        #Rscript /gpfs/commons/home/tlin/script/carma/test_carma.r $chr $ld
-    else
-        echo "skip this block because it has > 10000 SNPs (size: $size_ld) or existed"
-    fi
-done
+# for ld in $(seq 1 "$n_ld")
+# do
+#     size_ld=$(wc -l < chr${chr}_${ld}.bim )
+#     #if [ "$size_ld" -lt 10000 ] && [ ! -e /gpfs/commons/home/tlin/output/CARMA/$anno/${chr}_${ld}.txt.gz ]; then
+#     if [ ! -e /gpfs/commons/home/tlin/output/CARMA/$anno/${chr}_${ld}.txt.gz ]; then
+#         check_jobs 
+#         sbatch --job-name=${chr}_ld${ld} --output=/gpfs/commons/home/tlin/output/CARMA/$anno/%x_%j.log --mem=15G --wrap="Rscript /gpfs/commons/home/tlin/script/carma/carma.r $chr $ld $anno"   
+#         #Rscript /gpfs/commons/home/tlin/script/carma/carma.r $chr $ld
+#         #Rscript /gpfs/commons/home/tlin/script/carma/test_carma.r $chr $ld
+#     else
+#         echo "skip this block because it has > 10000 SNPs (size: $size_ld) or existed"
+#     fi
+# done
+
+while read -r chr ld _; do
+   if [ ! -e /gpfs/commons/home/tlin/output/CARMA/$anno/${chr}_${ld}.txt.gz ]; then
+        echo "run $chr $ld"
+        check_jobs
+        sbatch --job-name=${chr}_ld${ld} --output=/gpfs/commons/home/tlin/output/CARMA/$anno/%x_%j.log --mem=15G --wrap="Rscript /gpfs/commons/home/tlin/script/carma/carma.r $chr $ld $anno" 
+   fi
+done < /gpfs/commons/home/tlin/output/CARMA/${anno}_unfinished3.txt
+

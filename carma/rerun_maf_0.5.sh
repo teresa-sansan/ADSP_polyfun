@@ -29,4 +29,4 @@ while read -r col1 col2 _; do
         check_jobs
         sbatch run_carma.sh "$col1" "$col2" 
    fi
-done < /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/count/no_nan_failed.txt
+#done < /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/LD_CARMA/geno_filt/count/no_nan_failed.txt
