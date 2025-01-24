@@ -11,7 +11,8 @@ chrom = args[1]
 ld = args[2]
 anno=args[3]
 
-maf_0.5 <- 'remove_maf_0.5/'
+maf_0.5 = 0
+#maf_0.5 <- 'remove_maf_0.5/'
 
 # if (length(args) == 3 ) {
 #   maf_0.5 <- 'remove_maf_0.5/'
@@ -60,41 +61,9 @@ ld.list[[1]]<-as.matrix(ld)
 lambda.list[[1]]<-1
 
 # ## run carma no annotation
-# CARMA.results<-CARMA(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T)
+CARMA.results<-CARMA(z.list,ld.list,lambda.list=lambda.list,outlier.switch=T)
 
-# ###### Posterior inclusion probability (PIP) and credible set (CS)
-# sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
-# if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
-#   for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
-#   } }
-# ###### write the GWAS summary statistics with PIP and CS
-# fwrite(x = sumstat.result,
-#        file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
-
-# print(sprintf('write result in %s', output_name))
-
-
-## run carma w. annotation
-# annot = fread(file = paste('/gpfs/commons/home/tlin/data/ukbb_anno/baselineLF2.2.UKB.',chrom,'.annot.tsv', sep = ''),
-#         sep = '\t', header = T, check.names = F, data.table = F,
-#         stringsAsFactors = F)
-
-
-annot = fread(file = paste(anno_path,chrom,'.annot.gz', sep = ''),
-              sep = '\t', header = T, check.names = F, data.table = F,
-              stringsAsFactors = F)
-
-
-annot_sub <- sumstat[c('SNP','Ref','Alt')] %>%
-  left_join(annot, by = "SNP") %>%
-  select(SNP, everything())  
-
-annot_annot <- annot_sub[, -(1:7)]
-annot.list = list()
-#annot.list[[1]] = annot_annot
-annot.list[[1]] = as.matrix(annot_annot)
-CARMA.results<-CARMA(z.list,ld.list,lambda.list=lambda.list,w.list = annot.list, outlier.switch=F)
-
+###### Posterior inclusion probability (PIP) and credible set (CS)
 sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
 if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
   for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
@@ -104,3 +73,36 @@ fwrite(x = sumstat.result,
        file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
 
 print(sprintf('write result in %s', output_name))
+
+
+# run carma w. annotation
+annot = fread(file = paste('/gpfs/commons/home/tlin/data/ukbb_anno/baselineLF2.2.UKB.',chrom,'.annot.tsv', sep = ''),
+        sep = '\t', header = T, check.names = F, data.table = F,
+        stringsAsFactors = F)
+
+
+## run with anno
+# annot = fread(file = paste(anno_path,chrom,'.annot.gz', sep = ''),
+#               sep = '\t', header = T, check.names = F, data.table = F,
+#               stringsAsFactors = F)
+
+
+# annot_sub <- sumstat[c('SNP','Ref','Alt')] %>%
+#   left_join(annot, by = "SNP") %>%
+#   select(SNP, everything())  
+
+# annot_annot <- annot_sub[, -(1:7)]
+# annot.list = list()
+# #annot.list[[1]] = annot_annot
+# annot.list[[1]] = as.matrix(annot_annot)
+# CARMA.results<-CARMA(z.list,ld.list,lambda.list=lambda.list,w.list = annot.list, outlier.switch=F)
+
+# sumstat.result = sumstat %>% mutate(PIP = CARMA.results[[1]]$PIPs, CS = 0)
+# if(length(CARMA.results[[1]]$`Credible set`[[2]])!=0){
+#   for(l in 1:length(CARMA.results[[1]]$`Credible set`[[2]])){ sumstat.result$CS[CARMA.results[[1]]$`Credible set`[[2]][[l]]]=l
+#   } }
+# ###### write the GWAS summary statistics with PIP and CS
+# fwrite(x = sumstat.result,
+#        file = output_name, sep = "\t", quote = F, na = "NA", row.names = F, col.names = T, compress = "gzip")
+
+# print(sprintf('write result in %s', output_name))

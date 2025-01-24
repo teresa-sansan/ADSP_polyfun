@@ -16,6 +16,9 @@ library(tibble)
 chrom = 17 
 ld_index = 10
 
+
+
+
 get_snp_geno <- function (chrom, ld_index){
   check_snp = snp_readBed2(bedfile = paste('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/LD/plink_file_hg38/ADSP_EUR_chr', chrom, '.bed', sep = '') , backingfile = tempfile())
   test <- snp_attach(check_snp)
