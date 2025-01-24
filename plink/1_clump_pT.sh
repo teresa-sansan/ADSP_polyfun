@@ -8,8 +8,8 @@
 #SBATCH --output=/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/PRS/36k_hg38/clumping_pt_oct/prs_middlefile/%x_%j.log
 
 ## qc_36k
-plink_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/qc/qc_chr'
-wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta_qc.tsv'
+#plink_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg37_plink_ibd/qc/qc_chr'
+#wightman='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/wightman_fixed_beta_qc.tsv'
 
 ## 36k_hg38
 sumstat_path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/fixed_alzheimers/processed/'
@@ -38,7 +38,7 @@ chr=$SLURM_ARRAY_TASK_ID
 # ## get valid snp
 # awk 'NR!=1{print $3}' ${clump_path}${chr}.clumped > ${clump_path}${chr}.valid.snp
 
-## p value thresholding
+## p value thresholding (per Chr prs are calculated )
 ~/plink \
 --allow-no-sex \
 --bfile ${plink_36k_hg38}${chr} \
