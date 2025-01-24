@@ -1,4 +1,4 @@
-
+## install packages
 library(coloc)
 library(data.table)
 install.packages(c('R.oo','R.utils'))
@@ -10,34 +10,11 @@ library(remotes)
 library(readr)
 install.packages("gridExtra")
 library(gridExtra)
-
 install_github("chr1swallace/coloc@main",build_vignettes=TRUE)
-remove_index0 = '/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/summary_stats/alzheimers/ADSP_reference_panel/fine_mapping/annotations_dl/aggregate_finemap/remove_index0/'
-susie = read.table(paste(remove_index0 ,'bellenguez_susie.txt', sep = ''), header = T, sep = '\t')
-dl_chr19=read.table(paste(remove_index0 ,'bellenguez_omics_dl_chr19.txt',sep=''), header = T, sep = '\t')
-eqtl_microglia = fread('/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/eQTL/microglia_GENCODE_expression_full_assoc.tsv.gz', header = T, sep = '\t')
-eqtl_chr19 = eqtl_microglia[eqtl_microglia$chr== 'chr19']
-my.res <- coloc.abf(dataset1=susie, dataset2=eqtl_microglia)
 
 
-## try their example----
-data(coloc_test_data)
-attach(coloc_test_data) 
-par(mfrow=c(2,1))
-plot_dataset(D3, main="Dataset D3")
-plot_dataset(D4, main="Dataset D4")
-check_dataset(D3,req="LD")
-coloc.abf(dataset1=D3, dataset2=D4)
-summary(test_susie)
-
-S3=runsusie(D3)
-S4=runsusie(D4)
-
-susie.res=coloc.susie(S3,S4)
-
-
-### susieR version ----
-
+### check susieR version ----
+packageVersion("susieR") 
 remove.packages("susieR")
 
 # Install the desired version from GitHub
@@ -45,7 +22,6 @@ remove.packages("susieR")
 if (!requireNamespace("remotes", quietly = TRUE)) {
     install.packages("remotes")
 }
-
 # Install susieR version 0.11.92 from GitHub
 remotes::install_github("stephenslab/susieR@v0.11.92")
 
@@ -53,9 +29,28 @@ remotes::install_github("stephenslab/susieR@v0.11.92")
 library(susieR)
 packageVersion("susieR")
 
+### test on PICALM -----
+coloc_path='/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/snp_of_interest/'
 
-install.packages('susieR')
-res=annotate_susie(res, snp, LD)
+##load GWAS 
+baseline_PICALM = readRDS(paste(coloc_path, 'baseline_chr11_86500001_baseline.rds', sep = ''))
+PICALM_ld = read.csv(paste(coloc_path, 'baseline_chr11_84957209_baseline.ld', sep = ''),sep = '\t', header = TRUE, row.names = 1)
+bl_PICALM_snp <- read.csv(paste(coloc_path,'baseline_chr11_84957209_baseline.tsv', sep = ''), sep ='\t')
+bl_PICALM_snp = bl_PICALM_snp$SNP. #11666
+annotate_bl = annotate_susie(baseline_PICALM, bl_PICALM_snp, PICALM_ld)  ## if this doesn't work, run all the funtion at the ##reload part and start again
+
+## load eQTL
+eqtl_PICALM = readRDS('/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/eqtl_tss/eqtl_chr11_ENSG00000073921.18.rds')
+eqtl_PICALM_ld = read.csv('/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/eqtl_tss/eqtl_chr11_ENSG00000073921.18.ld')
+eqtl_PICALM_snp <- read.csv('/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/eqtl_tss/eqtl_chr11_ENSG00000073921.18.tsv', sep = '\t')
+eqtl_PICALM_snp = eqtl_PICALM_snp$SNP
+annotate_PICALM = annotate_susie(eqtl_PICALM, eqtl_PICALM_snp, eqtl_PICALM_ld)
+summary(annotate_PICALM)
+
+res=coloc.susie(annotate_bl,annotate_omics)
+summary(annotate_bl)
+summary(annotate_omics)
+sensitivity(res,"H4 > 0.9",row=1,dataset1=annotate_bl,dataset2=annotate_omics)
 
 ## reload the function from COLOC ------
 annotate_susie=function(res,snp, LD) {
@@ -353,58 +348,3 @@ logdiff <- function(x,y) {
   my.res <- my.max + log(exp(x - my.max ) - exp(y-my.max))
   return(my.res)
 }
-
-
-### test on PICALM -----
-coloc_path='/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/snp_of_interest/'
-baseline_PICALM = readRDS(paste(coloc_path, 'baseline_chr11_86500001_baseline.rds', sep = ''))
-eqtl_PICALM = readRDS('/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/eqtl_tss/eqtl_chr11_ENSG00000073921.18.rds')
-eqtl_PICALM_ld = read.csv('/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/eqtl_tss/eqtl_chr11_ENSG00000073921.18.ld')
-PICALM_ld = read.csv(paste(coloc_path, 'baseline_chr11_84957209_baseline.ld', sep = ''),sep = '\t', header = TRUE, row.names = 1)
-omics_PICALM = readRDS(paste(coloc_path, 'omics_chr11_84957209_omics.rds', sep = ''))
-
-eqtl_PICALM_snp <- read.csv('/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss_oct/eqtl_tss/eqtl_chr11_ENSG00000073921.18.tsv', sep = '\t')
-eqtl_PICALM_snp = eqtl_PICALM_snp$SNP
-annotate_PICALM = annotate_susie(eqtl_PICALM, eqtl_PICALM_snp, eqtl_PICALM_ld)
-summary(annotate_PICALM)
-
-
-
-bl_PICALM_snp <- read.csv(paste(coloc_path,'baseline_chr11_84957209_baseline.tsv', sep = ''), sep ='\t')
-bl_PICALM_snp = bl_PICALM_snp$SNP. #11666
-
-omics_PICALM_snp <- read.csv(paste(coloc_path,'omics_chr11_84957209_omics.tsv', sep = ''), sep ='\t')
-omics_PICALM_snp = omics_PICALM_snp$SNP.  #11666
-
-identical(omics_PICALM_snp, bl_PICALM_snp) 
-
-annotate_bl = annotate_susie(baseline_PICALM, bl_PICALM_snp, PICALM_ld)
-annotate_omics = annotate_susie(omis_PICALM, omics_PICALM_snp, PICALM_ld)
-
-res=coloc.susie(annotate_bl,annotate_omics)
-summary(annotate_bl)
-summary(annotate_omics)
-sensitivity(res,"H4 > 0.9",row=1,dataset1=annotate_bl,dataset2=annotate_omics)
-
-
-
-##############
-
-
-
-
-vignette("a06_SuSiE",package="coloc")
-
-coloc_path='/gpfs/commons/home/tlin/output/36k/bellenguez/adsp_ld/susie_rss/'
-susie_chr12 = readRDS(paste(coloc_path, 'susie_chr12_37371914.rds', sep = ''))
-coloc_chr12 = readRDS(paste(coloc_path, 'eqtl_z2_chr12_37371914_susie.rds', sep = ''))
-susie_chr12_ld = read.csv(paste(coloc_path, 'susie_chr12_37371914.ld', sep = ''),sep = '\t', header = TRUE, row.names = 1)
-#susie_chr12_ld_snp <- rownames(susie_chr12_ld)
-susie_chr12_ld_snp <- read.csv(paste(coloc_path,'susie_chr12_37371914.tsv', sep = ''), sep ='\t')
-susie_chr12_ld_snp = susie_chr12_ld_snp$SNP
-
-
-
-annotate = annotate_susie(susie_chr12, susie_chr12_ld_snp, susie_chr12_ld)
-res=coloc.susie(susie_chr12,coloc_chr12)
-
