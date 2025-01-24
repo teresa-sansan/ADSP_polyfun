@@ -18,19 +18,19 @@ savename='bellenguez_ukbb_ld'
 cd $path/prs_middlefile/
 
 
-for thres in e-6 e-5 e-4 0.001 0.01 0.1 0.9 0
-do
-    echo running $thres ...
-    if [ $thres == 0 ]
-    then
-        for chr in {1..22}; do tr -s ' ' < chr${chr}.qc.profile | cut -d ' ' -f 2-7 > prscs_chr${chr}_prs.${thres}.tsv; done
-        awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' prscs_chr*_prs.0.tsv > prs_0.tsv
-    fi
+# for thres in e-6 e-5 e-4 0.001 0.01 0.1 0.9 0
+# do
+#     echo running $thres ...
+#     if [ $thres == 0 ]
+#     then
+#         #for chr in {1..22}; do tr -s ' ' < chr${chr}.qc.profile | cut -d ' ' -f 2-7 > prscs_chr${chr}_prs.${thres}.tsv; done
+#         awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' chr*.qc.prs.tsv > prs_0.tsv
+#     fi
 
-    #for chr in {1..22}; do tr -s ' ' < chr${chr}.qc.${thres}.profile | cut -d ' ' -f 2-7 > chr${chr}.qc.${thres}.tsv; done
-    awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' chr*.qc.${thres}.tsv > prs_${thres}.tsv
+#     #for chr in {1..22}; do tr -s ' ' < chr${chr}.qc.${thres}.profile | cut -d ' ' -f 2-7 > chr${chr}.qc.${thres}.tsv; done
+#     awk '{ sum[$2]+=$6 } END {for (user in sum) print user, sum[user] }' chr*.qc.${thres}.tsv > prs_${thres}.tsv
     
-done
+# done
 
 # #cp prs_${thres}.tsv $path/prs_${thres}.tsv
 

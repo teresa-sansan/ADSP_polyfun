@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=prs_36k_ukbb
+#SBATCH --job-name=prs_36k_ukbb_fix
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=tlin@nygenome.org
 #SBATCH --mem=20G
@@ -42,21 +42,21 @@ path='/gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/PRS/36k_hg38/prscs/ukb
 ~/plink \
 --bfile /gpfs/commons/groups/knowles_lab/data/ADSP_reguloML/ADSP_vcf/36K_QC/annotated_hg38_plink_qc/ADSP.chr${chr} \
 --score $path/bellenguez_pst_eff_a1_b0.5_phi1e-02_chr${chr}.txt 2 4 6 \
+--q-score-range ../plink/range_list.txt $sumstat_path/bellenguez_hg38_parquet_flipped_a1a2.snp \
 --out $path/prs_middlefile/chr${chr}.qc
 
-cat $path/prs_middlefile/chr${chr}.qc.profile  |tr -s ' '| cut -d ' ' -f 2-7 > $path/prs_middlefile/chr${chr}.qc.prs.tsv      
+#cat $path/prs_middlefile/chr${chr}.qc.profile  |tr -s ' '| cut -d ' ' -f 2-7 > $path/prs_middlefile/chr${chr}.qc.prs.tsv      
 
 # --q-score-range ../plink/range_list.txt $sumstat_path/bellenguez_hg38_parquet_flipped_a1a2.snp \
 # --out $path/prs_middlefile/chr${chr}.qc
 
 
-# for thres in e-6 e-5 e-4 0.001 0.01 0.1 0.9
-# #for chr in {1..22}
-# do
-#     cat $path/prs_middlefile/chr${chr}.qc.${thres}.profile  |tr -s ' '| cut -d ' ' -f 2-7 > $path/prs_middlefile/chr${chr}.qc_${thres}.prs.tsv      
-#     #cat $path/prs_middlefile/chr${chr}.qc.profile  |tr -s ' '| cut -d ' ' -f 2-7 > $path/prs_middlefile/chr${chr}.qc.prs.tsv      
-#     #rm $path/prs_middlefile/chr${chr}.qc.${thres}.profile 
-# done
+for thres in e-6 e-5 e-4 0.001 0.01 0.1 0.9
+do
+    cat $path/prs_middlefile/chr${chr}.qc.${thres}.profile  |tr -s ' '| cut -d ' ' -f 2-7 > $path/prs_middlefile/chr${chr}.qc_${thres}.prs.tsv      
+    #cat $path/prs_middlefile/chr${chr}.qc.profile  |tr -s ' '| cut -d ' ' -f 2-7 > $path/prs_middlefile/chr${chr}.qc.prs.tsv      
+    #rm $path/prs_middlefile/chr${chr}.qc.${thres}.profile 
+done
 
 
 # ## compare with directly running with plink (without PRSCS)
